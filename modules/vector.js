@@ -62,6 +62,9 @@ class Vector {
    * @returns {Vector}
    */
   norm() {
+    if (this.x === 0 && this.y === 0) {
+      throw new Error("can't normalize the zero vector");
+    }
     return this.mult(1 / this.dist(new Vector(0, 0)));
   }
 
