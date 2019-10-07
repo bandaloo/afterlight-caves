@@ -15,4 +15,4 @@ I also use the Prettier code formatter to simplify things.
 
 I use Mocha and Chai in the browser to test with ES6 modules. This was set up
 with the help of this:
-[https://medium.com/dailyjs/running-mocha-tests-as-native-es6-modules-in-a-browser-882373f2ecb0]
+<https://medium.com/dailyjs/running-mocha-tests-as-native-es6-modules-in-a-browser-882373f2ecb0>
