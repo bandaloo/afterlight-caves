@@ -1,4 +1,4 @@
-import { clamp } from "./helpers";
+import { clamp } from "./helpers.js";
 
 class Vector {
   /**
