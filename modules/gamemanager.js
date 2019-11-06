@@ -20,6 +20,9 @@ class GameManager {
     this.displayCanvas.width = displayWidth;
     this.displayCanvas.height = displayHeight;
 
+    // drawing func defaults to a no-op
+    this.drawFunc = () => {};
+
     const exitHandler = () => {
       this.displayCanvas.width = this.displayWidth;
       this.displayCanvas.height = this.displayHeight;
@@ -69,11 +72,21 @@ class GameManager {
     // save drawing context
     this.context.save();
 
+    this.drawFunc();
+
     // TODO draw game
-    this.context.fillStyle = "red";
-    this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
-    this.context.fillStyle = "black";
-    this.context.fillRect(100 + 100 * Math.cos(currentTime / 100), 400, 64, 64);
+    //this.context.fillStyle = "red";
+    //this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    this.context.beginPath();
+    this.context.arc(
+      this.canvas.width / 2 + 50 * Math.cos(currentTime / 300),
+      this.canvas.height / 2 + 50 * Math.sin(currentTime / 100),
+      64,
+      0,
+      2 * Math.PI
+    );
+    this.context.fillStyle = "white";
+    this.context.fill();
 
     // restore drawing context
     this.context.restore();
@@ -103,8 +116,12 @@ export function startUp() {
   gameManager.update();
 }
 
-export function getDisplayCanvas() {
-  return gameManager.displayCanvas;
+export function getCanvas() {
+  return gameManager.canvas;
+}
+
+export function getContext() {
+  return gameManager.context;
 }
 
 export function getCanvasWidth() {
@@ -113,4 +130,12 @@ export function getCanvasWidth() {
 
 export function getCanvasHeight() {
   return gameManager.canvas.height;
+}
+
+/**
+ * Set the additional draw function to happen every game loop
+ * @param {() => void} drawFunc drawing function to happen every loop
+ */
+export function setGameDrawFunc(drawFunc) {
+  gameManager.drawFunc = drawFunc;
 }
