@@ -1,0 +1,116 @@
+class GameManager {
+  previousTime = 0;
+
+  // TODO consider whether we want the options pattern here
+  constructor(
+    width = 1920,
+    height = 1080,
+    displayWidth = 960,
+    displayHeight = 540
+  ) {
+    this.canvas = document.createElement("canvas");
+    this.context = this.canvas.getContext("2d");
+    this.canvas.width = width;
+    this.canvas.height = height;
+
+    this.displayCanvas = document.createElement("canvas");
+    this.displayContext = this.displayCanvas.getContext("2d");
+    this.displayWidth = displayWidth;
+    this.displayHeight = displayHeight;
+    this.displayCanvas.width = displayWidth;
+    this.displayCanvas.height = displayHeight;
+
+    const exitHandler = () => {
+      this.displayCanvas.width = this.displayWidth;
+      this.displayCanvas.height = this.displayHeight;
+    };
+
+    this.displayCanvas.addEventListener("fullscreenchange", exitHandler, false);
+
+    document.addEventListener("keydown", e => {
+      const code = e.keyCode;
+      const key = String.fromCharCode(code);
+      // press F for fullscreen
+      if (key == "F") {
+        this.displayCanvas.width = 1920;
+        this.displayCanvas.height = 1080;
+        this.enterFullscreen();
+      }
+    });
+
+    this.addDisplayToDiv("gamediv");
+  }
+
+  enterFullscreen() {
+    if (this.displayCanvas.requestFullscreen) {
+      this.displayCanvas.requestFullscreen();
+    }
+  }
+
+  addDisplayToDiv(id) {
+    const displayDiv = document.getElementById(id);
+    displayDiv.appendChild(this.displayCanvas);
+  }
+
+  update(currentTime) {
+    // keep track of time passed
+    let deltaTime = currentTime - this.previousTime;
+
+    // clear the display canvas
+    this.displayCanvas.width = this.displayCanvas.width;
+    // clear the drawing canvas
+    this.canvas.width = this.canvas.width;
+
+    // TODO poll for input
+    // TODO run step function of all entities
+    // TODO check for collisions
+    // TODO resolve collisions
+
+    // save drawing context
+    this.context.save();
+
+    // TODO draw game
+    this.context.fillStyle = "red";
+    this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    this.context.fillStyle = "black";
+    this.context.fillRect(100 + 100 * Math.cos(currentTime / 100), 400, 64, 64);
+
+    // restore drawing context
+    this.context.restore();
+
+    // save display context
+    this.displayContext.save();
+
+    this.displayContext.scale(
+      this.displayCanvas.width / this.canvas.width,
+      this.displayCanvas.height / this.canvas.height
+    );
+    // copy the drawing canvas onto the display canvas
+    this.displayContext.drawImage(this.canvas, 0, 0);
+
+    // restore display context
+    this.displayContext.restore();
+
+    // increase the time
+    this.previousTime = currentTime;
+    requestAnimationFrame(this.update.bind(this));
+  }
+}
+
+const gameManager = new GameManager();
+
+export function startUp() {
+  gameManager.update();
+}
+
+export function getDisplayCanvas() {
+  return gameManager.displayCanvas;
+}
+
+export function getCanvasWidth() {
+  return gameManager.canvas.width;
+}
+
+export function getCanvasHeight() {
+  return gameManager.canvas.height;
+}
