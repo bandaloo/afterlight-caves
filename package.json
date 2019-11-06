@@ -1,7 +1,7 @@
 {
-  "name": "bounce-game",
-  "version": "0.1.0",
-  "description": "web based game where you bounce a ball around",
+  "name": "proc-cave-game",
+  "version": "0.1.1",
+  "description": "a game where you shoot procedurally generated enemies in procedurally generated caves",
   "main": "main.js",
   "directories": {
     "test": "test"
