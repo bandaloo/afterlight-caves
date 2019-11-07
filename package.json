@@ -6,13 +6,16 @@
   "directories": {
     "test": "test"
   },
-  "dependencies": {},
+  "dependencies": {
+    "express": "^4.17.1"
+  },
   "devDependencies": {
     "@types/chai": "^4.2.3",
     "@types/mocha": "^5.2.7"
   },
   "scripts": {
-    "test": "echo \"to do this, launch a local server and run tests.html in your browser\" && exit 0"
+    "test": "echo \"to do this, launch a local server and run tests.html in your browser\" && exit 0",
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
