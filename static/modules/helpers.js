@@ -91,3 +91,20 @@ export function drawCircle(pos, radius, color) {
   context.fillStyle = color;
   context.fill();
 }
+
+// TODO check if the griderate function is really that useful
+
+/**
+ * function to facilitate iterating through rectangular 2d array
+ * @param {any[][]} grid
+ * @param {(arg0: any[][], arg1: number, arg2: number) => void} func
+ */
+export function griderate(grid, func) {
+  let width = grid.length;
+  let height = grid[0].length;
+  for (let i = 0; i < width; i++) {
+    for (let j = 0; j < height; j++) {
+      func(grid, i, j);
+    }
+  }
+}

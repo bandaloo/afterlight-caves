@@ -70,6 +70,21 @@ class Vector {
   }
 
   /**
+   * @param {Vector} v
+   */
+  midpoint(v) {
+    return new Vector((this.x + v.x) / 2, (this.y + v.y) / 2);
+  }
+
+  /**
+   * @param {Vector} v
+   * @param {number} s
+   */
+  partway(v, s) {
+    return this.add(this.sub(v).mult(s));
+  }
+
+  /**
    * @param {Vector} a
    * @param {Vector} b
    * @returns {Vector}

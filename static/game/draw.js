@@ -8,7 +8,6 @@ import {
 export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
   let width = board.length;
   let height = board[0].length;
-  let canvas = getCanvas();
   let context = getContext();
   context.fillRect(0, 0, getCanvasWidth(), getCanvasHeight());
   for (let i = 0; i < width; i++) {

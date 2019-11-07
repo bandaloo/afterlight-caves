@@ -1,6 +1,11 @@
 import { Entity } from "./entity.js";
+import { Vector } from "./vector.js";
+import { Enemy } from "../game/enemy.js";
 
 class GameManager {
+  frameTime = 10;
+  overTime = 0;
+
   previousTime = 0;
 
   /** @type {Entity[]} */
@@ -60,62 +65,85 @@ class GameManager {
     displayDiv.appendChild(this.displayCanvas);
   }
 
-  // TODO should currentTime be optional?
+  stepGame() {
+    // TODO poll for input
+    // run step function of all entities
+    for (let i = 0; i < this.entities.length; i++) {
+      this.entities[i].step();
+    }
+    // TODO check for collisions
+    // TODO resolve collisions
+  }
 
-  /**
-   * @param {number} [currentTime]
-   */
-  update(currentTime) {
-    // keep track of time passed
-    let deltaTime = currentTime - this.previousTime;
-
+  drawGame() {
     // clear the display canvas
     this.displayCanvas.width = this.displayCanvas.width;
     // clear the drawing canvas
     this.canvas.width = this.canvas.width;
 
-    // TODO poll for input
-    // TODO run step function of all entities
-    // TODO check for collisions
-    // TODO resolve collisions
-
     // save drawing context
     this.context.save();
-
+    // run draw func specified by game programmer
     this.drawFunc();
-
     // draw all entities
     for (let i = 0; i < this.entities.length; i++) {
       this.entities[i].draw();
     }
-
-    // TODO get rid of all of this
-    this.context.beginPath();
-    this.context.arc(
-      this.canvas.width / 2 + 50 * Math.cos(currentTime / 300),
-      this.canvas.height / 2 + 50 * Math.sin(currentTime / 100),
-      64,
-      0,
-      2 * Math.PI
-    );
-    this.context.fillStyle = "white";
-    this.context.fill();
-
     // restore drawing context
     this.context.restore();
 
     // save display context
     this.displayContext.save();
-
     this.displayContext.scale(
       this.displayCanvas.width / this.canvas.width,
       this.displayCanvas.height / this.canvas.height
     );
     // copy the drawing canvas onto the display canvas
     this.displayContext.drawImage(this.canvas, 0, 0);
-
     // restore display context
     this.displayContext.restore();
+  }
+
+  // TODO should currentTime be an optional parameter?
+
+  /**
+   * @param {number} [currentTime]
+   */
+  update(currentTime = this.frameTime) {
+    // keep track of time passed
+    let deltaTime = currentTime - this.previousTime;
+
+    /** @type {Vector[]} */
+    let lastPositions = [];
+
+    let gameSteps = 0;
+    let timeLeft = deltaTime - this.overTime;
+    while (timeLeft > 0) {
+      console.log("time left" + timeLeft);
+      // if this loop is the last step before going over time
+      if (timeLeft <= this.frameTime) {
+        // get the tween vectors
+        for (let i = 0; i < this.entities.length; i++) {
+          lastPositions.push(this.entities[i].pos);
+        }
+      }
+      this.stepGame();
+      timeLeft -= this.frameTime;
+      gameSteps++;
+    }
+    // set all the tweened vectors to the draw positions
+    for (let i = 0; i < this.entities.length; i++) {
+      this.entities[i].drawPos = lastPositions[i].partway(
+        this.entities[i].pos,
+        (this.frameTime + timeLeft) / this.frameTime
+      );
+    }
+    console.log(gameSteps);
+    console.log(timeLeft);
+
+    this.overTime = -timeLeft;
+
+    this.drawGame();
 
     // increase the time
     this.previousTime = currentTime;

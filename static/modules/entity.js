@@ -14,14 +14,20 @@ export class Entity {
   /** @type {number} */
   drag;
 
-  /** @type number */
+  /** @type {number} */
   blockHitboxScalar = 1;
 
-  /** @type number */
+  /** @type {number} */
   entityHitboxScalar = 1;
 
-  /** @type number */
+  /** @type {number} */
   depth = 0;
+
+  /**
+   * draw position slightly differs from original position to tween between frames
+   * @type {Vector}
+   */
+  drawPos;
 
   /**
    * whether the entity will be deleted in deferred deletion process
@@ -49,7 +55,11 @@ export class Entity {
   /**
    * steps the entity using position, velocity, acceleration and drag
    */
-  step() {}
+  step() {
+    // TODO figure out formula to apply drag
+    this.vel = this.vel.add(this.acc);
+    this.pos = this.pos.add(this.vel);
+  }
 
   /**
    * what to do when the entity is removed from the world

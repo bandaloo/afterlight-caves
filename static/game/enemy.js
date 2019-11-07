@@ -6,7 +6,6 @@ import {
   hsl,
   drawCircle
 } from "../modules/helpers.js";
-import { getCanvas, getContext } from "../modules/gamemanager.js";
 
 /**
  * an enum for allowed shapes of enemies
@@ -66,7 +65,7 @@ export class Enemy extends Entity {
   }
 
   draw() {
-    drawCircle(this.pos, 20, this.color);
+    drawCircle(this.drawPos, 20, this.color);
   }
 
   /**
