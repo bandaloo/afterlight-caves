@@ -27,11 +27,12 @@ class Vector {
   }
 
   /**
-   * @param {number} s
+   * @param {number} sx
+   * @param {number} sy
    * @returns {Vector}
    */
-  mult(s) {
-    return new Vector(this.x * s, this.y * s);
+  mult(sx, sy = sx) {
+    return new Vector(this.x * sx, this.y * sy);
   }
 
   /**

@@ -20,6 +20,9 @@ export class Entity {
   /** @type number */
   entityHitboxScalar = 1;
 
+  /** @type number */
+  depth = 0;
+
   /**
    * whether the entity will be deleted in deferred deletion process
    * @type {boolean}

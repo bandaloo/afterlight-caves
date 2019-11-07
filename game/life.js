@@ -1,6 +1,7 @@
 import { mod } from "../modules/helpers.js";
 import { RulesEnum } from "./rules.js";
 import { EdgesEnum } from "./rules.js";
+import { Vector } from "../modules/vector.js";
 
 const dirs = [
   [1, 0],
@@ -142,3 +143,26 @@ export function boardToString(board) {
   }
   return str;
 }
+
+/**
+ * gets a list of vectors representing empty spaces from board
+ * @param {number[][]} board
+ * @param {number} num
+ * @returns {Vector[]} empty spaces from the board
+ */
+export function getEmptySpaces(board, num, xScalar = 1, yScalar = xScalar) {
+  /** @type {Vector[]} */
+  let emptySpaces = [];
+  let width = board.length;
+  let height = board[0].length;
+  for (let i = 0; i < width; i++) {
+    for (let j = 0; j < height; j++) {
+      if (board[i][j] == 0) {
+        emptySpaces.push(new Vector(i * xScalar, j * yScalar));
+      }
+    }
+  }
+  return emptySpaces;
+}
+
+// TODO have some sort of iterator for the board
