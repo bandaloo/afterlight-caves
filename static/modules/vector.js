@@ -81,7 +81,7 @@ class Vector {
    * @param {number} s
    */
   partway(v, s) {
-    return this.add(this.sub(v).mult(s));
+    return this.add(v.sub(this).mult(s));
   }
 
   /**
@@ -109,6 +109,10 @@ class Vector {
    */
   distToSeg(a, b) {
     return this.dist(this.closestVecToSeg(a, b));
+  }
+
+  toString() {
+    return `[${this.x}, ${this.y}]`;
   }
 }
 

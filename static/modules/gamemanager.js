@@ -119,7 +119,6 @@ class GameManager {
     let gameSteps = 0;
     let timeLeft = deltaTime - this.overTime;
     while (timeLeft > 0) {
-      console.log("time left" + timeLeft);
       // if this loop is the last step before going over time
       if (timeLeft <= this.frameTime) {
         // get the tween vectors
@@ -133,13 +132,14 @@ class GameManager {
     }
     // set all the tweened vectors to the draw positions
     for (let i = 0; i < this.entities.length; i++) {
-      this.entities[i].drawPos = lastPositions[i].partway(
+      let tempPrevPos = lastPositions[i];
+      let tempDrawPos = lastPositions[i].partway(
         this.entities[i].pos,
         (this.frameTime + timeLeft) / this.frameTime
       );
+      let tempCurrPos = this.entities[i].pos;
+      this.entities[i].drawPos = tempDrawPos;
     }
-    console.log(gameSteps);
-    console.log(timeLeft);
 
     this.overTime = -timeLeft;
 

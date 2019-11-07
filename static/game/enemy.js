@@ -65,6 +65,8 @@ export class Enemy extends Entity {
   }
 
   draw() {
+    //console.log("drawpos: " + this.drawPos);
+    //console.log("pos: " + this.pos);
     drawCircle(this.drawPos, 20, this.color);
   }
 
