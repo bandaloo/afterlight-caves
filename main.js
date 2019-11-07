@@ -1,6 +1,5 @@
-import { getGrid } from "./modules/life.js";
-import { boardToString } from "./modules/life.js";
-import { caveRules, EdgesEnum } from "./modules/rules.js";
+import { boardToString, getGrid } from "./game/life.js";
+import { caveRules, EdgesEnum } from "./game/rules.js";
 import { startUp, setGameDrawFunc } from "./modules/gamemanager.js";
 import { drawBoard } from "./modules/draw.js";
 
@@ -19,11 +18,11 @@ let board = getGrid(
   0.45,
   20
 );
+
 console.log(boardToString(board));
-console.log(board);
 
 setGameDrawFunc(() => {
-  drawBoard(board);
+  drawBoard(board, blockWidth, blockHeight);
 });
 
 startUp();

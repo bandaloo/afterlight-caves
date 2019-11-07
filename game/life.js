@@ -1,4 +1,4 @@
-import { mod } from "./helpers.js";
+import { mod } from "../modules/helpers.js";
 import { RulesEnum } from "./rules.js";
 import { EdgesEnum } from "./rules.js";
 
@@ -35,7 +35,7 @@ function createNumberGrid(width, height, probability = 0) {
 /**
  * counts the alive neighbors at a board position
  * @param {number[][]} board board to check for neighbors
- * @param {number} edges rule for edges of board
+ * @param {EdgesEnum} edges rule for edges of board
  * @param {number} i row of cell to count
  * @param {number} j column of cell to count
  */
@@ -68,8 +68,8 @@ function countNeighbors(board, edges, i, j) {
 /**
  * take a board and return a board iterated one step based on rules
  * @param {number[][]} board board to iterate
- * @param {number[]} rules rules to iterate by
- * @param {number} edges rule for edges of board
+ * @param {RulesEnum[]} rules rules to iterate by
+ * @param {EdgesEnum} edges rule for edges of board
  * @returns {number[][]}
  */
 function stepBoard(board, rules, edges) {
@@ -107,10 +107,10 @@ function stepBoard(board, rules, edges) {
  * returns a board based on cellular automata rules
  * @param {number} width width of the board
  * @param {number} height height of the board
- * @param {number[]} rules rules to determine birth and death
- * @param {number} edges rule for edges of board
- * @param {*} probability probability of board to fill randomly
- * @param {*} generations amount of generations to iterate
+ * @param {RulesEnum[]} rules rules to determine birth and death
+ * @param {EdgesEnum} edges rule for edges of board
+ * @param {number} probability probability of board to fill randomly
+ * @param {number} generations amount of generations to iterate
  * @returns {number[][]}
  */
 export function getGrid(width, height, rules, edges, probability, generations) {
@@ -129,8 +129,9 @@ export function boardToString(board) {
   let str = "";
   let width = board.length;
   let height = board[0].length;
-  for (let i = 0; i < width; i++) {
-    for (let j = 0; j < height; j++) {
+  // iterate column-major so it prints out as on screen
+  for (let j = 0; j < height; j++) {
+    for (let i = 0; i < width; i++) {
       if (board[i][j] == 1) {
         str += "#";
       } else {

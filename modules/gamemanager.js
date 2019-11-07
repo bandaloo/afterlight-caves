@@ -1,5 +1,10 @@
+import { Entity } from "./entity.js";
+
 class GameManager {
   previousTime = 0;
+
+  /** @type {Entity[]} */
+  entities = [];
 
   // TODO consider whether we want the options pattern here
   constructor(
@@ -55,6 +60,11 @@ class GameManager {
     displayDiv.appendChild(this.displayCanvas);
   }
 
+  // TODO should currentTime be optional?
+
+  /**
+   * @param {number} [currentTime]
+   */
   update(currentTime) {
     // keep track of time passed
     let deltaTime = currentTime - this.previousTime;
@@ -74,9 +84,12 @@ class GameManager {
 
     this.drawFunc();
 
-    // TODO draw game
-    //this.context.fillStyle = "red";
-    //this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    // draw all entities
+    for (let i = 0; i < this.entities.length; i++) {
+      this.entities[i].draw();
+    }
+
+    // TODO get rid of all of this
     this.context.beginPath();
     this.context.arc(
       this.canvas.width / 2 + 50 * Math.cos(currentTime / 300),
@@ -138,4 +151,12 @@ export function getCanvasHeight() {
  */
 export function setGameDrawFunc(drawFunc) {
   gameManager.drawFunc = drawFunc;
+}
+
+/**
+ * add an entity to the game world
+ * @param {Entity} entity
+ */
+export function addToWorld(entity) {
+  gameManager.entities.push(entity);
 }
