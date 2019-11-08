@@ -1,5 +1,8 @@
 import { Entity } from "./entity.js";
 import { Vector } from "./vector.js";
+import { 
+  buttons, controlKeydownListener, controlKeyupListener
+} from "../game/buttons.js";
 import { Enemy } from "../game/enemy.js";
 
 class GameManager {
@@ -50,6 +53,10 @@ class GameManager {
         this.enterFullscreen();
       }
     });
+
+    // add event listeners for hero controls
+    document.addEventListener("keydown", controlKeydownListener);
+    document.addEventListener("keyup", controlKeyupListener);
 
     this.addDisplayToDiv("gamediv");
   }
