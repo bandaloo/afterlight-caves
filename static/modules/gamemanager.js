@@ -1,15 +1,17 @@
 import { Entity } from "./entity.js";
 import { Vector } from "./vector.js";
-import { Enemy } from "../game/enemy.js";
 
 class GameManager {
-  frameTime = 10;
+  updateTime = 1000;
   overTime = 0;
 
   previousTime = 0;
 
   /** @type {Entity[]} */
   entities = [];
+
+  /** @type {Vector[]} */
+  lastPositions = [];
 
   // TODO consider whether we want the options pattern here
   constructor(
@@ -109,35 +111,33 @@ class GameManager {
   /**
    * @param {number} [currentTime]
    */
-  update(currentTime = this.frameTime) {
+  update(currentTime = this.updateTime) {
     // keep track of time passed
     let deltaTime = currentTime - this.previousTime;
-
-    /** @type {Vector[]} */
-    let lastPositions = [];
-
     let gameSteps = 0;
     let timeLeft = deltaTime - this.overTime;
     while (timeLeft > 0) {
+      console.log("moved");
       // if this loop is the last step before going over time
-      if (timeLeft <= this.frameTime) {
+      if (timeLeft <= this.updateTime) {
+        this.lastPositions = [];
         // get the tween vectors
         for (let i = 0; i < this.entities.length; i++) {
-          lastPositions.push(this.entities[i].pos);
+          this.lastPositions.push(this.entities[i].pos);
         }
       }
       this.stepGame();
-      timeLeft -= this.frameTime;
+      timeLeft -= this.updateTime;
       gameSteps++;
     }
     // set all the tweened vectors to the draw positions
     for (let i = 0; i < this.entities.length; i++) {
-      let tempPrevPos = lastPositions[i];
-      let tempDrawPos = lastPositions[i].partway(
+      //let tempPrevPos = lastPositions[i];
+      let tempDrawPos = this.lastPositions[i].partway(
         this.entities[i].pos,
-        (this.frameTime + timeLeft) / this.frameTime
+        (this.updateTime + timeLeft) / this.updateTime
       );
-      let tempCurrPos = this.entities[i].pos;
+      //let tempCurrPos = this.entities[i].pos;
       this.entities[i].drawPos = tempDrawPos;
     }
 
