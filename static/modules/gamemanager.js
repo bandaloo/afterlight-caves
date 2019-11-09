@@ -89,11 +89,9 @@ class GameManager {
 
   drawGame() {
     // clear the display canvas
-    //this.displayCanvas.width = this.displayCanvas.width;
+    this.displayCanvas.width = this.displayCanvas.width;
     // clear the drawing canvas
-    //this.canvas.width = this.canvas.width;
-
-    console.log(this.displayCanvas.width);
+    this.canvas.width = this.canvas.width;
 
     // save drawing context
     this.context.save();

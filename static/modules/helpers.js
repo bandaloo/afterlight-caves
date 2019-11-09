@@ -1,6 +1,3 @@
-import { Vector } from "./vector.js";
-import { getContext } from "./gamemanager.js";
-
 /**
  * clamps a number between a minimum and maximum value
  * @param {number} n the number to clamp
@@ -76,20 +73,6 @@ export function shuffle(list) {
     [randomList[i], randomList[j]] = [randomList[j], randomList[i]];
   }
   return randomList;
-}
-
-/**
- * draw a circle onto the draw canvas
- * @param {Vector} pos
- * @param {number} radius
- * @param {string} color
- */
-export function drawCircle(pos, radius, color) {
-  let context = getContext();
-  context.beginPath();
-  context.arc(pos.x, pos.y, radius, 0, 2 * Math.PI);
-  context.fillStyle = color;
-  context.fill();
 }
 
 // TODO check if the griderate function is really that useful
