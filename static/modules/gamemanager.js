@@ -2,7 +2,7 @@ import { Entity } from "./entity.js";
 import { Vector } from "./vector.js";
 
 class GameManager {
-  updateTime = 1000;
+  updateTime = 10;
   overTime = 0;
 
   previousTime = 0;
@@ -117,7 +117,6 @@ class GameManager {
     let gameSteps = 0;
     let timeLeft = deltaTime - this.overTime;
     while (timeLeft > 0) {
-      console.log("moved");
       // if this loop is the last step before going over time
       if (timeLeft <= this.updateTime) {
         this.lastPositions = [];
