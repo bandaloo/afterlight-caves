@@ -101,7 +101,7 @@ export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
         new Vector((i + 0.5) * blockWidth, (j + 0.5) * blockHeight),
         20,
         20,
-        3,
+        5,
         gemColor
       );
     }

@@ -36,7 +36,7 @@ for (let i = 0; i < 10; i++) {
     ),
     10
   );
-  enemy.vel = new Vector(0, 10);
+  enemy.vel = new Vector(0, 1);
   addToWorld(enemy);
 }
 startUp();

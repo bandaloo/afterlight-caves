@@ -22,11 +22,13 @@ class GameManager {
   ) {
     this.canvas = document.createElement("canvas");
     this.context = this.canvas.getContext("2d");
+    this.context.imageSmoothingEnabled = false;
     this.canvas.width = width;
     this.canvas.height = height;
 
     this.displayCanvas = document.createElement("canvas");
     this.displayContext = this.displayCanvas.getContext("2d");
+    this.displayContext.imageSmoothingEnabled = false;
     this.displayWidth = displayWidth;
     this.displayHeight = displayHeight;
     this.displayCanvas.width = displayWidth;
@@ -36,8 +38,10 @@ class GameManager {
     this.drawFunc = () => {};
 
     const exitHandler = () => {
-      this.displayCanvas.width = this.displayWidth;
-      this.displayCanvas.height = this.displayHeight;
+      if (document.fullscreenElement === null) {
+        this.displayCanvas.width = this.displayWidth;
+        this.displayCanvas.height = this.displayHeight;
+      }
     };
 
     this.displayCanvas.addEventListener("fullscreenchange", exitHandler, false);
@@ -47,9 +51,13 @@ class GameManager {
       const key = String.fromCharCode(code);
       // press F for fullscreen
       if (key == "F") {
-        this.displayCanvas.width = 1920;
-        this.displayCanvas.height = 1080;
+        // TODO get rid of these magic numbers for resolution
+        this.displayCanvas.width = width;
+        this.displayCanvas.height = height;
         this.enterFullscreen();
+        console.log(
+          `image smoothing drawing ${this.context.imageSmoothingEnabled} display ${this.displayContext.imageSmoothingEnabled}`
+        );
       }
     });
 
@@ -59,6 +67,8 @@ class GameManager {
   enterFullscreen() {
     if (this.displayCanvas.requestFullscreen) {
       this.displayCanvas.requestFullscreen();
+    } else {
+      throw new Error("no request fullscreen function");
     }
   }
 
@@ -79,9 +89,11 @@ class GameManager {
 
   drawGame() {
     // clear the display canvas
-    this.displayCanvas.width = this.displayCanvas.width;
+    //this.displayCanvas.width = this.displayCanvas.width;
     // clear the drawing canvas
-    this.canvas.width = this.canvas.width;
+    //this.canvas.width = this.canvas.width;
+
+    console.log(this.displayCanvas.width);
 
     // save drawing context
     this.context.save();
