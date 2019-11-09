@@ -1,5 +1,5 @@
-import { Entity } from '../modules/entity';
-import { Vector } from '../modules/vector';
+import { Entity } from '../modules/entity.js';
+import { Vector } from '../modules/vector.js';
 import { drawCircle } from '../modules/helpers.js';
 
 export class Hero extends Entity {

@@ -19,7 +19,7 @@ const dirs = [
  * @param {number} height height to resize board
  * @returns {number[][]}
  */
-function createNumberGrid(width, height, probability = 0) {
+export function createNumberGrid(width, height, probability = 0) {
   // reset the board
   let board = [];
   // make the board a 2D array that is randomly filled
@@ -133,7 +133,7 @@ export function boardToString(board) {
   // iterate column-major so it prints out as on screen
   for (let j = 0; j < height; j++) {
     for (let i = 0; i < width; i++) {
-      if (board[i][j] == 1) {
+      if (board[i][j] >= 1) {
         str += "#";
       } else {
         str += "-";
