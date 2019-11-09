@@ -14,12 +14,12 @@ const initBut = () => {
  * object with sub-objects with booleans for each button we care about that say
  * whether it was just held, pressed, or released
  */
-export const buttons = {
+export let buttons = {
   move: {
-    up: { key: 'w', status: initBut() },
-    right: { key: 'd', status: initBut() },
-    down: { key: 's', status: initBut() },
-    left: { key: 'a', status: initBut() }
+    up: { key: 'W', status: initBut() },
+    right: { key: 'D', status: initBut() },
+    down: { key: 'S', status: initBut() },
+    left: { key: 'A', status: initBut() }
   },
 
   shoot: {
@@ -30,7 +30,7 @@ export const buttons = {
   },
 
   primary: { key: ' ', status: initBut() },
-  secondary: { key: 'e', status: initBut() }
+  secondary: { key: 'E', status: initBut() }
 };
 
 /**
@@ -96,6 +96,7 @@ export const controlKeyupListener = (e) => {
   for (const dir in buttons.move) {
     e.preventDefault();
     if (key === buttons.move[dir].key) {
+      buttons.move[dir].status.pressed = false;
       buttons.move[dir].status.held = false;
       buttons.move[dir].status.released = true;
       return;
@@ -106,6 +107,7 @@ export const controlKeyupListener = (e) => {
   for (const dir in buttons.shoot) {
     e.preventDefault();
     if (key === buttons.shoot[dir].key) {
+      buttons.shoot[dir].status.pressed = false;
       buttons.shoot[dir].status.held = false;
       buttons.shoot[dir].status.released = true;
       return;
@@ -115,12 +117,14 @@ export const controlKeyupListener = (e) => {
   // primary and secondary keys
   if (key === buttons.primary.key) {
     e.preventDefault();
+    buttons.primary.status.pressed = false;
     buttons.primary.status.held = false;
     buttons.primary.status.released = true;
     return;
   }
   if (key === buttons.secondary.key) {
     e.preventDefault();
+    buttons.secondary.status.pressed = false;
     buttons.secondary.status.held = false;
     buttons.secondary.status.released = true;
     return;

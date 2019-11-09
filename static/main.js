@@ -40,11 +40,10 @@ for (let i = 0; i < 10; i++) {
   enemy.vel = new Vector(0, 10);
   addToWorld(enemy);
 
-  /*
   const hero = new Hero(new Vector(0, 0).add(
     new Vector(blockWidth / 2, blockHeight / 2).add(emptySpaces[11])
   ));
   addToWorld(hero);
-  */
 }
+
 startUp();

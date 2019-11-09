@@ -85,6 +85,12 @@ class GameManager {
     // TODO resolve collisions
   }
 
+  updateGame() {
+    for (const e of this.entities) {
+      e.update();
+    }
+  }
+
   drawGame() {
     // clear the display canvas
     this.displayCanvas.width = this.displayCanvas.width;
@@ -133,6 +139,7 @@ class GameManager {
           this.lastPositions.push(this.entities[i].pos);
         }
       }
+      this.updateGame();
       this.stepGame();
       timeLeft -= this.updateTime;
       gameSteps++;
