@@ -1,6 +1,12 @@
 import { boardToString, getGrid, getEmptySpaces } from "./game/life.js";
 import { caveRules, EdgesEnum } from "./game/rules.js";
-import { startUp, setGameDrawFunc, addToWorld } from "./modules/gamemanager.js";
+import {
+  startUp,
+  setGameDrawFunc,
+  addToWorld,
+  setTerrain,
+  setDimensions
+} from "./modules/gamemanager.js";
 import { drawBoard } from "./game/draw.js";
 import { Enemy, randomLook, randomStats } from "./game/enemy.js";
 import { Vector } from "./modules/vector.js";
@@ -29,6 +35,9 @@ let board = pepperGems(
 
 console.log(boardToString(board));
 
+setTerrain(board);
+setDimensions(blockWidth, blockHeight);
+
 setGameDrawFunc(() => {
   drawBoard(board, blockWidth, blockHeight, color);
 });
@@ -47,7 +56,7 @@ for (let i = 0; i < 10; i++) {
     enemyLooks[i % 3],
     enemyStats[i % 3]
   );
-  enemy.vel = new Vector(0, 0);
+  enemy.drag = 0.005;
   addToWorld(enemy);
 }
 

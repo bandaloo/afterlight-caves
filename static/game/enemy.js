@@ -93,15 +93,41 @@ export class Enemy extends Entity {
     this.look = look;
     this.stats = stats;
     this.type = "enemy";
+    this.width = 50;
+    this.height = 50;
+    this.bounciness = 1;
+  }
+
+  action() {
+    // TODO change this
+    if (Math.random() < 0.01) {
+      const randomDir = Math.random() * 2 * Math.PI;
+      const acc = new Vector(
+        Math.cos(randomDir) * 0.1,
+        Math.sin(randomDir) * 0.1
+      );
+      this.acc = acc;
+    }
   }
 
   draw() {
-    // TODO get rid of magic number
+    // TODO get rid of magic numbers
+
+    // draw the body
     if (this.look.shape === ShapeEnum.circle) {
       outlineCircle(this.drawPos, 25, 4, this.look.color, "white");
     } else {
-      centeredOutlineRect(this.drawPos, 50, 50, 4, this.look.color, "white");
+      centeredOutlineRect(
+        this.drawPos,
+        this.width,
+        this.height,
+        4,
+        this.look.color,
+        "white"
+      );
     }
+
+    // draw the eyes
     drawCircle(
       this.drawPos.add(new Vector(this.look.eyeSpacing, 0)),
       this.look.eyeSize,
@@ -112,6 +138,8 @@ export class Enemy extends Entity {
       this.look.eyeSize,
       "white"
     );
+
+    // draw the mouth
     const context = getContext();
     context.strokeStyle = "white";
     context.lineWidth = 3;
@@ -133,7 +161,7 @@ export class Enemy extends Entity {
       `movement speed: ${this.stats.movementSpeed} ` +
       `shot speed: ${this.stats.shotSpeed} ` +
       `accuracy: ${this.stats.accuracy} ` +
-      `rate of fire: ${this.stats.rateOfFire} `
+      `rate of fire: ${this.stats.rateOfFire}`
     );
   }
 }

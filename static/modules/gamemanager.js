@@ -13,6 +13,15 @@ class GameManager {
   /** @type {Vector[]} */
   lastPositions = [];
 
+  /** @type {number[][]} */
+  terrain = [];
+
+  /** @type {number} */
+  blockWidth;
+
+  /** @type {number} */
+  blockHeight;
+
   // TODO consider whether we want the options pattern here
   constructor(
     width = 1920,
@@ -82,6 +91,14 @@ class GameManager {
     // run step function of all entities
     for (let i = 0; i < this.entities.length; i++) {
       this.entities[i].step();
+    }
+    // push all entities out of walls
+    for (let i = 0; i < this.entities.length; i++) {
+      this.entities[i].adjust();
+    }
+    // let all entities take their actions
+    for (let i = 0; i < this.entities.length; i++) {
+      this.entities[i].action();
     }
     // TODO check for collisions
     // TODO resolve collisions
@@ -183,11 +200,37 @@ export function getCanvasHeight() {
 }
 
 /**
- * Set the additional draw function to happen every game loop
+ * set the additional draw function to happen every game loop
  * @param {() => void} drawFunc drawing function to happen every loop
  */
 export function setGameDrawFunc(drawFunc) {
   gameManager.drawFunc = drawFunc;
+}
+
+/**
+ * set the grid of numbers to determine solid parts of world
+ * @param {number[][]} board
+ */
+export function setTerrain(board) {
+  gameManager.terrain = board;
+}
+
+export function getTerrain() {
+  return gameManager.terrain;
+}
+
+/**
+ * set dimensions that the terrain is supposed to represent
+ * @param {number} blockWidth
+ * @param {number} blockHeight
+ */
+export function setDimensions(blockWidth, blockHeight) {
+  gameManager.blockWidth = blockWidth;
+  gameManager.blockHeight = blockHeight;
+}
+
+export function getDimensions() {
+  return { width: gameManager.blockWidth, height: gameManager.blockHeight };
 }
 
 /**
