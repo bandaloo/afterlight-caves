@@ -11,6 +11,18 @@ someday bundlers will become not so important anyway.
 
 I also use the Prettier code formatter to simplify things.
 
+## Running
+
+The best way to try out this project is to run a Node server that serves the
+static content. With node.js installed, do this:
+
+```
+$ npm install
+$ npm start
+```
+
+Then navigate to `http://localhost:4000` to try it out.
+
 ## Testing
 
 I use Mocha and Chai in the browser to test with ES6 modules. This was set up
