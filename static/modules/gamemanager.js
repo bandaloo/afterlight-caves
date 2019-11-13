@@ -5,6 +5,8 @@ class GameManager {
   updateTime = 10;
   overTime = 0;
 
+  totalTime = 0;
+
   previousTime = 0;
 
   /** @type {Entity[]} */
@@ -141,6 +143,7 @@ class GameManager {
   update(currentTime = this.updateTime) {
     // keep track of time passed
     let deltaTime = currentTime - this.previousTime;
+    this.totalTime += deltaTime;
     let gameSteps = 0;
     let timeLeft = deltaTime - this.overTime;
     while (timeLeft > 0) {
@@ -156,14 +159,18 @@ class GameManager {
       timeLeft -= this.updateTime;
       gameSteps++;
     }
+    console.log(gameSteps);
     // set all the tweened vectors to the draw positions
     for (let i = 0; i < this.entities.length; i++) {
-      //let tempPrevPos = lastPositions[i];
+      let tempPrevPos = this.lastPositions[i];
       let tempDrawPos = this.lastPositions[i].partway(
         this.entities[i].pos,
         (this.updateTime + timeLeft) / this.updateTime
       );
-      //let tempCurrPos = this.entities[i].pos;
+      let tempCurrPos = this.entities[i].pos;
+      //console.log("prev " + tempPrevPos);
+      //console.log("draw " + tempDrawPos);
+      //console.log("curr " + tempCurrPos);
       this.entities[i].drawPos = tempDrawPos;
     }
 
@@ -219,6 +226,10 @@ export function getTerrain() {
   return gameManager.terrain;
 }
 
+export function getTotalTime() {
+  return gameManager.totalTime;
+}
+
 /**
  * set dimensions that the terrain is supposed to represent
  * @param {number} blockWidth
@@ -239,4 +250,8 @@ export function getDimensions() {
  */
 export function addToWorld(entity) {
   gameManager.entities.push(entity);
+}
+
+export function destroyEverything() {
+  gameManager.entities = [];
 }

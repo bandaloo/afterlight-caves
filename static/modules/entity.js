@@ -82,6 +82,11 @@ export class Entity {
   }
 
   /**
+   * non-movement actions to take on a step
+   */
+  action() {}
+
+  /**
    * what to do when the entity is removed from the world
    */
   destroy() {}
