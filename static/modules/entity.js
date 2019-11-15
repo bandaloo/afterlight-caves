@@ -1,5 +1,5 @@
 import { Vector } from "./vector.js";
-import { adjustEntity } from "./hackcollision.js";
+import { adjustEntity } from "./collision.js";
 
 /** @abstract */
 export class Entity {
@@ -26,6 +26,18 @@ export class Entity {
 
   /** @type {number} */
   bounciness = 0;
+
+  /** @type {boolean} */
+  collidesLeft = true;
+
+  /** @type {boolean} */
+  collidesRight = true;
+
+  /** @type {boolean} */
+  collidesTop = true;
+
+  /** @type {boolean} */
+  collidesBottom = true;
 
   /**
    * whether entity will be pushed out of walls
