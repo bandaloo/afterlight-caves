@@ -2,7 +2,7 @@ import { Vector } from "./vector.js";
 import { Entity } from "./entity.js";
 import { getTerrain, getDimensions } from "./gamemanager.js";
 
-// TODO make this better and more robust someday and put it in the engine
+// TODO get rid of this whole file
 
 /**
  * @typedef {Object} Box

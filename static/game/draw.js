@@ -17,7 +17,7 @@ import { GemEnum } from "./generator.js";
  * @param {string} centerColor
  * @param {string} [borderColor]
  */
-export function centeredOutlineRect(
+export function centeredOutlineRectFill(
   centerVec,
   width,
   height,
@@ -47,6 +47,35 @@ export function centeredOutlineRect(
 }
 
 /**
+ *
+ * @param {Vector} centerVec
+ * @param {number} width
+ * @param {number} height
+ * @param {number} strokeWidth
+ * @param {string} strokeStyle usually this will just be a color string
+ * @param {string} [fillColor]
+ */
+export function centeredOutlineRect(
+  centerVec,
+  width,
+  height,
+  strokeWidth,
+  strokeStyle,
+  fillColor
+) {
+  const context = getContext();
+  context.lineWidth = strokeWidth;
+  context.strokeStyle = strokeStyle;
+  context.rect(
+    centerVec.x - width / 2,
+    centerVec.y - height / 2,
+    width,
+    height
+  );
+  context.stroke;
+}
+
+/**
  * draw a circle onto the draw canvas
  * @param {Vector} pos
  * @param {number} radius
@@ -68,7 +97,7 @@ export function drawCircle(pos, radius, color) {
  * @param {string} centerColor
  * @param {string} borderColor
  */
-export function outlineCircle(
+export function outlineCircleFill(
   centerVec,
   radius,
   borderThickness,
@@ -130,7 +159,12 @@ export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
 
     // draw gems
     if (board[i][j] > 1) {
-      const diagonals = [[1, 1], [1, -1], [-1, -1], [-1, 1]];
+      const diagonals = [
+        [1, 1],
+        [1, -1],
+        [-1, -1],
+        [-1, 1]
+      ];
       const gemSpacing = 10;
       const gemSize = 10;
       const shineSize = 3;
@@ -146,8 +180,8 @@ export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
         const shinePosition = gemPosition.add(
           new Vector(-2 + 2 * gemMod, -2 + 2 * gemMod)
         );
-        centeredOutlineRect(gemPosition, gemSize, gemSize, 3, gemColor);
-        centeredOutlineRect(
+        centeredOutlineRectFill(gemPosition, gemSize, gemSize, 3, gemColor);
+        centeredOutlineRectFill(
           shinePosition,
           shineSize + gemMod * 0.7,
           shineSize + gemMod * 0.7,

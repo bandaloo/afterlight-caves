@@ -1,8 +1,13 @@
 import { Entity } from "../modules/entity.js";
 import { Vector } from "../modules/vector.js";
 import { randomFromEnum, randomInt, hsl } from "../modules/helpers.js";
-import { drawCircle, outlineCircle, centeredOutlineRect } from "./draw.js";
-import { getContext } from "../modules/gamemanager.js";
+import {
+  drawCircle,
+  centeredOutlineRect,
+  outlineCircleFill,
+  centeredOutlineRectFill
+} from "./draw.js";
+import { getContext, getDimensions } from "../modules/gamemanager.js";
 import { solidAt, isColliding } from "../modules/collision.js";
 /**
  * an enum for allowed shapes of enemies
@@ -112,13 +117,14 @@ export class Enemy extends Entity {
   }
 
   draw() {
-    // TODO get rid of magic numbers
-    const debugDraw = false;
+    // TODO get rid of magic numbers in regular drawing
+    const debugDraw = true;
 
     if (debugDraw) {
+      const { width: bWidth, height: bHeight } = getDimensions();
       let entityCell = new Vector(
-        Math.floor(this.pos.x / 60),
-        Math.floor(this.pos.y / 60)
+        Math.floor(this.pos.x / bWidth),
+        Math.floor(this.pos.y / bHeight)
       );
 
       // Draw cubes around the enemy
@@ -127,15 +133,15 @@ export class Enemy extends Entity {
           let color = "rgba(0, 255, 0, 0.5)";
           if (solidAt(i, j)) {
             color = "rgba(0, 0, 255, 0.5)";
-            let x = (i + 1) * 60 - 60 / 2;
-            let y = (j + 1) * 60 - 60 / 2;
+            let x = (i + 1) * bWidth - bWidth / 2;
+            let y = (j + 1) * bHeight - bHeight / 2;
             let e = new Entity(new Vector(x, y));
             e.width = 60;
             e.height = 60;
 
             if (isColliding(this, e)) color = "rgba(255, 0, 0, 0.5)";
 
-            centeredOutlineRect(
+            centeredOutlineRectFill(
               new Vector((i + 1) * 60 - 30, (j + 1) * 60 - 30),
               60,
               60,
@@ -150,9 +156,9 @@ export class Enemy extends Entity {
 
     // draw the body
     if (this.look.shape === ShapeEnum.circle) {
-      outlineCircle(this.drawPos, 25, 4, this.look.color, "white");
+      outlineCircleFill(this.drawPos, 25, 4, this.look.color, "white");
     } else {
-      centeredOutlineRect(
+      centeredOutlineRectFill(
         this.drawPos,
         this.width,
         this.height,
@@ -163,13 +169,13 @@ export class Enemy extends Entity {
     }
 
     // draw the eyes
-    outlineCircle(
+    outlineCircleFill(
       this.drawPos.add(new Vector(this.look.eyeSpacing, 0)),
       this.look.eyeSize,
       2,
       "white"
     );
-    outlineCircle(
+    outlineCircleFill(
       this.drawPos.sub(new Vector(this.look.eyeSpacing, 0)),
       this.look.eyeSize,
       2,
