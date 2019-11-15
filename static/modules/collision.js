@@ -20,7 +20,8 @@ export function solidAt(i, j) {
 }
 
 /**
- * Returns a list of collision objects to represent the cells the entiity is colliding with.
+ * Returns a list of collision objects to represent the cells the entiity is
+ * colliding with.
  * @param {Entity} entity
  */
 export function collideWithWorld(entity) {
@@ -97,9 +98,9 @@ export function isColliding(entityA, entityB) {
 }
 
 /**
- * Given two entities A and B, calculates the smallest vector needed to apply to entity A to prevent collision.
- * Returns empty vector if A and B are not colliding.
- * Assumes rectangle A does not surround rectangle B
+ * Given two entities A and B, calculates the smallest vector needed to apply
+ * to entity A to prevent collision. Returns empty vector if A and B are not
+ * colliding. Assumes rectangle A does not surround rectangle B
  * @param {Entity} entityA
  * @param {Entity} entityB
  * @returns {Vector}
@@ -137,7 +138,8 @@ export function calculateCollisionVector(entityA, entityB) {
     cVector.y = aTop - bBottom;
   }
 
-  // If the entity doesn't have collision in a direction, make sure it doesn't have the vector point that way.
+  // If the entity doesn't have collision in a direction, make sure it doesn't
+  // have the vector point that way.
   if (!entityB.collidesBottom) cVector.y = Math.max(0, cVector.y);
   if (!entityB.collidesTop) cVector.y = Math.min(0, cVector.y);
   if (!entityB.collidesLeft) cVector.x = Math.min(0, cVector.x);
