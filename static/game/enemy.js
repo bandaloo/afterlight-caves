@@ -114,12 +114,12 @@ export class Enemy extends Entity {
     // TODO get rid of magic numbers
     const debugDraw = false;
 
-    let entityCell = new Vector(
-      Math.floor(this.pos.x / 60),
-      Math.floor(this.pos.y / 60)
-    );
-
     if (debugDraw) {
+      let entityCell = new Vector(
+        Math.floor(this.pos.x / 60),
+        Math.floor(this.pos.y / 60)
+      );
+
       // Draw cubes around the enemy
       for (let i = entityCell.x - 1; i <= entityCell.x + 1; i++) {
         for (let j = entityCell.y - 1; j <= entityCell.y + 1; j++) {
