@@ -3,7 +3,7 @@ import { Vector } from "../modules/vector.js";
 import { randomFromEnum, randomInt, hsl } from "../modules/helpers.js";
 import { drawCircle, outlineCircle, centeredOutlineRect } from "./draw.js";
 import { getContext } from "../modules/gamemanager.js";
-
+import { solidAt, isColliding } from "../modules/collision.js";
 /**
  * an enum for allowed shapes of enemies
  * @enum {number}
@@ -112,6 +112,40 @@ export class Enemy extends Entity {
 
   draw() {
     // TODO get rid of magic numbers
+    const debugDraw = false;
+
+    if (debugDraw) {
+      let entityCell = new Vector(
+        Math.floor(this.pos.x / 60),
+        Math.floor(this.pos.y / 60)
+      );
+
+      // Draw cubes around the enemy
+      for (let i = entityCell.x - 1; i <= entityCell.x + 1; i++) {
+        for (let j = entityCell.y - 1; j <= entityCell.y + 1; j++) {
+          let color = "rgba(0, 255, 0, 0.5)";
+          if (solidAt(i, j)) {
+            color = "rgba(0, 0, 255, 0.5)";
+            let x = (i + 1) * 60 - 60 / 2;
+            let y = (j + 1) * 60 - 60 / 2;
+            let e = new Entity(new Vector(x, y));
+            e.width = 60;
+            e.height = 60;
+
+            if (isColliding(this, e)) color = "rgba(255, 0, 0, 0.5)";
+
+            centeredOutlineRect(
+              new Vector((i + 1) * 60 - 30, (j + 1) * 60 - 30),
+              60,
+              60,
+              4,
+              color,
+              "white"
+            );
+          }
+        }
+      }
+    }
 
     // draw the body
     if (this.look.shape === ShapeEnum.circle) {
@@ -153,7 +187,29 @@ export class Enemy extends Entity {
       this.drawPos.x - mouthHalf,
       this.drawPos.y + this.look.mouthOffset
     );
+
     context.stroke();
+
+    if (debugDraw) {
+      context.beginPath();
+      context.strokeStyle = "red";
+      context.lineWidth = 10;
+      context.moveTo(this.drawPos.x, this.drawPos.y);
+      context.lineTo(
+        this.drawPos.x + this.acc.x * 500,
+        this.drawPos.y + this.acc.y * 500
+      );
+      context.stroke();
+      context.beginPath();
+      context.strokeStyle = "yellow";
+      context.lineWidth = 10;
+      context.moveTo(this.drawPos.x, this.drawPos.y);
+      context.lineTo(
+        this.drawPos.x + this.vel.x * 50,
+        this.drawPos.y + this.vel.y * 50
+      );
+      context.stroke();
+    }
   }
 
   toString() {
