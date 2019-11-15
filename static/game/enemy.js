@@ -2,10 +2,9 @@ import { Entity } from "../modules/entity.js";
 import { Vector } from "../modules/vector.js";
 import { randomFromEnum, randomInt, hsl } from "../modules/helpers.js";
 import {
-  drawCircle,
   centeredOutlineRect,
-  outlineCircleFill,
-  centeredOutlineRectFill
+  centeredOutlineRectFill,
+  centeredOutlineCircle
 } from "./draw.js";
 import { getContext, getDimensions } from "../modules/gamemanager.js";
 import { solidAt, isColliding } from "../modules/collision.js";
@@ -33,7 +32,7 @@ const ShapeEnum = Object.freeze({ square: 1, circle: 2 });
 export function randomLook() {
   return {
     shape: randomFromEnum(ShapeEnum),
-    color: hsl(randomInt(360)),
+    color: hsl(randomInt(360), 100, 70),
     eyeSpacing: 10 + randomInt(10),
     eyeSize: 5 + randomInt(3),
     mouthWidth: 20 + randomInt(25),
@@ -117,8 +116,8 @@ export class Enemy extends Entity {
   }
 
   draw() {
-    // TODO get rid of magic numbers in regular drawing
-    const debugDraw = true;
+    // TODO: get this from some sort of settings
+    const debugDraw = false;
 
     if (debugDraw) {
       const { width: bWidth, height: bHeight } = getDimensions();
@@ -136,15 +135,18 @@ export class Enemy extends Entity {
             let x = (i + 1) * bWidth - bWidth / 2;
             let y = (j + 1) * bHeight - bHeight / 2;
             let e = new Entity(new Vector(x, y));
-            e.width = 60;
-            e.height = 60;
+            e.width = bWidth;
+            e.height = bHeight;
 
             if (isColliding(this, e)) color = "rgba(255, 0, 0, 0.5)";
 
             centeredOutlineRectFill(
-              new Vector((i + 1) * 60 - 30, (j + 1) * 60 - 30),
-              60,
-              60,
+              new Vector(
+                (i + 1) * bWidth - bWidth / 2,
+                (j + 1) * bHeight - bHeight / 2
+              ),
+              bWidth,
+              bHeight,
               4,
               color,
               "white"
@@ -154,39 +156,51 @@ export class Enemy extends Entity {
       }
     }
 
+    // TODO get rid of magic numbers in regular drawing
     // draw the body
     if (this.look.shape === ShapeEnum.circle) {
-      outlineCircleFill(this.drawPos, 25, 4, this.look.color, "white");
+      centeredOutlineCircle(
+        this.drawPos,
+        this.width / 2,
+        4,
+        this.look.color,
+        "black"
+      );
     } else {
-      centeredOutlineRectFill(
+      centeredOutlineRect(
         this.drawPos,
         this.width,
         this.height,
         4,
         this.look.color,
-        "white"
+        "black"
       );
     }
 
+    /**
+     * draw a single eye
+     * @param {number} scalar change this to modify what side of face to draw
+     */
+    const drawEye = scalar => {
+      centeredOutlineCircle(
+        this.drawPos.add(new Vector(scalar * this.look.eyeSpacing, 0)),
+        this.look.eyeSize,
+        4,
+        this.look.color,
+        "black"
+      );
+    };
+
     // draw the eyes
-    outlineCircleFill(
-      this.drawPos.add(new Vector(this.look.eyeSpacing, 0)),
-      this.look.eyeSize,
-      2,
-      "white"
-    );
-    outlineCircleFill(
-      this.drawPos.sub(new Vector(this.look.eyeSpacing, 0)),
-      this.look.eyeSize,
-      2,
-      "white"
-    );
+    drawEye(1);
+    drawEye(-1);
+
+    const context = getContext();
 
     // draw the mouth
-    const context = getContext();
-    context.strokeStyle = "white";
-    context.lineWidth = 3;
     context.beginPath();
+    context.strokeStyle = this.look.color;
+    context.lineWidth = 4;
     const mouthHalf = this.look.mouthWidth / 2;
     context.moveTo(
       this.drawPos.x + mouthHalf,

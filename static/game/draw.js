@@ -53,7 +53,7 @@ export function centeredOutlineRectFill(
  * @param {number} height
  * @param {number} strokeWidth
  * @param {string} strokeStyle usually this will just be a color string
- * @param {string} [fillColor]
+ * @param {string} [fillStyle]
  */
 export function centeredOutlineRect(
   centerVec,
@@ -61,9 +61,10 @@ export function centeredOutlineRect(
   height,
   strokeWidth,
   strokeStyle,
-  fillColor
+  fillStyle
 ) {
   const context = getContext();
+  context.beginPath();
   context.lineWidth = strokeWidth;
   context.strokeStyle = strokeStyle;
   context.rect(
@@ -72,7 +73,11 @@ export function centeredOutlineRect(
     width,
     height
   );
-  context.stroke;
+  if (fillStyle !== undefined) {
+    context.fillStyle = fillStyle;
+    context.fill();
+  }
+  context.stroke();
 }
 
 /**
@@ -82,7 +87,7 @@ export function centeredOutlineRect(
  * @param {string} color
  */
 export function drawCircle(pos, radius, color) {
-  let context = getContext();
+  const context = getContext();
   context.beginPath();
   context.arc(pos.x, pos.y, radius, 0, 2 * Math.PI);
   context.fillStyle = color;
@@ -109,6 +114,35 @@ export function outlineCircleFill(
 }
 
 /**
+ *
+ * @param {Vector} centerVec
+ * @param {number} radius
+ * @param {number} strokeWidth
+ * @param {string} strokeStyle
+ * @param {string} [fillStyle]
+ */
+export function centeredOutlineCircle(
+  centerVec,
+  radius,
+  strokeWidth,
+  strokeStyle,
+  fillStyle
+) {
+  const context = getContext();
+  context.beginPath();
+  context.lineWidth = strokeWidth;
+  context.strokeStyle = strokeStyle;
+  context.arc(centerVec.x, centerVec.y, radius, 0, 2 * Math.PI);
+  if (fillStyle !== undefined) {
+    context.fillStyle = fillStyle;
+    context.fill();
+  }
+  context.stroke();
+}
+
+// TODO use drawing functions for these for if camera controls are ever added
+
+/**
  * draws the board
  * @param {number[][]} board
  * @param {number} blockWidth
@@ -119,23 +153,32 @@ export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
   let context = getContext();
   context.fillRect(0, 0, getCanvasWidth(), getCanvasHeight());
 
-  // draw white squares underneath to create background
-  griderate(board, (board, i, j) => {
-    if (board[i][j] >= 1) {
-      context.fillStyle = "white";
-      context.fillRect(
-        i * blockWidth - 5,
-        j * blockHeight - 5,
-        blockWidth + 10,
-        blockHeight + 10
-      );
-    }
-  });
+  /**
+   * draw underneath square of tile
+   * @param {number} thickness extra width of underneath tile
+   */
+  const drawBorder = (thickness, style) => {
+    griderate(board, (board, i, j) => {
+      if (board[i][j] >= 1) {
+        context.fillStyle = style;
+        context.fillRect(
+          i * blockWidth - thickness,
+          j * blockHeight - thickness,
+          blockWidth + thickness * 2,
+          blockHeight + thickness * 2
+        );
+      }
+    });
+  };
+
+  // draw squares underneath to create outline
+  drawBorder(6, color);
+  drawBorder(2, "white");
 
   // draw colored squares on top
   griderate(board, (board, i, j) => {
     if (board[i][j] >= 1) {
-      context.fillStyle = color;
+      context.fillStyle = "black";
       context.fillRect(
         i * blockWidth,
         j * blockHeight,
@@ -145,18 +188,7 @@ export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
     }
   });
 
-  // draw semitransparent square in center
   griderate(board, (board, i, j) => {
-    if (board[i][j] >= 1) {
-      context.fillStyle = "#ffffff77";
-      context.fillRect(
-        i * blockWidth + 10,
-        j * blockHeight + 10,
-        blockWidth - 20,
-        blockHeight - 20
-      );
-    }
-
     // draw gems
     if (board[i][j] > 1) {
       const diagonals = [
@@ -168,8 +200,7 @@ export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
       const gemSpacing = 10;
       const gemSize = 10;
       const shineSize = 3;
-      //const gemMod = 1 + Math.cos(getTotalTime() / 300);
-      const gemMod = 0;
+      const gemMod = 1 + Math.cos(getTotalTime() / 300);
       let gemColor = GemEnum[board[i][j]].color;
       console.log(gemMod);
       for (let k = 0; k < diagonals.length; k++) {
@@ -180,7 +211,7 @@ export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
         const shinePosition = gemPosition.add(
           new Vector(-2 + 2 * gemMod, -2 + 2 * gemMod)
         );
-        centeredOutlineRectFill(gemPosition, gemSize, gemSize, 3, gemColor);
+        centeredOutlineRectFill(gemPosition, gemSize, gemSize, 0, gemColor);
         centeredOutlineRectFill(
           shinePosition,
           shineSize + gemMod * 0.7,
