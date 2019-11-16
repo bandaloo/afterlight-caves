@@ -96,6 +96,7 @@ export class Enemy extends Entity {
     this.width = 50;
     this.height = 50;
     this.bounciness = 1;
+    this.drag = 0.005;
   }
 
   action() {
@@ -162,14 +163,16 @@ export class Enemy extends Entity {
     }
 
     // draw the eyes
-    drawCircle(
+    outlineCircle(
       this.drawPos.add(new Vector(this.look.eyeSpacing, 0)),
       this.look.eyeSize,
+      2,
       "white"
     );
-    drawCircle(
+    outlineCircle(
       this.drawPos.sub(new Vector(this.look.eyeSpacing, 0)),
       this.look.eyeSize,
+      2,
       "white"
     );
 

@@ -1,7 +1,8 @@
 import {
   getContext,
   getCanvasWidth,
-  getCanvasHeight
+  getCanvasHeight,
+  getTotalTime
 } from "../modules/gamemanager.js";
 import { griderate } from "../modules/helpers.js";
 import { Vector } from "../modules/vector.js";
@@ -129,22 +130,31 @@ export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
 
     // draw gems
     if (board[i][j] > 1) {
-      const diagonals = [[1, 1], [1, -1], [-1, -1], [-1, 1]];
+      const diagonals = [
+        [1, 1],
+        [1, -1],
+        [-1, -1],
+        [-1, 1]
+      ];
       const gemSpacing = 10;
       const gemSize = 10;
       const shineSize = 3;
+      //const gemMod = 1 + Math.cos(getTotalTime() / 300);
+      const gemMod = 0;
       let gemColor = GemEnum[board[i][j]].color;
       for (let k = 0; k < diagonals.length; k++) {
         const gemPosition = new Vector(
           (i + 0.5) * blockWidth + diagonals[k][0] * gemSpacing,
           (j + 0.5) * blockHeight + diagonals[k][1] * gemSpacing
         );
-        const shinePosition = gemPosition.add(new Vector(-2, -2));
+        const shinePosition = gemPosition.add(
+          new Vector(-2 + 2 * gemMod, -2 + 2 * gemMod)
+        );
         centeredOutlineRect(gemPosition, gemSize, gemSize, 3, gemColor);
         centeredOutlineRect(
           shinePosition,
-          shineSize,
-          shineSize,
+          shineSize + gemMod * 0.7,
+          shineSize + gemMod * 0.7,
           1,
           "white",
           "white"

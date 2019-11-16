@@ -65,6 +65,7 @@ export class Entity {
    */
   constructor(pos, vel = new Vector(0, 0), acc = new Vector(0, 0)) {
     this.pos = pos;
+    /** @type {Vector} */
     this.vel = vel;
     this.acc = acc;
   }
@@ -92,6 +93,16 @@ export class Entity {
   adjust() {
     adjustEntity(this);
   }
+
+  /**
+   * non-movement actions to take on a step
+   */
+  action() {}
+
+  /**
+   * Update non-movement things about the entity
+   */
+  update() {};
 
   /**
    * what to do when the entity is removed from the world
