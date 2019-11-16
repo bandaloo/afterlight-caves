@@ -25,10 +25,10 @@ export const buttons = {
   },
 
   shoot: {
-    up: { key: "ArrowUp", status: initBut() },
-    right: { key: "ArrowRight", status: initBut() },
-    down: { key: "ArrowDown", status: initBut() },
-    left: { key: "ArrowLeft", status: initBut() }
+    up: { key: "&", status: initBut() },
+    right: { key: "'", status: initBut() },
+    down: { key: "(", status: initBut() },
+    left: { key: "%", status: initBut() }
   },
 
   primary: { key: " ", status: initBut() },
@@ -60,12 +60,14 @@ export function controlKeydownListener(e) {
 
   // shooting keys
   for (const dir in buttons.shoot) {
+    //console.log("key " + key);
+    //console.log("code " + code);
     if (key === buttons.shoot[dir].key) {
       e.preventDefault();
       if (!buttons.shoot[dir].status.held) {
         buttons.shoot[dir].status.pressed = true;
         if (noisy) {
-          console.log(`shoot button ${buttons.move[dir].key} pressed`);
+          console.log(`shoot button ${buttons.shoot[dir].key} pressed`);
         }
       }
       buttons.shoot[dir].status.held = true;
@@ -78,11 +80,11 @@ export function controlKeydownListener(e) {
     e.preventDefault();
     if (!buttons.primary.status.held) {
       buttons.primary.status.pressed = true;
+      if (noisy) {
+        console.log(`primary button ${buttons.primary.key} pressed`);
+      }
     }
     buttons.primary.status.held = true;
-    if (noisy) {
-      console.log(`primary button ${buttons.primary.key} pressed`);
-    }
     return;
   }
   if (key === buttons.secondary.key) {
@@ -90,7 +92,7 @@ export function controlKeydownListener(e) {
     if (!buttons.secondary.status.held) {
       buttons.secondary.status.pressed = true;
       if (noisy) {
-        console.log(`primary button ${buttons.primary.key} pressed`);
+        console.log(`secondary button ${buttons.primary.key} pressed`);
       }
     }
     buttons.secondary.status.held = true;
@@ -113,6 +115,9 @@ export function controlKeyupListener(e) {
       buttons.move[dir].status.pressed = false;
       buttons.move[dir].status.held = false;
       buttons.move[dir].status.released = true;
+      if (noisy) {
+        console.log(`move button ${buttons.move[dir].key} released`);
+      }
       return;
     }
   }
@@ -124,6 +129,9 @@ export function controlKeyupListener(e) {
       buttons.shoot[dir].status.pressed = false;
       buttons.shoot[dir].status.held = false;
       buttons.shoot[dir].status.released = true;
+      if (noisy) {
+        console.log(`shoot button ${buttons.shoot[dir].key} released`);
+      }
       return;
     }
   }
@@ -134,6 +142,9 @@ export function controlKeyupListener(e) {
     buttons.primary.status.pressed = false;
     buttons.primary.status.held = false;
     buttons.primary.status.released = true;
+    if (noisy) {
+      console.log(`primary button ${buttons.primary.key} released`);
+    }
     return;
   }
   if (key === buttons.secondary.key) {
@@ -141,6 +152,9 @@ export function controlKeyupListener(e) {
     buttons.secondary.status.pressed = false;
     buttons.secondary.status.held = false;
     buttons.secondary.status.released = true;
+    if (noisy) {
+      console.log(`secondary button ${buttons.secondary.key} released`);
+    }
     return;
   }
 }
