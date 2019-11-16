@@ -39,6 +39,9 @@ export class Entity {
   /** @type {boolean} */
   collidesBottom = true;
 
+  /** @type {string[]} */
+  collideTypes = [];
+
   /**
    * whether entity will be pushed out of walls
    * @type {boolean}
@@ -78,13 +81,9 @@ export class Entity {
    * steps the entity using position, velocity, acceleration and drag
    */
   step() {
-    // TODO figure out formula to apply drag
     this.vel = this.vel.add(this.acc).mult(1 - this.drag);
     this.pos = this.pos.add(this.vel);
   }
-
-  // TODO the engine should have functionality for a solid tilemap world
-  // (for now, the game programmer will just have to hack one in)
 
   /**
    * adjust position based on world
@@ -102,4 +101,7 @@ export class Entity {
    * what to do when the entity is removed from the world
    */
   destroy() {}
+
+  // TODO make this function
+  collide(entity) {}
 }

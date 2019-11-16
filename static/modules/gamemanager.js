@@ -66,9 +66,6 @@ class GameManager {
         this.displayCanvas.width = width;
         this.displayCanvas.height = height;
         this.enterFullscreen();
-        console.log(
-          `image smoothing drawing ${this.context.imageSmoothingEnabled} display ${this.displayContext.imageSmoothingEnabled}`
-        );
       }
     });
 
@@ -135,6 +132,19 @@ class GameManager {
     this.displayContext.restore();
   }
 
+  collideEntities() {
+    for (let i = 0; i < this.entities.length; i++) {
+      const targetEntity = this.entities[i];
+      const collideTypes = targetEntity.collideTypes;
+      const collideEntities = this.entities.filter(entity =>
+        collideTypes.includes(entity.type)
+      );
+      for (let j = 0; j < collideEntities.length; j++) {
+        targetEntity.collide(collideEntities[i]);
+      }
+    }
+  }
+
   // TODO should currentTime be an optional parameter?
 
   /**
@@ -159,7 +169,7 @@ class GameManager {
       timeLeft -= this.updateTime;
       gameSteps++;
     }
-    console.log(gameSteps);
+    //console.log(gameSteps);
     // set all the tweened vectors to the draw positions
     for (let i = 0; i < this.entities.length; i++) {
       let tempPrevPos = this.lastPositions[i];
