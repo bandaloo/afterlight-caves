@@ -101,16 +101,16 @@ class GameManager {
   stepGame() {
     // TODO poll for input
     // run step function of all entities
+    // let all entities take their actions
+    for (let i = 0; i < this.entities.length; i++) {
+      this.entities[i].action();
+    }
     for (let i = 0; i < this.entities.length; i++) {
       this.entities[i].step();
     }
     // push all entities out of walls
     for (let i = 0; i < this.entities.length; i++) {
       this.entities[i].adjust();
-    }
-    // let all entities take their actions
-    for (let i = 0; i < this.entities.length; i++) {
-      this.entities[i].action();
     }
     // TODO check for collisions
     // TODO resolve collisions
