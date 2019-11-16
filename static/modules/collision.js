@@ -20,7 +20,8 @@ export function solidAt(i, j) {
 }
 
 /**
- * Returns a list of collision objects to represent the cells the entiity is colliding with.
+ * Returns a list of collision objects to represent the cells the entiity is
+ * colliding with.
  * @param {Entity} entity
  */
 export function collideWithWorld(entity) {
@@ -86,10 +87,10 @@ export function isColliding(entityA, entityB) {
   const bTop = entityB.pos.y - entityB.height / 2;
 
   if (
-    aLeft + entityA.width >= bLeft &&
-    aLeft <= bLeft + entityB.width &&
-    aTop + entityA.height >= bTop &&
-    aTop <= bTop + entityB.height
+    aLeft + entityA.width > bLeft &&
+    aLeft < bLeft + entityB.width &&
+    aTop + entityA.height > bTop &&
+    aTop < bTop + entityB.height
   ) {
     return true;
   }
@@ -137,7 +138,8 @@ export function calculateCollisionVector(entityA, entityB) {
     cVector.y = aTop - bBottom;
   }
 
-  // If the entity doesn't have collision in a direction, make sure it doesn't have the vector point that way.
+  // If the entity doesn't have collision in a direction, make sure it doesn't
+  // have the vector point that way.
   if (!entityB.collidesBottom) cVector.y = Math.max(0, cVector.y);
   if (!entityB.collidesTop) cVector.y = Math.min(0, cVector.y);
   if (!entityB.collidesLeft) cVector.x = Math.min(0, cVector.x);
@@ -190,6 +192,7 @@ export function adjustEntity(entity) {
       entity.pos.y -= cv.y;
       entity.vel.y = cv.y * -entity.bounciness;
     } else {
+      // TODO could this get an entity stuck on a corner?
       // If X and Y are equal, resolve them both.
       entity.pos.x -= cv.x;
       entity.pos.y -= cv.y;

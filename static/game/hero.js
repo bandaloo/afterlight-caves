@@ -6,7 +6,7 @@ import { drawCircle } from "./draw.js";
 export class Hero extends Entity {
   fireRate = 2; // bullets per second
   speed = 2; // movement speed
-  drag = 0.3; // movement deceleration
+  drag = 0.1; // movement deceleration
   health = 3; // hits taken before dying
 
   /**
@@ -30,7 +30,6 @@ export class Hero extends Entity {
   action() {
     // deal with movement input
     // add an acceleration if the button was just pressed
-    //console.log("doing hero action");
     let dirVec = new Vector(0, 0);
     if (buttons.move.up.status.pressed) {
       //this.acc.add(new Vector(0, -1 * this.speed));
@@ -46,12 +45,5 @@ export class Hero extends Entity {
       dirVec = dirVec.add(new Vector(-1, 0));
     }
     this.acc = dirVec;
-
-    // reset acceleration if we've reached max speed
-    /*
-    if (this.vel.mag() >= this.speed) {
-      this.acc = new Vector(0, 0);
-    }
-    */
   }
 }
