@@ -1,20 +1,20 @@
-import { Entity } from '../modules/entity.js';
-import { Vector } from '../modules/vector.js';
-import { drawCircle } from '../modules/helpers.js';
-import { buttons } from './buttons.js';
+import { Entity } from "../modules/entity.js";
+import { Vector } from "../modules/vector.js";
+import { drawCircle } from "../modules/helpers.js";
+import { buttons } from "./buttons.js";
 
 export class Hero extends Entity {
   fireRate = 2; // bullets per second
-  speed =    2; // movement speed
-  drag =   0.1; // movement deceleration
-  health =   3; // hits taken before dying
+  speed = 2; // movement speed
+  drag = 0.1; // movement deceleration
+  health = 3; // hits taken before dying
 
   /**
    * @param startingPos {Vector} the starting position of this Hero
    * @constructor
    */
   constructor(startingPos) {
-    super (startingPos);
+    super(startingPos);
     this.type = "Hero";
     this.width = 50;
     this.height = 50;
@@ -24,7 +24,7 @@ export class Hero extends Entity {
    * Draws the hero at its position in the world
    */
   draw() {
-    drawCircle(this.drawPos, 20, 'yellow');
+    drawCircle(this.drawPos, 20, "yellow");
   }
 
   update() {
@@ -38,8 +38,7 @@ export class Hero extends Entity {
       this.acc.add(new Vector(0, this.speed));
     } else if (buttons.move.left.status.pressed) {
       this.acc.add(new Vector(-1 * this.speed, 0));
-    }
-    else {
+    } else {
       this.acc = new Vector(0, 0);
     }
 

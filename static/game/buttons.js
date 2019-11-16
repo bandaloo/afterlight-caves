@@ -1,43 +1,45 @@
+const noisy = false;
+
 /**
  * Initializes a sub-object for buttons
  * @return {{held: boolean, pressed: boolean, released: boolean}}
  */
-const initBut = () => {
+function initBut() {
   return {
     held: false,
     pressed: false,
     released: false
-  }
+  };
 }
 
 /**
  * object with sub-objects with booleans for each button we care about that say
  * whether it was just held, pressed, or released
  */
-export let buttons = {
+export const buttons = {
   move: {
-    up: { key: 'W', status: initBut() },
-    right: { key: 'D', status: initBut() },
-    down: { key: 'S', status: initBut() },
-    left: { key: 'A', status: initBut() }
+    up: { key: "W", status: initBut() },
+    right: { key: "D", status: initBut() },
+    down: { key: "S", status: initBut() },
+    left: { key: "A", status: initBut() }
   },
 
   shoot: {
-    up: { key: 'ArrowUp', status: initBut() },
-    right: { key: 'ArrowRight', status: initBut() },
-    down: { key: 'ArrowDown', status: initBut() },
-    left: { key: 'ArrowLeft', status: initBut() }
+    up: { key: "ArrowUp", status: initBut() },
+    right: { key: "ArrowRight", status: initBut() },
+    down: { key: "ArrowDown", status: initBut() },
+    left: { key: "ArrowLeft", status: initBut() }
   },
 
-  primary: { key: ' ', status: initBut() },
-  secondary: { key: 'E', status: initBut() }
+  primary: { key: " ", status: initBut() },
+  secondary: { key: "E", status: initBut() }
 };
 
 /**
- * function for dealing with keydown events 
+ * function for dealing with keydown events
  * @param {KeyboardEvent} e the keydown keyboard event
  */
-export const controlKeydownListener = (e) => {
+export function controlKeydownListener(e) {
   const code = e.keyCode;
   const key = String.fromCharCode(code);
 
@@ -47,6 +49,9 @@ export const controlKeydownListener = (e) => {
       e.preventDefault();
       if (!buttons.move[dir].status.held) {
         buttons.move[dir].status.pressed = true;
+        if (noisy) {
+          console.log(`move button ${buttons.move[dir].key} pressed`);
+        }
       }
       buttons.move[dir].status.held = true;
       return;
@@ -59,6 +64,9 @@ export const controlKeydownListener = (e) => {
       e.preventDefault();
       if (!buttons.shoot[dir].status.held) {
         buttons.shoot[dir].status.pressed = true;
+        if (noisy) {
+          console.log(`shoot button ${buttons.move[dir].key} pressed`);
+        }
       }
       buttons.shoot[dir].status.held = true;
       return;
@@ -72,23 +80,29 @@ export const controlKeydownListener = (e) => {
       buttons.primary.status.pressed = true;
     }
     buttons.primary.status.held = true;
+    if (noisy) {
+      console.log(`primary button ${buttons.primary.key} pressed`);
+    }
     return;
   }
   if (key === buttons.secondary.key) {
     e.preventDefault();
     if (!buttons.secondary.status.held) {
       buttons.secondary.status.pressed = true;
+      if (noisy) {
+        console.log(`primary button ${buttons.primary.key} pressed`);
+      }
     }
     buttons.secondary.status.held = true;
     return;
   }
-};
+}
 
 /**
- * function for dealing with keyup events 
+ * function for dealing with keyup events
  * @param {KeyboardEvent} e the keyup keyboard event
  */
-export const controlKeyupListener = (e) => {
+export function controlKeyupListener(e) {
   const code = e.keyCode;
   const key = String.fromCharCode(code);
 
@@ -129,4 +143,4 @@ export const controlKeyupListener = (e) => {
     buttons.secondary.status.released = true;
     return;
   }
-};
+}
