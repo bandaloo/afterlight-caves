@@ -19,6 +19,14 @@ class Vector {
   }
 
   /**
+   * Returns the magnitude of this vector
+   * @return {number}
+   */
+  mag() {
+    return Math.sqrt(this.x * this.x + this.y * this.y);
+  }
+
+  /**
    * @param {Vector} v
    * @returns {number}
    */

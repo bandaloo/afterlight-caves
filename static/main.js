@@ -12,6 +12,7 @@ import { drawBoard } from "./game/draw.js";
 import { Enemy, randomLook, randomStats } from "./game/enemy.js";
 import { Vector } from "./modules/vector.js";
 import { shuffle, randomInt, hsl } from "./modules/helpers.js";
+import { Hero } from "./game/hero.js";
 import { pepperGems } from "./game/generator.js";
 
 const blockWidth = 60;
@@ -69,6 +70,13 @@ function resetDemo() {
     enemy.drag = 0.005;
     addToWorld(enemy);
   }
+
+  const hero = new Hero(
+    new Vector(0, 0).add(
+      new Vector(blockWidth / 2, blockHeight / 2).add(emptySpaces[11])
+    )
+  );
+  addToWorld(hero);
 }
 
 document.addEventListener("keydown", e => {

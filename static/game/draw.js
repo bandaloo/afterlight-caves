@@ -202,7 +202,6 @@ export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
       const shineSize = 3;
       const gemMod = 1 + Math.cos(getTotalTime() / 300);
       let gemColor = GemEnum[board[i][j]].color;
-      console.log(gemMod);
       for (let k = 0; k < diagonals.length; k++) {
         const gemPosition = new Vector(
           (i + 0.5) * blockWidth + diagonals[k][0] * gemSpacing,

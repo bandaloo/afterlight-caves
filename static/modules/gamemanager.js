@@ -1,5 +1,11 @@
 import { Entity } from "./entity.js";
 import { Vector } from "./vector.js";
+import {
+  buttons,
+  controlKeydownListener,
+  controlKeyupListener
+} from "../game/buttons.js";
+import { Enemy } from "../game/enemy.js";
 
 class GameManager {
   updateTime = 10;
@@ -69,6 +75,10 @@ class GameManager {
       }
     });
 
+    // add event listeners for hero controls
+    document.addEventListener("keydown", controlKeydownListener);
+    document.addEventListener("keyup", controlKeyupListener);
+
     this.addDisplayToDiv("gamediv");
   }
 
@@ -88,6 +98,10 @@ class GameManager {
   stepGame() {
     // TODO poll for input
     // run step function of all entities
+    // let all entities take their actions
+    for (let i = 0; i < this.entities.length; i++) {
+      this.entities[i].action();
+    }
     for (let i = 0; i < this.entities.length; i++) {
       this.entities[i].step();
     }
@@ -95,12 +109,14 @@ class GameManager {
     for (let i = 0; i < this.entities.length; i++) {
       this.entities[i].adjust();
     }
-    // let all entities take their actions
-    for (let i = 0; i < this.entities.length; i++) {
-      this.entities[i].action();
-    }
     // TODO check for collisions
     // TODO resolve collisions
+  }
+
+  updateGame() {
+    for (const e of this.entities) {
+      e.update();
+    }
   }
 
   drawGame() {
@@ -165,6 +181,7 @@ class GameManager {
           this.lastPositions.push(this.entities[i].pos);
         }
       }
+      this.updateGame();
       this.stepGame();
       timeLeft -= this.updateTime;
       gameSteps++;
