@@ -1,88 +1,226 @@
 import { Entity } from "../modules/entity.js";
 import { Vector } from "../modules/vector.js";
-import {
-  randomFromEnum,
-  randomInt,
-  hsl,
-  drawCircle
-} from "../modules/helpers.js";
-
+import { randomFromEnum, randomInt, hsl } from "../modules/helpers.js";
+import { drawCircle, outlineCircle, centeredOutlineRect } from "./draw.js";
+import { getContext } from "../modules/gamemanager.js";
+import { solidAt, isColliding } from "../modules/collision.js";
 /**
  * an enum for allowed shapes of enemies
  * @enum {number}
  */
 const ShapeEnum = Object.freeze({ square: 1, circle: 2 });
 
+// TODO figure out how to put shape enum in the jsdoc
+
+/**
+ * @typedef {Object} Look
+ * @property {number} shape
+ * @property {string} color
+ * @property {number} eyeSpacing
+ * @property {number} eyeSize
+ * @property {number} mouthWidth
+ * @property {number} mouthOffset
+ */
+
+/**
+ * @returns {Look}
+ */
+export function randomLook() {
+  return {
+    shape: randomFromEnum(ShapeEnum),
+    color: hsl(randomInt(360)),
+    eyeSpacing: 10 + randomInt(10),
+    eyeSize: 5 + randomInt(3),
+    mouthWidth: 20 + randomInt(25),
+    mouthOffset: 10 + randomInt(6)
+  };
+}
+
+/**
+ * @typedef {Object} Stats
+ * @property {number} movementSpeed
+ * @property {number} shotSpeed
+ * @property {number} accuracy
+ * @property {number} rateOfFire
+ */
+
+/**
+ * returns random stats for an enemy of given difficulty
+ * @param {number} difficulty
+ * @return {Stats}
+ */
+export function randomStats(difficulty) {
+  let stats = {
+    movementSpeed: 0,
+    shotSpeed: 0,
+    accuracy: 0,
+    rateOfFire: 0
+  };
+
+  for (let i = 0; i < difficulty; i++) {
+    let num = Math.random();
+    if (num < 0.25) {
+      stats.movementSpeed++;
+    } else if (num < 0.5) {
+      stats.shotSpeed++;
+    } else if (num < 0.75) {
+      stats.accuracy++;
+    } else {
+      stats.rateOfFire++;
+    }
+  }
+
+  return stats;
+}
+
 export class Enemy extends Entity {
-  /** @type {number} */
-  movementSpeed = 0;
-
-  /** @type {number} */
-  shotSpeed = 0;
-
-  /** @type {number} */
-  accuracy = 0;
-
-  /** @type {number} */
-  rateOfFire = 0;
-
-  /** @type {string} */
-  color;
-
   /**
    * constructs a random entity with all the relevant vectors
    * @param {Vector} pos
-   * @param {number} difficulty determines how many stats this can get
+   * @param {Look} look
+   * @param {Stats} stats
    * @param {Vector} vel
    * @param {Vector} acc
    */
-  constructor(pos, difficulty, vel = new Vector(0, 0), acc = new Vector(0, 0)) {
+  constructor(
+    pos,
+    look,
+    stats,
+    vel = new Vector(0, 0),
+    acc = new Vector(0, 0)
+  ) {
     super(pos, vel, acc);
+    this.look = look;
+    this.stats = stats;
     this.type = "enemy";
-    for (let i = 0; i < difficulty; i++) {
-      this.randomLevelUp();
-    }
-    this.shape = randomFromEnum(ShapeEnum);
-    this.randomHslColor();
-    console.log("shape: " + this.shape);
-    console.log(this.toString());
+    this.width = 50;
+    this.height = 50;
+    this.bounciness = 1;
+    this.drag = 0.005;
   }
 
-  /**
-   * randomly put a skill point into this enemy
-   */
-  randomLevelUp() {
-    let num = Math.random();
-    if (num < 0.25) {
-      this.movementSpeed++;
-    } else if (num < 0.5) {
-      this.shotSpeed++;
-    } else if (num < 0.75) {
-      this.accuracy++;
-    } else {
-      this.rateOfFire++;
+  action() {
+    // TODO change this
+    if (Math.random() < 0.01) {
+      const randomDir = Math.random() * 2 * Math.PI;
+      const acc = new Vector(
+        Math.cos(randomDir) * 0.1,
+        Math.sin(randomDir) * 0.1
+      );
+      this.acc = acc;
     }
   }
 
   draw() {
-    //console.log("drawpos: " + this.drawPos);
-    //console.log("pos: " + this.pos);
-    drawCircle(this.drawPos, 20, this.color);
-  }
+    // TODO get rid of magic numbers
+    const debugDraw = false;
 
-  /**
-   * give the enemy a random hsl color
-   */
-  randomHslColor() {
-    this.color = hsl(randomInt(360));
+    if (debugDraw) {
+      let entityCell = new Vector(
+        Math.floor(this.pos.x / 60),
+        Math.floor(this.pos.y / 60)
+      );
+
+      // Draw cubes around the enemy
+      for (let i = entityCell.x - 1; i <= entityCell.x + 1; i++) {
+        for (let j = entityCell.y - 1; j <= entityCell.y + 1; j++) {
+          let color = "rgba(0, 255, 0, 0.5)";
+          if (solidAt(i, j)) {
+            color = "rgba(0, 0, 255, 0.5)";
+            let x = (i + 1) * 60 - 60 / 2;
+            let y = (j + 1) * 60 - 60 / 2;
+            let e = new Entity(new Vector(x, y));
+            e.width = 60;
+            e.height = 60;
+
+            if (isColliding(this, e)) color = "rgba(255, 0, 0, 0.5)";
+
+            centeredOutlineRect(
+              new Vector((i + 1) * 60 - 30, (j + 1) * 60 - 30),
+              60,
+              60,
+              4,
+              color,
+              "white"
+            );
+          }
+        }
+      }
+    }
+
+    // draw the body
+    if (this.look.shape === ShapeEnum.circle) {
+      outlineCircle(this.drawPos, 25, 4, this.look.color, "white");
+    } else {
+      centeredOutlineRect(
+        this.drawPos,
+        this.width,
+        this.height,
+        4,
+        this.look.color,
+        "white"
+      );
+    }
+
+    // draw the eyes
+    outlineCircle(
+      this.drawPos.add(new Vector(this.look.eyeSpacing, 0)),
+      this.look.eyeSize,
+      2,
+      "white"
+    );
+    outlineCircle(
+      this.drawPos.sub(new Vector(this.look.eyeSpacing, 0)),
+      this.look.eyeSize,
+      2,
+      "white"
+    );
+
+    // draw the mouth
+    const context = getContext();
+    context.strokeStyle = "white";
+    context.lineWidth = 3;
+    context.beginPath();
+    const mouthHalf = this.look.mouthWidth / 2;
+    context.moveTo(
+      this.drawPos.x + mouthHalf,
+      this.drawPos.y + this.look.mouthOffset
+    );
+    context.lineTo(
+      this.drawPos.x - mouthHalf,
+      this.drawPos.y + this.look.mouthOffset
+    );
+
+    context.stroke();
+
+    if (debugDraw) {
+      context.beginPath();
+      context.strokeStyle = "red";
+      context.lineWidth = 10;
+      context.moveTo(this.drawPos.x, this.drawPos.y);
+      context.lineTo(
+        this.drawPos.x + this.acc.x * 500,
+        this.drawPos.y + this.acc.y * 500
+      );
+      context.stroke();
+      context.beginPath();
+      context.strokeStyle = "yellow";
+      context.lineWidth = 10;
+      context.moveTo(this.drawPos.x, this.drawPos.y);
+      context.lineTo(
+        this.drawPos.x + this.vel.x * 50,
+        this.drawPos.y + this.vel.y * 50
+      );
+      context.stroke();
+    }
   }
 
   toString() {
     return (
-      `movement speed: ${this.movementSpeed}\n` +
-      `shot speed: ${this.shotSpeed}\n` +
-      `accuracy: ${this.accuracy}\n` +
-      `rate of fire: ${this.rateOfFire}\n`
+      `movement speed: ${this.stats.movementSpeed} ` +
+      `shot speed: ${this.stats.shotSpeed} ` +
+      `accuracy: ${this.stats.accuracy} ` +
+      `rate of fire: ${this.stats.rateOfFire}`
     );
   }
 }

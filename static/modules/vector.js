@@ -35,6 +35,20 @@ class Vector {
   }
 
   /**
+   * @returns {number}
+   */
+  magnitude2() {
+    return Math.pow(this.x, 2) + Math.pow(this.y, 2);
+  }
+
+  /**
+   * @returns {number}
+   */
+  magnitude() {
+    return Math.sqrt(this.magnitude2());
+  }
+
+  /**
    * @param {number} sx
    * @param {number} sy
    * @returns {Vector}

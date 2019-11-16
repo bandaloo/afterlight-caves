@@ -1,13 +1,17 @@
 import { Entity } from "./entity.js";
 import { Vector } from "./vector.js";
-import { 
-  buttons, controlKeydownListener, controlKeyupListener
+import {
+  buttons,
+  controlKeydownListener,
+  controlKeyupListener
 } from "../game/buttons.js";
 import { Enemy } from "../game/enemy.js";
 
 class GameManager {
   updateTime = 10;
   overTime = 0;
+
+  totalTime = 0;
 
   previousTime = 0;
 
@@ -16,6 +20,15 @@ class GameManager {
 
   /** @type {Vector[]} */
   lastPositions = [];
+
+  /** @type {number[][]} */
+  terrain = [];
+
+  /** @type {number} */
+  blockWidth;
+
+  /** @type {number} */
+  blockHeight;
 
   // TODO consider whether we want the options pattern here
   constructor(
@@ -26,11 +39,13 @@ class GameManager {
   ) {
     this.canvas = document.createElement("canvas");
     this.context = this.canvas.getContext("2d");
+    this.context.imageSmoothingEnabled = false;
     this.canvas.width = width;
     this.canvas.height = height;
 
     this.displayCanvas = document.createElement("canvas");
     this.displayContext = this.displayCanvas.getContext("2d");
+    this.displayContext.imageSmoothingEnabled = false;
     this.displayWidth = displayWidth;
     this.displayHeight = displayHeight;
     this.displayCanvas.width = displayWidth;
@@ -40,8 +55,10 @@ class GameManager {
     this.drawFunc = () => {};
 
     const exitHandler = () => {
-      this.displayCanvas.width = this.displayWidth;
-      this.displayCanvas.height = this.displayHeight;
+      if (document.fullscreenElement === null) {
+        this.displayCanvas.width = this.displayWidth;
+        this.displayCanvas.height = this.displayHeight;
+      }
     };
 
     this.displayCanvas.addEventListener("fullscreenchange", exitHandler, false);
@@ -51,9 +68,13 @@ class GameManager {
       const key = String.fromCharCode(code);
       // press F for fullscreen
       if (key == "F") {
-        this.displayCanvas.width = 1920;
-        this.displayCanvas.height = 1080;
+        // TODO get rid of these magic numbers for resolution
+        this.displayCanvas.width = width;
+        this.displayCanvas.height = height;
         this.enterFullscreen();
+        console.log(
+          `image smoothing drawing ${this.context.imageSmoothingEnabled} display ${this.displayContext.imageSmoothingEnabled}`
+        );
       }
     });
 
@@ -67,6 +88,8 @@ class GameManager {
   enterFullscreen() {
     if (this.displayCanvas.requestFullscreen) {
       this.displayCanvas.requestFullscreen();
+    } else {
+      throw new Error("no request fullscreen function");
     }
   }
 
@@ -80,6 +103,14 @@ class GameManager {
     // run step function of all entities
     for (let i = 0; i < this.entities.length; i++) {
       this.entities[i].step();
+    }
+    // push all entities out of walls
+    for (let i = 0; i < this.entities.length; i++) {
+      this.entities[i].adjust();
+    }
+    // let all entities take their actions
+    for (let i = 0; i < this.entities.length; i++) {
+      this.entities[i].action();
     }
     // TODO check for collisions
     // TODO resolve collisions
@@ -128,6 +159,7 @@ class GameManager {
   update(currentTime = this.updateTime) {
     // keep track of time passed
     let deltaTime = currentTime - this.previousTime;
+    this.totalTime += deltaTime;
     let gameSteps = 0;
     let timeLeft = deltaTime - this.overTime;
     while (timeLeft > 0) {
@@ -144,14 +176,18 @@ class GameManager {
       timeLeft -= this.updateTime;
       gameSteps++;
     }
+    //console.log(gameSteps);
     // set all the tweened vectors to the draw positions
     for (let i = 0; i < this.entities.length; i++) {
-      //let tempPrevPos = lastPositions[i];
+      let tempPrevPos = this.lastPositions[i];
       let tempDrawPos = this.lastPositions[i].partway(
         this.entities[i].pos,
         (this.updateTime + timeLeft) / this.updateTime
       );
-      //let tempCurrPos = this.entities[i].pos;
+      let tempCurrPos = this.entities[i].pos;
+      //console.log("prev " + tempPrevPos);
+      //console.log("draw " + tempDrawPos);
+      //console.log("curr " + tempCurrPos);
       this.entities[i].drawPos = tempDrawPos;
     }
 
@@ -188,11 +224,41 @@ export function getCanvasHeight() {
 }
 
 /**
- * Set the additional draw function to happen every game loop
+ * set the additional draw function to happen every game loop
  * @param {() => void} drawFunc drawing function to happen every loop
  */
 export function setGameDrawFunc(drawFunc) {
   gameManager.drawFunc = drawFunc;
+}
+
+/**
+ * set the grid of numbers to determine solid parts of world
+ * @param {number[][]} board
+ */
+export function setTerrain(board) {
+  gameManager.terrain = board;
+}
+
+export function getTerrain() {
+  return gameManager.terrain;
+}
+
+export function getTotalTime() {
+  return gameManager.totalTime;
+}
+
+/**
+ * set dimensions that the terrain is supposed to represent
+ * @param {number} blockWidth
+ * @param {number} blockHeight
+ */
+export function setDimensions(blockWidth, blockHeight) {
+  gameManager.blockWidth = blockWidth;
+  gameManager.blockHeight = blockHeight;
+}
+
+export function getDimensions() {
+  return { width: gameManager.blockWidth, height: gameManager.blockHeight };
 }
 
 /**
@@ -201,4 +267,8 @@ export function setGameDrawFunc(drawFunc) {
  */
 export function addToWorld(entity) {
   gameManager.entities.push(entity);
+}
+
+export function destroyEverything() {
+  gameManager.entities = [];
 }

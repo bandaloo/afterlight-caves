@@ -1,7 +1,8 @@
 import {
   getContext,
   getCanvasWidth,
-  getCanvasHeight
+  getCanvasHeight,
+  getTotalTime
 } from "../modules/gamemanager.js";
 import { griderate } from "../modules/helpers.js";
 import { Vector } from "../modules/vector.js";
@@ -16,7 +17,7 @@ import { GemEnum } from "./generator.js";
  * @param {string} centerColor
  * @param {string} [borderColor]
  */
-function centeredOutlineRect(
+export function centeredOutlineRect(
   centerVec,
   width,
   height,
@@ -29,10 +30,10 @@ function centeredOutlineRect(
   // draw the outline rect
   context.fillStyle = borderColor;
   context.fillRect(
-    centerVec.x - (width + borderThickness) / 2,
-    centerVec.y - (height + borderThickness) / 2,
-    width + borderThickness,
-    height + borderThickness
+    centerVec.x - width / 2 - borderThickness,
+    centerVec.y - height / 2 - borderThickness,
+    width + borderThickness * 2,
+    height + borderThickness * 2
   );
 
   // draw the center rect
@@ -43,6 +44,39 @@ function centeredOutlineRect(
     width,
     height
   );
+}
+
+/**
+ * draw a circle onto the draw canvas
+ * @param {Vector} pos
+ * @param {number} radius
+ * @param {string} color
+ */
+export function drawCircle(pos, radius, color) {
+  let context = getContext();
+  context.beginPath();
+  context.arc(pos.x, pos.y, radius, 0, 2 * Math.PI);
+  context.fillStyle = color;
+  context.fill();
+}
+
+/**
+ *
+ * @param {Vector} centerVec
+ * @param {number} radius
+ * @param {number} borderThickness
+ * @param {string} centerColor
+ * @param {string} borderColor
+ */
+export function outlineCircle(
+  centerVec,
+  radius,
+  borderThickness,
+  centerColor,
+  borderColor = "black"
+) {
+  drawCircle(centerVec, radius + borderThickness, borderColor);
+  drawCircle(centerVec, radius, centerColor);
 }
 
 /**
@@ -94,16 +128,38 @@ export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
       );
     }
 
-    // TODO move this somewhere else
+    // draw gems
     if (board[i][j] > 1) {
+      const diagonals = [
+        [1, 1],
+        [1, -1],
+        [-1, -1],
+        [-1, 1]
+      ];
+      const gemSpacing = 10;
+      const gemSize = 10;
+      const shineSize = 3;
+      //const gemMod = 1 + Math.cos(getTotalTime() / 300);
+      const gemMod = 0;
       let gemColor = GemEnum[board[i][j]].color;
-      centeredOutlineRect(
-        new Vector((i + 0.5) * blockWidth, (j + 0.5) * blockHeight),
-        20,
-        20,
-        3,
-        gemColor
-      );
+      for (let k = 0; k < diagonals.length; k++) {
+        const gemPosition = new Vector(
+          (i + 0.5) * blockWidth + diagonals[k][0] * gemSpacing,
+          (j + 0.5) * blockHeight + diagonals[k][1] * gemSpacing
+        );
+        const shinePosition = gemPosition.add(
+          new Vector(-2 + 2 * gemMod, -2 + 2 * gemMod)
+        );
+        centeredOutlineRect(gemPosition, gemSize, gemSize, 3, gemColor);
+        centeredOutlineRect(
+          shinePosition,
+          shineSize + gemMod * 0.7,
+          shineSize + gemMod * 0.7,
+          1,
+          "white",
+          "white"
+        );
+      }
     }
   });
 }
