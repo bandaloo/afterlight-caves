@@ -3,7 +3,8 @@ import { Vector } from "./vector.js";
 import {
   buttons,
   controlKeydownListener,
-  controlKeyupListener
+  controlKeyupListener,
+  cleanButtons
 } from "../game/buttons.js";
 
 class GameManager {
@@ -108,6 +109,8 @@ class GameManager {
     for (let i = 0; i < this.entities.length; i++) {
       this.entities[i].adjust();
     }
+    cleanButtons();
+    console.log(buttons.move.up.status.pressed);
   }
 
   drawGame() {
@@ -160,6 +163,9 @@ class GameManager {
   update(currentTime = this.updateTime) {
     // keep track of time passed
     let deltaTime = currentTime - this.previousTime;
+    if (deltaTime > 200) {
+      deltaTime = 200;
+    }
     this.totalTime += deltaTime;
     let gameSteps = 0;
     let timeLeft = deltaTime - this.overTime;

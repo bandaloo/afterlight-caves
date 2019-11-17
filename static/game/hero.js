@@ -1,6 +1,6 @@
 import { Entity } from "../modules/entity.js";
 import { Vector } from "../modules/vector.js";
-import { drawCircle, centeredOutlineCircle } from "./draw.js";
+import { centeredOutlineCircle } from "./draw.js";
 import { buttons } from "./buttons.js";
 
 export class Hero extends Entity {
@@ -38,23 +38,6 @@ export class Hero extends Entity {
   }
 
   action() {
-    // deal with movement input
-    // add an acceleration if the button was just pressed
-    let dirVec = new Vector(0, 0);
-    if (buttons.move.up.status.pressed) {
-      //this.acc.add(new Vector(0, -1 * this.speed));
-      dirVec = dirVec.add(new Vector(0, -1));
-    }
-    if (buttons.move.right.status.pressed) {
-      dirVec = dirVec.add(new Vector(1, 0));
-    }
-    if (buttons.move.down.status.pressed) {
-      dirVec = dirVec.add(new Vector(0, 1));
-    }
-    if (buttons.move.left.status.pressed) {
-      dirVec = dirVec.add(new Vector(-1, 0));
-    }
-    //console.log(this.pos);
-    this.acc = dirVec;
+    this.acc = buttons.move.vec;
   }
 }

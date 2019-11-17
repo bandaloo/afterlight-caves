@@ -1,8 +1,32 @@
-const noisy = false;
+import { Vector } from "../modules/vector.js";
+
+const noisy = true;
+
+/**
+ * @typedef {Object} Status
+ * @property {boolean} held
+ * @property {boolean} pressed
+ * @property {boolean} released
+ */
+
+/**
+ * @typedef {Object} Button
+ * @property {string} key
+ * @property {Status} status
+ */
+
+/**
+ * @typedef {Object} Directional
+ * @property {Button} up
+ * @property {Button} right
+ * @property {Button} down
+ * @property {Button} left
+ * @property {Vector} vec
+ */
 
 /**
  * Initializes a sub-object for buttons
- * @return {{held: boolean, pressed: boolean, released: boolean}}
+ * @return {Status}
  */
 function initBut() {
   return {
@@ -17,23 +41,102 @@ function initBut() {
  * whether it was just held, pressed, or released
  */
 export const buttons = {
+  /** @type {Directional} */
   move: {
     up: { key: "W", status: initBut() },
     right: { key: "D", status: initBut() },
     down: { key: "S", status: initBut() },
-    left: { key: "A", status: initBut() }
+    left: { key: "A", status: initBut() },
+    vec: new Vector(0, 0)
   },
 
+  /** @type {Directional} */
   shoot: {
     up: { key: "&", status: initBut() },
     right: { key: "'", status: initBut() },
     down: { key: "(", status: initBut() },
-    left: { key: "%", status: initBut() }
+    left: { key: "%", status: initBut() },
+    vec: new Vector(0, 0)
   },
 
+  /** @type {Button} */
   primary: { key: " ", status: initBut() },
+  /** @type {Button} */
   secondary: { key: "E", status: initBut() }
 };
+
+/**
+ * Sets the vec for a directional based on holds and releases
+ * @param {Directional} directional
+ */
+function calcDirVec(directional) {
+  if (directional.right.status.pressed) {
+    directional.vec.x = 1;
+  }
+  if (directional.left.status.pressed) {
+    directional.vec.x = -1;
+  }
+  if (directional.down.status.pressed) {
+    directional.vec.y = 1;
+  }
+  if (directional.up.status.pressed) {
+    directional.vec.y = -1;
+  }
+
+  // release should stop if the opposite is not held
+  if (directional.right.status.released) {
+    if (directional.left.status.held) {
+      directional.vec.x = -1;
+    } else {
+      directional.vec.x = 0;
+    }
+  }
+  if (directional.left.status.released) {
+    if (directional.right.status.held) {
+      directional.vec.x = 1;
+    } else {
+      directional.vec.x = 0;
+    }
+  }
+  if (directional.down.status.released) {
+    if (directional.up.status.held) {
+      directional.vec.y = -1;
+    } else {
+      directional.vec.y = 0;
+    }
+  }
+  if (directional.up.status.released) {
+    if (directional.down.status.held) {
+      directional.vec.y = 1;
+    } else {
+      directional.vec.y = 0;
+    }
+  }
+
+  directional.vec = directional.vec.norm();
+}
+
+/**
+ * makes all presses and releases false
+ */
+export function cleanButtons() {
+  // set directional button presses and releases to false
+  const directionals = [buttons.move, buttons.shoot];
+  for (let i = 0; i < directionals.length; i++) {
+    const directional = directionals[i];
+    for (const dir in directional) {
+      if (dir !== "vec") {
+        directional[dir].status.pressed = false;
+        directional[dir].status.released = false;
+      }
+    }
+  }
+  // set normal button presses and releases to false
+  buttons.primary.status.pressed = false;
+  buttons.primary.status.released = false;
+  buttons.secondary.status.pressed = false;
+  buttons.secondary.status.released = false;
+}
 
 /**
  * function for dealing with keydown events
@@ -45,7 +148,7 @@ export function controlKeydownListener(e) {
 
   // movement keys
   for (const dir in buttons.move) {
-    if (key === buttons.move[dir].key) {
+    if (dir !== "vec" && key === buttons.move[dir].key) {
       e.preventDefault();
       if (!buttons.move[dir].status.held) {
         buttons.move[dir].status.pressed = true;
@@ -54,15 +157,14 @@ export function controlKeydownListener(e) {
         }
       }
       buttons.move[dir].status.held = true;
+      calcDirVec(buttons.move);
       return;
     }
   }
 
   // shooting keys
   for (const dir in buttons.shoot) {
-    //console.log("key " + key);
-    //console.log("code " + code);
-    if (key === buttons.shoot[dir].key) {
+    if (dir !== "vec" && key === buttons.shoot[dir].key) {
       e.preventDefault();
       if (!buttons.shoot[dir].status.held) {
         buttons.shoot[dir].status.pressed = true;
@@ -71,6 +173,7 @@ export function controlKeydownListener(e) {
         }
       }
       buttons.shoot[dir].status.held = true;
+      calcDirVec(buttons.shoot);
       return;
     }
   }
@@ -118,6 +221,7 @@ export function controlKeyupListener(e) {
       if (noisy) {
         console.log(`move button ${buttons.move[dir].key} released`);
       }
+      calcDirVec(buttons.move);
       return;
     }
   }
@@ -132,6 +236,7 @@ export function controlKeyupListener(e) {
       if (noisy) {
         console.log(`shoot button ${buttons.shoot[dir].key} released`);
       }
+      calcDirVec(buttons.shoot);
       return;
     }
   }
