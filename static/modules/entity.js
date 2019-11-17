@@ -118,7 +118,12 @@ export class Entity {
    * resolve action on collision with an entity
    * @param {Entity} entity
    */
-  collide(entity) {
+  collideWithEntity(entity) {
     this.collideMap.get(entity.type)(entity);
   }
+
+  /**
+   * @param {Entity} entity
+   */
+  collideWithBlock(entity) {}
 }

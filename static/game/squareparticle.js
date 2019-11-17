@@ -8,21 +8,26 @@ export class SquareParticle extends Entity {
    * constructs a square particle
    * @param {Vector} pos
    * @param {string} style
-   * @param {Vector} [vel]
    * @param {Vector} [acc]
    */
   constructor(
     pos,
     style,
-    vel = randomNormalVec().mult(10 + 3 * Math.random()),
-    acc
+    baseSpeed = 10,
+    randSpeed = 3,
+    drag = 0.08,
+    baseLifetime = 20,
+    randLifetime = 30,
+    acc = new Vector(0, 0)
   ) {
+    const vel = randomNormalVec().mult(baseSpeed + randSpeed * Math.random());
     super(pos, vel, acc);
-    this.lifetime = 20 + randomInt(30);
+    this.vel = vel;
+    this.lifetime = baseLifetime + randomInt(randLifetime);
     this.width = 16;
     this.height = 16;
     this.style = style;
-    this.drag = 0.08;
+    this.drag = drag;
   }
 
   draw() {
@@ -30,7 +35,7 @@ export class SquareParticle extends Entity {
       this.drawPos,
       this.width,
       this.height,
-      3,
+      1,
       "white",
       this.style
     );

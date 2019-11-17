@@ -3,6 +3,17 @@ import { Entity } from "./entity.js";
 import { getTerrain, getDimensions } from "./gamemanager.js";
 
 /**
+ * @param {Vector} pos
+ * @returns {Vector}
+ */
+export function getCell(pos) {
+  const { width: bWidth, height: bHeight } = getDimensions();
+  const i = Math.floor(pos.x / bWidth);
+  const j = Math.floor(pos.y / bHeight);
+  return new Vector(i, j);
+}
+
+/**
  * checks if cell position solid (outside is solid)
  * @param {number} i
  * @param {number} j
@@ -169,6 +180,8 @@ export function adjustEntity(entity) {
 
   let collisionVectors = [];
 
+  const hitEntities = [];
+
   // Iterate through each colliding entity, and get a vector that defines how
   // "collided" they are
   for (let i = 0; i < collidingEntities.length; i++) {
@@ -176,8 +189,10 @@ export function adjustEntity(entity) {
       entity,
       collidingEntities[i]
     );
+    // TODO replace with isZeroVector
     if (!(collisionVector.x == 0 && collisionVector.y == 0)) {
       collisionVectors.push(collisionVector);
+      hitEntities.push(collidingEntities[i]);
     }
   }
   // Keep track of how far entity moved during adjustment.
@@ -207,4 +222,8 @@ export function adjustEntity(entity) {
   // bounce based on the move vector
   if (mv.x !== 0) entity.vel.x *= -entity.bounciness;
   if (mv.y !== 0) entity.vel.y *= -entity.bounciness;
+
+  for (let i = 0; i < hitEntities.length; i++) {
+    entity.collideWithBlock(hitEntities[i]);
+  }
 }

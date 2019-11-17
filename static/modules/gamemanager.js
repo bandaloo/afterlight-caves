@@ -1,5 +1,4 @@
 import { Entity } from "./entity.js";
-import { Vector } from "./vector.js";
 import {
   controlKeydownListener,
   controlKeyupListener,
@@ -190,7 +189,7 @@ class GameManager {
           isColliding(targetEntity, entity)
       );
       for (let j = 0; j < collideEntities.length; j++) {
-        targetEntity.collide(collideEntities[j]);
+        targetEntity.collideWithEntity(collideEntities[j]);
       }
     }
   }
@@ -300,6 +299,27 @@ export function setTerrain(board) {
 
 export function getTerrain() {
   return gameManager.terrain;
+}
+
+/**
+ *
+ * @param {number} i
+ * @param {number} j
+ * @param {number} val
+ */
+export function setBlock(i, j, val) {
+  if (
+    i >= 0 &&
+    i < gameManager.terrain.length &&
+    j >= 0 &&
+    j < gameManager.terrain[0].length
+  ) {
+    gameManager.terrain[i][j] = val;
+    // was able to set it
+    return true;
+  }
+  // wasn't able to set it
+  return false;
 }
 
 export function getTotalTime() {

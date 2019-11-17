@@ -1,6 +1,9 @@
 import { Vector } from "../modules/vector.js";
 import { Entity } from "../modules/entity.js";
 import { centeredOutlineCircle } from "./draw.js";
+import { getCell } from "../modules/collision.js";
+import { setBlock, addParticle } from "../modules/gamemanager.js";
+import { SquareParticle } from "./squareparticle.js";
 
 export class Bullet extends Entity {
   /**
@@ -28,4 +31,13 @@ export class Bullet extends Entity {
   }
 
   destroy() {}
+
+  collideWithBlock(entity) {
+    const cellVec = getCell(entity.pos);
+    if (setBlock(cellVec.x, cellVec.y, 0)) {
+      for (let i = 0; i < 15; i++) {
+        addParticle(new SquareParticle(entity.pos, "black", 5, 3, undefined));
+      }
+    }
+  }
 }

@@ -12,18 +12,6 @@ import { getTerrain, getDimensions } from "./gamemanager.js";
  * @property {number} height
  */
 
-/**
- * @param {Vector} pos
- * @param {number} blockWidth
- * @param {number} blockHeight
- * @returns {Vector}
- */
-export function getCell(pos, blockWidth, blockHeight) {
-  const i = Math.floor(pos.x / blockWidth);
-  const j = Math.floor(pos.y / blockHeight);
-  return new Vector(i, j);
-}
-
 // TODO make this not need to get block width and height
 
 /**
@@ -31,6 +19,7 @@ export function getCell(pos, blockWidth, blockHeight) {
  * @param {number} blockWidth
  * @param {number} blockHeight
  */
+/*
 export function distanceToCell(pos, blockWidth, blockHeight) {
   const cell = getCell(pos, blockWidth, blockHeight);
   const topWall = blockHeight * cell.y;
@@ -49,6 +38,7 @@ export function distanceToCell(pos, blockWidth, blockHeight) {
     rightWall: rightWall
   };
 }
+*/
 
 /**
 if(player1.x < player2.x + player2.width &&
