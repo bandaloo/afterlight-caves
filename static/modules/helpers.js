@@ -101,6 +101,7 @@ export function griderate(grid, func) {
 export function inPlaceFilter(array, func, destruct = n => {}) {
   for (var i = 0; i < array.length; i++) {
     if (!func(array[i])) {
+      destruct(array[i]);
       array.splice(i, 1);
       i--;
     }

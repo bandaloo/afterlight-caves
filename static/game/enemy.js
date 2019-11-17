@@ -235,6 +235,10 @@ export class Enemy extends Entity {
     }
   }
 
+  destroy() {
+    console.log("i got destroyd");
+  }
+
   toString() {
     return (
       `movement speed: ${this.stats.movementSpeed} ` +

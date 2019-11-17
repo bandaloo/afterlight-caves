@@ -6,6 +6,7 @@ import {
   controlKeyupListener,
   cleanButtons
 } from "../game/buttons.js";
+import { inPlaceFilter } from "./helpers.js";
 
 class GameManager {
   updateTime = 10;
@@ -96,8 +97,6 @@ class GameManager {
   }
 
   stepGame() {
-    // TODO poll for input
-    // run step function of all entities
     // let all entities take their actions
     for (let i = 0; i < this.entities.length; i++) {
       this.entities[i].action();
@@ -106,6 +105,7 @@ class GameManager {
         this.entities[i].deleteMe = true;
       }
     }
+    // run a physics step on all entities
     for (let i = 0; i < this.entities.length; i++) {
       this.entities[i].step();
     }
@@ -113,6 +113,13 @@ class GameManager {
     for (let i = 0; i < this.entities.length; i++) {
       this.entities[i].adjust();
     }
+    // destroy all entites that want to be deleted
+    inPlaceFilter(
+      this.entities,
+      entity => entity.lifetime > 0,
+      entity => entity.destroy()
+    );
+    // set presses and releases to false
     cleanButtons();
   }
 
