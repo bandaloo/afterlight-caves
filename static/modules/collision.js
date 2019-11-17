@@ -162,6 +162,7 @@ export function calculateCollisionVector(entityA, entityB) {
  */
 export function adjustEntity(entity) {
   // Initialize collision list with collisions between entity and the world
+  //console.log(entity.type);
   let collidingEntities;
   if (entity.hitsWalls) collidingEntities = collideWithWorld(entity);
   else collidingEntities = [];
@@ -185,27 +186,25 @@ export function adjustEntity(entity) {
     const cv = collisionVectors[i];
     if (Math.abs(cv.x) > Math.abs(cv.y) && cv.x != 0) {
       // If x is the "easiest" solution (but not 0), use x.
-      // TODO figure out if this is a hack.
       if (Math.abs(cv.x) > Math.abs(mv.x)) {
-        //entity.pos.x -= cv.x;
         mv.x = cv.x;
       }
-      entity.vel.x = cv.x * -entity.bounciness;
+      //entity.vel.x = cv.x * -entity.bounciness;
     } else if (Math.abs(cv.y) > Math.abs(cv.x) && cv.y != 0) {
-      // If x is the "easiest" solution (but not 0), use y.
+      // If y is the "easiest" solution (but not 0), use y.
       if (Math.abs(cv.y) > Math.abs(mv.y)) {
-        //entity.pos.y -= cv.y;
         mv.y = cv.y;
       }
-      entity.vel.y = cv.y * -entity.bounciness;
     } else {
       // If X and Y are equal, resolve them both.
       entity.pos.x -= cv.x;
       entity.pos.y -= cv.y;
-      entity.vel.x = cv.x * -entity.bounciness;
-      entity.vel.y = cv.y * -entity.bounciness;
     }
   }
 
   entity.pos = entity.pos.sub(mv);
+
+  // bounce based on the move vector
+  if (mv.x !== 0) entity.vel.x *= -entity.bounciness;
+  if (mv.y !== 0) entity.vel.y *= -entity.bounciness;
 }

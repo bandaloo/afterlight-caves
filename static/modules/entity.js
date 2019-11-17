@@ -7,13 +7,13 @@ export class Entity {
   type;
 
   /** @type {number} */
-  width;
+  width = 0;
 
   /** @type {number} */
-  height;
+  height = 0;
 
   /** @type {number} */
-  drag;
+  drag = 0;
 
   /** @type {number} */
   blockHitboxScalar = 1;
@@ -75,7 +75,8 @@ export class Entity {
    */
   constructor(pos, vel = new Vector(0, 0), acc = new Vector(0, 0)) {
     this.pos = pos;
-    /** @type {Vector} */
+    this.drawPos = pos;
+    this.lastPos = pos;
     this.vel = vel;
     this.acc = acc;
   }

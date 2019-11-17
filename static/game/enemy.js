@@ -96,7 +96,7 @@ export class Enemy extends Entity {
     super(pos, vel, acc);
     this.look = look;
     this.stats = stats;
-    this.type = "enemy";
+    this.type = "Enemy";
     this.width = 50;
     this.height = 50;
     this.bounciness = 1;

@@ -1,7 +1,6 @@
 import { Entity } from "./entity.js";
 import { Vector } from "./vector.js";
 import {
-  buttons,
   controlKeydownListener,
   controlKeyupListener,
   cleanButtons
@@ -113,14 +112,18 @@ class GameManager {
     for (let i = 0; i < this.entities.length; i++) {
       this.entities[i].adjust();
     }
+    this.destroyEntities();
+    // set presses and releases to false
+    cleanButtons();
+  }
+
+  destroyEntities() {
     // destroy all entites that want to be deleted
     inPlaceFilter(
       this.entities,
       entity => entity.lifetime > 0,
       entity => entity.destroy()
     );
-    // set presses and releases to false
-    cleanButtons();
   }
 
   drawGame() {
@@ -181,25 +184,40 @@ class GameManager {
     let timeLeft = deltaTime - this.overTime;
     while (timeLeft > 0) {
       // if this loop is the last step before going over time
+      let doDestroy = true;
       if (timeLeft <= this.updateTime) {
-        this.lastPositions = [];
+        //this.lastPositions = [];
         // get the tween vectors
         for (let i = 0; i < this.entities.length; i++) {
-          this.lastPositions.push(this.entities[i].pos);
+          //this.lastPositions.push(this.entities[i].pos);
+          this.entities[i].lastPos = this.entities[i].pos;
         }
+        // delay destruction of entities until after draw, just this time
+        doDestroy = false;
       }
       this.stepGame();
+      if (doDestroy) {
+        //this.destroyEntities();
+      }
       timeLeft -= this.updateTime;
       gameSteps++;
     }
     //console.log(gameSteps);
     // set all the tweened vectors to the draw positions
     for (let i = 0; i < this.entities.length; i++) {
-      let tempPrevPos = this.lastPositions[i];
+      //let tempPrevPos = this.lastPositions[i];
+      let tempPrevPos = this.entities[i].lastPos;
+      /*
       let tempDrawPos = this.lastPositions[i].partway(
         this.entities[i].pos,
         (this.updateTime + timeLeft) / this.updateTime
       );
+      */
+      let tempDrawPos = this.entities[i].lastPos.partway(
+        this.entities[i].pos,
+        (this.updateTime + timeLeft) / this.updateTime
+      );
+      //let tempCurrPos = this.entities[i].pos;
       let tempCurrPos = this.entities[i].pos;
       //console.log("prev " + tempPrevPos);
       //console.log("draw " + tempDrawPos);
@@ -210,6 +228,7 @@ class GameManager {
     this.overTime = -timeLeft;
 
     this.drawGame();
+    this.destroyEntities();
 
     // increase the time
     this.previousTime = currentTime;
