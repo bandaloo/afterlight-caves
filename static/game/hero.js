@@ -26,7 +26,8 @@ export class Hero extends Entity {
    */
   draw() {
     centeredOutlineCircle(this.drawPos, this.width / 2, 4, "white", "black");
-    if (!this.vel.isZeroVec()) {
+    // prevents velocity from getting too small and normalization messing up
+    if (this.vel.magnitude() > 0.001) {
       this.eyeDirection = this.vel.norm();
     }
     centeredOutlineCircle(

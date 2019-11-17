@@ -110,7 +110,6 @@ class GameManager {
       this.entities[i].adjust();
     }
     cleanButtons();
-    console.log(buttons.move.up.status.pressed);
   }
 
   drawGame() {

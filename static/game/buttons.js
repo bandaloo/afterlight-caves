@@ -112,8 +112,9 @@ function calcDirVec(directional) {
       directional.vec.y = 0;
     }
   }
-
-  directional.vec = directional.vec.norm();
+  if (!directional.vec.isZeroVec()) {
+    directional.vec = directional.vec.norm();
+  }
 }
 
 /**
