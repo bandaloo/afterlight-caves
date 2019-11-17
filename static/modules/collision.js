@@ -166,7 +166,6 @@ export function adjustEntity(entity) {
   if (entity.hitsWalls) collidingEntities = collideWithWorld(entity);
   else collidingEntities = [];
 
-  // TODO: fill this list with entities to collide with.
   let collisionVectors = [];
 
   // Iterate through each colliding entity, and get a vector that defines how "collided" they are

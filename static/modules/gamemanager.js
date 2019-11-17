@@ -101,6 +101,10 @@ class GameManager {
     // let all entities take their actions
     for (let i = 0; i < this.entities.length; i++) {
       this.entities[i].action();
+      this.entities[i].lifetime--;
+      if (this.entities[i].lifetime <= 0) {
+        this.entities[i].deleteMe = true;
+      }
     }
     for (let i = 0; i < this.entities.length; i++) {
       this.entities[i].step();

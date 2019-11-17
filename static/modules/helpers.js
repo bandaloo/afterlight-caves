@@ -91,3 +91,18 @@ export function griderate(grid, func) {
     }
   }
 }
+
+/**
+ * filters an array in place
+ * @param {any[]} array the array to filter
+ * @param {(arg0: any) => boolean} func how to filter
+ * @param {(arg0: any) => void} [destruct] defaults to no-op
+ */
+export function inPlaceFilter(array, func, destruct = n => {}) {
+  for (var i = 0; i < array.length; i++) {
+    if (!func(array[i])) {
+      array.splice(i, 1);
+      i--;
+    }
+  }
+}

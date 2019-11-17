@@ -39,9 +39,16 @@ export class Entity {
   /** @type {boolean} */
   collidesBottom = true;
 
+  /**
+   * amount of game steps to live before entity is destroyed
+   * @type {number}
+   */
+  lifetime = Infinity;
+
   /** @type {string[]} */
   collideTypes = [];
 
+  // TODO incorporate this
   /**
    * whether entity will be pushed out of walls
    * @type {boolean}
