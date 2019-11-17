@@ -189,7 +189,6 @@ export function adjustEntity(entity) {
       if (Math.abs(cv.x) > Math.abs(mv.x)) {
         mv.x = cv.x;
       }
-      //entity.vel.x = cv.x * -entity.bounciness;
     } else if (Math.abs(cv.y) > Math.abs(cv.x) && cv.y != 0) {
       // If y is the "easiest" solution (but not 0), use y.
       if (Math.abs(cv.y) > Math.abs(mv.y)) {

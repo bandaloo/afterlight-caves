@@ -1,6 +1,6 @@
 import { Vector } from "../modules/vector.js";
 
-const noisy = true;
+const noisy = false;
 
 /**
  * @typedef {Object} Status

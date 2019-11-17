@@ -35,7 +35,7 @@ export class Hero extends Entity {
       addToWorld(
         new Bullet(
           this.pos.add(buttons.shoot.vec.mult(this.width / 2)),
-          buttons.shoot.vec.mult(14),
+          buttons.shoot.vec.mult(10),
           new Vector(0, 0),
           true
         )

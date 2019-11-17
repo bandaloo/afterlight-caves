@@ -48,6 +48,9 @@ export class Entity {
   /** @type {string[]} */
   collideTypes = [];
 
+  /** @type {Map<string, (arg0: Entity) => void>}*/
+  collideMap = new Map();
+
   // TODO incorporate this
   /**
    * whether entity will be pushed out of walls
@@ -111,6 +114,11 @@ export class Entity {
    */
   destroy() {}
 
-  // TODO make this function
-  collide(entity) {}
+  /**
+   * resolve action on collision with an entity
+   * @param {Entity} entity
+   */
+  collide(entity) {
+    this.collideMap.get(entity.type)(entity);
+  }
 }

@@ -6,6 +6,7 @@ import {
   cleanButtons
 } from "../game/buttons.js";
 import { inPlaceFilter } from "./helpers.js";
+import { isColliding } from "./collision.js";
 
 class GameManager {
   updateTime = 10;
@@ -112,6 +113,9 @@ class GameManager {
     for (let i = 0; i < this.entities.length; i++) {
       this.entities[i].adjust();
     }
+    // resolve collisions between entities
+    this.collideWithEntities();
+    // destroy entities that have an expired lifetime or are flagged
     this.destroyEntities();
     // set presses and releases to false
     cleanButtons();
@@ -121,7 +125,7 @@ class GameManager {
     // destroy all entites that want to be deleted
     inPlaceFilter(
       this.entities,
-      entity => entity.lifetime > 0,
+      entity => entity.lifetime > 0 && !entity.deleteMe,
       entity => entity.destroy()
     );
   }
@@ -155,15 +159,25 @@ class GameManager {
     this.displayContext.restore();
   }
 
-  collideEntities() {
+  collideWithEntities() {
     for (let i = 0; i < this.entities.length; i++) {
       const targetEntity = this.entities[i];
-      const collideTypes = targetEntity.collideTypes;
-      const collideEntities = this.entities.filter(entity =>
-        collideTypes.includes(entity.type)
+      const collideTypes = [];
+      const collideMapIterator = targetEntity.collideMap.keys();
+      for (
+        let nextType = collideMapIterator.next();
+        nextType.done !== true;
+        nextType = collideMapIterator.next()
+      ) {
+        collideTypes.push(nextType.value);
+      }
+      const collideEntities = this.entities.filter(
+        entity =>
+          collideTypes.includes(entity.type) &&
+          isColliding(targetEntity, entity)
       );
       for (let j = 0; j < collideEntities.length; j++) {
-        targetEntity.collide(collideEntities[i]);
+        targetEntity.collide(collideEntities[j]);
       }
     }
   }

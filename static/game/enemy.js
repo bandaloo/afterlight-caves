@@ -78,6 +78,8 @@ export function randomStats(difficulty) {
 }
 
 export class Enemy extends Entity {
+  health = 5;
+
   /**
    * constructs a random entity with all the relevant vectors
    * @param {Vector} pos
@@ -101,6 +103,13 @@ export class Enemy extends Entity {
     this.height = 50;
     this.bounciness = 1;
     this.drag = 0.005;
+    this.collideMap.set("PlayerBullet", entity => {
+      //console.log("got hit by a bullet");
+      this.health--;
+      if (this.health <= 0) {
+        this.deleteMe = true;
+      }
+    });
   }
 
   action() {
@@ -126,6 +135,7 @@ export class Enemy extends Entity {
         Math.floor(this.pos.y / bHeight)
       );
 
+      // TODO update this debug drawing
       // Draw cubes around the enemy
       for (let i = entityCell.x - 1; i <= entityCell.x + 1; i++) {
         for (let j = entityCell.y - 1; j <= entityCell.y + 1; j++) {
