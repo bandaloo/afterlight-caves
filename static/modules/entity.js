@@ -99,11 +99,6 @@ export class Entity {
   action() {}
 
   /**
-   * Update non-movement things about the entity
-   */
-  update() {};
-
-  /**
    * what to do when the entity is removed from the world
    */
   destroy() {}

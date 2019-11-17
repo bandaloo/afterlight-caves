@@ -139,13 +139,13 @@ export function calculateCollisionVector(entityA, entityB) {
   }
 
   // If the entity doesn't have collision in a direction, make sure it doesn't
-  // have the vector point that way.
+  // have the vector points that way.
   if (!entityB.collidesBottom) cVector.y = Math.max(0, cVector.y);
   if (!entityB.collidesTop) cVector.y = Math.min(0, cVector.y);
   if (!entityB.collidesLeft) cVector.x = Math.min(0, cVector.x);
   if (!entityB.collidesRight) cVector.x = Math.max(0, cVector.x);
 
-  // Only return the "Easier" direction to resolve from.
+  // Only return the "easier" direction to resolve from.
   // TODO: figure out why this works?
   if (Math.abs(cVector.x) < Math.abs(cVector.y) && cVector.x != 0) {
     cVector.y = 0;
@@ -179,20 +179,27 @@ export function adjustEntity(entity) {
       collisionVectors.push(collisionVector);
     }
   }
-
+  // Keep track of how far entity moved during adjustment.
+  const mv = new Vector(0, 0);
   // For each colliding vector, resolve the collision.
   for (let i = 0; i < collisionVectors.length; i++) {
     const cv = collisionVectors[i];
     if (Math.abs(cv.x) > Math.abs(cv.y) && cv.x != 0) {
       // If x is the "easiest" solution (but not 0), use x.
-      entity.pos.x -= collisionVectors[i].x;
-      entity.vel.x = collisionVectors[i].x * -entity.bounciness;
+      // TODO figure out if this is a hack.
+      if (Math.abs(cv.x) > Math.abs(mv.x)) {
+        //entity.pos.x -= cv.x;
+        mv.x = cv.x;
+      }
+      entity.vel.x = cv.x * -entity.bounciness;
     } else if (Math.abs(cv.y) > Math.abs(cv.x) && cv.y != 0) {
-      // If x is the "easiest" solution (but not 0), use x.
-      entity.pos.y -= cv.y;
+      // If x is the "easiest" solution (but not 0), use y.
+      if (Math.abs(cv.y) > Math.abs(mv.y)) {
+        //entity.pos.y -= cv.y;
+        mv.y = cv.y;
+      }
       entity.vel.y = cv.y * -entity.bounciness;
     } else {
-      // TODO could this get an entity stuck on a corner?
       // If X and Y are equal, resolve them both.
       entity.pos.x -= cv.x;
       entity.pos.y -= cv.y;
@@ -200,4 +207,6 @@ export function adjustEntity(entity) {
       entity.vel.y = cv.y * -entity.bounciness;
     }
   }
+
+  entity.pos = entity.pos.sub(mv);
 }

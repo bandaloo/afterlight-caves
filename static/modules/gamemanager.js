@@ -5,7 +5,6 @@ import {
   controlKeydownListener,
   controlKeyupListener
 } from "../game/buttons.js";
-import { Enemy } from "../game/enemy.js";
 
 class GameManager {
   updateTime = 10;
@@ -109,14 +108,6 @@ class GameManager {
     for (let i = 0; i < this.entities.length; i++) {
       this.entities[i].adjust();
     }
-    // TODO check for collisions
-    // TODO resolve collisions
-  }
-
-  updateGame() {
-    for (const e of this.entities) {
-      e.update();
-    }
   }
 
   drawGame() {
@@ -181,7 +172,6 @@ class GameManager {
           this.lastPositions.push(this.entities[i].pos);
         }
       }
-      this.updateGame();
       this.stepGame();
       timeLeft -= this.updateTime;
       gameSteps++;
