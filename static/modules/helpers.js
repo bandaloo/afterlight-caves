@@ -1,3 +1,5 @@
+import { Vector } from "./vector.js";
+
 /**
  * clamps a number between a minimum and maximum value
  * @param {number} n the number to clamp
@@ -106,4 +108,9 @@ export function inPlaceFilter(array, func, destruct = n => {}) {
       i--;
     }
   }
+}
+
+export function randomNormalVec() {
+  const angle = Math.random() * Math.PI * 2;
+  return new Vector(Math.cos(angle), Math.sin(angle));
 }

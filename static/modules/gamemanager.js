@@ -19,8 +19,8 @@ class GameManager {
   /** @type {Entity[]} */
   entities = [];
 
-  /** @type {Vector[]} */
-  lastPositions = [];
+  /** @type {Entity[]} */
+  particles = [];
 
   /** @type {number[][]} */
   terrain = [];
@@ -100,14 +100,18 @@ class GameManager {
     // let all entities take their actions
     for (let i = 0; i < this.entities.length; i++) {
       this.entities[i].action();
-      this.entities[i].lifetime--;
-      if (this.entities[i].lifetime <= 0) {
-        this.entities[i].deleteMe = true;
-      }
     }
-    // run a physics step on all entities
-    for (let i = 0; i < this.entities.length; i++) {
-      this.entities[i].step();
+    // run a physics step on all entities including particles
+    /** @type {Entity[][]} */
+    const entityLists = [this.entities, this.particles];
+    for (let i = 0; i < entityLists.length; i++) {
+      for (let j = 0; j < entityLists[i].length; j++) {
+        entityLists[i][j].lifetime--;
+        if (entityLists[i][j].lifetime <= 0) {
+          entityLists[i][j].deleteMe = true;
+        }
+        entityLists[i][j].step();
+      }
     }
     // push all entities out of walls
     for (let i = 0; i < this.entities.length; i++) {
@@ -116,15 +120,20 @@ class GameManager {
     // resolve collisions between entities
     this.collideWithEntities();
     // destroy entities that have an expired lifetime or are flagged
-    this.destroyEntities();
+    this.destroyEntities(this.entities);
+    this.destroyEntities(this.particles);
     // set presses and releases to false
     cleanButtons();
   }
 
-  destroyEntities() {
+  /**
+   * removes all dead entities from an entity list
+   * @param {Entity[]} entityList
+   */
+  destroyEntities(entityList) {
     // destroy all entites that want to be deleted
     inPlaceFilter(
-      this.entities,
+      entityList,
       entity => entity.lifetime > 0 && !entity.deleteMe,
       entity => entity.destroy()
     );
@@ -140,6 +149,10 @@ class GameManager {
     this.context.save();
     // run draw func specified by game programmer
     this.drawFunc();
+    // draw all particles
+    for (let i = 0; i < this.particles.length; i++) {
+      this.particles[i].draw();
+    }
     // draw all entities
     for (let i = 0; i < this.entities.length; i++) {
       this.entities[i].draw();
@@ -182,7 +195,33 @@ class GameManager {
     }
   }
 
-  // TODO should currentTime be an optional parameter?
+  /**
+   * @param {Entity[]} entityList
+   */
+  prepareTween(entityList) {
+    // get the tween vectors
+    for (let i = 0; i < entityList.length; i++) {
+      entityList[i].lastPos = entityList[i].pos;
+    }
+  }
+
+  performTween(entityList, timeLeft) {
+    for (let i = 0; i < entityList.length; i++) {
+      // value used for debugging
+      let tempPrevPos = entityList[i].lastPos;
+      let tempDrawPos = entityList[i].lastPos.partway(
+        entityList[i].pos,
+        (this.updateTime + timeLeft) / this.updateTime
+      );
+      // value used for debugging
+      let tempCurrPos = entityList[i].pos;
+      // uncomment these to debug tweening
+      //console.log("prev " + tempPrevPos);
+      //console.log("draw " + tempDrawPos);
+      //console.log("curr " + tempCurrPos);
+      entityList[i].drawPos = tempDrawPos;
+    }
+  }
 
   /**
    * @param {number} [currentTime]
@@ -198,51 +237,22 @@ class GameManager {
     let timeLeft = deltaTime - this.overTime;
     while (timeLeft > 0) {
       // if this loop is the last step before going over time
-      let doDestroy = true;
       if (timeLeft <= this.updateTime) {
-        //this.lastPositions = [];
-        // get the tween vectors
-        for (let i = 0; i < this.entities.length; i++) {
-          //this.lastPositions.push(this.entities[i].pos);
-          this.entities[i].lastPos = this.entities[i].pos;
-        }
-        // delay destruction of entities until after draw, just this time
-        doDestroy = false;
+        this.prepareTween(this.particles);
+        this.prepareTween(this.entities);
       }
       this.stepGame();
-      if (doDestroy) {
-        //this.destroyEntities();
-      }
       timeLeft -= this.updateTime;
       gameSteps++;
     }
     //console.log(gameSteps);
     // set all the tweened vectors to the draw positions
-    for (let i = 0; i < this.entities.length; i++) {
-      //let tempPrevPos = this.lastPositions[i];
-      let tempPrevPos = this.entities[i].lastPos;
-      /*
-      let tempDrawPos = this.lastPositions[i].partway(
-        this.entities[i].pos,
-        (this.updateTime + timeLeft) / this.updateTime
-      );
-      */
-      let tempDrawPos = this.entities[i].lastPos.partway(
-        this.entities[i].pos,
-        (this.updateTime + timeLeft) / this.updateTime
-      );
-      //let tempCurrPos = this.entities[i].pos;
-      let tempCurrPos = this.entities[i].pos;
-      //console.log("prev " + tempPrevPos);
-      //console.log("draw " + tempDrawPos);
-      //console.log("curr " + tempCurrPos);
-      this.entities[i].drawPos = tempDrawPos;
-    }
-
+    this.performTween(this.entities, timeLeft);
+    this.performTween(this.particles, timeLeft);
     this.overTime = -timeLeft;
 
     this.drawGame();
-    this.destroyEntities();
+    //this.destroyEntities();
 
     // increase the time
     this.previousTime = currentTime;
@@ -311,7 +321,7 @@ export function getDimensions() {
 }
 
 /**
- * add an entity to the game world
+ * add an entity to the game world as a full entity
  * @param {Entity} entity
  */
 export function addToWorld(entity) {
@@ -320,4 +330,12 @@ export function addToWorld(entity) {
 
 export function destroyEverything() {
   gameManager.entities = [];
+}
+
+/**
+ * add entity to the game world as a particle
+ * @param {Entity} particle
+ */
+export function addParticle(particle) {
+  gameManager.particles.push(particle);
 }

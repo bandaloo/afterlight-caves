@@ -169,7 +169,8 @@ export function adjustEntity(entity) {
 
   let collisionVectors = [];
 
-  // Iterate through each colliding entity, and get a vector that defines how "collided" they are
+  // Iterate through each colliding entity, and get a vector that defines how
+  // "collided" they are
   for (let i = 0; i < collidingEntities.length; i++) {
     const collisionVector = calculateCollisionVector(
       entity,

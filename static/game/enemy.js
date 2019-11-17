@@ -6,8 +6,13 @@ import {
   centeredOutlineRectFill,
   centeredOutlineCircle
 } from "./draw.js";
-import { getContext, getDimensions } from "../modules/gamemanager.js";
+import {
+  getContext,
+  getDimensions,
+  addParticle
+} from "../modules/gamemanager.js";
 import { solidAt, isColliding } from "../modules/collision.js";
+import { SquareParticle } from "./squareparticle.js";
 /**
  * an enum for allowed shapes of enemies
  * @enum {number}
@@ -78,7 +83,7 @@ export function randomStats(difficulty) {
 }
 
 export class Enemy extends Entity {
-  health = 5;
+  health = 3;
 
   /**
    * constructs a random entity with all the relevant vectors
@@ -103,12 +108,16 @@ export class Enemy extends Entity {
     this.height = 50;
     this.bounciness = 1;
     this.drag = 0.005;
+
+    // what to do when colliding with other entities
+    // TODO don't make this an anonymous function
     this.collideMap.set("PlayerBullet", entity => {
-      //console.log("got hit by a bullet");
+      this.vel = this.vel.add(entity.vel.mult(0.3));
       this.health--;
       if (this.health <= 0) {
         this.deleteMe = true;
       }
+      entity.deleteMe = true;
     });
   }
 
@@ -246,7 +255,10 @@ export class Enemy extends Entity {
   }
 
   destroy() {
-    console.log("i got destroyd");
+    for (let i = 0; i < 30; i++) {
+      addParticle(new SquareParticle(this.pos, this.look.color));
+    }
+    console.log("i got destroyed");
   }
 
   toString() {
