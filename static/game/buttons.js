@@ -1,6 +1,7 @@
 import { Vector } from "../modules/vector.js";
+import { numSign } from "../modules/helpers.js";
 
-const noisy = false;
+const noisy = true;
 
 /**
  * @typedef {Object} Status
@@ -70,6 +71,9 @@ export const buttons = {
  * @param {Directional} directional
  */
 function calcDirVec(directional) {
+  // make directional vec all 1s and 0s
+  directional.vec.x = numSign(directional.vec.x);
+  directional.vec.y = numSign(directional.vec.y);
   if (directional.right.status.pressed) {
     directional.vec.x = 1;
   }

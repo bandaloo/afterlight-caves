@@ -12,7 +12,7 @@ import {
   addParticle
 } from "../modules/gamemanager.js";
 import { solidAt, isColliding } from "../modules/collision.js";
-import { SquareParticle } from "./squareparticle.js";
+import { Particle, EffectEnum } from "./particle.js";
 /**
  * an enum for allowed shapes of enemies
  * @enum {number}
@@ -112,7 +112,7 @@ export class Enemy extends Entity {
     // what to do when colliding with other entities
     // TODO don't make this an anonymous function
     this.collideMap.set("PlayerBullet", entity => {
-      this.vel = this.vel.add(entity.vel.mult(0.3));
+      this.vel = this.vel.add(entity.vel.mult(0.7));
       this.health--;
       if (this.health <= 0) {
         this.deleteMe = true;
@@ -256,7 +256,7 @@ export class Enemy extends Entity {
 
   destroy() {
     for (let i = 0; i < 30; i++) {
-      addParticle(new SquareParticle(this.pos, this.look.color));
+      addParticle(new Particle(this.pos, this.look.color, EffectEnum.spark));
     }
     console.log("i got destroyed");
   }

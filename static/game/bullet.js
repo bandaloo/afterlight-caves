@@ -3,7 +3,7 @@ import { Entity } from "../modules/entity.js";
 import { centeredOutlineCircle } from "./draw.js";
 import { getCell } from "../modules/collision.js";
 import { setBlock, addParticle } from "../modules/gamemanager.js";
-import { SquareParticle } from "./squareparticle.js";
+import { Particle, EffectEnum } from "./particle.js";
 
 export class Bullet extends Entity {
   /**
@@ -30,13 +30,23 @@ export class Bullet extends Entity {
     centeredOutlineCircle(this.drawPos, this.width / 2, 4, "white", "black");
   }
 
-  destroy() {}
+  destroy() {
+    for (let i = 0; i < 3; i++) {
+      addParticle(
+        new Particle(this.pos, "white", EffectEnum.spark, 8, 5, 0.12)
+      );
+    }
+  }
 
+  /**
+   * what to do when hitting a block
+   * @param {Entity} entity
+   */
   collideWithBlock(entity) {
     const cellVec = getCell(entity.pos);
     if (setBlock(cellVec.x, cellVec.y, 0)) {
       for (let i = 0; i < 15; i++) {
-        addParticle(new SquareParticle(entity.pos, "black", 5, 3, undefined));
+        addParticle(new Particle(entity.pos, "black", EffectEnum.square, 5, 3));
       }
     }
   }

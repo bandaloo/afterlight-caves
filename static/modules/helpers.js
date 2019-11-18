@@ -114,3 +114,8 @@ export function randomNormalVec() {
   const angle = Math.random() * Math.PI * 2;
   return new Vector(Math.cos(angle), Math.sin(angle));
 }
+
+export function numSign(n) {
+  const r = n > 0 ? 1 : n < 0 ? -1 : 0;
+  return r;
+}

@@ -140,6 +140,22 @@ export function centeredOutlineCircle(
   context.stroke();
 }
 
+/**
+ * draw a line
+ * @param {Vector} pos1
+ * @param {Vector} pos2
+ * @param {string} style
+ * @param {number} width
+ */
+export function drawLine(pos1, pos2, style, width) {
+  const context = getContext();
+  context.beginPath();
+  context.strokeStyle = style;
+  context.lineWidth = width;
+  context.moveTo(pos1.x, pos1.y);
+  context.lineTo(pos2.x, pos2.y);
+  context.stroke();
+}
 // TODO use drawing functions for these for if camera controls are ever added
 
 /**
