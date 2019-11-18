@@ -7,7 +7,7 @@ import { Bullet } from "./bullet.js";
 import { getCell } from "../modules/collision.js";
 
 export class Hero extends Entity {
-  fireDelay = 3; // game steps to wait before firing
+  fireDelay = 10; // game steps to wait before firing
   fireCount = 0;
   speed = 2; // movement speed
   drag = 0.1; // movement deceleration
@@ -48,7 +48,7 @@ export class Hero extends Entity {
         addToWorld(
           new Bullet(
             this.pos.add(buttons.shoot.vec.mult(this.width / 2)),
-            buttons.shoot.vec.mult(10),
+            buttons.shoot.vec.mult(10).add(this.vel),
             new Vector(0, 0),
             true
           )
