@@ -1,11 +1,11 @@
 import { Entity } from "./entity.js";
-import { Vector } from "./vector.js";
 import {
-  buttons,
   controlKeydownListener,
-  controlKeyupListener
+  controlKeyupListener,
+  cleanButtons
 } from "../game/buttons.js";
-import { Enemy } from "../game/enemy.js";
+import { inPlaceFilter } from "./helpers.js";
+import { isColliding } from "./collision.js";
 
 class GameManager {
   updateTime = 10;
@@ -18,8 +18,8 @@ class GameManager {
   /** @type {Entity[]} */
   entities = [];
 
-  /** @type {Vector[]} */
-  lastPositions = [];
+  /** @type {Entity[]} */
+  particles = [];
 
   /** @type {number[][]} */
   terrain = [];
@@ -72,9 +72,6 @@ class GameManager {
         this.displayCanvas.width = width;
         this.displayCanvas.height = height;
         this.enterFullscreen();
-        console.log(
-          `image smoothing drawing ${this.context.imageSmoothingEnabled} display ${this.displayContext.imageSmoothingEnabled}`
-        );
       }
     });
 
@@ -99,27 +96,46 @@ class GameManager {
   }
 
   stepGame() {
-    // TODO poll for input
-    // run step function of all entities
     // let all entities take their actions
     for (let i = 0; i < this.entities.length; i++) {
       this.entities[i].action();
     }
-    for (let i = 0; i < this.entities.length; i++) {
-      this.entities[i].step();
+    // run a physics step on all entities including particles
+    /** @type {Entity[][]} */
+    const entityLists = [this.entities, this.particles];
+    for (let i = 0; i < entityLists.length; i++) {
+      for (let j = 0; j < entityLists[i].length; j++) {
+        entityLists[i][j].lifetime--;
+        if (entityLists[i][j].lifetime <= 0) {
+          entityLists[i][j].deleteMe = true;
+        }
+        entityLists[i][j].step();
+      }
     }
     // push all entities out of walls
     for (let i = 0; i < this.entities.length; i++) {
       this.entities[i].adjust();
     }
-    // TODO check for collisions
-    // TODO resolve collisions
+    // resolve collisions between entities
+    this.collideWithEntities();
+    // destroy entities that have an expired lifetime or are flagged
+    this.destroyEntities(this.entities);
+    this.destroyEntities(this.particles);
+    // set presses and releases to false
+    cleanButtons();
   }
 
-  updateGame() {
-    for (const e of this.entities) {
-      e.update();
-    }
+  /**
+   * removes all dead entities from an entity list
+   * @param {Entity[]} entityList
+   */
+  destroyEntities(entityList) {
+    // destroy all entites that want to be deleted
+    inPlaceFilter(
+      entityList,
+      entity => entity.lifetime > 0 && !entity.deleteMe,
+      entity => entity.destroy()
+    );
   }
 
   drawGame() {
@@ -132,6 +148,10 @@ class GameManager {
     this.context.save();
     // run draw func specified by game programmer
     this.drawFunc();
+    // draw all particles
+    for (let i = 0; i < this.particles.length; i++) {
+      this.particles[i].draw();
+    }
     // draw all entities
     for (let i = 0; i < this.entities.length; i++) {
       this.entities[i].draw();
@@ -151,7 +171,56 @@ class GameManager {
     this.displayContext.restore();
   }
 
-  // TODO should currentTime be an optional parameter?
+  collideWithEntities() {
+    for (let i = 0; i < this.entities.length; i++) {
+      const targetEntity = this.entities[i];
+      const collideTypes = [];
+      const collideMapIterator = targetEntity.collideMap.keys();
+      for (
+        let nextType = collideMapIterator.next();
+        nextType.done !== true;
+        nextType = collideMapIterator.next()
+      ) {
+        collideTypes.push(nextType.value);
+      }
+      const collideEntities = this.entities.filter(
+        entity =>
+          collideTypes.includes(entity.type) &&
+          isColliding(targetEntity, entity)
+      );
+      for (let j = 0; j < collideEntities.length; j++) {
+        targetEntity.collideWithEntity(collideEntities[j]);
+      }
+    }
+  }
+
+  /**
+   * @param {Entity[]} entityList
+   */
+  prepareTween(entityList) {
+    // get the tween vectors
+    for (let i = 0; i < entityList.length; i++) {
+      entityList[i].lastPos = entityList[i].pos;
+    }
+  }
+
+  performTween(entityList, timeLeft) {
+    for (let i = 0; i < entityList.length; i++) {
+      // value used for debugging
+      let tempPrevPos = entityList[i].lastPos;
+      let tempDrawPos = entityList[i].lastPos.partway(
+        entityList[i].pos,
+        (this.updateTime + timeLeft) / this.updateTime
+      );
+      // value used for debugging
+      let tempCurrPos = entityList[i].pos;
+      // uncomment these to debug tweening
+      //console.log("prev " + tempPrevPos);
+      //console.log("draw " + tempDrawPos);
+      //console.log("curr " + tempCurrPos);
+      entityList[i].drawPos = tempDrawPos;
+    }
+  }
 
   /**
    * @param {number} [currentTime]
@@ -159,41 +228,30 @@ class GameManager {
   update(currentTime = this.updateTime) {
     // keep track of time passed
     let deltaTime = currentTime - this.previousTime;
+    if (deltaTime > 200) {
+      deltaTime = 200;
+    }
     this.totalTime += deltaTime;
     let gameSteps = 0;
     let timeLeft = deltaTime - this.overTime;
     while (timeLeft > 0) {
       // if this loop is the last step before going over time
       if (timeLeft <= this.updateTime) {
-        this.lastPositions = [];
-        // get the tween vectors
-        for (let i = 0; i < this.entities.length; i++) {
-          this.lastPositions.push(this.entities[i].pos);
-        }
+        this.prepareTween(this.particles);
+        this.prepareTween(this.entities);
       }
-      this.updateGame();
       this.stepGame();
       timeLeft -= this.updateTime;
       gameSteps++;
     }
     //console.log(gameSteps);
     // set all the tweened vectors to the draw positions
-    for (let i = 0; i < this.entities.length; i++) {
-      let tempPrevPos = this.lastPositions[i];
-      let tempDrawPos = this.lastPositions[i].partway(
-        this.entities[i].pos,
-        (this.updateTime + timeLeft) / this.updateTime
-      );
-      let tempCurrPos = this.entities[i].pos;
-      //console.log("prev " + tempPrevPos);
-      //console.log("draw " + tempDrawPos);
-      //console.log("curr " + tempCurrPos);
-      this.entities[i].drawPos = tempDrawPos;
-    }
-
+    this.performTween(this.entities, timeLeft);
+    this.performTween(this.particles, timeLeft);
     this.overTime = -timeLeft;
 
     this.drawGame();
+    //this.destroyEntities();
 
     // increase the time
     this.previousTime = currentTime;
@@ -243,6 +301,35 @@ export function getTerrain() {
   return gameManager.terrain;
 }
 
+/**
+ * returns whether a coordinate is inbounds for the terrain
+ * @param {number} i
+ * @param {number} j
+ */
+export function inbounds(i, j) {
+  return (
+    i >= 0 &&
+    i < gameManager.terrain.length &&
+    j >= 0 &&
+    j < gameManager.terrain[0].length
+  );
+}
+/**
+ *
+ * @param {number} i
+ * @param {number} j
+ * @param {number} val
+ */
+export function setBlock(i, j, val) {
+  if (inbounds(i, j)) {
+    gameManager.terrain[i][j] = val;
+    // was able to set it
+    return true;
+  }
+  // wasn't able to set it
+  return false;
+}
+
 export function getTotalTime() {
   return gameManager.totalTime;
 }
@@ -262,7 +349,7 @@ export function getDimensions() {
 }
 
 /**
- * add an entity to the game world
+ * add an entity to the game world as a full entity
  * @param {Entity} entity
  */
 export function addToWorld(entity) {
@@ -271,4 +358,12 @@ export function addToWorld(entity) {
 
 export function destroyEverything() {
   gameManager.entities = [];
+}
+
+/**
+ * add entity to the game world as a particle
+ * @param {Entity} particle
+ */
+export function addParticle(particle) {
+  gameManager.particles.push(particle);
 }

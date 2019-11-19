@@ -133,6 +133,10 @@ class Vector {
     return this.dist(this.closestVecToSeg(a, b));
   }
 
+  isZeroVec() {
+    return this.x === 0 && this.y === 0;
+  }
+
   toString() {
     return `[${this.x}, ${this.y}]`;
   }

@@ -3,6 +3,17 @@ import { Entity } from "./entity.js";
 import { getTerrain, getDimensions } from "./gamemanager.js";
 
 /**
+ * @param {Vector} pos
+ * @returns {Vector}
+ */
+export function getCell(pos) {
+  const { width: bWidth, height: bHeight } = getDimensions();
+  const i = Math.floor(pos.x / bWidth);
+  const j = Math.floor(pos.y / bHeight);
+  return new Vector(i, j);
+}
+
+/**
  * checks if cell position solid (outside is solid)
  * @param {number} i
  * @param {number} j
@@ -98,9 +109,9 @@ export function isColliding(entityA, entityB) {
 }
 
 /**
- * Given two entities A and B, calculates the smallest vector needed to apply to entity A to prevent collision.
- * Returns empty vector if A and B are not colliding.
- * Assumes rectangle A does not surround rectangle B
+ * Given two entities A and B, calculates the smallest vector needed to apply
+ * to entity A to prevent collision. Returns empty vector if A and B are not
+ * colliding. Assumes rectangle A does not surround rectangle B
  * @param {Entity} entityA
  * @param {Entity} entityB
  * @returns {Vector}
@@ -139,13 +150,13 @@ export function calculateCollisionVector(entityA, entityB) {
   }
 
   // If the entity doesn't have collision in a direction, make sure it doesn't
-  // have the vector point that way.
+  // have the vector points that way.
   if (!entityB.collidesBottom) cVector.y = Math.max(0, cVector.y);
   if (!entityB.collidesTop) cVector.y = Math.min(0, cVector.y);
   if (!entityB.collidesLeft) cVector.x = Math.min(0, cVector.x);
   if (!entityB.collidesRight) cVector.x = Math.max(0, cVector.x);
 
-  // Only return the "Easier" direction to resolve from.
+  // Only return the "easier" direction to resolve from.
   // TODO: figure out why this works?
   if (Math.abs(cVector.x) < Math.abs(cVector.y) && cVector.x != 0) {
     cVector.y = 0;
@@ -162,42 +173,57 @@ export function calculateCollisionVector(entityA, entityB) {
  */
 export function adjustEntity(entity) {
   // Initialize collision list with collisions between entity and the world
+  //console.log(entity.type);
   let collidingEntities;
   if (entity.hitsWalls) collidingEntities = collideWithWorld(entity);
   else collidingEntities = [];
 
-  // TODO: fill this list with entities to collide with.
   let collisionVectors = [];
 
-  // Iterate through each colliding entity, and get a vector that defines how "collided" they are
+  const hitEntities = [];
+
+  // Iterate through each colliding entity, and get a vector that defines how
+  // "collided" they are
   for (let i = 0; i < collidingEntities.length; i++) {
     const collisionVector = calculateCollisionVector(
       entity,
       collidingEntities[i]
     );
+    // TODO replace with isZeroVector
     if (!(collisionVector.x == 0 && collisionVector.y == 0)) {
       collisionVectors.push(collisionVector);
+      hitEntities.push(collidingEntities[i]);
     }
   }
-
+  // Keep track of how far entity moved during adjustment.
+  const mv = new Vector(0, 0);
   // For each colliding vector, resolve the collision.
   for (let i = 0; i < collisionVectors.length; i++) {
     const cv = collisionVectors[i];
     if (Math.abs(cv.x) > Math.abs(cv.y) && cv.x != 0) {
       // If x is the "easiest" solution (but not 0), use x.
-      entity.pos.x -= collisionVectors[i].x;
-      entity.vel.x = collisionVectors[i].x * -entity.bounciness;
+      if (Math.abs(cv.x) > Math.abs(mv.x)) {
+        mv.x = cv.x;
+      }
     } else if (Math.abs(cv.y) > Math.abs(cv.x) && cv.y != 0) {
-      // If x is the "easiest" solution (but not 0), use x.
-      entity.pos.y -= cv.y;
-      entity.vel.y = cv.y * -entity.bounciness;
+      // If y is the "easiest" solution (but not 0), use y.
+      if (Math.abs(cv.y) > Math.abs(mv.y)) {
+        mv.y = cv.y;
+      }
     } else {
-      // TODO could this get an entity stuck on a corner?
       // If X and Y are equal, resolve them both.
       entity.pos.x -= cv.x;
       entity.pos.y -= cv.y;
-      entity.vel.x = cv.x * -entity.bounciness;
-      entity.vel.y = cv.y * -entity.bounciness;
     }
+  }
+
+  entity.pos = entity.pos.sub(mv);
+
+  // bounce based on the move vector
+  if (mv.x !== 0) entity.vel.x *= -entity.bounciness;
+  if (mv.y !== 0) entity.vel.y *= -entity.bounciness;
+
+  for (let i = 0; i < hitEntities.length; i++) {
+    entity.collideWithBlock(hitEntities[i]);
   }
 }

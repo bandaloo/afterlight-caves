@@ -1,9 +1,18 @@
 import { Entity } from "../modules/entity.js";
 import { Vector } from "../modules/vector.js";
 import { randomFromEnum, randomInt, hsl } from "../modules/helpers.js";
-import { drawCircle, outlineCircle, centeredOutlineRect } from "./draw.js";
-import { getContext } from "../modules/gamemanager.js";
+import {
+  centeredOutlineRect,
+  centeredOutlineRectFill,
+  centeredOutlineCircle
+} from "./draw.js";
+import {
+  getContext,
+  getDimensions,
+  addParticle
+} from "../modules/gamemanager.js";
 import { solidAt, isColliding } from "../modules/collision.js";
+import { Particle, EffectEnum } from "./particle.js";
 /**
  * an enum for allowed shapes of enemies
  * @enum {number}
@@ -28,7 +37,7 @@ const ShapeEnum = Object.freeze({ square: 1, circle: 2 });
 export function randomLook() {
   return {
     shape: randomFromEnum(ShapeEnum),
-    color: hsl(randomInt(360)),
+    color: hsl(randomInt(360), 100, 70),
     eyeSpacing: 10 + randomInt(10),
     eyeSize: 5 + randomInt(3),
     mouthWidth: 20 + randomInt(25),
@@ -74,6 +83,8 @@ export function randomStats(difficulty) {
 }
 
 export class Enemy extends Entity {
+  health = 3;
+
   /**
    * constructs a random entity with all the relevant vectors
    * @param {Vector} pos
@@ -92,11 +103,22 @@ export class Enemy extends Entity {
     super(pos, vel, acc);
     this.look = look;
     this.stats = stats;
-    this.type = "enemy";
+    this.type = "Enemy";
     this.width = 50;
     this.height = 50;
     this.bounciness = 1;
     this.drag = 0.005;
+
+    // what to do when colliding with other entities
+    // TODO don't make this an anonymous function
+    this.collideMap.set("PlayerBullet", entity => {
+      this.vel = this.vel.add(entity.vel.mult(0.7));
+      this.health--;
+      if (this.health <= 0) {
+        this.deleteMe = true;
+      }
+      entity.deleteMe = true;
+    });
   }
 
   action() {
@@ -112,33 +134,38 @@ export class Enemy extends Entity {
   }
 
   draw() {
-    // TODO get rid of magic numbers
+    // TODO: get this from some sort of settings
     const debugDraw = false;
 
     if (debugDraw) {
+      const { width: bWidth, height: bHeight } = getDimensions();
       let entityCell = new Vector(
-        Math.floor(this.pos.x / 60),
-        Math.floor(this.pos.y / 60)
+        Math.floor(this.pos.x / bWidth),
+        Math.floor(this.pos.y / bHeight)
       );
 
+      // TODO update this debug drawing
       // Draw cubes around the enemy
       for (let i = entityCell.x - 1; i <= entityCell.x + 1; i++) {
         for (let j = entityCell.y - 1; j <= entityCell.y + 1; j++) {
           let color = "rgba(0, 255, 0, 0.5)";
           if (solidAt(i, j)) {
             color = "rgba(0, 0, 255, 0.5)";
-            let x = (i + 1) * 60 - 60 / 2;
-            let y = (j + 1) * 60 - 60 / 2;
+            let x = (i + 1) * bWidth - bWidth / 2;
+            let y = (j + 1) * bHeight - bHeight / 2;
             let e = new Entity(new Vector(x, y));
-            e.width = 60;
-            e.height = 60;
+            e.width = bWidth;
+            e.height = bHeight;
 
             if (isColliding(this, e)) color = "rgba(255, 0, 0, 0.5)";
 
-            centeredOutlineRect(
-              new Vector((i + 1) * 60 - 30, (j + 1) * 60 - 30),
-              60,
-              60,
+            centeredOutlineRectFill(
+              new Vector(
+                (i + 1) * bWidth - bWidth / 2,
+                (j + 1) * bHeight - bHeight / 2
+              ),
+              bWidth,
+              bHeight,
               4,
               color,
               "white"
@@ -148,9 +175,16 @@ export class Enemy extends Entity {
       }
     }
 
+    // TODO get rid of magic numbers in regular drawing
     // draw the body
     if (this.look.shape === ShapeEnum.circle) {
-      outlineCircle(this.drawPos, 25, 4, this.look.color, "white");
+      centeredOutlineCircle(
+        this.drawPos,
+        this.width / 2,
+        4,
+        this.look.color,
+        "black"
+      );
     } else {
       centeredOutlineRect(
         this.drawPos,
@@ -158,29 +192,34 @@ export class Enemy extends Entity {
         this.height,
         4,
         this.look.color,
-        "white"
+        "black"
       );
     }
 
+    /**
+     * draw a single eye
+     * @param {number} scalar change this to modify what side of face to draw
+     */
+    const drawEye = scalar => {
+      centeredOutlineCircle(
+        this.drawPos.add(new Vector(scalar * this.look.eyeSpacing, 0)),
+        this.look.eyeSize,
+        4,
+        this.look.color,
+        "black"
+      );
+    };
+
     // draw the eyes
-    outlineCircle(
-      this.drawPos.add(new Vector(this.look.eyeSpacing, 0)),
-      this.look.eyeSize,
-      2,
-      "white"
-    );
-    outlineCircle(
-      this.drawPos.sub(new Vector(this.look.eyeSpacing, 0)),
-      this.look.eyeSize,
-      2,
-      "white"
-    );
+    drawEye(1);
+    drawEye(-1);
+
+    const context = getContext();
 
     // draw the mouth
-    const context = getContext();
-    context.strokeStyle = "white";
-    context.lineWidth = 3;
     context.beginPath();
+    context.strokeStyle = this.look.color;
+    context.lineWidth = 4;
     const mouthHalf = this.look.mouthWidth / 2;
     context.moveTo(
       this.drawPos.x + mouthHalf,
@@ -213,6 +252,13 @@ export class Enemy extends Entity {
       );
       context.stroke();
     }
+  }
+
+  destroy() {
+    for (let i = 0; i < 30; i++) {
+      addParticle(new Particle(this.pos, this.look.color, EffectEnum.spark));
+    }
+    console.log("i got destroyed");
   }
 
   toString() {

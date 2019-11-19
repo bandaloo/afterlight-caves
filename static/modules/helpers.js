@@ -1,3 +1,5 @@
+import { Vector } from "./vector.js";
+
 /**
  * clamps a number between a minimum and maximum value
  * @param {number} n the number to clamp
@@ -90,4 +92,30 @@ export function griderate(grid, func) {
       func(grid, i, j);
     }
   }
+}
+
+/**
+ * filters an array in place
+ * @param {any[]} array the array to filter
+ * @param {(arg0: any) => boolean} func how to filter
+ * @param {(arg0: any) => void} [destruct] defaults to no-op
+ */
+export function inPlaceFilter(array, func, destruct = n => {}) {
+  for (var i = 0; i < array.length; i++) {
+    if (!func(array[i])) {
+      destruct(array[i]);
+      array.splice(i, 1);
+      i--;
+    }
+  }
+}
+
+export function randomNormalVec() {
+  const angle = Math.random() * Math.PI * 2;
+  return new Vector(Math.cos(angle), Math.sin(angle));
+}
+
+export function numSign(n) {
+  const r = n > 0 ? 1 : n < 0 ? -1 : 0;
+  return r;
 }

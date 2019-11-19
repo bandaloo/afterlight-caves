@@ -1,13 +1,18 @@
 import { Entity } from "../modules/entity.js";
 import { Vector } from "../modules/vector.js";
+import { centeredOutlineCircle } from "./draw.js";
 import { buttons } from "./buttons.js";
-import { drawCircle } from "./draw.js";
+import { addToWorld, getTerrain } from "../modules/gamemanager.js";
+import { Bullet } from "./bullet.js";
+import { getCell } from "../modules/collision.js";
 
 export class Hero extends Entity {
-  fireRate = 2; // bullets per second
+  fireDelay = 10; // game steps to wait before firing
+  fireCount = 0;
   speed = 2; // movement speed
   drag = 0.1; // movement deceleration
   health = 3; // hits taken before dying
+  eyeDirection = new Vector(0, 1);
 
   /**
    * @param startingPos {Vector} the starting position of this Hero
@@ -24,26 +29,35 @@ export class Hero extends Entity {
    * Draws the hero at its position in the world
    */
   draw() {
-    drawCircle(this.drawPos, 25, "yellow");
+    centeredOutlineCircle(this.drawPos, this.width / 2, 4, "white", "black");
+    centeredOutlineCircle(
+      this.drawPos.add(this.eyeDirection.mult(10)),
+      10,
+      4,
+      "white"
+    );
   }
 
   action() {
-    // deal with movement input
-    // add an acceleration if the button was just pressed
-    let dirVec = new Vector(0, 0);
-    if (buttons.move.up.status.pressed) {
-      //this.acc.add(new Vector(0, -1 * this.speed));
-      dirVec = dirVec.add(new Vector(0, -1));
+    this.acc = buttons.move.vec;
+    // prevents velocity from getting too small and normalization messing up
+    if (!buttons.shoot.vec.isZeroVec()) {
+      this.eyeDirection = buttons.shoot.vec;
+      // shoot a bullet
+      if (this.fireCount === 0) {
+        addToWorld(
+          new Bullet(
+            this.pos.add(buttons.shoot.vec.mult(this.width / 2)),
+            buttons.shoot.vec.mult(10).add(this.vel),
+            new Vector(0, 0),
+            true
+          )
+        );
+      }
+      this.fireCount++;
+      this.fireCount %= this.fireDelay;
+    } else if (this.vel.magnitude() > 0.001) {
+      this.eyeDirection = this.vel.norm();
     }
-    if (buttons.move.right.status.pressed) {
-      dirVec = dirVec.add(new Vector(1, 0));
-    }
-    if (buttons.move.down.status.pressed) {
-      dirVec = dirVec.add(new Vector(0, 1));
-    }
-    if (buttons.move.left.status.pressed) {
-      dirVec = dirVec.add(new Vector(-1, 0));
-    }
-    this.acc = dirVec;
   }
 }

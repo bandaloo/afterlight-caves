@@ -13,7 +13,7 @@ import { Enemy, randomLook, randomStats } from "./game/enemy.js";
 import { Vector } from "./modules/vector.js";
 import { shuffle, randomInt, hsl } from "./modules/helpers.js";
 import { Hero } from "./game/hero.js";
-import { pepperGems } from "./game/generator.js";
+import { initBlockField } from "./game/generator.js";
 
 const blockWidth = 60;
 const blockHeight = 60;
@@ -37,14 +37,19 @@ function resetDemo() {
   enemyLooks = [];
   enemyStats = [];
 
-  let board = pepperGems(
-    getGrid(blockColumns, blockRows, caveRules, EdgesEnum.alive, 0.45, 20),
-    0.1
+  let board = getGrid(
+    blockColumns,
+    blockRows,
+    caveRules,
+    EdgesEnum.alive,
+    0.45,
+    20
   );
 
   console.log(boardToString(board));
 
   setTerrain(board);
+  initBlockField(board);
   setDimensions(blockWidth, blockHeight);
 
   setGameDrawFunc(() => {
