@@ -6,7 +6,7 @@ import {
 } from "../modules/gamemanager.js";
 import { griderate } from "../modules/helpers.js";
 import { Vector } from "../modules/vector.js";
-import { GemNumberEnum, blockField } from "./generator.js";
+import { blockField, GemEnum } from "./generator.js";
 
 // TODO some of these are more generic drawing functions that could be moved to
 // the engine
@@ -97,8 +97,10 @@ export function drawCircle(pos, radius, color) {
   context.fill();
 }
 
+// TODO get rid of this
+
 /**
- *
+ * draw outline circle
  * @param {Vector} centerVec
  * @param {number} radius
  * @param {number} borderThickness
@@ -117,7 +119,7 @@ export function outlineCircleFill(
 }
 
 /**
- *
+ * draw centered outline circle
  * @param {Vector} centerVec
  * @param {number} radius
  * @param {number} strokeWidth
@@ -205,27 +207,12 @@ export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
         blockWidth,
         blockHeight
       );
-      // old durability drawing
-      /*
-      if (blockField[i][j].durability !== Infinity) {
-        centeredOutlineRect(
-          new Vector(
-            i * blockWidth + blockWidth / 2,
-            j * blockHeight + blockHeight / 2
-          ),
-          blockWidth * 0.75,
-          blockHeight * 0.75,
-          3,
-          "gray"
-        );
-      }
-      */
     }
   });
 
   griderate(board, (board, i, j) => {
     // draw gems
-    if (board[i][j] > 1) {
+    if (board[i][j] !== 0 && blockField[i][j].gemType !== undefined) {
       const diagonals = [
         [1, 1],
         [1, -1],
@@ -236,7 +223,7 @@ export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
       const gemSize = 10;
       const shineSize = 3;
       const gemMod = 1 + Math.cos(getTotalTime() / 300);
-      let gemColor = GemNumberEnum[board[i][j]].color;
+      let gemInfo = blockField[i][j].gemType;
       for (let k = 0; k < diagonals.length; k++) {
         const gemPosition = new Vector(
           (i + 0.5) * blockWidth + diagonals[k][0] * gemSpacing,
@@ -245,7 +232,13 @@ export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
         const shinePosition = gemPosition.add(
           new Vector(-2 + 2 * gemMod, -2 + 2 * gemMod)
         );
-        centeredOutlineRectFill(gemPosition, gemSize, gemSize, 0, gemColor);
+        centeredOutlineRectFill(
+          gemPosition,
+          gemSize,
+          gemSize,
+          0,
+          gemInfo.color
+        );
         centeredOutlineRectFill(
           shinePosition,
           shineSize + gemMod * 0.7,

@@ -1,5 +1,4 @@
 import { randomInt, griderate } from "../modules/helpers.js";
-import { createNumberGrid } from "./life.js";
 import { Block } from "./block.js";
 
 /**
@@ -44,32 +43,12 @@ export const RoomTypeEnum = Object.freeze({ cave: 1 });
 export let blockField = [];
 
 /**
- * returns the random number to associate to board
- * @returns {number}
- */
-function oldPickGem() {
-  // TODO make this more safe type-wise
-  const normalitySum = Object.values(GemNumberEnum)
-    .map(o => o.normality)
-    .reduce((a, b) => a + b);
-  const choice = randomInt(normalitySum);
-  const entries = Object.entries(GemNumberEnum);
-  let sum = 0;
-  for (const entry of entries) {
-    if (choice < entry[1].normality + sum) {
-      return parseInt(entry[0]);
-    }
-    sum += entry[1].normality;
-  }
-}
-
-/**
  * returns the gem enum of the chosen gem
- * @returns {GemEnum}
+ * @returns {GemInfo}
  */
 function pickGem() {
   // TODO make this more safe type-wise
-  const normalitySum = Object.values(GemNumberEnum)
+  const normalitySum = Object.values(GemEnum)
     .map(o => o.normality)
     .reduce((a, b) => a + b);
   const choice = randomInt(normalitySum);
@@ -84,24 +63,6 @@ function pickGem() {
 }
 
 // TODO move pepper gems to act on the block field, not terrain
-
-/**
- * returns a board with gems sprinkled throughout
- * @param {number[][]} board
- * @param {number} chance
- * @returns {number[][]}
- */
-export function pepperGems(board, chance) {
-  const gemmedBoard = createNumberGrid(board.length, board[0].length);
-  griderate(board, (board, i, j) => {
-    if (board[i][j] !== 0 && Math.random() < chance) {
-      gemmedBoard[i][j] = oldPickGem();
-    } else {
-      gemmedBoard[i][j] = board[i][j];
-    }
-  });
-  return gemmedBoard;
-}
 
 /**
  * create block field from grid of numbers

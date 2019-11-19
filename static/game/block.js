@@ -1,9 +1,8 @@
-import { GemEnum } from "./generator.js";
 export class Block {
   /**
-   *
+   * block that has info about durability and gems
    * @param {number} durability
-   * @param {GemEnum} gemType
+   * @param {import("./generator").GemInfo} gemType
    */
   constructor(durability = 1, gemType = undefined) {
     this.durability = durability;
