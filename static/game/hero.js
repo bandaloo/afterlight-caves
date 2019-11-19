@@ -60,6 +60,4 @@ export class Hero extends Entity {
       this.eyeDirection = this.vel.norm();
     }
   }
-
-  collideWithBlock(entity) {}
 }

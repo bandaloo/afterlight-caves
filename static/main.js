@@ -13,7 +13,7 @@ import { Enemy, randomLook, randomStats } from "./game/enemy.js";
 import { Vector } from "./modules/vector.js";
 import { shuffle, randomInt, hsl } from "./modules/helpers.js";
 import { Hero } from "./game/hero.js";
-import { pepperGems } from "./game/generator.js";
+import { pepperGems, initBlockField } from "./game/generator.js";
 
 const blockWidth = 60;
 const blockHeight = 60;
@@ -45,6 +45,7 @@ function resetDemo() {
   console.log(boardToString(board));
 
   setTerrain(board);
+  initBlockField(board);
   setDimensions(blockWidth, blockHeight);
 
   setGameDrawFunc(() => {

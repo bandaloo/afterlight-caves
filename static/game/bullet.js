@@ -2,8 +2,9 @@ import { Vector } from "../modules/vector.js";
 import { Entity } from "../modules/entity.js";
 import { centeredOutlineCircle } from "./draw.js";
 import { getCell } from "../modules/collision.js";
-import { setBlock, addParticle } from "../modules/gamemanager.js";
+import { setBlock, addParticle, inbounds } from "../modules/gamemanager.js";
 import { Particle, EffectEnum } from "./particle.js";
+import { blockField } from "./generator.js";
 
 export class Bullet extends Entity {
   /**
@@ -44,9 +45,16 @@ export class Bullet extends Entity {
    */
   collideWithBlock(entity) {
     const cellVec = getCell(entity.pos);
-    if (setBlock(cellVec.x, cellVec.y, 0)) {
-      for (let i = 0; i < 15; i++) {
-        addParticle(new Particle(entity.pos, "black", EffectEnum.square, 5, 3));
+    if (
+      inbounds(cellVec.x, cellVec.y) &&
+      blockField[cellVec.x][cellVec.y].durability !== Infinity
+    ) {
+      if (setBlock(cellVec.x, cellVec.y, 0)) {
+        for (let i = 0; i < 15; i++) {
+          addParticle(
+            new Particle(entity.pos, "black", EffectEnum.square, 5, 3)
+          );
+        }
       }
     }
   }

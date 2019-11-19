@@ -6,7 +6,10 @@ import {
 } from "../modules/gamemanager.js";
 import { griderate } from "../modules/helpers.js";
 import { Vector } from "../modules/vector.js";
-import { GemEnum } from "./generator.js";
+import { GemNumberEnum, blockField } from "./generator.js";
+
+// TODO some of these are more generic drawing functions that could be moved to
+// the engine
 
 /**
  * draw a centered rectangle with border at position
@@ -194,13 +197,29 @@ export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
   // draw colored squares on top
   griderate(board, (board, i, j) => {
     if (board[i][j] >= 1) {
-      context.fillStyle = "black";
+      context.fillStyle =
+        blockField[i][j].durability === Infinity ? "black" : "#202020";
       context.fillRect(
         i * blockWidth,
         j * blockHeight,
         blockWidth,
         blockHeight
       );
+      // old durability drawing
+      /*
+      if (blockField[i][j].durability !== Infinity) {
+        centeredOutlineRect(
+          new Vector(
+            i * blockWidth + blockWidth / 2,
+            j * blockHeight + blockHeight / 2
+          ),
+          blockWidth * 0.75,
+          blockHeight * 0.75,
+          3,
+          "gray"
+        );
+      }
+      */
     }
   });
 
@@ -217,7 +236,7 @@ export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
       const gemSize = 10;
       const shineSize = 3;
       const gemMod = 1 + Math.cos(getTotalTime() / 300);
-      let gemColor = GemEnum[board[i][j]].color;
+      let gemColor = GemNumberEnum[board[i][j]].color;
       for (let k = 0; k < diagonals.length; k++) {
         const gemPosition = new Vector(
           (i + 0.5) * blockWidth + diagonals[k][0] * gemSpacing,

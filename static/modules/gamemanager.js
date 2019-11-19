@@ -302,18 +302,26 @@ export function getTerrain() {
 }
 
 /**
+ * returns whether a coordinate is inbounds for the terrain
+ * @param {number} i
+ * @param {number} j
+ */
+export function inbounds(i, j) {
+  return (
+    i >= 0 &&
+    i < gameManager.terrain.length &&
+    j >= 0 &&
+    j < gameManager.terrain[0].length
+  );
+}
+/**
  *
  * @param {number} i
  * @param {number} j
  * @param {number} val
  */
 export function setBlock(i, j, val) {
-  if (
-    i >= 0 &&
-    i < gameManager.terrain.length &&
-    j >= 0 &&
-    j < gameManager.terrain[0].length
-  ) {
+  if (inbounds(i, j)) {
     gameManager.terrain[i][j] = val;
     // was able to set it
     return true;
