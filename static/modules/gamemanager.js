@@ -172,10 +172,22 @@ class GameManager {
   }
 
   collideWithEntities() {
+    // generate the type map for faster access
+    const map = new Map();
+    for (let i = 0; i < this.entities.length; i++) {
+      const entity = this.entities[i];
+      if (map.get(entity.type) === undefined) {
+        map.set(entity.type, []);
+      }
+      map.get(entity.type).push(entity);
+    }
+
     for (let i = 0; i < this.entities.length; i++) {
       const targetEntity = this.entities[i];
       const collideTypes = [];
       const collideMapIterator = targetEntity.collideMap.keys();
+
+      // get types that the target entity should collide with
       for (
         let nextType = collideMapIterator.next();
         nextType.done !== true;
@@ -183,13 +195,23 @@ class GameManager {
       ) {
         collideTypes.push(nextType.value);
       }
+
+      /*
       const collideEntities = this.entities.filter(
         entity =>
           collideTypes.includes(entity.type) &&
           isColliding(targetEntity, entity)
       );
-      for (let j = 0; j < collideEntities.length; j++) {
-        targetEntity.collideWithEntity(collideEntities[j]);
+      */
+      for (let j = 0; j < collideTypes.length; j++) {
+        const collideEntities = map.get(collideTypes[j]);
+        if (collideEntities !== undefined) {
+          for (let k = 0; k < collideEntities.length; k++) {
+            if (isColliding(targetEntity, collideEntities[k])) {
+              targetEntity.collideWithEntity(collideEntities[k]);
+            }
+          }
+        }
       }
     }
   }
@@ -314,11 +336,13 @@ export function inbounds(i, j) {
     j < gameManager.terrain[0].length
   );
 }
+
 /**
- *
+ * set a block in the current terrain without going out of bounds
  * @param {number} i
  * @param {number} j
  * @param {number} val
+ * @returns {boolean} whether the block was able to be set
  */
 export function setBlock(i, j, val) {
   if (inbounds(i, j)) {
