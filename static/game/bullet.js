@@ -21,7 +21,7 @@ export class Bullet extends Entity {
     this.drag = 0;
     this.width = 24;
     this.height = 24;
-    this.bounciness = 0.5;
+    this.bounciness = 1;
     good ? (this.type = "PlayerBullet") : (this.type = "EnemyBullet");
   }
 

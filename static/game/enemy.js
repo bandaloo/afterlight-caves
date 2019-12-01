@@ -110,7 +110,8 @@ export class Enemy extends Entity {
     this.drag = 0.005;
 
     // what to do when colliding with other entities
-    // TODO don't make this an anonymous function
+    // TODO don't make this an anonymous function (make it part of prototype so
+    // it's not repeated)
     this.collideMap.set("PlayerBullet", entity => {
       this.vel = this.vel.add(entity.vel.mult(0.7));
       this.health--;

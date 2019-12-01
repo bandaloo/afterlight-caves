@@ -196,13 +196,6 @@ class GameManager {
         collideTypes.push(nextType.value);
       }
 
-      /*
-      const collideEntities = this.entities.filter(
-        entity =>
-          collideTypes.includes(entity.type) &&
-          isColliding(targetEntity, entity)
-      );
-      */
       for (let j = 0; j < collideTypes.length; j++) {
         const collideEntities = map.get(collideTypes[j]);
         if (collideEntities !== undefined) {
