@@ -4,7 +4,8 @@ import { randomFromEnum, randomInt, hsl } from "../modules/helpers.js";
 import {
   centeredOutlineRect,
   centeredOutlineRectFill,
-  centeredOutlineCircle
+  centeredOutlineCircle,
+  drawLine
 } from "./draw.js";
 import {
   getContext,
@@ -218,17 +219,19 @@ export class Enemy extends Entity {
     const context = getContext();
 
     // draw the mouth
-    context.beginPath();
-    context.strokeStyle = this.look.color;
-    context.lineWidth = 4;
     const mouthHalf = this.look.mouthWidth / 2;
-    context.moveTo(
-      this.drawPos.x + mouthHalf,
-      this.drawPos.y + this.look.mouthOffset
-    );
-    context.lineTo(
-      this.drawPos.x - mouthHalf,
-      this.drawPos.y + this.look.mouthOffset
+
+    drawLine(
+      new Vector(
+        this.drawPos.x + mouthHalf,
+        this.drawPos.y + this.look.mouthOffset
+      ),
+      new Vector(
+        this.drawPos.x - mouthHalf,
+        this.drawPos.y + this.look.mouthOffset
+      ),
+      this.look.color,
+      4
     );
 
     context.stroke();

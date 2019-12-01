@@ -6,6 +6,7 @@ import {
 } from "../game/buttons.js";
 import { inPlaceFilter } from "./helpers.js";
 import { isColliding } from "./collision.js";
+import { Vector } from "./vector.js";
 
 class GameManager {
   updateTime = 10;
@@ -29,6 +30,12 @@ class GameManager {
 
   /** @type {number} */
   blockHeight;
+
+  /** @type {Vector} */
+  cameraOffset = new Vector(0, 0);
+
+  /** @type {Entity} */
+  cameraEntity;
 
   // TODO consider whether we want the options pattern here
   constructor(
@@ -361,6 +368,10 @@ export function setDimensions(blockWidth, blockHeight) {
   gameManager.blockHeight = blockHeight;
 }
 
+/**
+ * return an object with info about block dimensions
+ * @returns {{width: number, height: number}}
+ */
 export function getDimensions() {
   return { width: gameManager.blockWidth, height: gameManager.blockHeight };
 }
@@ -373,6 +384,9 @@ export function addToWorld(entity) {
   gameManager.entities.push(entity);
 }
 
+/**
+ * get rid of all the entities
+ */
 export function destroyEverything() {
   gameManager.entities = [];
 }
@@ -383,4 +397,19 @@ export function destroyEverything() {
  */
 export function addParticle(particle) {
   gameManager.particles.push(particle);
+}
+
+/**
+ * get the camera offset
+ */
+export function getCameraOffset() {
+  return gameManager.cameraOffset;
+}
+
+/**
+ * set the camera offset
+ * @param {Vector} cameraOffset
+ */
+export function setCameraOffset(cameraOffset) {
+  gameManager.cameraOffset = cameraOffset;
 }

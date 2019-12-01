@@ -2,7 +2,8 @@ import {
   getContext,
   getCanvasWidth,
   getCanvasHeight,
-  getTotalTime
+  getTotalTime,
+  getCameraOffset
 } from "../modules/gamemanager.js";
 import { griderate } from "../modules/helpers.js";
 import { Vector } from "../modules/vector.js";
@@ -29,6 +30,8 @@ export function centeredOutlineRectFill(
   borderColor = "black"
 ) {
   let context = getContext();
+
+  centerVec = centerVec.add(getCameraOffset());
 
   // draw the outline rect
   context.fillStyle = borderColor;
@@ -66,6 +69,7 @@ export function centeredOutlineRect(
   strokeStyle,
   fillStyle
 ) {
+  centerVec = centerVec.add(getCameraOffset());
   const context = getContext();
   context.beginPath();
   context.lineWidth = strokeWidth;
@@ -83,6 +87,25 @@ export function centeredOutlineRect(
   context.stroke();
 }
 
+/**
+ * draws a normal rectangle from the corner
+ * @param {number} x
+ * @param {number} y
+ * @param {number} width
+ * @param {number} height
+ * @param {string} style
+ */
+export function normalRect(x, y, width, height, style) {
+  x += getCameraOffset().x;
+  y += getCameraOffset().y;
+  // TODO technically kind of redundant to keep resetting style when drawing
+  // the game board
+  const context = getContext();
+  context.fillStyle = style;
+  context.fillRect(x, y, width, height);
+}
+
+// TODO get rid of the following function
 /**
  * draw a circle onto the draw canvas
  * @param {Vector} pos
@@ -134,6 +157,9 @@ export function centeredOutlineCircle(
   fillStyle
 ) {
   const context = getContext();
+
+  centerVec = centerVec.add(getCameraOffset());
+
   context.beginPath();
   context.lineWidth = strokeWidth;
   context.strokeStyle = strokeStyle;
@@ -154,6 +180,10 @@ export function centeredOutlineCircle(
  */
 export function drawLine(pos1, pos2, style, width) {
   const context = getContext();
+
+  pos1 = pos1.add(getCameraOffset());
+  pos2 = pos2.add(getCameraOffset());
+
   context.beginPath();
   context.strokeStyle = style;
   context.lineWidth = width;
@@ -180,13 +210,14 @@ export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
    */
   const drawBorder = (thickness, style) => {
     griderate(board, (board, i, j) => {
+      // TODO could not check the terrain and instead check the block grid
       if (board[i][j] >= 1) {
-        context.fillStyle = style;
-        context.fillRect(
+        normalRect(
           i * blockWidth - thickness,
           j * blockHeight - thickness,
           blockWidth + thickness * 2,
-          blockHeight + thickness * 2
+          blockHeight + thickness * 2,
+          style
         );
       }
     });
@@ -198,14 +229,14 @@ export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
 
   // draw colored squares on top
   griderate(board, (board, i, j) => {
+    // TODO could be checking the block field instead of the terrain
     if (board[i][j] >= 1) {
-      context.fillStyle =
-        blockField[i][j].durability === Infinity ? "black" : "#202020";
-      context.fillRect(
+      normalRect(
         i * blockWidth,
         j * blockHeight,
         blockWidth,
-        blockHeight
+        blockHeight,
+        blockField[i][j].durability === Infinity ? "black" : "#202020"
       );
     }
   });
