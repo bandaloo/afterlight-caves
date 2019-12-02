@@ -37,6 +37,12 @@ class GameManager {
   /** @type {Entity} */
   cameraEntity;
 
+  /** @type {number} */
+  screenWidth;
+
+  /** @type {number} */
+  screenHeight;
+
   // TODO consider whether we want the options pattern here
   constructor(
     width = 1920,
@@ -57,6 +63,9 @@ class GameManager {
     this.displayHeight = displayHeight;
     this.displayCanvas.width = displayWidth;
     this.displayCanvas.height = displayHeight;
+
+    this.screenWidth = width;
+    this.screenHeight = height;
 
     // drawing func defaults to a no-op
     this.drawFunc = () => {};
@@ -412,4 +421,12 @@ export function getCameraOffset() {
  */
 export function setCameraOffset(cameraOffset) {
   gameManager.cameraOffset = cameraOffset;
+}
+
+/**
+ * return an object with info about screen dimensions
+ * @returns {{width: number, height: number}}
+ */
+export function getScreenDimensions() {
+  return { width: gameManager.screenWidth, height: gameManager.screenHeight };
 }
