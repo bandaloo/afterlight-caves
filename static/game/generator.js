@@ -1,5 +1,6 @@
 import { randomInt, griderate } from "../modules/helpers.js";
 import { Block } from "./block.js";
+import { createNumberGrid, dirs } from "./life.js";
 
 /**
  * @typedef {Object} GemInfo
@@ -84,4 +85,52 @@ export function initBlockField(terrain) {
     }
   }
   console.log(blockField);
+}
+
+/**
+ * checks if a position is inside a board
+ * @param {number} i
+ * @param {number} j
+ * @param {number[][]} board
+ */
+export function inboundsBoard(i, j, board) {
+  return i >= 0 && i < board.length && j >= 0 && j < board[0].length;
+}
+
+/**
+ * get a grid with numbers relating to closest block
+ * @param {number[][]} board
+ */
+export function distanceBoard(board) {
+  let blocksCounted = 0;
+  const totalBlocks = board.length * board[0].length;
+  let distBoard = createNumberGrid(board.length, board[0].length, 0, -1);
+  // make the distance board start with 0 for every block
+  griderate(board, (board, i, j) => {
+    if (board[i][j] >= 1) {
+      distBoard[i][j] = 0;
+      blocksCounted++;
+    }
+  });
+
+  let curDist = 1;
+
+  // grow out from the existing blocks
+  while (blocksCounted < totalBlocks) {
+    griderate(board, (board, i, j) => {
+      for (let k = 0; k < dirs.length; k++) {
+        if (distBoard[i][j] === curDist - 1) {
+          const ni = i + dirs[k][0];
+          const nj = j + dirs[k][1];
+          if (inboundsBoard(ni, nj, board) && distBoard[ni][nj] === -1) {
+            distBoard[ni][nj] = curDist;
+            blocksCounted++;
+          }
+        }
+      }
+    });
+    curDist++;
+  }
+
+  return distBoard;
 }

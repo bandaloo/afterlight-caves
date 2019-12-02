@@ -342,6 +342,7 @@ export function getTerrain() {
   return gameManager.terrain;
 }
 
+// TODO make this use inboundsBoard
 /**
  * returns whether a coordinate is inbounds for the terrain
  * @param {number} i

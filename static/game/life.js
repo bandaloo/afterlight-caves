@@ -3,7 +3,7 @@ import { RulesEnum } from "./rules.js";
 import { EdgesEnum } from "./rules.js";
 import { Vector } from "../modules/vector.js";
 
-const dirs = [
+export const dirs = [
   [1, 0],
   [1, 1],
   [0, 1],
@@ -19,14 +19,20 @@ const dirs = [
  * @param {number} height height to resize board
  * @returns {number[][]}
  */
-export function createNumberGrid(width, height, probability = 0) {
+export function createNumberGrid(
+  width,
+  height,
+  probability = 0,
+  fail = 0,
+  pass = 1
+) {
   // reset the board
   let board = [];
   // make the board a 2D array that is randomly filled
   for (let i = 0; i < width; i++) {
     board.push([]);
     for (let j = 0; j < height; j++) {
-      let num = probability === 0 || Math.random() > probability ? 0 : 1;
+      let num = probability === 0 || Math.random() > probability ? fail : pass;
       board[i].push(num);
     }
   }
