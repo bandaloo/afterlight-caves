@@ -6,7 +6,8 @@ import {
   addToWorld,
   setTerrain,
   setDimensions,
-  destroyEverything
+  destroyEverything,
+  setCameraEntity
 } from "./modules/gamemanager.js";
 import { drawBoard } from "./game/draw.js";
 import { Enemy, randomLook, randomStats } from "./game/enemy.js";
@@ -38,8 +39,8 @@ function resetDemo() {
   enemyStats = [];
 
   let board = getGrid(
-    blockColumns,
-    blockRows,
+    blockColumns * 10,
+    blockRows * 10,
     caveRules,
     EdgesEnum.alive,
     0.45,
@@ -81,6 +82,7 @@ function resetDemo() {
       new Vector(blockWidth / 2, blockHeight / 2).add(emptySpaces[11])
     )
   );
+  setCameraEntity(hero);
   addToWorld(hero);
 }
 

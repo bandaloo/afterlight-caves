@@ -155,6 +155,12 @@ class GameManager {
   }
 
   drawGame() {
+    // reposition camera if there is a followed entity
+    if (this.cameraEntity !== undefined) {
+      this.cameraOffset = this.cameraEntity.drawPos
+        .mult(-1)
+        .add(new Vector(this.screenWidth / 2, this.screenHeight / 2));
+    }
     // clear the display canvas
     this.displayCanvas.width = this.displayCanvas.width;
     // clear the drawing canvas
@@ -421,6 +427,22 @@ export function getCameraOffset() {
  */
 export function setCameraOffset(cameraOffset) {
   gameManager.cameraOffset = cameraOffset;
+}
+
+/**
+ * gets the camera entity
+ * @returns {Entity}
+ */
+export function getCameraEntity() {
+  return gameManager.cameraEntity;
+}
+
+/**
+ * sets the camera entity
+ * @param {Entity} cameraEntity
+ */
+export function setCameraEntity(cameraEntity) {
+  gameManager.cameraEntity = cameraEntity;
 }
 
 /**

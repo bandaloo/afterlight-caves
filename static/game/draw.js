@@ -11,6 +11,9 @@ import { Vector } from "../modules/vector.js";
 import { blockField, GemEnum } from "./generator.js";
 import { getCell } from "../modules/collision.js";
 
+// this is to get rid of weird lines when moving the camera
+const overDraw = 0.5;
+
 // TODO some of these are more generic drawing functions that could be moved to
 // the engine
 
@@ -252,16 +255,16 @@ export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
   drawBorder(6, color);
   drawBorder(2, "white");
 
-  // draw colored squares on top
+  // draw black squares on top
   for (let i = topLeftCell.x; i < bottomRightCell.x; i++) {
     for (let j = topLeftCell.y; j < bottomRightCell.y; j++) {
       // TODO could be checking the block field instead of the terrain
       if (board[i][j] >= 1) {
         normalRect(
-          i * blockWidth,
-          j * blockHeight,
-          blockWidth,
-          blockHeight,
+          i * blockWidth - overDraw,
+          j * blockHeight - overDraw,
+          blockWidth + overDraw * 2,
+          blockHeight + overDraw * 2,
           blockField[i][j].durability === Infinity ? "black" : "#202020"
         );
       }
