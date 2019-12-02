@@ -1,5 +1,6 @@
 import { Vector } from "./vector.js";
-import { adjustEntity } from "./collision.js";
+import { adjustEntity, isColliding } from "./collision.js";
+import { getScreenDimensions, getCameraOffset } from "./gamemanager.js";
 
 /** @abstract */
 export class Entity {
@@ -82,6 +83,19 @@ export class Entity {
     this.lastPos = pos;
     this.vel = vel;
     this.acc = acc;
+  }
+
+  onScreen() {
+    const { width: screenWidth, height: screenHeight } = getScreenDimensions();
+    const screenEntity = new Entity(
+      new Vector(screenWidth / 2, screenHeight / 2).add(
+        getCameraOffset().mult(-1)
+      )
+    );
+    //console.log(screenEntity.pos);
+    screenEntity.width = screenWidth;
+    screenEntity.height = screenHeight;
+    return isColliding(this, screenEntity);
   }
 
   /**

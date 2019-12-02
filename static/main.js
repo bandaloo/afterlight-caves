@@ -39,8 +39,8 @@ function resetDemo() {
   enemyStats = [];
 
   let board = getGrid(
-    blockColumns * 10,
-    blockRows * 10,
+    blockColumns * 8,
+    blockRows * 8,
     caveRules,
     EdgesEnum.alive,
     0.45,
@@ -65,7 +65,7 @@ function resetDemo() {
     enemyStats.push(randomStats(i * 3 + 3));
   }
 
-  for (let i = 0; i < 30; i++) {
+  for (let i = 0; i < 500; i++) {
     const enemy = new Enemy(
       emptySpaces[i % emptySpaces.length].add(
         new Vector(blockWidth / 2, blockHeight / 2)

@@ -170,13 +170,17 @@ class GameManager {
     this.context.save();
     // run draw func specified by game programmer
     this.drawFunc();
+
     // draw all particles
     for (let i = 0; i < this.particles.length; i++) {
+      // TODO cull particles too
       this.particles[i].draw();
     }
     // draw all entities
     for (let i = 0; i < this.entities.length; i++) {
-      this.entities[i].draw();
+      if (this.entities[i].onScreen()) {
+        this.entities[i].draw();
+      }
     }
     // restore drawing context
     this.context.restore();
