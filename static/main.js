@@ -15,6 +15,7 @@ import { Vector } from "./modules/vector.js";
 import { shuffle, randomInt, hsl } from "./modules/helpers.js";
 import { Hero } from "./game/hero.js";
 import { initBlockField, distanceBoard } from "./game/generator.js";
+import { Scatter } from "./game/scatter.js";
 
 const blockWidth = 60;
 const blockHeight = 60;
@@ -69,7 +70,7 @@ function resetDemo() {
   }
 
   for (let i = 0; i < 500; i++) {
-    const enemy = new Enemy(
+    const enemy = new Scatter(
       emptySpaces[i % emptySpaces.length].add(
         new Vector(blockWidth / 2, blockHeight / 2)
       ),
