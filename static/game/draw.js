@@ -314,3 +314,24 @@ export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
     }
   }
 }
+
+/**
+ * @param {string} text
+ * @param {Vector} centerVec
+ * @param {string} fillStyle
+ * @param {string} [fontStyle] default "30px Arial"
+ */
+export function centeredText(
+  text,
+  centerVec,
+  fillStyle,
+  fontStyle = "30px Arial"
+) {
+  const context = getContext();
+  centerVec = centerVec.add(getCameraOffset());
+  context.save();
+  context.fillStyle = fillStyle;
+  context.font = fontStyle;
+  context.fillText(text, centerVec.x, centerVec.y);
+  context.restore();
+}
