@@ -25,12 +25,15 @@ div#gamediv-holder {
   align-items: center;
 }
 
-div#gamediv-holder > p {
+div#credits-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+p#credits {
+  text-align: center;
   width: 400px;
   display: flex;
   justify-content: space-around;
-}
-
-p#instructions {
-  text-align: center;
 }
