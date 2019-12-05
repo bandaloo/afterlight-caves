@@ -6,6 +6,7 @@ import {
 } from "../game/buttons.js";
 import { inPlaceFilter } from "./helpers.js";
 import { isColliding } from "./collision.js";
+import { Vector } from "./vector.js";
 
 class GameManager {
   updateTime = 10;
@@ -30,6 +31,18 @@ class GameManager {
   /** @type {number} */
   blockHeight;
 
+  /** @type {Vector} */
+  cameraOffset = new Vector(0, 0);
+
+  /** @type {Entity} */
+  cameraEntity;
+
+  /** @type {number} */
+  screenWidth;
+
+  /** @type {number} */
+  screenHeight;
+
   // TODO consider whether we want the options pattern here
   constructor(
     width = 1920,
@@ -50,6 +63,9 @@ class GameManager {
     this.displayHeight = displayHeight;
     this.displayCanvas.width = displayWidth;
     this.displayCanvas.height = displayHeight;
+
+    this.screenWidth = width;
+    this.screenHeight = height;
 
     // drawing func defaults to a no-op
     this.drawFunc = () => {};
@@ -139,6 +155,12 @@ class GameManager {
   }
 
   drawGame() {
+    // reposition camera if there is a followed entity
+    if (this.cameraEntity !== undefined) {
+      this.cameraOffset = this.cameraEntity.drawPos
+        .mult(-1)
+        .add(new Vector(this.screenWidth / 2, this.screenHeight / 2));
+    }
     // clear the display canvas
     this.displayCanvas.width = this.displayCanvas.width;
     // clear the drawing canvas
@@ -148,13 +170,17 @@ class GameManager {
     this.context.save();
     // run draw func specified by game programmer
     this.drawFunc();
+
     // draw all particles
     for (let i = 0; i < this.particles.length; i++) {
+      // TODO cull particles too
       this.particles[i].draw();
     }
     // draw all entities
     for (let i = 0; i < this.entities.length; i++) {
-      this.entities[i].draw();
+      if (this.entities[i].onScreen()) {
+        this.entities[i].draw();
+      }
     }
     // restore drawing context
     this.context.restore();
@@ -172,10 +198,22 @@ class GameManager {
   }
 
   collideWithEntities() {
+    // generate the type map for faster access
+    const map = new Map();
+    for (let i = 0; i < this.entities.length; i++) {
+      const entity = this.entities[i];
+      if (map.get(entity.type) === undefined) {
+        map.set(entity.type, []);
+      }
+      map.get(entity.type).push(entity);
+    }
+
     for (let i = 0; i < this.entities.length; i++) {
       const targetEntity = this.entities[i];
       const collideTypes = [];
       const collideMapIterator = targetEntity.collideMap.keys();
+
+      // get types that the target entity should collide with
       for (
         let nextType = collideMapIterator.next();
         nextType.done !== true;
@@ -183,13 +221,16 @@ class GameManager {
       ) {
         collideTypes.push(nextType.value);
       }
-      const collideEntities = this.entities.filter(
-        entity =>
-          collideTypes.includes(entity.type) &&
-          isColliding(targetEntity, entity)
-      );
-      for (let j = 0; j < collideEntities.length; j++) {
-        targetEntity.collideWithEntity(collideEntities[j]);
+
+      for (let j = 0; j < collideTypes.length; j++) {
+        const collideEntities = map.get(collideTypes[j]);
+        if (collideEntities !== undefined) {
+          for (let k = 0; k < collideEntities.length; k++) {
+            if (isColliding(targetEntity, collideEntities[k])) {
+              targetEntity.collideWithEntity(collideEntities[k]);
+            }
+          }
+        }
       }
     }
   }
@@ -301,6 +342,7 @@ export function getTerrain() {
   return gameManager.terrain;
 }
 
+// TODO make this use inboundsBoard
 /**
  * returns whether a coordinate is inbounds for the terrain
  * @param {number} i
@@ -314,11 +356,13 @@ export function inbounds(i, j) {
     j < gameManager.terrain[0].length
   );
 }
+
 /**
- *
+ * set a block in the current terrain without going out of bounds
  * @param {number} i
  * @param {number} j
  * @param {number} val
+ * @returns {boolean} whether the block was able to be set
  */
 export function setBlock(i, j, val) {
   if (inbounds(i, j)) {
@@ -344,6 +388,10 @@ export function setDimensions(blockWidth, blockHeight) {
   gameManager.blockHeight = blockHeight;
 }
 
+/**
+ * return an object with info about block dimensions
+ * @returns {{width: number, height: number}}
+ */
 export function getDimensions() {
   return { width: gameManager.blockWidth, height: gameManager.blockHeight };
 }
@@ -356,6 +404,9 @@ export function addToWorld(entity) {
   gameManager.entities.push(entity);
 }
 
+/**
+ * get rid of all the entities
+ */
 export function destroyEverything() {
   gameManager.entities = [];
 }
@@ -366,4 +417,43 @@ export function destroyEverything() {
  */
 export function addParticle(particle) {
   gameManager.particles.push(particle);
+}
+
+/**
+ * get the camera offset
+ */
+export function getCameraOffset() {
+  return gameManager.cameraOffset;
+}
+
+/**
+ * set the camera offset
+ * @param {Vector} cameraOffset
+ */
+export function setCameraOffset(cameraOffset) {
+  gameManager.cameraOffset = cameraOffset;
+}
+
+/**
+ * gets the camera entity
+ * @returns {Entity}
+ */
+export function getCameraEntity() {
+  return gameManager.cameraEntity;
+}
+
+/**
+ * sets the camera entity
+ * @param {Entity} cameraEntity
+ */
+export function setCameraEntity(cameraEntity) {
+  gameManager.cameraEntity = cameraEntity;
+}
+
+/**
+ * return an object with info about screen dimensions
+ * @returns {{width: number, height: number}}
+ */
+export function getScreenDimensions() {
+  return { width: gameManager.screenWidth, height: gameManager.screenHeight };
 }

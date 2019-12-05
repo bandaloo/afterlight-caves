@@ -4,7 +4,8 @@ import { randomFromEnum, randomInt, hsl } from "../modules/helpers.js";
 import {
   centeredOutlineRect,
   centeredOutlineRectFill,
-  centeredOutlineCircle
+  centeredOutlineCircle,
+  drawLine
 } from "./draw.js";
 import {
   getContext,
@@ -110,7 +111,8 @@ export class Enemy extends Entity {
     this.drag = 0.005;
 
     // what to do when colliding with other entities
-    // TODO don't make this an anonymous function
+    // TODO don't make this an anonymous function (make it part of prototype so
+    // it's not repeated)
     this.collideMap.set("PlayerBullet", entity => {
       this.vel = this.vel.add(entity.vel.mult(0.7));
       this.health--;
@@ -217,17 +219,19 @@ export class Enemy extends Entity {
     const context = getContext();
 
     // draw the mouth
-    context.beginPath();
-    context.strokeStyle = this.look.color;
-    context.lineWidth = 4;
     const mouthHalf = this.look.mouthWidth / 2;
-    context.moveTo(
-      this.drawPos.x + mouthHalf,
-      this.drawPos.y + this.look.mouthOffset
-    );
-    context.lineTo(
-      this.drawPos.x - mouthHalf,
-      this.drawPos.y + this.look.mouthOffset
+
+    drawLine(
+      new Vector(
+        this.drawPos.x + mouthHalf,
+        this.drawPos.y + this.look.mouthOffset
+      ),
+      new Vector(
+        this.drawPos.x - mouthHalf,
+        this.drawPos.y + this.look.mouthOffset
+      ),
+      this.look.color,
+      4
     );
 
     context.stroke();

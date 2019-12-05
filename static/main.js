@@ -6,14 +6,15 @@ import {
   addToWorld,
   setTerrain,
   setDimensions,
-  destroyEverything
+  destroyEverything,
+  setCameraEntity
 } from "./modules/gamemanager.js";
 import { drawBoard } from "./game/draw.js";
 import { Enemy, randomLook, randomStats } from "./game/enemy.js";
 import { Vector } from "./modules/vector.js";
 import { shuffle, randomInt, hsl } from "./modules/helpers.js";
 import { Hero } from "./game/hero.js";
-import { initBlockField } from "./game/generator.js";
+import { initBlockField, distanceBoard } from "./game/generator.js";
 
 const blockWidth = 60;
 const blockHeight = 60;
@@ -38,8 +39,8 @@ function resetDemo() {
   enemyStats = [];
 
   let board = getGrid(
-    blockColumns,
-    blockRows,
+    blockColumns * 8,
+    blockRows * 8,
     caveRules,
     EdgesEnum.alive,
     0.45,
@@ -56,6 +57,9 @@ function resetDemo() {
     drawBoard(board, blockWidth, blockHeight, color);
   });
 
+  // TODO use this to spawn big enemies
+  let distBoard = distanceBoard(board);
+
   let emptySpaces = shuffle(getEmptySpaces(board, 10, blockWidth, blockHeight));
 
   // create three looks with three difficulties
@@ -64,7 +68,7 @@ function resetDemo() {
     enemyStats.push(randomStats(i * 3 + 3));
   }
 
-  for (let i = 0; i < 30; i++) {
+  for (let i = 0; i < 500; i++) {
     const enemy = new Enemy(
       emptySpaces[i % emptySpaces.length].add(
         new Vector(blockWidth / 2, blockHeight / 2)
@@ -81,6 +85,7 @@ function resetDemo() {
       new Vector(blockWidth / 2, blockHeight / 2).add(emptySpaces[11])
     )
   );
+  setCameraEntity(hero);
   addToWorld(hero);
 }
 
