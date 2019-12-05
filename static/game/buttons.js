@@ -1,7 +1,7 @@
 import { Vector } from "../modules/vector.js";
 import { numSign } from "../modules/helpers.js";
 
-const noisy = true;
+const noisy = false;
 
 /**
  * @typedef {Object} Status

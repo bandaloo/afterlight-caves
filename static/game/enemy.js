@@ -262,7 +262,6 @@ export class Enemy extends Entity {
     for (let i = 0; i < 30; i++) {
       addParticle(new Particle(this.pos, this.look.color, EffectEnum.spark));
     }
-    console.log("i got destroyed");
   }
 
   toString() {
