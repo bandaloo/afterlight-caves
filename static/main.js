@@ -15,6 +15,7 @@ import { Vector } from "./modules/vector.js";
 import { shuffle, randomInt, hsl } from "./modules/helpers.js";
 import { Hero } from "./game/hero.js";
 import { initBlockField, distanceBoard } from "./game/generator.js";
+import { PowerUp } from "./game/powerup.js";
 
 const blockWidth = 60;
 const blockHeight = 60;
@@ -46,8 +47,6 @@ function resetDemo() {
     0.45,
     20
   );
-
-  console.log(boardToString(board));
 
   setTerrain(board);
   initBlockField(board);
@@ -87,6 +86,11 @@ function resetDemo() {
   );
   setCameraEntity(hero);
   addToWorld(hero);
+
+  // TODO remove this
+  // add a powerup
+  const pu = new PowerUp(hero.drawPos.add(new Vector(60, 1)));
+  addToWorld(pu);
 }
 
 document.addEventListener("keydown", e => {

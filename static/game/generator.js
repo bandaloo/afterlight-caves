@@ -84,7 +84,6 @@ export function initBlockField(terrain) {
       }
     }
   }
-  console.log(blockField);
 }
 
 /**
