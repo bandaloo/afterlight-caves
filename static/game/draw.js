@@ -319,19 +319,65 @@ export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
  * @param {string} text
  * @param {Vector} centerVec
  * @param {string} fillStyle
- * @param {string} [fontStyle] default "30px Arial"
+ * @param {string} [fontStyle] default "bold 50px sans-serif"
  */
 export function centeredText(
   text,
   centerVec,
   fillStyle,
-  fontStyle = "30px Arial"
+  fontStyle = "bold 50px sans-serif"
 ) {
   const context = getContext();
   centerVec = centerVec.add(getCameraOffset());
   context.save();
   context.fillStyle = fillStyle;
   context.font = fontStyle;
+  context.textAlign = "center";
   context.fillText(text, centerVec.x, centerVec.y);
+  context.restore();
+}
+
+/**
+ * @param {Vector} centerVec center position
+ * @param {{
+ *  angle: number,
+ *  width: number,
+ *  length: number,
+ *  speed: number,
+ *  hue: number
+ * }[]} data each shine has
+ * an angle in radians and a width in radians
+ */
+export function drawShines(centerVec, data) {
+  centerVec = centerVec.add(getCameraOffset());
+  const context = getContext();
+  context.save();
+  for (const d of data) {
+    const left = new Vector(
+      centerVec.x + d.length * Math.cos(d.angle - d.width),
+      centerVec.y + d.length * Math.sin(d.angle - d.width)
+    );
+    const right = new Vector(
+      centerVec.x + d.length * Math.cos(d.angle + d.width),
+      centerVec.y + d.length * Math.sin(d.angle + d.width)
+    );
+    const grad = context.createRadialGradient(
+      centerVec.x,
+      centerVec.y,
+      d.length / 2,
+      centerVec.x,
+      centerVec.y,
+      d.length
+    );
+    grad.addColorStop(0, "hsla(" + d.hue + ", 100%, 50%, 1)");
+    grad.addColorStop(1, "hsla(0, 0%, 0%, 0)");
+    context.fillStyle = grad;
+    context.beginPath();
+    context.moveTo(centerVec.x, centerVec.y);
+    context.lineTo(left.x, left.y);
+    context.lineTo(right.x, right.y);
+    context.closePath();
+    context.fill();
+  }
   context.restore();
 }

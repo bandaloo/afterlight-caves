@@ -2,9 +2,10 @@ import { Entity } from "../modules/entity.js";
 import { Vector } from "../modules/vector.js";
 import { centeredOutlineCircle } from "./draw.js";
 import { buttons } from "./buttons.js";
-import { addToWorld, getTerrain } from "../modules/gamemanager.js";
+import { addParticle, addToWorld } from "../modules/gamemanager.js";
 import { Bullet } from "./bullet.js";
-import { getCell } from "../modules/collision.js";
+import { Particle, EffectEnum } from "./particle.js";
+import { PowerUp } from "./powerup.js";
 
 export class Hero extends Entity {
   fireDelay = 10; // game steps to wait before firing
@@ -23,6 +24,18 @@ export class Hero extends Entity {
     this.type = "Hero";
     this.width = 50;
     this.height = 50;
+    this.powerUpsList = new Array();
+
+    // collect powerups when you collide with them
+    this.collideMap.set("PowerUp", entity => {
+      /** @type {PowerUp} */ (entity).applyToHero(this);
+      for (let i = 0; i < 30; i++) {
+        let randColor =
+          "hsl(" + Math.floor(Math.random() * 360) + ", 100%, 50%)";
+        addParticle(new Particle(this.pos, randColor, EffectEnum.spark));
+      }
+      entity.deleteMe = true;
+    });
   }
 
   /**
