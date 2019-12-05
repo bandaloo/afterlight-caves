@@ -7,7 +7,8 @@ import {
   setTerrain,
   setDimensions,
   destroyEverything,
-  setCameraEntity
+  setCameraEntity,
+  setImportantEntity
 } from "./modules/gamemanager.js";
 import { drawBoard } from "./game/draw.js";
 import { Enemy, randomLook, randomStats } from "./game/enemy.js";
@@ -16,6 +17,7 @@ import { shuffle, randomInt, hsl } from "./modules/helpers.js";
 import { Hero } from "./game/hero.js";
 import { initBlockField, distanceBoard } from "./game/generator.js";
 import { Scatter } from "./game/scatter.js";
+import { Chase } from "./game/chase.js";
 
 const blockWidth = 60;
 const blockHeight = 60;
@@ -70,7 +72,7 @@ function resetDemo() {
   }
 
   for (let i = 0; i < 500; i++) {
-    const enemy = new Scatter(
+    const enemy = new Chase(
       emptySpaces[i % emptySpaces.length].add(
         new Vector(blockWidth / 2, blockHeight / 2)
       ),
@@ -87,6 +89,7 @@ function resetDemo() {
     )
   );
   setCameraEntity(hero);
+  setImportantEntity("hero", hero);
   addToWorld(hero);
 }
 

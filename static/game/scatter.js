@@ -41,27 +41,7 @@ export class Scatter extends Enemy {
     }
   }
 
-  draw() {
-    // draw the body
-    if (this.look.shape === ShapeEnum.circle) {
-      centeredOutlineCircle(
-        this.drawPos,
-        this.width / 2,
-        4,
-        this.look.color,
-        "black"
-      );
-    } else {
-      centeredOutlineRect(
-        this.drawPos,
-        this.width,
-        this.height,
-        4,
-        this.look.color,
-        "black"
-      );
-    }
-
+  drawFace() {
     /**
      * draw a single eye
      * @param {number} scalar change this to modify what side of face to draw
@@ -95,12 +75,5 @@ export class Scatter extends Enemy {
       this.look.color,
       4
     );
-  }
-
-  destroy() {
-    for (let i = 0; i < 30; i++) {
-      addParticle(new Particle(this.pos, this.look.color, EffectEnum.spark));
-    }
-    console.log("i got destroyed");
   }
 }

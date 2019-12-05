@@ -123,6 +123,42 @@ export class Enemy extends Entity {
     });
   }
 
+  destroy() {
+    for (let i = 0; i < 30; i++) {
+      addParticle(new Particle(this.pos, this.look.color, EffectEnum.spark));
+    }
+  }
+
+  drawBody() {
+    // draw the body
+    if (this.look.shape === ShapeEnum.circle) {
+      centeredOutlineCircle(
+        this.drawPos,
+        this.width / 2,
+        4,
+        this.look.color,
+        "black"
+      );
+    } else {
+      centeredOutlineRect(
+        this.drawPos,
+        this.width,
+        this.height,
+        4,
+        this.look.color,
+        "black"
+      );
+    }
+  }
+
+  /** @abstract */
+  drawFace() {}
+
+  draw() {
+    this.drawBody();
+    this.drawFace();
+  }
+
   toString() {
     return (
       `movement speed: ${this.stats.movementSpeed} ` +
