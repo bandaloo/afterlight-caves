@@ -59,9 +59,7 @@ export class Entity {
    */
   hitsWalls = true;
 
-  /**
-   * @type {number}
-   */
+  /** @type {number} */
   rubberiness = 0;
 
   /**
@@ -86,6 +84,7 @@ export class Entity {
     this.pos = pos;
     this.drawPos = pos;
     this.lastPos = pos;
+    /** @type {Vector} */
     this.vel = vel;
     this.acc = acc;
     this.powerUpsList = new Array(); /** @type {string[]} */

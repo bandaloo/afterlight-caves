@@ -3,7 +3,6 @@ import { Vector } from "../../modules/vector.js";
 import { Entity } from "../../modules/entity.js";
 
 export class Rubber extends PowerUp {
-
   /**
    * Makes you bouncy
    * @param {Vector} pos
@@ -16,11 +15,12 @@ export class Rubber extends PowerUp {
 
   /**
    * applies this powerup
-   * @param {Entity} entity 
+   * @param {Entity} entity
    * @override
    */
   apply(entity) {
     super.apply(entity);
-    entity.bounciness += this.magnitude;
+    entity.bounciness = 1;
+    entity.rubberiness += this.magnitude;
   }
 }
