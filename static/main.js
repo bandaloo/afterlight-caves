@@ -92,7 +92,7 @@ function resetDemo() {
 
   // TODO remove this
   // add a powerup
-  const rubber = new Rubber(
+  const rubber = new Bigify(
     hero.drawPos.add(new Vector(60, 1)),
     1 + Math.floor(Math.random() * 5)
   );

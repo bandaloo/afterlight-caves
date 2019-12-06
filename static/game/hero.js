@@ -27,10 +27,13 @@ export class Hero extends Entity {
     // collect powerups when you collide with them
     this.collideMap.set("PowerUp", entity => {
       /** @type {PowerUp} */ (entity).apply(this);
-      for (let i = 0; i < 30; i++) {
+      for (let i = 0; i < 60; i++) {
         let randColor =
           "hsl(" + Math.floor(Math.random() * 360) + ", 100%, 50%)";
-        addParticle(new Particle(this.pos, randColor, EffectEnum.spark));
+        const spark = new Particle(this.pos, randColor, EffectEnum.spark);
+        spark.width = 15;
+        spark.multiplier = 8;
+        addParticle(spark);
       }
       entity.deleteMe = true;
     });

@@ -260,7 +260,9 @@ export class Enemy extends Entity {
 
   destroy() {
     for (let i = 0; i < 30; i++) {
-      addParticle(new Particle(this.pos, this.look.color, EffectEnum.spark));
+      const spark = new Particle(this.pos, this.look.color, EffectEnum.spark)
+      spark.width = 5;
+      addParticle(spark);
     }
   }
 

@@ -15,12 +15,12 @@ export class Particle extends Entity {
    * @param {Vector} pos
    * @param {string} style
    * @param {EffectEnum} effect
-   * @param {number} baseSpeed
-   * @param {number} randSpeed
-   * @param {number} drag
-   * @param {number} baseLifetime
-   * @param {number} randLifetime
-   * @param {Vector} acc
+   * @param {number} [baseSpeed]
+   * @param {number} [randSpeed]
+   * @param {number} [drag]
+   * @param {number} [baseLifetime]
+   * @param {number} [randLifetime]
+   * @param {Vector} [acc]
    */
   constructor(
     pos,
@@ -42,6 +42,7 @@ export class Particle extends Entity {
     this.height = 16;
     this.style = style;
     this.drag = drag;
+    this.multiplier = 5;
   }
 
   draw() {
@@ -55,7 +56,12 @@ export class Particle extends Entity {
         this.style
       );
     } else if (this.effect === EffectEnum.spark) {
-      drawLine(this.drawPos, this.drawPos.add(this.vel.mult(5)), this.style, 5);
+      drawLine(
+        this.drawPos,
+        this.drawPos.add(this.vel.mult(this.multiplier)),
+        this.style,
+        this.width
+      );
     }
   }
 }

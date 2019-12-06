@@ -60,6 +60,11 @@ export class Entity {
   hitsWalls = true;
 
   /**
+   * @type {number}
+   */
+  rubberiness = 0;
+
+  /**
    * draw position slightly differs from original position to tween between frames
    * @type {Vector}
    */

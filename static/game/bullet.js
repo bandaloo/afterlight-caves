@@ -33,9 +33,16 @@ export class Bullet extends Entity {
 
   destroy() {
     for (let i = 0; i < 3; i++) {
-      addParticle(
-        new Particle(this.pos, "white", EffectEnum.spark, 8, 5, 0.12)
+      const spark = new Particle(
+        this.pos,
+        "white",
+        EffectEnum.spark,
+        8,
+        5,
+        0.12
       );
+      spark.width = 5;
+      addParticle(spark);
     }
   }
 

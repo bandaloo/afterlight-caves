@@ -1,10 +1,12 @@
 import { Vector } from "../modules/vector.js";
 import { Entity } from "../modules/entity.js";
-import { Hero } from "./hero.js";
 import { centeredOutlineCircle, centeredText, drawShines } from "./draw.js";
 import { TextDisplay } from "./textdisplay.js";
 import { addToWorld } from "../modules/gamemanager.js";
 
+/**
+ * @abstract
+ */
 export class PowerUp extends Entity {
   /**
    * constructs a new powerup
@@ -36,6 +38,7 @@ export class PowerUp extends Entity {
   /**
    * applies this powerup to an entity
    * @param {Entity} entity
+   * @virtual
    */
   apply(entity) {
     entity.powerUpsList.push(this.powerUpName);
@@ -53,7 +56,8 @@ export class PowerUp extends Entity {
 
   /**
    * draws the powerup as a yellow circle with a letter in the middle
-   * @override */
+   * @override 
+   */
   draw() {
     // shines
     drawShines(this.drawPos, this.shines);
