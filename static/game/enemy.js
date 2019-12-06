@@ -14,6 +14,9 @@ import {
 } from "../modules/gamemanager.js";
 import { solidAt, isColliding } from "../modules/collision.js";
 import { Particle, EffectEnum } from "./particle.js";
+
+const noisy = false;
+
 /**
  * an enum for allowed shapes of enemies
  * @enum {number}
@@ -262,7 +265,9 @@ export class Enemy extends Entity {
     for (let i = 0; i < 30; i++) {
       addParticle(new Particle(this.pos, this.look.color, EffectEnum.spark));
     }
-    console.log("i got destroyed");
+    if (noisy) {
+      console.log("i got destroyed");
+    }
   }
 
   toString() {

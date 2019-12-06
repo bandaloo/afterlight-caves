@@ -3,7 +3,7 @@ import { Block } from "./block.js";
 import { createNumberGrid, dirs } from "./life.js";
 import { Vector } from "../modules/vector.js";
 
-const noisy = false;
+const noisy = true;
 
 /**
  * @typedef {Object} GemInfo
@@ -230,7 +230,9 @@ export function connectBoard(board, blockField) {
           i != minimumLine[1].x;
           i += minimumLine[0].x < minimumLine[1].x ? 1 : -1
         ) {
-          blockField[i][minimumLine[1].y] = new Block(1, undefined);
+          if (blockField[i][minimumLine[1].y] != undefined) {
+            blockField[i][minimumLine[1].y] = new Block(1, undefined);
+          }
         }
         // Create clay line in the y direction
         for (
@@ -238,7 +240,9 @@ export function connectBoard(board, blockField) {
           j != minimumLine[1].y;
           j += minimumLine[0].y < minimumLine[1].y ? 1 : -1
         ) {
-          blockField[minimumLine[0].x][j] = new Block(1, undefined);
+          if (blockField[minimumLine[0].x][j] != undefined) {
+            blockField[minimumLine[0].x][j] = new Block(1, undefined);
+          }
         }
       }
     }
