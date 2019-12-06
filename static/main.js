@@ -7,7 +7,8 @@ import {
   setTerrain,
   setDimensions,
   destroyEverything,
-  setCameraEntity
+  setCameraEntity,
+  setImportantEntity
 } from "./modules/gamemanager.js";
 import { drawBoard } from "./game/draw.js";
 import { Enemy, randomLook, randomStats } from "./game/enemy.js";
@@ -20,6 +21,8 @@ import { Bigify } from "./game/powerups/bigify.js";
 import { Zoom } from "./game/powerups/zoom.js";
 import { Rubber } from "./game/powerups/rubber.js";
 import { Elastic } from "./game/powerups/elastic.js";
+import { Scatter } from "./game/scatter.js";
+import { Chase } from "./game/chase.js";
 
 const blockWidth = 60;
 const blockHeight = 60;
@@ -65,22 +68,39 @@ function resetDemo() {
 
   let emptySpaces = shuffle(getEmptySpaces(board, 10, blockWidth, blockHeight));
 
-  // create three looks with three difficulties
-  for (let i = 0; i < 3; i++) {
+  // create four looks with four difficulties
+  for (let i = 0; i < 4; i++) {
     enemyLooks.push(randomLook());
     enemyStats.push(randomStats(i * 3 + 3));
   }
 
   for (let i = 0; i < 500; i++) {
-    const enemy = new Enemy(
-      emptySpaces[i % emptySpaces.length].add(
-        new Vector(blockWidth / 2, blockHeight / 2)
-      ),
-      enemyLooks[i % 3],
-      enemyStats[i % 3]
-    );
-    enemy.drag = 0.005;
-    addToWorld(enemy);
+    // TODO change this with actual enemy spawning system
+    if (i % 2) {
+      const enemy = new Chase(
+        emptySpaces[i % emptySpaces.length].add(
+          new Vector(blockWidth / 2, blockHeight / 2)
+        ),
+        enemyLooks[i % 4],
+        enemyStats[i % 4],
+        undefined,
+        undefined,
+        { size: randomInt(3), speed: 0, explode: 0 }
+      );
+      addToWorld(enemy);
+    } else {
+      const enemy = new Scatter(
+        emptySpaces[i % emptySpaces.length].add(
+          new Vector(blockWidth / 2, blockHeight / 2)
+        ),
+        enemyLooks[i % 4],
+        enemyStats[i % 4],
+        undefined,
+        undefined,
+        { size: randomInt(3), speed: 0, explode: 0 }
+      );
+      addToWorld(enemy);
+    }
   }
 
   const hero = new Hero(
@@ -89,6 +109,7 @@ function resetDemo() {
     )
   );
   setCameraEntity(hero);
+  setImportantEntity("hero", hero);
   addToWorld(hero);
 
   // TODO remove this

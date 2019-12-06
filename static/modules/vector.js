@@ -92,6 +92,17 @@ class Vector {
   }
 
   /**
+   * normalizes but returns zero vector if given zero vector
+   * @returns {Vector}
+   */
+  norm2() {
+    if (this.x === 0 && this.y === 0) {
+      return this;
+    }
+    return this.mult(1 / this.dist(new Vector(0, 0)));
+  }
+
+  /**
    * @param {Vector} v
    */
   midpoint(v) {
