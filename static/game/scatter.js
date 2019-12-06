@@ -1,12 +1,6 @@
-import { Enemy, ShapeEnum } from "./enemy.js";
+import { Enemy } from "./enemy.js";
 import { Vector } from "../modules/vector.js";
-import {
-  centeredOutlineCircle,
-  centeredOutlineRect,
-  drawLine
-} from "./draw.js";
-import { addParticle } from "../modules/gamemanager.js";
-import { Particle, EffectEnum } from "./particle.js";
+import { centeredOutlineCircle, drawLine } from "./draw.js";
 
 export class Scatter extends Enemy {
   health = 3;
@@ -24,9 +18,10 @@ export class Scatter extends Enemy {
     look,
     stats,
     vel = new Vector(0, 0),
-    acc = new Vector(0, 0)
+    acc = new Vector(0, 0),
+    modifiers = { size: 0, speed: 0, explode: 0 }
   ) {
-    super(pos, look, stats, vel, acc);
+    super(pos, look, stats, vel, acc, modifiers);
   }
 
   action() {

@@ -10,10 +10,11 @@ import {
 import {
   getContext,
   getDimensions,
-  addParticle
+  addParticle,
+  addToWorld
 } from "../modules/gamemanager.js";
-import { solidAt, isColliding } from "../modules/collision.js";
 import { Particle, EffectEnum } from "./particle.js";
+
 /**
  * an enum for allowed shapes of enemies
  * @enum {number}
@@ -85,6 +86,11 @@ export function randomStats(difficulty) {
 
 export class Enemy extends Entity {
   health = 3;
+  modifiers = {
+    size: 0,
+    speed: 0,
+    explode: 0
+  };
 
   /**
    * constructs a random entity with all the relevant vectors
@@ -93,20 +99,23 @@ export class Enemy extends Entity {
    * @param {Stats} stats
    * @param {Vector} vel
    * @param {Vector} acc
+   * @param {Object} modifiers
    */
   constructor(
     pos,
     look,
     stats,
     vel = new Vector(0, 0),
-    acc = new Vector(0, 0)
+    acc = new Vector(0, 0),
+    modifiers = { size: 0, speed: 0, explode: 0 }
   ) {
     super(pos, vel, acc);
     this.look = look;
     this.stats = stats;
     this.type = "Enemy";
-    this.width = 50;
-    this.height = 50;
+    this.modifiers = modifiers;
+    this.width = 50 + 50 * this.modifiers.size;
+    this.height = 50 + 50 * this.modifiers.size;
     this.bounciness = 1;
     this.drag = 0.005;
 
@@ -119,6 +128,29 @@ export class Enemy extends Entity {
   destroy() {
     for (let i = 0; i < 30; i++) {
       addParticle(new Particle(this.pos, this.look.color, EffectEnum.spark));
+    }
+
+    if (this.modifiers.size > 0) {
+      const newModifiers = Object.assign({}, this.modifiers);
+      newModifiers.size--;
+      let randDir = Math.random() * 2 * Math.PI;
+      const spawnNum = 3;
+      const pushSpeed = 5;
+      for (let i = 0; i < spawnNum; i++) {
+        const childEnemy = new (Object.getPrototypeOf(this).constructor)(
+          this.pos,
+          this.look,
+          this.stats,
+          new Vector(
+            Math.cos(randDir) * pushSpeed,
+            Math.sin(randDir) * pushSpeed
+          ),
+          new Vector(0, 0),
+          newModifiers
+        );
+        addToWorld(childEnemy);
+        randDir += (2 * Math.PI) / spawnNum;
+      }
     }
   }
 

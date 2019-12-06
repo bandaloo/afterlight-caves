@@ -32,9 +32,11 @@ export class Chase extends Enemy {
     look,
     stats,
     vel = new Vector(0, 0),
-    acc = new Vector(0, 0)
+    acc = new Vector(0, 0),
+    modifiers = { size: 0, speed: 0, explode: 0 }
   ) {
-    super(pos, look, stats, vel, acc);
+    super(pos, look, stats, vel, acc, modifiers);
+    this.drag = 0.01;
   }
 
   action() {

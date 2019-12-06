@@ -77,9 +77,11 @@ function resetDemo() {
         new Vector(blockWidth / 2, blockHeight / 2)
       ),
       enemyLooks[i % 3],
-      enemyStats[i % 3]
+      enemyStats[i % 3],
+      undefined,
+      undefined,
+      { size: 2, speed: 0, explode: 0 }
     );
-    enemy.drag = 0.005;
     addToWorld(enemy);
   }
 
