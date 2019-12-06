@@ -16,6 +16,7 @@ import { shuffle, randomInt, hsl } from "./modules/helpers.js";
 import { Hero } from "./game/hero.js";
 import { initBlockField, distanceBoard } from "./game/generator.js";
 import { PowerUp } from "./game/powerup.js";
+import { Bigify } from "./game/powerups/bigify.js";
 
 const blockWidth = 60;
 const blockHeight = 60;
@@ -89,8 +90,11 @@ function resetDemo() {
 
   // TODO remove this
   // add a powerup
-  const pu = new PowerUp(hero.drawPos.add(new Vector(60, 1)));
-  addToWorld(pu);
+  const bigify = new Bigify(
+    hero.drawPos.add(new Vector(60, 1)),
+    1 + Math.floor(Math.random() * 5)
+  );
+  addToWorld(bigify);
 }
 
 document.addEventListener("keydown", e => {

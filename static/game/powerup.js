@@ -2,22 +2,22 @@ import { Vector } from "../modules/vector.js";
 import { Entity } from "../modules/entity.js";
 import { Hero } from "./hero.js";
 import { centeredOutlineCircle, centeredText, drawShines } from "./draw.js";
+import { TextDisplay } from "./textdisplay.js";
+import { addToWorld } from "../modules/gamemanager.js";
 
 export class PowerUp extends Entity {
   /**
    * constructs a new powerup
    * @param {Vector} pos
-   * @param {number} [magnitude] each powerup has a magnitude, e.g. how big
-   * Bigify makes you, or how much extra speed Speed Up gives you. 2 by default.
-   * @param {string} color color of the text and outline
+   * @param {number} [magnitude] each powerup has a magnitude 1-5, e.g. how big
+   * Bigify makes you. 1 by default.
    */
-  constructor(pos, magnitude = 1, color = "#007acc") {
+  constructor(pos, magnitude = 1) {
     super(pos);
-    this.magnitude = magnitude;
     this.type = "PowerUp";
-    this.color = color;
+    this.magnitude = magnitude;
+    this.hue = [0, 134, 204, 275, 39][this.magnitude - 1];
     this.powerUpName = "Null PowerUp";
-    this.shineRotation = 0;
     /**
      * @type {{angle: number, width: number, length: number, speed: number,hue: number}[]}
      */
@@ -39,6 +39,16 @@ export class PowerUp extends Entity {
    */
   applyToHero(hero) {
     hero.powerUpsList.push(this.powerUpName);
+    // display the name on the screen
+    const textPos = this.drawPos.add(new Vector(0, -100));
+    const td = new TextDisplay(
+      this.powerUpName,
+      textPos,
+      100,
+      this.hue,
+      "rgba(0, 0, 0, 0)"
+    );
+    addToWorld(td);
   }
 
   /**
@@ -56,12 +66,19 @@ export class PowerUp extends Entity {
       }
     }
     // circle
-    centeredOutlineCircle(this.drawPos, 30, 4, this.color, "black");
+    centeredOutlineCircle(
+      this.drawPos,
+      30,
+      4,
+      "hsl(" + this.hue + ", 100%, 50%)",
+      "black"
+    );
     // text
     centeredText(
       this.powerUpName.slice(0, 1),
       this.drawPos.add(new Vector(0, 16)),
-      this.color,
+      "hsl(" + this.hue + ", 100%, 50%)",
+      "rgba(0, 0, 0, 0)",
       "bold 50px Arial"
     );
   }
