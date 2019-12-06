@@ -10,11 +10,14 @@ import {
   hasImportantEntity,
   getImportantEntity
 } from "../modules/gamemanager.js";
+import { Entity } from "../modules/entity.js";
 
 export class Chase extends Enemy {
   health = 3;
   followDistace = 500;
   following = false;
+  followTimer = 0;
+  followTimerMax = 200;
 
   /**
    * constructs a random entity with all the relevant vectors
@@ -40,7 +43,8 @@ export class Chase extends Enemy {
       // TODO make vector to helper function in entity
       /** @type {Vector} */
       let dirVec = hero.pos.sub(this.pos);
-      if (dirVec.magnitude() < this.followDistace) {
+      if (this.followTimer >= 0 || dirVec.magnitude() < this.followDistace) {
+        this.followTimer--;
         this.following = true;
         this.acc = dirVec.norm2().mult(0.1);
       } else {
@@ -107,5 +111,13 @@ export class Chase extends Enemy {
       this.look.color,
       4
     );
+  }
+
+  /**
+   * @param {Entity} entity
+   */
+  hit(entity) {
+    super.hit(entity);
+    this.followTimer = this.followTimerMax;
   }
 }

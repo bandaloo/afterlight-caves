@@ -111,15 +111,8 @@ export class Enemy extends Entity {
     this.drag = 0.005;
 
     // what to do when colliding with other entities
-    // TODO don't make this an anonymous function (make it part of prototype so
-    // it's not repeated)
     this.collideMap.set("PlayerBullet", entity => {
-      this.vel = this.vel.add(entity.vel.mult(0.7));
-      this.health--;
-      if (this.health <= 0) {
-        this.deleteMe = true;
-      }
-      entity.deleteMe = true;
+      this.hit(entity);
     });
   }
 
@@ -166,5 +159,19 @@ export class Enemy extends Entity {
       `accuracy: ${this.stats.accuracy} ` +
       `rate of fire: ${this.stats.rateOfFire}`
     );
+  }
+
+  /**
+   * what to do when being hit by a bullet
+   * @param {Entity} entity
+   */
+  hit(entity) {
+    console.log("parent hit");
+    this.vel = this.vel.add(entity.vel.mult(0.7));
+    this.health--;
+    if (this.health <= 0) {
+      this.deleteMe = true;
+    }
+    entity.deleteMe = true;
   }
 }
