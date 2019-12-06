@@ -85,7 +85,7 @@ export function randomStats(difficulty) {
 }
 
 export class Enemy extends Entity {
-  health = 3;
+  health = 2;
   modifiers = {
     size: 0,
     speed: 0,

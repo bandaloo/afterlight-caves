@@ -13,7 +13,7 @@ import {
 import { Entity } from "../modules/entity.js";
 
 export class Chase extends Enemy {
-  health = 3;
+  health = 2;
   followDistace = 500;
   following = false;
   followTimer = 0;
@@ -36,7 +36,7 @@ export class Chase extends Enemy {
     modifiers = { size: 0, speed: 0, explode: 0 }
   ) {
     super(pos, look, stats, vel, acc, modifiers);
-    this.drag = 0.01;
+    this.drag = 0.015;
   }
 
   action() {
@@ -48,7 +48,7 @@ export class Chase extends Enemy {
       if (this.followTimer >= 0 || dirVec.magnitude() < this.followDistace) {
         this.followTimer--;
         this.following = true;
-        this.acc = dirVec.norm2().mult(0.1);
+        this.acc = dirVec.norm2().mult(0.15);
       } else {
         this.following = false;
         this.acc = new Vector(0, 0);

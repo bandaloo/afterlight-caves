@@ -65,24 +65,39 @@ function resetDemo() {
 
   let emptySpaces = shuffle(getEmptySpaces(board, 10, blockWidth, blockHeight));
 
-  // create three looks with three difficulties
-  for (let i = 0; i < 3; i++) {
+  // create four looks with four difficulties
+  for (let i = 0; i < 4; i++) {
     enemyLooks.push(randomLook());
     enemyStats.push(randomStats(i * 3 + 3));
   }
 
   for (let i = 0; i < 500; i++) {
-    const enemy = new Chase(
-      emptySpaces[i % emptySpaces.length].add(
-        new Vector(blockWidth / 2, blockHeight / 2)
-      ),
-      enemyLooks[i % 3],
-      enemyStats[i % 3],
-      undefined,
-      undefined,
-      { size: 2, speed: 0, explode: 0 }
-    );
-    addToWorld(enemy);
+    // TODO change this with actual enemy spawning system
+    if (i % 2) {
+      const enemy = new Chase(
+        emptySpaces[i % emptySpaces.length].add(
+          new Vector(blockWidth / 2, blockHeight / 2)
+        ),
+        enemyLooks[i % 4],
+        enemyStats[i % 4],
+        undefined,
+        undefined,
+        { size: randomInt(3), speed: 0, explode: 0 }
+      );
+      addToWorld(enemy);
+    } else {
+      const enemy = new Scatter(
+        emptySpaces[i % emptySpaces.length].add(
+          new Vector(blockWidth / 2, blockHeight / 2)
+        ),
+        enemyLooks[i % 4],
+        enemyStats[i % 4],
+        undefined,
+        undefined,
+        { size: randomInt(3), speed: 0, explode: 0 }
+      );
+      addToWorld(enemy);
+    }
   }
 
   const hero = new Hero(
