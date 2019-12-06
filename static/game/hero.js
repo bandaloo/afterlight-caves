@@ -4,7 +4,6 @@ import { centeredOutlineCircle } from "./draw.js";
 import { buttons } from "./buttons.js";
 import { addToWorld, getTerrain } from "../modules/gamemanager.js";
 import { Bullet } from "./bullet.js";
-import { getCell } from "../modules/collision.js";
 
 export class Hero extends Entity {
   fireDelay = 10; // game steps to wait before firing

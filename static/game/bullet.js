@@ -18,7 +18,7 @@ export class Bullet extends Entity {
     super(pos, vel, acc);
     this.good = good;
     this.lifetime = 100;
-    this.drag = 0;
+    this.drag = 0.003;
     this.width = 24;
     this.height = 24;
     this.bounciness = 1;

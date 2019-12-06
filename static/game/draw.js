@@ -146,6 +146,7 @@ export function outlineCircleFill(
   drawCircle(centerVec, radius, centerColor);
 }
 
+// TODO could just make this call centeredOutlineEllipse
 /**
  * draw centered outline circle
  * @param {Vector} centerVec
@@ -177,6 +178,46 @@ export function centeredOutlineCircle(
 }
 
 /**
+ * draw centered outline ellipse
+ * @param {Vector} centerVec
+ * @param {number} radiusX
+ * @param {number} radiusY
+ * @param {number} strokeWidth
+ * @param {string} strokeStyle
+ * @param {string} [fillStyle]
+ */
+export function centeredOutlineEllipse(
+  centerVec,
+  radiusX,
+  radiusY,
+  strokeWidth,
+  strokeStyle,
+  fillStyle
+) {
+  const context = getContext();
+
+  centerVec = centerVec.add(getCameraOffset());
+
+  context.beginPath();
+  context.lineWidth = strokeWidth;
+  context.strokeStyle = strokeStyle;
+  context.ellipse(
+    centerVec.x,
+    centerVec.y,
+    radiusX,
+    radiusY,
+    0,
+    0,
+    2 * Math.PI
+  );
+  if (fillStyle !== undefined) {
+    context.fillStyle = fillStyle;
+    context.fill();
+  }
+  context.stroke();
+}
+
+/**
  * draw a line
  * @param {Vector} pos1
  * @param {Vector} pos2
@@ -196,7 +237,6 @@ export function drawLine(pos1, pos2, style, width) {
   context.lineTo(pos2.x, pos2.y);
   context.stroke();
 }
-// TODO use drawing functions for these for if camera controls are ever added
 
 /**
  * draws the board
