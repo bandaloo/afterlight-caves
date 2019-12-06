@@ -83,6 +83,7 @@ export class Entity {
     this.lastPos = pos;
     this.vel = vel;
     this.acc = acc;
+    this.powerUpsList = new Array(); /** @type {string[]} */
   }
 
   onScreen() {

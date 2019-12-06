@@ -34,11 +34,11 @@ export class PowerUp extends Entity {
   }
 
   /**
-   * applies this powerup to the hero
-   * @param {Hero} hero
+   * applies this powerup to an entity
+   * @param {Entity} entity
    */
-  applyToHero(hero) {
-    hero.powerUpsList.push(this.powerUpName);
+  apply(entity) {
+    entity.powerUpsList.push(this.powerUpName);
     // display the name on the screen
     const textPos = this.drawPos.add(new Vector(0, -100));
     const td = new TextDisplay(

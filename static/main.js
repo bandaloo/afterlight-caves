@@ -17,6 +17,8 @@ import { Hero } from "./game/hero.js";
 import { initBlockField, distanceBoard } from "./game/generator.js";
 import { PowerUp } from "./game/powerup.js";
 import { Bigify } from "./game/powerups/bigify.js";
+import { Zoom } from "./game/powerups/zoom.js";
+import { Rubber } from "./game/powerups/rubber.js";
 
 const blockWidth = 60;
 const blockHeight = 60;
@@ -90,11 +92,11 @@ function resetDemo() {
 
   // TODO remove this
   // add a powerup
-  const bigify = new Bigify(
+  const rubber = new Rubber(
     hero.drawPos.add(new Vector(60, 1)),
     1 + Math.floor(Math.random() * 5)
   );
-  addToWorld(bigify);
+  addToWorld(rubber);
 }
 
 document.addEventListener("keydown", e => {

@@ -10,7 +10,6 @@ import { PowerUp } from "./powerup.js";
 export class Hero extends Entity {
   fireDelay = 10; // game steps to wait before firing
   fireCount = 0;
-  speed = 2; // movement speed
   drag = 0.1; // movement deceleration
   health = 3; // hits taken before dying
   eyeDirection = new Vector(0, 1);
@@ -24,11 +23,10 @@ export class Hero extends Entity {
     this.type = "Hero";
     this.width = 50;
     this.height = 50;
-    this.powerUpsList = new Array();
 
     // collect powerups when you collide with them
     this.collideMap.set("PowerUp", entity => {
-      /** @type {PowerUp} */ (entity).applyToHero(this);
+      /** @type {PowerUp} */ (entity).apply(this);
       for (let i = 0; i < 30; i++) {
         let randColor =
           "hsl(" + Math.floor(Math.random() * 360) + ", 100%, 50%)";
