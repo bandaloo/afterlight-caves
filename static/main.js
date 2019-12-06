@@ -19,6 +19,7 @@ import { PowerUp } from "./game/powerup.js";
 import { Bigify } from "./game/powerups/bigify.js";
 import { Zoom } from "./game/powerups/zoom.js";
 import { Rubber } from "./game/powerups/rubber.js";
+import { Elastic } from "./game/powerups/elastic.js";
 
 const blockWidth = 60;
 const blockHeight = 60;
@@ -92,7 +93,7 @@ function resetDemo() {
 
   // TODO remove this
   // add a powerup
-  const rubber = new Bigify(
+  const rubber = new Elastic(
     hero.drawPos.add(new Vector(60, 1)),
     1 + Math.floor(Math.random() * 5)
   );

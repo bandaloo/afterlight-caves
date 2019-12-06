@@ -59,14 +59,15 @@ export class Hero extends Entity {
       this.eyeDirection = buttons.shoot.vec;
       // shoot a bullet
       if (this.fireCount === 0) {
-        addToWorld(
-          new Bullet(
-            this.pos.add(buttons.shoot.vec.mult(this.width / 2)),
-            buttons.shoot.vec.mult(10).add(this.vel),
-            new Vector(0, 0),
-            true
-          )
+        let b = new Bullet(
+          this.pos.add(buttons.shoot.vec.mult(this.width / 2)),
+          buttons.shoot.vec.mult(10).add(this.vel),
+          new Vector(0, 0),
+          true
         );
+        b.bounciness = this.bulletBounciness;
+        b.rubberiness = this.bulletRubberiness;
+        addToWorld(b);
       }
       this.fireCount++;
       this.fireCount %= this.fireDelay;

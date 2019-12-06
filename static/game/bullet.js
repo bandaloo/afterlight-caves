@@ -21,7 +21,7 @@ export class Bullet extends Entity {
     this.drag = 0;
     this.width = 24;
     this.height = 24;
-    this.bounciness = 1;
+    this.bounciness = 0;
     good ? (this.type = "PlayerBullet") : (this.type = "EnemyBullet");
   }
 
@@ -63,6 +63,14 @@ export class Bullet extends Entity {
           );
         }
       }
+    }
+    // remove the bullet if it's not supposed to bounce
+    if (this.bounciness === 0) {
+      this.deleteMe = true;
+    } else {
+      // bounce off
+      this.vel = this.vel.norm();
+      this.vel = this.vel.mult(5 * this.rubberiness);
     }
   }
 }
