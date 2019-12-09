@@ -134,11 +134,11 @@ export function segregateTerrain(board) {
       if (isValid([i, j])) {
         mark++;
         markCounts[mark] = 0;
-        let queue = [[i, j]];
+        const queue = [[i, j]];
         while (queue.length > 0) {
-          let tile = queue.pop();
-          let x = tile[0];
-          let y = tile[1];
+          const tile = queue.pop();
+          const x = tile[0];
+          const y = tile[1];
           markedBoard[x][y] = mark;
           markCounts[mark]++;
           if (isValid([x + 1, y])) queue.push([x + 1, y]);
@@ -152,9 +152,9 @@ export function segregateTerrain(board) {
   if (noisy) {
     console.log("There were " + mark + " islands.");
   }
-  var max = markCounts[0];
-  var maxIndex = 0;
-  for (var i = 1; i < markCounts.length; i++) {
+  let max = markCounts[0];
+  let maxIndex = 0;
+  for (let i = 1; i < markCounts.length; i++) {
     if (markCounts[i] > max) {
       maxIndex = i;
       max = markCounts[i];
