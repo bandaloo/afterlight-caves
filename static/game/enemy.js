@@ -15,6 +15,7 @@ import {
 } from "../modules/gamemanager.js";
 import { Particle, EffectEnum } from "./particle.js";
 
+const noisy = false;
 /**
  * an enum for allowed shapes of enemies
  * @enum {number}
