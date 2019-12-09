@@ -105,7 +105,7 @@ export function inboundsBoard(i, j, board) {
 /**
  * Returns a version of the trrain with each empty space segregated into non-connected numbered areas
  * @param {*} board
- * @returns {{segregatedBoard: number[], groupNum: number, largestGroup: number}} segregatedTerrain
+ * @returns {{segregatedBoard: number[][], groupNum: number, largestGroup: number}} segregatedTerrain
  */
 export function segregateTerrain(board) {
   // init new 2d array to hold the cave markings
