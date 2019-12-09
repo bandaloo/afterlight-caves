@@ -36,15 +36,12 @@ export function solidAt(i, j) {
  * @param {Entity} entity
  */
 export function collideWithWorld(entity) {
-  const block = getDimensions();
-  const blockWidth = block.width;
-  const blockHeight = block.height;
+  const { width: blockWidth, height: blockHeight } = getDimensions();
 
-  // TODO: calculate these per-entity.
   // Entity block width
-  let ebw = 1;
+  let ebw = Math.floor(entity.width / blockWidth) + 1;
   // Entity block height
-  let ebh = 1;
+  let ebh = Math.floor(entity.height / blockHeight) + 1;
 
   // Find cell approximation of entity's position
   let entityCell = new Vector(
