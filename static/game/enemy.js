@@ -15,6 +15,7 @@ import {
 } from "../modules/gamemanager.js";
 import { Particle, EffectEnum } from "./particle.js";
 
+const noisy = false;
 /**
  * an enum for allowed shapes of enemies
  * @enum {number}
@@ -200,7 +201,6 @@ export class Enemy extends Entity {
    * @param {Entity} entity
    */
   hit(entity) {
-    console.log("parent hit");
     this.vel = this.vel.add(entity.vel.mult(0.7));
     this.health--;
     if (this.health <= 0) {

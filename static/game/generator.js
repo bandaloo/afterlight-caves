@@ -1,6 +1,9 @@
 import { randomInt, griderate } from "../modules/helpers.js";
 import { Block } from "./block.js";
 import { createNumberGrid, dirs } from "./life.js";
+import { Vector } from "../modules/vector.js";
+
+const noisy = false;
 
 /**
  * @typedef {Object} GemInfo
@@ -77,13 +80,16 @@ export function initBlockField(terrain) {
       if (terrain[i][j] !== 0) {
         // solid block
         const gem = Math.random() < 0.1 ? pickGem() : undefined;
-        blockField[i].push(new Block(Math.random() > 0.5 ? 1 : Infinity, gem));
+        // blockField[i].push(new Block(Math.random() > 0.5 ? 1 : Infinity, gem));
+        blockField[i].push(new Block(Infinity, gem));
       } else {
         // empty block
         blockField[i].push(undefined);
       }
     }
   }
+  // Connect the different caves by editing the blockField array
+  connectBoard(terrain, blockField);
 }
 
 /**
@@ -94,6 +100,155 @@ export function initBlockField(terrain) {
  */
 export function inboundsBoard(i, j, board) {
   return i >= 0 && i < board.length && j >= 0 && j < board[0].length;
+}
+
+/**
+ * Returns a version of the trrain with each empty space segregated into non-connected numbered areas
+ * @param {*} board
+ * @returns {{segregatedBoard: number[], groupNum: number, largestGroup: number}} segregatedTerrain
+ */
+export function segregateTerrain(board) {
+  // init new 2d array to hold the cave markings
+  let markedBoard = new Array(board.length);
+  for (let i = 0; i < board.length; i++) {
+    markedBoard[i] = new Array(board[i].length);
+    for (let j = 0; j < board[i].length; j++) {
+      markedBoard[i][j] = 0;
+    }
+  }
+  // Flood fill each seperate area, and mark the area with a number.
+  const width = board.length;
+  const height = board[0].length;
+  const isValid = ([x, y]) =>
+    x < width &&
+    x >= 0 &&
+    y < height &&
+    y >= 0 &&
+    markedBoard[x][y] == 0 &&
+    board[x][y] == 0;
+
+  let markCounts = [0];
+  let mark = 0;
+  for (let i = 0; i < board.length; i++) {
+    for (let j = 0; j < board[i].length; j++) {
+      if (isValid([i, j])) {
+        mark++;
+        markCounts[mark] = 0;
+        const queue = [[i, j]];
+        while (queue.length > 0) {
+          const tile = queue.pop();
+          const x = tile[0];
+          const y = tile[1];
+          markedBoard[x][y] = mark;
+          markCounts[mark]++;
+          if (isValid([x + 1, y])) queue.push([x + 1, y]);
+          if (isValid([x, y + 1])) queue.push([x, y + 1]);
+          if (isValid([x - 1, y])) queue.push([x - 1, y]);
+          if (isValid([x, y - 1])) queue.push([x, y - 1]);
+        }
+      }
+    }
+  }
+  if (noisy) {
+    console.log("There were " + mark + " islands.");
+  }
+  let max = markCounts[0];
+  let maxIndex = 0;
+  for (let i = 1; i < markCounts.length; i++) {
+    if (markCounts[i] > max) {
+      maxIndex = i;
+      max = markCounts[i];
+    }
+  }
+  if (noisy) {
+    console.log("The mainland is # " + maxIndex + ".");
+    console.log("Marked map:");
+    let string = "";
+    for (let j = 0; j < board[0].length; j++) {
+      for (let i = 0; i < board.length; i++) {
+        string += markedBoard[i][j];
+      }
+      string += "\n";
+    }
+    if (noisy) {
+      console.log(string);
+    }
+  }
+  return {
+    segregatedBoard: markedBoard,
+    groupNum: mark,
+    largestGroup: maxIndex
+  };
+}
+
+/**
+ * "connects" an arbitrary board by finding disconnected islands and connecting them.
+ * @param {number[][]} board
+ * @param {Block[][]} blockField
+ */
+export function connectBoard(board, blockField) {
+  // let markedBoard = segregateTerrain(board);
+  const {
+    segregatedBoard: markedBoard,
+    groupNum: mark,
+    largestGroup: maxIndex
+  } = segregateTerrain(board);
+  // Only connect caves if there is more than 1 cave
+  if (mark > 1) {
+    // use the distanceBoard to find "edge" tiles
+    let boardDistance = distanceBoard(board);
+    let caveBoarders = [];
+    for (let caveIndex = 1; caveIndex <= mark; caveIndex++) {
+      caveBoarders[caveIndex] = [];
+      for (let i = 0; i < board.length; i++) {
+        for (let j = 0; j < board[i].length; j++) {
+          if (boardDistance[i][j] == 1 && markedBoard[i][j] == caveIndex) {
+            caveBoarders[caveIndex].push(new Vector(i, j));
+          }
+        }
+      }
+    }
+    // Create a connection for every cave
+    for (let caveIndex = 1; caveIndex <= mark; caveIndex++) {
+      // Don't connect the mainland to the mainland
+      if (caveIndex != maxIndex) {
+        let minimumDistance = Infinity;
+        let minimumLine = [new Vector(0, 0), new Vector(0, 0)];
+        for (let i = 0; i < caveBoarders[caveIndex].length; i++) {
+          let p1 = caveBoarders[caveIndex][i];
+          for (let j = 0; j < caveBoarders[maxIndex].length; j++) {
+            let p2 = caveBoarders[maxIndex][j];
+            let dist = p1.dist2(p2);
+            if (dist < minimumDistance) {
+              minimumDistance = dist;
+              minimumLine = [new Vector(p1.x, p1.y), new Vector(p2.x, p2.y)];
+            }
+          }
+        }
+
+        // Create clay line in the x direction
+        for (
+          let i = minimumLine[0].x;
+          i != minimumLine[1].x;
+          i += minimumLine[0].x < minimumLine[1].x ? 1 : -1
+        ) {
+          if (blockField[i][minimumLine[1].y] != undefined) {
+            blockField[i][minimumLine[1].y] = new Block(1, undefined);
+          }
+        }
+        // Create clay line in the y direction
+        for (
+          let j = minimumLine[0].y;
+          j != minimumLine[1].y;
+          j += minimumLine[0].y < minimumLine[1].y ? 1 : -1
+        ) {
+          if (blockField[minimumLine[0].x][j] != undefined) {
+            blockField[minimumLine[0].x][j] = new Block(1, undefined);
+          }
+        }
+      }
+    }
+  }
 }
 
 /**
