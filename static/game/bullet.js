@@ -21,7 +21,7 @@ export class Bullet extends Entity {
     this.drag = 0.003;
     this.width = 24;
     this.height = 24;
-    this.bounciness = 1;
+    this.bounciness = 0;
     good ? (this.type = "PlayerBullet") : (this.type = "EnemyBullet");
   }
 
@@ -33,9 +33,16 @@ export class Bullet extends Entity {
 
   destroy() {
     for (let i = 0; i < 3; i++) {
-      addParticle(
-        new Particle(this.pos, "white", EffectEnum.spark, 8, 5, 0.12)
+      const spark = new Particle(
+        this.pos,
+        "white",
+        EffectEnum.spark,
+        8,
+        5,
+        0.12
       );
+      spark.width = 5;
+      addParticle(spark);
     }
   }
 
@@ -56,6 +63,14 @@ export class Bullet extends Entity {
           );
         }
       }
+    }
+    // remove the bullet if it's not supposed to bounce
+    if (this.bounciness === 0) {
+      this.deleteMe = true;
+    } else {
+      // bounce off
+      this.vel = this.vel.norm();
+      this.vel = this.vel.mult(5 * this.rubberiness);
     }
   }
 }

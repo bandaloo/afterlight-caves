@@ -128,7 +128,9 @@ export class Enemy extends Entity {
 
   destroy() {
     for (let i = 0; i < 30; i++) {
-      addParticle(new Particle(this.pos, this.look.color, EffectEnum.spark));
+      let p = new Particle(this.pos, this.look.color, EffectEnum.spark);
+      p.width = 5;
+      addParticle(p);
     }
 
     if (this.modifiers.size > 0) {
@@ -199,7 +201,6 @@ export class Enemy extends Entity {
    * @param {Entity} entity
    */
   hit(entity) {
-    console.log("parent hit");
     this.vel = this.vel.add(entity.vel.mult(0.7));
     this.health--;
     if (this.health <= 0) {

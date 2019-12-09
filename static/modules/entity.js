@@ -25,7 +25,7 @@ export class Entity {
   /** @type {number} */
   depth = 0;
 
-  /** @type {number} */
+  /** @type {number} 0 if it can't bounce, 1 if it can */
   bounciness = 0;
 
   /** @type {boolean} */
@@ -59,6 +59,13 @@ export class Entity {
    */
   hitsWalls = true;
 
+  /** 
+   * how fast it bounces off after a collision. Only has an
+   * effect if bounciness if 1.
+   * @type {number} 
+   */
+  rubberiness = 0;
+
   /**
    * draw position slightly differs from original position to tween between frames
    * @type {Vector}
@@ -71,6 +78,12 @@ export class Entity {
    */
   deleteMe = false;
 
+  /** @type {number} bounciness of bullets spawned by this */
+  bulletBounciness = 0;
+
+  /** @type {number} rubberiness of bullets spawned by this */
+  bulletRubberiness = 0;
+
   /**
    * constructs an entity with all the relevant vectors
    * @param {Vector} pos
@@ -81,8 +94,10 @@ export class Entity {
     this.pos = pos;
     this.drawPos = pos;
     this.lastPos = pos;
+    /** @type {Vector} */
     this.vel = vel;
     this.acc = acc;
+    this.powerUpsList = new Array(); /** @type {string[]} */
   }
 
   onScreen() {

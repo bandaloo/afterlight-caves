@@ -3,7 +3,7 @@ import { Block } from "./block.js";
 import { createNumberGrid, dirs } from "./life.js";
 import { Vector } from "../modules/vector.js";
 
-const noisy = true;
+const noisy = false;
 
 /**
  * @typedef {Object} GemInfo
@@ -170,7 +170,9 @@ export function segregateTerrain(board) {
       }
       string += "\n";
     }
-    console.log(string);
+    if (noisy) {
+      console.log(string);
+    }
   }
   return {
     segregatedBoard: markedBoard,

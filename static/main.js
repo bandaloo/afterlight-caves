@@ -16,6 +16,11 @@ import { Vector } from "./modules/vector.js";
 import { shuffle, randomInt, hsl } from "./modules/helpers.js";
 import { Hero } from "./game/hero.js";
 import { initBlockField, distanceBoard } from "./game/generator.js";
+import { PowerUp } from "./game/powerup.js";
+import { Bigify } from "./game/powerups/bigify.js";
+import { Zoom } from "./game/powerups/zoom.js";
+import { Rubber } from "./game/powerups/rubber.js";
+import { Elastic } from "./game/powerups/elastic.js";
 import { Scatter } from "./game/scatter.js";
 import { Chase } from "./game/chase.js";
 
@@ -49,8 +54,6 @@ function resetDemo() {
     0.45,
     20
   );
-
-  console.log(boardToString(board));
 
   setTerrain(board);
   initBlockField(board);
@@ -108,6 +111,14 @@ function resetDemo() {
   setCameraEntity(hero);
   setImportantEntity("hero", hero);
   addToWorld(hero);
+
+  // TODO remove this
+  // add a powerup
+  const rubber = new Elastic(
+    hero.drawPos.add(new Vector(60, 1)),
+    1 + Math.floor(Math.random() * 5)
+  );
+  addToWorld(rubber);
 }
 
 document.addEventListener("keydown", e => {
