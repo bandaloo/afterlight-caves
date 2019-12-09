@@ -43,6 +43,12 @@ class GameManager {
   /** @type {number} */
   screenHeight;
 
+  /**
+   * map for entities that game programmer might want to access frequently, like player
+   * @type {Map<string, Entity>}
+   */
+  importantEntities = new Map();
+
   // TODO consider whether we want the options pattern here
   constructor(
     width = 1920,
@@ -456,4 +462,35 @@ export function setCameraEntity(cameraEntity) {
  */
 export function getScreenDimensions() {
   return { width: gameManager.screenWidth, height: gameManager.screenHeight };
+}
+
+/**
+ * @param {string} name
+ * @returns {Entity}
+ */
+export function getImportantEntity(name) {
+  return gameManager.importantEntities.get(name);
+}
+
+/**
+ * @param {string} name
+ * @param {Entity} entity
+ */
+export function setImportantEntity(name, entity) {
+  gameManager.importantEntities.set(name, entity);
+}
+
+/**
+ * @param {string} name
+ * @returns {boolean}
+ */
+export function hasImportantEntity(name) {
+  return gameManager.importantEntities.has(name);
+}
+
+/**
+ * @param {string} name
+ */
+export function deleteImportantEntity(name) {
+  gameManager.importantEntities.delete(name);
 }
