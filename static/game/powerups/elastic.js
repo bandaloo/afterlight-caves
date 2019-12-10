@@ -1,6 +1,6 @@
 import { PowerUp } from "../powerup.js";
 import { Vector } from "../../modules/vector.js";
-import { Entity } from "../../modules/entity.js";
+import { Creature } from "../creature.js";
 
 export class Elastic extends PowerUp {
   /**
@@ -15,12 +15,12 @@ export class Elastic extends PowerUp {
 
   /**
    * applies this powerup
-   * @param {Entity} entity
+   * @param {Creature} creature
    * @override
    */
-  apply(entity) {
-    super.apply(entity);
-    entity.bulletBounciness = 1;
-    entity.bulletRubberiness += this.magnitude;
+  apply(creature) {
+    super.apply(creature);
+    creature.bulletBounciness = 1;
+    creature.bulletRubberiness += this.magnitude;
   }
 }

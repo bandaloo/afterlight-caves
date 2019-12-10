@@ -1,6 +1,7 @@
 import { Entity } from "../modules/entity.js";
 import { Vector } from "../modules/vector.js";
 import { randomFromEnum, randomInt, hsl } from "../modules/helpers.js";
+import { Creature } from "./creature.js";
 import {
   centeredOutlineRect,
   centeredOutlineRectFill,
@@ -16,6 +17,7 @@ import {
 import { Particle, EffectEnum } from "./particle.js";
 
 const noisy = false;
+
 /**
  * an enum for allowed shapes of enemies
  * @enum {number}
@@ -85,7 +87,7 @@ export function randomStats(difficulty) {
   return stats;
 }
 
-export class Enemy extends Entity {
+export class Enemy extends Creature {
   health = 2;
   modifiers = {
     size: 0,

@@ -2,16 +2,13 @@ import { Entity } from "../modules/entity.js";
 import { Vector } from "../modules/vector.js";
 import { centeredOutlineCircle } from "./draw.js";
 import { buttons } from "./buttons.js";
-import { addParticle, addToWorld } from "../modules/gamemanager.js";
-import { Bullet } from "./bullet.js";
+import { addParticle } from "../modules/gamemanager.js";
 import { Particle, EffectEnum } from "./particle.js";
 import { PowerUp } from "./powerup.js";
+import { Creature } from "./creature.js";
 
-export class Hero extends Entity {
-  fireDelay = 10; // game steps to wait before firing
-  fireCount = 0;
+export class Hero extends Creature {
   drag = 0.1; // movement deceleration
-  health = 3; // hits taken before dying
   eyeDirection = new Vector(0, 1);
 
   /**
@@ -21,8 +18,14 @@ export class Hero extends Entity {
   constructor(startingPos) {
     super(startingPos);
     this.type = "Hero";
+
+    // set initial attributes
     this.width = 50;
     this.height = 50;
+    this.fireDelay = 20;
+    this.maxHealth = 30;
+    this.currentHealth = this.maxHealth;
+    this.bulletSpeed = 10;
 
     // collect powerups when you collide with them
     this.collideMap.set("PowerUp", entity => {
@@ -57,20 +60,7 @@ export class Hero extends Entity {
     // prevents velocity from getting too small and normalization messing up
     if (!buttons.shoot.vec.isZeroVec()) {
       this.eyeDirection = buttons.shoot.vec;
-      // shoot a bullet
-      if (this.fireCount === 0) {
-        let b = new Bullet(
-          this.pos.add(buttons.shoot.vec.mult(this.width / 2)),
-          buttons.shoot.vec.mult(10).add(this.vel),
-          new Vector(0, 0),
-          true
-        );
-        b.bounciness = this.bulletBounciness;
-        b.rubberiness = this.bulletRubberiness;
-        addToWorld(b);
-      }
-      this.fireCount++;
-      this.fireCount %= this.fireDelay;
+      this.shoot(buttons.shoot.vec, true);
     } else if (this.vel.magnitude() > 0.001) {
       this.eyeDirection = this.vel.norm();
     }

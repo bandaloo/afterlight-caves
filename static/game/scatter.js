@@ -3,7 +3,6 @@ import { Vector } from "../modules/vector.js";
 import { centeredOutlineCircle, drawLine } from "./draw.js";
 
 export class Scatter extends Enemy {
-  health = 2;
 
   /**
    * constructs a random entity with all the relevant vectors
@@ -22,6 +21,8 @@ export class Scatter extends Enemy {
     modifiers = { size: 0, speed: 0, explode: 0 }
   ) {
     super(pos, look, stats, vel, acc, modifiers);
+    this.maxHealth = 2;
+    this.currentHealth = 2;
   }
 
   action() {

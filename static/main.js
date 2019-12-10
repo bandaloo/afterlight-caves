@@ -23,6 +23,7 @@ import { Rubber } from "./game/powerups/rubber.js";
 import { Elastic } from "./game/powerups/elastic.js";
 import { Scatter } from "./game/scatter.js";
 import { Chase } from "./game/chase.js";
+import { Shooter } from "./game/shooter.js";
 
 const blockWidth = 60;
 const blockHeight = 60;
@@ -76,6 +77,18 @@ function resetDemo() {
 
   for (let i = 0; i < 500; i++) {
     // TODO change this with actual enemy spawning system
+    const enemy = new Shooter(
+      emptySpaces[i % emptySpaces.length].add(
+        new Vector(blockWidth / 2, blockHeight / 2)
+      ),
+      enemyLooks[i % 4],
+      enemyStats[i % 4],
+      undefined,
+      undefined,
+      { size: randomInt(3), speed: 0, explode: 0 }
+    );
+    addToWorld(enemy);
+    /*
     if (i % 2) {
       const enemy = new Chase(
         emptySpaces[i % emptySpaces.length].add(
@@ -100,6 +113,24 @@ function resetDemo() {
         { size: randomInt(3), speed: 0, explode: 0 }
       );
       addToWorld(enemy);
+    }
+    */
+  }
+  // TODO change this with actual powerup spawning
+  const powerUpTypes = [Bigify, Elastic, Rubber, Zoom];
+  for (let i = 0; i < 70; ++i) {
+    const r = Math.random();
+    const magnitude = Math.floor(Math.random() * 5) + 1;
+    const location = emptySpaces[
+      Math.floor(Math.random() * emptySpaces.length)
+    ].add(new Vector(blockWidth / 2, blockHeight / 2));
+    for (let j = 1; j <= powerUpTypes.length; ++j) {
+      if (r < j / powerUpTypes.length) {
+        const powerUp = new powerUpTypes[j-1](location, magnitude);
+        console.log(powerUp.powerUpName);
+        addToWorld(powerUp);
+        break;
+      }
     }
   }
 
