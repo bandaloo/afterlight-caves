@@ -127,7 +127,6 @@ function resetDemo() {
     for (let j = 1; j <= powerUpTypes.length; ++j) {
       if (r < j / powerUpTypes.length) {
         const powerUp = new powerUpTypes[j-1](location, magnitude);
-        console.log(powerUp.powerUpName);
         addToWorld(powerUp);
         break;
       }
@@ -142,14 +141,6 @@ function resetDemo() {
   setCameraEntity(hero);
   setImportantEntity("hero", hero);
   addToWorld(hero);
-
-  // TODO remove this
-  // add a powerup
-  const rubber = new Elastic(
-    hero.drawPos.add(new Vector(60, 1)),
-    1 + Math.floor(Math.random() * 5)
-  );
-  addToWorld(rubber);
 }
 
 document.addEventListener("keydown", e => {
