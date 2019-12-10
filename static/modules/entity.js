@@ -79,10 +79,10 @@ export class Entity {
   deleteMe = false;
 
   /** @type {number} bounciness of bullets spawned by this */
-  bulletBounciness = 0;
+  //bulletBounciness = 0;
 
   /** @type {number} rubberiness of bullets spawned by this */
-  bulletRubberiness = 0;
+  //bulletRubberiness = 0;
 
   /**
    * constructs an entity with all the relevant vectors
@@ -97,7 +97,7 @@ export class Entity {
     /** @type {Vector} */
     this.vel = vel;
     this.acc = acc;
-    this.powerUpsList = new Array(); /** @type {string[]} */
+    //this.powerUpsList = new Array(); /** @type {string[]} */
   }
 
   onScreen() {

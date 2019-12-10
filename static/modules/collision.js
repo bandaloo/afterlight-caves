@@ -38,22 +38,26 @@ export function solidAt(i, j) {
 export function collideWithWorld(entity) {
   const { width: blockWidth, height: blockHeight } = getDimensions();
 
-  // Entity block width
-  let ebw = Math.floor(entity.width / blockWidth) + 1;
-  // Entity block height
-  let ebh = Math.floor(entity.height / blockHeight) + 1;
+  // Top left corner
+  const top_left = getCell(
+    new Vector(
+      entity.pos.x - entity.width / 2,
+      entity.pos.y - entity.height / 2
+    )
+  );
 
-  // Find cell approximation of entity's position
-  let entityCell = new Vector(
-    Math.floor(entity.pos.x / blockWidth),
-    Math.floor(entity.pos.y / blockHeight)
+  const bottom_right = getCell(
+    new Vector(
+      entity.pos.x + entity.width / 2,
+      entity.pos.y + entity.height / 2
+    )
   );
 
   let collidingEntities = [];
 
   // Iterate over any block within collision range of the entity
-  for (let i = entityCell.x - ebw; i <= entityCell.x + ebw; i++) {
-    for (let j = entityCell.y - ebh; j <= entityCell.y + ebh; j++) {
+  for (let i = top_left.x; i < bottom_right.x + 1; i++) {
+    for (let j = top_left.y; j < bottom_right.y + 1; j++) {
       // If this block is solid, create an entity for it
       if (solidAt(i, j)) {
         let x = (i + 1) * blockWidth - blockWidth / 2;

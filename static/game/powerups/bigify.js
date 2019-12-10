@@ -1,6 +1,6 @@
 import { PowerUp } from "../powerup.js";
 import { Vector } from "../../modules/vector.js";
-import { Entity } from "../../modules/entity.js";
+import { Creature } from "../creature.js";
 
 export class Bigify extends PowerUp {
   /**
@@ -15,12 +15,12 @@ export class Bigify extends PowerUp {
 
   /**
    * applies this powerup
-   * @param {Entity} entity
+   * @param {Creature} creature
    * @override
    */
-  apply(entity) {
-    super.apply(entity);
-    entity.width += this.magnitude * 20;
-    entity.height += this.magnitude * 20;
+  apply(creature) {
+    super.apply(creature);
+    creature.width += this.magnitude * 20;
+    creature.height += this.magnitude * 20;
   }
 }

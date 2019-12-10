@@ -1,7 +1,6 @@
 import { PowerUp } from "../powerup.js";
 import { Vector } from "../../modules/vector.js";
-import { Entity } from "../../modules/entity.js";
-
+import { Creature } from "../creature.js";
 export class Rubber extends PowerUp {
   /**
    * Makes you bouncy
@@ -15,12 +14,12 @@ export class Rubber extends PowerUp {
 
   /**
    * applies this powerup
-   * @param {Entity} entity
+   * @param {Creature} creature
    * @override
    */
-  apply(entity) {
-    super.apply(entity);
-    entity.bounciness = 1;
-    entity.rubberiness += this.magnitude;
+  apply(creature) {
+    super.apply(creature);
+    creature.bounciness = 1;
+    creature.rubberiness += this.magnitude;
   }
 }

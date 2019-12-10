@@ -180,7 +180,9 @@ class GameManager {
     // draw all particles
     for (let i = 0; i < this.particles.length; i++) {
       // TODO cull particles too
-      this.particles[i].draw();
+      if (this.entities[i].onScreen) {
+        this.particles[i].draw();
+      }
     }
     // draw all entities
     for (let i = 0; i < this.entities.length; i++) {

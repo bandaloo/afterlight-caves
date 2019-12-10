@@ -1,5 +1,6 @@
 import { Vector } from "../modules/vector.js";
 import { Entity } from "../modules/entity.js";
+import { Creature } from "./creature.js";
 import { centeredOutlineCircle, centeredText, drawShines } from "./draw.js";
 import { TextDisplay } from "./textdisplay.js";
 import { addToWorld } from "../modules/gamemanager.js";
@@ -36,12 +37,12 @@ export class PowerUp extends Entity {
   }
 
   /**
-   * applies this powerup to an entity
-   * @param {Entity} entity
+   * applies this powerup to a creature
+   * @param {Creature} creature
    * @virtual
    */
-  apply(entity) {
-    entity.powerUpsList.push(this.powerUpName);
+  apply(creature) {
+    creature.powerUpsList.push(this.powerUpName);
     // display the name on the screen
     const textPos = this.drawPos.add(new Vector(0, -100));
     const td = new TextDisplay(
@@ -51,7 +52,9 @@ export class PowerUp extends Entity {
       this.hue,
       "rgba(0, 0, 0, 0)"
     );
-    addToWorld(td);
+    if (creature.type === "Hero") {
+      addToWorld(td);
+    }
   }
 
   /**

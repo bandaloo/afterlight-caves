@@ -1,6 +1,6 @@
 import { PowerUp } from "../powerup.js";
 import { Vector } from "../../modules/vector.js";
-import { Entity } from "../../modules/entity.js";
+import { Creature } from "../creature.js";
 
 export class Zoom extends PowerUp {
 
@@ -16,11 +16,11 @@ export class Zoom extends PowerUp {
 
   /**
    * applies this powerup to the hero
-   * @param {Entity} entity 
+   * @param {Creature} creature 
    * @override
    */
-  applyToHero(entity) {
-    super.apply(entity);
-    entity.drag -= this.magnitude * 0.005;
+  applyToHero(creature) {
+    super.apply(creature);
+    creature.drag -= this.magnitude * 0.005;
   }
 }
