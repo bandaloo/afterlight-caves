@@ -21,6 +21,7 @@ import { Bigify } from "./game/powerups/bigify.js";
 import { Zoom } from "./game/powerups/zoom.js";
 import { Rubber } from "./game/powerups/rubber.js";
 import { Elastic } from "./game/powerups/elastic.js";
+import { Xplode } from "./game/powerups/xplode.js";
 import { Scatter } from "./game/scatter.js";
 import { Chase } from "./game/chase.js";
 import { Shooter } from "./game/shooter.js";
@@ -117,7 +118,7 @@ function resetDemo() {
     */
   }
   // TODO change this with actual powerup spawning
-  const powerUpTypes = [Bigify, Elastic, Rubber, Zoom];
+  const powerUpTypes = [Bigify, Elastic, Rubber, Xplode, Zoom];
   for (let i = 0; i < 70; ++i) {
     const r = Math.random();
     const magnitude = Math.floor(Math.random() * 5) + 1;
@@ -138,6 +139,9 @@ function resetDemo() {
       new Vector(blockWidth / 2, blockHeight / 2).add(emptySpaces[11])
     )
   );
+
+  addToWorld(new Xplode(hero.pos.add(new Vector(60, 0)), 3));
+
   setCameraEntity(hero);
   setImportantEntity("hero", hero);
   addToWorld(hero);

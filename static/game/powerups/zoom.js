@@ -21,6 +21,6 @@ export class Zoom extends PowerUp {
    */
   applyToHero(creature) {
     super.apply(creature);
-    creature.drag -= this.magnitude * 0.005;
+    creature.drag -= this.magnitude * 0.05;
   }
 }

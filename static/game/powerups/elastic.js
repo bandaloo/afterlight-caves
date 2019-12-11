@@ -21,6 +21,6 @@ export class Elastic extends PowerUp {
   apply(creature) {
     super.apply(creature);
     creature.bulletBounciness = 1;
-    creature.bulletRubberiness += this.magnitude;
+    creature.bulletRubberiness += this.magnitude / 2;
   }
 }
