@@ -2,15 +2,15 @@ import { PowerUp } from "../powerup.js";
 import { Vector } from "../../modules/vector.js";
 import { Creature } from "../creature.js";
 
-export class Bigify extends PowerUp {
+export class MachineGun extends PowerUp {
   /**
-   * Makes you bigger
+   * Makes you shoot faster
    * @param {Vector} pos
-   * @param {number} magnitude how big this makes you, 1-5
+   * @param {number} magnitude how much faster you shoot
    */
   constructor(pos, magnitude = 1) {
     super(pos, magnitude);
-    this.powerUpName = "Bigify " + this.magnitude;
+    this.powerUpName = "MachineGun " + this.magnitude;
   }
 
   /**
@@ -20,7 +20,7 @@ export class Bigify extends PowerUp {
    */
   apply(creature) {
     super.apply(creature);
-    creature.width += this.magnitude * 5;
-    creature.height += this.magnitude * 5;
+    creature.fireDelay -= this.magnitude;
+    if (creature.fireDelay < 1) creature.fireDelay = 1;
   }
 }

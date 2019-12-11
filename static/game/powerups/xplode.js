@@ -35,15 +35,8 @@ export class Xplode extends PowerUp {
         const child = creature.getBullet(newVel, b.good, b.color);
         child.vel = child.vel.norm2().mult(creature.bulletSpeed * 0.75);
         child.pos = b.pos;
-        // make new onDestroy array without this function
-        /** @type {(function(Bullet): void)[]} */
-        const newOnDestroy = new Array();
-        for (const g of child.onDestroy) {
-          if (g !== f) {
-            newOnDestroy.push(g);
-          }
-        }
-        child.onDestroy = newOnDestroy;
+        // make new empty onDestroy array so that these don't multiply forever
+        child.onDestroy = new Array();
 
         addToWorld(child);
       }

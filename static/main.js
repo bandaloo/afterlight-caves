@@ -21,6 +21,8 @@ import { Bigify } from "./game/powerups/bigify.js";
 import { Zoom } from "./game/powerups/zoom.js";
 import { Rubber } from "./game/powerups/rubber.js";
 import { Elastic } from "./game/powerups/elastic.js";
+import { Littlify } from "./game/powerups/littlify.js";
+import { MachineGun } from "./game/powerups/machinegun.js";
 import { Xplode } from "./game/powerups/xplode.js";
 import { Scatter } from "./game/scatter.js";
 import { Chase } from "./game/chase.js";
@@ -118,7 +120,15 @@ function resetDemo() {
     */
   }
   // TODO change this with actual powerup spawning
-  const powerUpTypes = [Bigify, Elastic, Rubber, Xplode, Zoom];
+  const powerUpTypes = [
+    Bigify,
+    Elastic,
+    Littlify,
+    MachineGun,
+    Rubber,
+    Xplode,
+    Zoom
+  ];
   for (let i = 0; i < 70; ++i) {
     const r = Math.random();
     const magnitude = Math.floor(Math.random() * 5) + 1;
