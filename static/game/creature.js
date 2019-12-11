@@ -1,7 +1,7 @@
 import { Entity } from "../modules/entity.js";
 import { Vector } from "../modules/vector.js";
 import { Bullet } from "./bullet.js";
-import { addToWorld } from "../modules/gamemanager.js";
+import { addToWorld, getDimensions } from "../modules/gamemanager.js";
 
 /**
  * Class representing an entity that moves around and shoots, such as enemies
@@ -22,7 +22,7 @@ export class Creature extends Entity {
   powerUpsList;
 
   /** @type {number} the number of game steps to wait between each shot */
-  fireDelay = 30
+  fireDelay = 30;
 
   /** @type {number} counter for fireDelay */
   fireCount = 0;
@@ -49,7 +49,7 @@ export class Creature extends Entity {
   /**
    * action, e.g. shoot, that a creature does every step
    */
-  action() { }
+  action() {}
 
   /**
    * Shoots in the given direction

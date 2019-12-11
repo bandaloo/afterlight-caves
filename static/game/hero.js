@@ -1,4 +1,3 @@
-import { Entity } from "../modules/entity.js";
 import { Vector } from "../modules/vector.js";
 import { centeredOutlineCircle } from "./draw.js";
 import { buttons } from "./buttons.js";

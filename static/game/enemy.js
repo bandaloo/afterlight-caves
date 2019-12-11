@@ -4,19 +4,11 @@ import { randomFromEnum, randomInt, hsl } from "../modules/helpers.js";
 import { Creature } from "./creature.js";
 import {
   centeredOutlineRect,
-  centeredOutlineRectFill,
   centeredOutlineCircle,
   drawLine
 } from "./draw.js";
-import {
-  getContext,
-  getDimensions,
-  addParticle,
-  addToWorld
-} from "../modules/gamemanager.js";
+import { addParticle, addToWorld } from "../modules/gamemanager.js";
 import { Particle, EffectEnum } from "./particle.js";
-
-const noisy = false;
 
 /**
  * an enum for allowed shapes of enemies
@@ -203,7 +195,7 @@ export class Enemy extends Creature {
    * @param {Entity} entity
    */
   hit(entity) {
-    this.vel = this.vel.add(entity.vel.mult(0.7));
+    this.vel = this.vel.add(entity.vel.mult(0.7 / (1 + this.modifiers.size)));
     this.health--;
     if (this.health <= 0) {
       this.deleteMe = true;
