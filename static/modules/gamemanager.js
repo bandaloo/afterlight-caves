@@ -2,7 +2,10 @@ import { Entity } from "./entity.js";
 import {
   controlKeydownListener,
   controlKeyupListener,
-  cleanButtons
+  cleanButtons,
+  gamepadConnectListener,
+  gamepadDisconnectListener,
+  getGamepadInput
 } from "../game/buttons.js";
 import { inPlaceFilter } from "./helpers.js";
 import { isColliding } from "./collision.js";
@@ -100,6 +103,10 @@ class GameManager {
     // add event listeners for hero controls
     document.addEventListener("keydown", controlKeydownListener);
     document.addEventListener("keyup", controlKeyupListener);
+
+    // deal with controllers
+    window.addEventListener("gamepadconnected", gamepadConnectListener);
+    window.addEventListener("gamepaddisconnected", gamepadDisconnectListener);
 
     this.addDisplayToDiv("gamediv");
   }
@@ -275,6 +282,9 @@ class GameManager {
    * @param {number} [currentTime]
    */
   update(currentTime = this.updateTime) {
+    // get input from any controllers
+    getGamepadInput();
+
     // keep track of time passed
     let deltaTime = currentTime - this.previousTime;
     if (deltaTime > 200) {

@@ -126,7 +126,7 @@ function resetDemo() {
     ].add(new Vector(blockWidth / 2, blockHeight / 2));
     for (let j = 1; j <= powerUpTypes.length; ++j) {
       if (r < j / powerUpTypes.length) {
-        const powerUp = new powerUpTypes[j-1](location, magnitude);
+        const powerUp = new powerUpTypes[j - 1](location, magnitude);
         addToWorld(powerUp);
         break;
       }

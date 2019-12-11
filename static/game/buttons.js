@@ -2,6 +2,7 @@ import { Vector } from "../modules/vector.js";
 import { numSign } from "../modules/helpers.js";
 
 const noisy = false;
+const DEADZONE = 0.2;
 
 /**
  * @typedef {Object} Status
@@ -266,5 +267,62 @@ export function controlKeyupListener(e) {
       console.log(`secondary button ${buttons.secondary.key} released`);
     }
     return;
+  }
+}
+
+/**
+ * handles connecting a gamepad
+ * @param {GamepadEvent} e
+ */
+export function gamepadConnectListener(e) {
+  console.log("GAMEPAD CONNECTED: " + e.gamepad);
+}
+
+/**
+ * handles disconnecting a gamepad
+ * @param {GamepadEvent} e
+ */
+export function gamepadDisconnectListener(e) {
+  console.log("GAMEPAD DISCONNECTED: " + e.gamepad.index);
+}
+
+/**
+ * this should be called every step to update buttons with input from the
+ * controllers
+ */
+export function getGamepadInput() {
+  /**
+   * @param {number} x
+   * @return {number} 0 if x is within DEADZONE of 0, otherwise x
+   */
+  const deadzoneGuard = (x) => { return Math.abs(x) > DEADZONE ? x : 0 }
+
+  for (const gamepad of navigator.getGamepads()) {
+    if (!gamepad || !gamepad.connected) { continue; }
+    if (gamepad.axes.length < 4) { continue; }
+    const lStickX = deadzoneGuard(gamepad.axes[0]);
+    const lStickY = deadzoneGuard(gamepad.axes[1]);
+    const rStickX = deadzoneGuard(gamepad.axes[2]);
+    const rStickY = deadzoneGuard(gamepad.axes[3]);
+    buttons.move.vec = new Vector(lStickX, lStickY).norm2();
+    buttons.shoot.vec = new Vector(rStickX, rStickY).norm2();
+    if (gamepad.buttons[6].pressed) {
+      buttons.primary.status.pressed = !buttons.primary.status.held;
+      buttons.primary.status.held = true;
+      buttons.primary.status.released = false;
+    } else {
+      buttons.primary.status.released = buttons.primary.status.held;
+      buttons.primary.status.pressed = false;
+      buttons.primary.status.held = false;
+    }
+    if (gamepad.buttons[7].pressed) {
+      buttons.secondary.status.pressed = !buttons.primary.status.held;
+      buttons.secondary.status.held = true;
+      buttons.primary.status.released = false;
+    } else {
+      buttons.secondary.status.released = buttons.primary.status.held;
+      buttons.secondary.status.pressed = false;
+      buttons.secondary.status.held = false;
+    }
   }
 }
