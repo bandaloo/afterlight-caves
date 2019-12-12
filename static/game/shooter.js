@@ -39,7 +39,6 @@ export class Shooter extends Enemy {
   }
 
   action() {
-    super.action();
     // TODO make this AI better
     if (hasImportantEntity("hero")) {
       const hero = getImportantEntity("hero");
