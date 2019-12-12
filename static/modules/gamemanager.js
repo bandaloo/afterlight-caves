@@ -186,10 +186,8 @@ class GameManager {
 
     // draw all particles
     for (let i = 0; i < this.particles.length; i++) {
-      // TODO cull particles too
-      if (this.entities[i].onScreen) {
-        this.particles[i].draw();
-      }
+      // TODO see if culling particles does anything for performance
+      this.particles[i].draw();
     }
     // draw all entities
     for (let i = 0; i < this.entities.length; i++) {
@@ -505,4 +503,17 @@ export function hasImportantEntity(name) {
  */
 export function deleteImportantEntity(name) {
   gameManager.importantEntities.delete(name);
+}
+
+/**
+ * get center of terrain cell position
+ * @param {Vector} vec
+ * @returns {Vector}
+ */
+export function cellToWorldPosition(vec) {
+  const { width: blockWidth, height: blockHeight } = getDimensions();
+  return new Vector(
+    vec.x * blockWidth + blockWidth / 2,
+    vec.y * blockHeight + blockHeight / 2
+  );
 }

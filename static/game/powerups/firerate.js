@@ -2,15 +2,15 @@ import { PowerUp } from "../powerup.js";
 import { Vector } from "../../modules/vector.js";
 import { Creature } from "../creature.js";
 
-export class MachineGun extends PowerUp {
+export class FireRate extends PowerUp {
   /**
-   * Makes you shoot faster
+   * Increases your fire rate
    * @param {Vector} pos
-   * @param {number} magnitude how much faster you shoot
+   * @param {number} magnitude how much to increase fire rate, 1-5
    */
   constructor(pos, magnitude = 1) {
     super(pos, magnitude);
-    this.powerUpName = "MachineGun " + this.magnitude;
+    this.powerUpName = "Fire Rate " + this.magnitude;
   }
 
   /**
@@ -20,7 +20,8 @@ export class MachineGun extends PowerUp {
    */
   apply(creature) {
     super.apply(creature);
-    creature.fireDelay -= this.magnitude;
-    if (creature.fireDelay < 1) creature.fireDelay = 1;
+    if (creature.fireDelay > 0) {
+      creature.fireDelay -= this.magnitude;
+    }
   }
 }

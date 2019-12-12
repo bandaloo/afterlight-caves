@@ -15,6 +15,7 @@ export class Bullet extends Entity {
    * @param {boolean} [good] false by default
    * @param {string} [color] default "white",
    * @param {number} [lifetime] how long this bullet survives, in game steps
+   * @param {number} [damage] how much damage this bullet deals
    */
   constructor(
     pos = new Vector(0, 0),
@@ -22,7 +23,8 @@ export class Bullet extends Entity {
     acc = new Vector(0, 0),
     good = false,
     color = "white",
-    lifetime = 100
+    lifetime = 100,
+    damage = 1
   ) {
     super(pos, vel, acc);
     this.good = good;
@@ -32,8 +34,10 @@ export class Bullet extends Entity {
     this.height = 24;
     this.bounciness = 0;
     this.color = color;
+    this.damage = damage;
     /** @type {(function(Bullet): void)[]} */
     this.onDestroy = new Array();
+    this.damage = damage;
     good ? (this.type = "PlayerBullet") : (this.type = "EnemyBullet");
   }
 
