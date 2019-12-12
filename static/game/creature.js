@@ -59,25 +59,29 @@ export class Creature extends Entity {
    * @param {string} [color] color of the bullet, default white
    */
   shoot(dir, isGood = false, color = "white") {
+    // Conditional is so fire count doesn't roll over before shooting
+    if (this.fireCount < this.fireDelay) {
+      this.fireCount++;
+    }
     if (dir.isZeroVec()) {
       // can't shoot without a direction
       return;
     }
     dir = dir.norm();
     // shoot a bullet
-    if (this.fireCount === 0) {
+    if (this.fireCount >= this.fireDelay) {
       let b = new Bullet(
         this.pos.add(dir.mult(this.width / 2)),
         dir.mult(this.bulletSpeed).add(this.vel),
         new Vector(0, 0),
         isGood,
-        color
+        color,
+        this.bulletDamage
       );
       b.bounciness = this.bulletBounciness;
       b.rubberiness = this.bulletRubberiness;
       addToWorld(b);
+      this.fireCount = 0;
     }
-    this.fireCount++;
-    this.fireCount %= this.fireDelay;
   }
 }

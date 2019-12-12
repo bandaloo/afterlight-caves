@@ -57,9 +57,9 @@ export class Hero extends Creature {
   action() {
     this.acc = buttons.move.vec;
     // prevents velocity from getting too small and normalization messing up
+    this.shoot(buttons.shoot.vec, true);
     if (!buttons.shoot.vec.isZeroVec()) {
       this.eyeDirection = buttons.shoot.vec;
-      this.shoot(buttons.shoot.vec, true);
     } else if (this.vel.magnitude() > 0.001) {
       this.eyeDirection = this.vel.norm();
     }

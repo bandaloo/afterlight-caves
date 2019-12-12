@@ -2,15 +2,15 @@ import { PowerUp } from "../powerup.js";
 import { Vector } from "../../modules/vector.js";
 import { Creature } from "../creature.js";
 
-export class Rubber extends PowerUp {
+export class FireRate extends PowerUp {
   /**
-   * Makes you bouncy
+   * Increases your fire rate
    * @param {Vector} pos
-   * @param {number} magnitude how bouncy you become, 1-5
+   * @param {number} magnitude how much to increase fire rate, 1-5
    */
   constructor(pos, magnitude = 1) {
     super(pos, magnitude);
-    this.powerUpName = "Rubber " + this.magnitude;
+    this.powerUpName = "Fire Rate " + this.magnitude;
   }
 
   /**
@@ -20,7 +20,8 @@ export class Rubber extends PowerUp {
    */
   apply(creature) {
     super.apply(creature);
-    creature.bounciness = 1;
-    creature.rubberiness += this.magnitude;
+    if (creature.fireDelay > 0) {
+      creature.fireDelay -= this.magnitude;
+    }
   }
 }

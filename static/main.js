@@ -26,6 +26,8 @@ import { Scatter } from "./game/scatter.js";
 import { Chase } from "./game/chase.js";
 import { Shooter } from "./game/shooter.js";
 import { populateLevel } from "./game/spawner.js";
+import { FireRate } from "./game/powerups/firerate.js";
+import { Damage } from "./game/powerups/damage.js";
 
 const blockWidth = 60;
 const blockHeight = 60;
@@ -119,7 +121,8 @@ function resetDemo() {
     */
   }
   // TODO change this with actual powerup spawning
-  const powerUpTypes = [Bigify, Elastic, Rubber, Zoom];
+  //const powerUpTypes = [Bigify, Elastic, Rubber, Zoom];
+  const powerUpTypes = [FireRate, Damage];
   for (let i = 0; i < 70; ++i) {
     const r = Math.random();
     const magnitude = Math.floor(Math.random() * 5) + 1;
