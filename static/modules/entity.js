@@ -59,10 +59,10 @@ export class Entity {
    */
   hitsWalls = true;
 
-  /** 
+  /**
    * how fast it bounces off after a collision. Only has an
    * effect if bounciness if 1.
-   * @type {number} 
+   * @type {number}
    */
   rubberiness = 0;
 
@@ -77,12 +77,6 @@ export class Entity {
    * @type {boolean}
    */
   deleteMe = false;
-
-  /** @type {number} bounciness of bullets spawned by this */
-  //bulletBounciness = 0;
-
-  /** @type {number} rubberiness of bullets spawned by this */
-  //bulletRubberiness = 0;
 
   /**
    * constructs an entity with all the relevant vectors

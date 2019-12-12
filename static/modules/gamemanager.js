@@ -201,6 +201,12 @@ class GameManager {
     // restore drawing context
     this.context.restore();
 
+    // align camera, draw the gui, reset camera
+    const originalOffset = this.cameraOffset;
+    this.cameraOffset = new Vector(0, 0);
+    this.guiFunc();
+    this.cameraOffset = originalOffset;
+
     // save display context
     this.displayContext.save();
     this.displayContext.scale(
@@ -350,7 +356,7 @@ export function setGameDrawFunc(drawFunc) {
 }
 
 export function setGameGuiFunc(guiFunc) {
-  gameManager.guiFunc = guiFunc();
+  gameManager.guiFunc = guiFunc;
 }
 
 /**

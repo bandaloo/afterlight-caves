@@ -361,22 +361,29 @@ export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
  * @param {string} fillStyle
  * @param {string | CanvasGradient} [strokeStyle] default "black"
  * @param {string} [fontStyle] default "bold 50px sans-serif"
+ * @param {CanvasTextAlign} [align] default "center"
+ * @param {CanvasTextBaseline} [baseline]
+ * @param {number} [lineWidth] default 4
  */
 export function centeredText(
   text,
   centerVec,
   fillStyle,
   strokeStyle = "black",
-  fontStyle = "bold 50px sans-serif"
+  fontStyle = "bold 50px sans-serif",
+  align = "center",
+  baseline = "alphabetic",
+  lineWidth = 4
 ) {
   const context = getContext();
   centerVec = centerVec.add(getCameraOffset());
   context.save();
   context.strokeStyle = strokeStyle;
-  context.lineWidth = 4;
+  context.lineWidth = lineWidth;
   context.fillStyle = fillStyle;
   context.font = fontStyle;
-  context.textAlign = "center";
+  context.textAlign = align;
+  context.textBaseline = baseline;
   context.fillText(text, centerVec.x, centerVec.y);
   context.strokeText(text, centerVec.x, centerVec.y);
   context.restore();
