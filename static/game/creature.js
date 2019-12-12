@@ -56,7 +56,12 @@ export class Creature extends Entity {
   /**
    * action, e.g. shoot, that a creature does every step
    */
-  action() {}
+  action() {
+    // roll fireCount down to have a delay between shooting
+    if (this.fireCount > 0) {
+      this.fireCount--;
+    }
+  }
 
   /**
    * gets this creature's bullet
@@ -90,20 +95,15 @@ export class Creature extends Entity {
    */
   shoot(dir, isGood = false, color = "white") {
     dir = dir.norm2();
-    // Conditional is so fire count doesn't roll over before shooting
-    if (this.fireCount < this.fireDelay) {
-      this.fireCount++;
-    }
     if (dir.isZeroVec()) {
       // can't shoot without a direction
       return;
     }
-    dir = dir.norm();
     // shoot a bullet
-    if (this.fireCount >= this.fireDelay) {
+    if (this.fireCount === 0) {
       const b = this.getBullet(dir, isGood, color);
       addToWorld(b);
-      this.fireCount = 0;
+      this.fireCount = this.fireDelay;
     }
   }
 }

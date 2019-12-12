@@ -64,6 +64,7 @@ export class Hero extends Creature {
   }
 
   action() {
+    super.action();
     this.acc = buttons.move.vec;
     // prevents velocity from getting too small and normalization messing up
     this.shoot(buttons.shoot.vec, true);
