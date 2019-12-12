@@ -295,17 +295,35 @@ export function getGamepadInput() {
    * @param {number} x
    * @return {number} 0 if x is within DEADZONE of 0, otherwise x
    */
-  const deadzoneGuard = (x) => { return Math.abs(x) > DEADZONE ? x : 0 }
+  const deadzoneGuard = x => {
+    return Math.abs(x) > DEADZONE ? x : 0;
+  };
 
   for (const gamepad of navigator.getGamepads()) {
-    if (!gamepad || !gamepad.connected) { continue; }
-    if (gamepad.axes.length < 4) { continue; }
+    if (!gamepad || !gamepad.connected) {
+      continue;
+    }
+    if (gamepad.axes.length < 4) {
+      continue;
+    }
     const lStickX = deadzoneGuard(gamepad.axes[0]);
     const lStickY = deadzoneGuard(gamepad.axes[1]);
     const rStickX = deadzoneGuard(gamepad.axes[2]);
     const rStickY = deadzoneGuard(gamepad.axes[3]);
-    buttons.move.vec = new Vector(lStickX, lStickY).norm2();
-    buttons.shoot.vec = new Vector(rStickX, rStickY).norm2();
+    let moveVec = new Vector(lStickX, lStickY);
+    let shootVec = new Vector(rStickX, rStickY);
+    const fullMag = 0.7;
+    if (moveVec.mag() > fullMag) {
+      buttons.move.vec = moveVec.norm();
+    } else {
+      buttons.move.vec = moveVec;
+    }
+    if (shootVec.mag() > fullMag) {
+      buttons.shoot.vec = shootVec.norm();
+    } else {
+      buttons.shoot.vec = shootVec;
+    }
+
     if (gamepad.buttons[6].pressed) {
       buttons.primary.status.pressed = !buttons.primary.status.held;
       buttons.primary.status.held = true;

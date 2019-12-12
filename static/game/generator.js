@@ -196,7 +196,7 @@ export function connectBoard(board, blockField) {
   // Only connect caves if there is more than 1 cave
   if (mark > 1) {
     // use the distanceBoard to find "edge" tiles
-    let boardDistance = distanceBoard(board);
+    let { board: boardDistance } = distanceBoard(board);
     let caveBoarders = [];
     for (let caveIndex = 1; caveIndex <= mark; caveIndex++) {
       caveBoarders[caveIndex] = [];
@@ -254,8 +254,23 @@ export function connectBoard(board, blockField) {
 /**
  * get a grid with numbers relating to closest block
  * @param {number[][]} board
+ * @returns {{board: number[][], cells: Vector[][]}}
  */
 export function distanceBoard(board) {
+  const distCells = [];
+
+  /**
+   * push a new vector onto the cells array at correct index
+   * @param {number} index
+   * @param {Vector} vec
+   */
+  const addCell = (index, vec) => {
+    if (distCells[index] === undefined) {
+      distCells[index] = [];
+    }
+    distCells[index].push(vec);
+  };
+
   let blocksCounted = 0;
   const totalBlocks = board.length * board[0].length;
   let distBoard = createNumberGrid(board.length, board[0].length, 0, -1);
@@ -279,6 +294,7 @@ export function distanceBoard(board) {
           if (inboundsBoard(ni, nj, board) && distBoard[ni][nj] === -1) {
             distBoard[ni][nj] = curDist;
             blocksCounted++;
+            addCell(curDist, new Vector(ni, nj));
           }
         }
       }
@@ -286,5 +302,5 @@ export function distanceBoard(board) {
     curDist++;
   }
 
-  return distBoard;
+  return { board: distBoard, cells: distCells };
 }

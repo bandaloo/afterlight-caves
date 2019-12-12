@@ -15,7 +15,14 @@ export class Bullet extends Entity {
    * @param {boolean} good
    * @param {string} [color] default "white"
    */
-  constructor(pos, vel, acc = new Vector(0, 0), good, color = "white") {
+  constructor(
+    pos,
+    vel,
+    acc = new Vector(0, 0),
+    good,
+    color = "white",
+    damage = 1
+  ) {
     super(pos, vel, acc);
     this.good = good;
     this.lifetime = 100;
@@ -24,6 +31,7 @@ export class Bullet extends Entity {
     this.height = 24;
     this.bounciness = 0;
     this.color = color;
+    this.damage = damage;
     good ? (this.type = "PlayerBullet") : (this.type = "EnemyBullet");
   }
 

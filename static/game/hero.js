@@ -1,4 +1,3 @@
-import { Entity } from "../modules/entity.js";
 import { Vector } from "../modules/vector.js";
 import { centeredOutlineCircle } from "./draw.js";
 import { buttons } from "./buttons.js";
@@ -40,6 +39,14 @@ export class Hero extends Creature {
       }
       entity.deleteMe = true;
     });
+
+    this.collideMap.set("Enemy", entity => {
+      console.log("got hit by enemy");
+    });
+
+    this.collideMap.set("EnemyBullet", entity => {
+      console.log("got hit by enemy bullet");
+    });
   }
 
   /**
@@ -58,9 +65,10 @@ export class Hero extends Creature {
   action() {
     this.acc = buttons.move.vec;
     // prevents velocity from getting too small and normalization messing up
+    this.shoot(buttons.shoot.vec, true);
     if (!buttons.shoot.vec.isZeroVec()) {
-      this.eyeDirection = buttons.shoot.vec;
-      this.shoot(buttons.shoot.vec, true);
+      const normalizedShootVec = buttons.shoot.vec.norm2();
+      this.eyeDirection = normalizedShootVec;
     } else if (this.vel.magnitude() > 0.001) {
       this.eyeDirection = this.vel.norm();
     }

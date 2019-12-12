@@ -1,7 +1,7 @@
 import { Entity } from "../modules/entity.js";
 import { Vector } from "../modules/vector.js";
 import { Bullet } from "./bullet.js";
-import { addToWorld } from "../modules/gamemanager.js";
+import { addToWorld, getDimensions } from "../modules/gamemanager.js";
 
 /**
  * Class representing an entity that moves around and shoots, such as enemies
@@ -22,7 +22,7 @@ export class Creature extends Entity {
   powerUpsList;
 
   /** @type {number} the number of game steps to wait between each shot */
-  fireDelay = 30
+  fireDelay = 30;
 
   /** @type {number} counter for fireDelay */
   fireCount = 0;
@@ -49,7 +49,7 @@ export class Creature extends Entity {
   /**
    * action, e.g. shoot, that a creature does every step
    */
-  action() { }
+  action() {}
 
   /**
    * Shoots in the given direction
@@ -59,25 +59,30 @@ export class Creature extends Entity {
    * @param {string} [color] color of the bullet, default white
    */
   shoot(dir, isGood = false, color = "white") {
+    dir = dir.norm2();
+    // Conditional is so fire count doesn't roll over before shooting
+    if (this.fireCount < this.fireDelay) {
+      this.fireCount++;
+    }
     if (dir.isZeroVec()) {
       // can't shoot without a direction
       return;
     }
     dir = dir.norm();
     // shoot a bullet
-    if (this.fireCount === 0) {
+    if (this.fireCount >= this.fireDelay) {
       let b = new Bullet(
         this.pos.add(dir.mult(this.width / 2)),
         dir.mult(this.bulletSpeed).add(this.vel),
         new Vector(0, 0),
         isGood,
-        color
+        color,
+        this.bulletDamage
       );
       b.bounciness = this.bulletBounciness;
       b.rubberiness = this.bulletRubberiness;
       addToWorld(b);
+      this.fireCount = 0;
     }
-    this.fireCount++;
-    this.fireCount %= this.fireDelay;
   }
 }
