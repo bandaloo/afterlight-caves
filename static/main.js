@@ -80,19 +80,7 @@ function resetDemo() {
 
   for (let i = 0; i < 500; i++) {
     // TODO change this with actual enemy spawning system
-    const enemy = new Shooter(
-      emptySpaces[i % emptySpaces.length].add(
-        new Vector(blockWidth / 2, blockHeight / 2)
-      ),
-      enemyLooks[i % 4],
-      enemyStats[i % 4],
-      undefined,
-      undefined,
-      { size: randomInt(3), speed: 0, explode: 0 }
-    );
-    addToWorld(enemy);
-    /*
-    if (i % 2) {
+    if (i % 3 === 1) {
       const enemy = new Chase(
         emptySpaces[i % emptySpaces.length].add(
           new Vector(blockWidth / 2, blockHeight / 2)
@@ -104,7 +92,7 @@ function resetDemo() {
         { size: randomInt(3), speed: 0, explode: 0 }
       );
       addToWorld(enemy);
-    } else {
+    } else if (i % 3 === 2) {
       const enemy = new Scatter(
         emptySpaces[i % emptySpaces.length].add(
           new Vector(blockWidth / 2, blockHeight / 2)
@@ -116,8 +104,19 @@ function resetDemo() {
         { size: randomInt(3), speed: 0, explode: 0 }
       );
       addToWorld(enemy);
+    } else {
+      const enemy = new Shooter(
+        emptySpaces[i % emptySpaces.length].add(
+          new Vector(blockWidth / 2, blockHeight / 2)
+        ),
+        enemyLooks[i % 4],
+        enemyStats[i % 4],
+        undefined,
+        undefined,
+        { size: randomInt(3), speed: 0, explode: 0 }
+      );
+      addToWorld(enemy);
     }
-    */
   }
   // TODO change this with actual powerup spawning
   const powerUpTypes = [
@@ -149,8 +148,6 @@ function resetDemo() {
       new Vector(blockWidth / 2, blockHeight / 2).add(emptySpaces[11])
     )
   );
-
-  addToWorld(new Xplode(hero.pos.add(new Vector(60, 0)), 3));
 
   setCameraEntity(hero);
   setImportantEntity("hero", hero);
