@@ -21,6 +21,8 @@ export class PowerUp extends Entity {
     this.magnitude = magnitude;
     this.hue = [0, 134, 204, 275, 39][this.magnitude - 1];
     this.powerUpName = "Null PowerUp";
+    this.width = 60;
+    this.height = 60;
     /**
      * @type {{angle: number, width: number, length: number, speed: number,hue: number}[]}
      */

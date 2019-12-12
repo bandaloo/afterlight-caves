@@ -22,6 +22,8 @@ import { Bigify } from "./game/powerups/bigify.js";
 import { Zoom } from "./game/powerups/zoom.js";
 import { Rubber } from "./game/powerups/rubber.js";
 import { Elastic } from "./game/powerups/elastic.js";
+import { Littlify } from "./game/powerups/littlify.js";
+import { Xplode } from "./game/powerups/xplode.js";
 import { Scatter } from "./game/scatter.js";
 import { Chase } from "./game/chase.js";
 import { Shooter } from "./game/shooter.js";
@@ -105,8 +107,20 @@ function resetDemo() {
         { size: randomInt(3), speed: 0, explode: 0 }
       );
       addToWorld(enemy);
-    } else {
+    } else if (i % 3 === 2) {
       const enemy = new Scatter(
+        emptySpaces[i % emptySpaces.length].add(
+          new Vector(blockWidth / 2, blockHeight / 2)
+        ),
+        enemyLooks[i % 4],
+        enemyStats[i % 4],
+        undefined,
+        undefined,
+        { size: randomInt(3), speed: 0, explode: 0 }
+      );
+      addToWorld(enemy);
+    } else {
+      const enemy = new Shooter(
         emptySpaces[i % emptySpaces.length].add(
           new Vector(blockWidth / 2, blockHeight / 2)
         ),
@@ -143,6 +157,7 @@ function resetDemo() {
       new Vector(blockWidth / 2, blockHeight / 2).add(emptySpaces[11])
     )
   );
+
   setCameraEntity(hero);
   setImportantEntity("hero", hero);
   addToWorld(hero);
