@@ -50,7 +50,7 @@ export class PowerUp extends Entity {
     const td = new TextDisplay(
       this.powerUpName,
       textPos,
-      100,
+      120,
       this.hue,
       "rgba(0, 0, 0, 0)"
     );

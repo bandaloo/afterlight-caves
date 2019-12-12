@@ -95,7 +95,7 @@ export class Enemy extends Creature {
    * @param {Stats} stats
    * @param {Vector} vel
    * @param {Vector} acc
-   * @param {Object} modifiers
+   * @param {{size: number, speed: number, explode: number}} modifiers
    */
   constructor(
     pos,

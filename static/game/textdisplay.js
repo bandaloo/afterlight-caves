@@ -32,13 +32,24 @@ export class TextDisplay extends Entity {
   }
 
   /**
+   * steps down the duration until this disappears
+   * @override
+   */
+  action() {
+    // fade out in the last second of existence
+    if (this.duration < 60) {
+      this.opacity -= 1 / 60;
+    }
+    if (--this.duration <= 0) {
+      this.deleteMe = true;
+    }
+  }
+
+  /**
    * draws this TextDisplay
    * @override
    */
   draw() {
-    if (this.duration < 60) {
-      this.opacity -= 1 / 60;
-    }
     centeredText(
       this.text,
       this.drawPos,
@@ -46,10 +57,5 @@ export class TextDisplay extends Entity {
       this.strokeStyle,
       this.font
     );
-    this.duration--;
-
-    if (this.duration <= 0) {
-      this.deleteMe = true;
-    }
   }
 }
