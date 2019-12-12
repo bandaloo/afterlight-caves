@@ -79,6 +79,9 @@ class GameManager {
     // drawing func defaults to a no-op
     this.drawFunc = () => {};
 
+    // gui func defaults to a no-op
+    this.guiFunc = () => {};
+
     const exitHandler = () => {
       if (document.fullscreenElement === null) {
         this.displayCanvas.width = this.displayWidth;
@@ -344,6 +347,10 @@ export function getCanvasHeight() {
  */
 export function setGameDrawFunc(drawFunc) {
   gameManager.drawFunc = drawFunc;
+}
+
+export function setGameGuiFunc(guiFunc) {
+  gameManager.guiFunc = guiFunc();
 }
 
 /**

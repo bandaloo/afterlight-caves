@@ -26,6 +26,7 @@ export function populateLevel(board, numEnemies) {
 
   for (let i = 0; i < creatureClasses.length; i++) {
     enemyLooks.push(randomLook());
+    // TODO make these stats do something, or remove them
     enemyStats.push(randomStats(i * 3 + 3));
   }
 
