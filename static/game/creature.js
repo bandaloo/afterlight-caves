@@ -59,6 +59,7 @@ export class Creature extends Entity {
    * @param {string} [color] color of the bullet, default white
    */
   shoot(dir, isGood = false, color = "white") {
+    dir = dir.norm2();
     // Conditional is so fire count doesn't roll over before shooting
     if (this.fireCount < this.fireDelay) {
       this.fireCount++;

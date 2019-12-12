@@ -39,6 +39,14 @@ export class Hero extends Creature {
       }
       entity.deleteMe = true;
     });
+
+    this.collideMap.set("Enemy", entity => {
+      console.log("got hit by enemy");
+    });
+
+    this.collideMap.set("EnemyBullet", entity => {
+      console.log("got hit by enemy bullet");
+    });
   }
 
   /**
@@ -59,7 +67,8 @@ export class Hero extends Creature {
     // prevents velocity from getting too small and normalization messing up
     this.shoot(buttons.shoot.vec, true);
     if (!buttons.shoot.vec.isZeroVec()) {
-      this.eyeDirection = buttons.shoot.vec;
+      const normalizedShootVec = buttons.shoot.vec.norm2();
+      this.eyeDirection = normalizedShootVec;
     } else if (this.vel.magnitude() > 0.001) {
       this.eyeDirection = this.vel.norm();
     }

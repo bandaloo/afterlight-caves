@@ -198,7 +198,9 @@ export class Enemy extends Creature {
   hit(entity) {
     this.vel = this.vel.add(entity.vel.mult(0.7 / (1 + this.modifiers.size)));
     // Cast entity to a bullet because it can only be hit by a bullet for now
-    this.health -= /** @type {Bullet} */ (entity).damage;
+    if (!entity.deleteMe) {
+      this.health -= /** @type {Bullet} */ (entity).damage;
+    }
     if (this.health <= 0) {
       this.deleteMe = true;
     }
