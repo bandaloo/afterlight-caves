@@ -3,6 +3,7 @@ import { numSign } from "../modules/helpers.js";
 
 const noisy = false;
 const DEADZONE = 0.2;
+let USING_KEYBOARD = true;
 
 /**
  * @typedef {Object} Status
@@ -149,6 +150,7 @@ export function cleanButtons() {
  * @param {KeyboardEvent} e the keydown keyboard event
  */
 export function controlKeydownListener(e) {
+  USING_KEYBOARD = true;
   const code = e.keyCode;
   const key = String.fromCharCode(code);
 
@@ -214,6 +216,7 @@ export function controlKeydownListener(e) {
  * @param {KeyboardEvent} e the keyup keyboard event
  */
 export function controlKeyupListener(e) {
+  USING_KEYBOARD = true;
   const code = e.keyCode;
   const key = String.fromCharCode(code);
 
@@ -275,7 +278,9 @@ export function controlKeyupListener(e) {
  * @param {GamepadEvent} e
  */
 export function gamepadConnectListener(e) {
-  console.log("GAMEPAD CONNECTED: " + e.gamepad);
+  if (noisy)
+    console.log("GAMEPAD CONNECTED: " + e.gamepad.index);
+  USING_KEYBOARD = false;
 }
 
 /**
@@ -283,7 +288,9 @@ export function gamepadConnectListener(e) {
  * @param {GamepadEvent} e
  */
 export function gamepadDisconnectListener(e) {
-  console.log("GAMEPAD DISCONNECTED: " + e.gamepad.index);
+  if (noisy)
+    console.log("GAMEPAD DISCONNECTED: " + e.gamepad.index);
+  USING_KEYBOARD = true;
 }
 
 /**
@@ -306,41 +313,53 @@ export function getGamepadInput() {
     if (gamepad.axes.length < 4) {
       continue;
     }
-    const lStickX = deadzoneGuard(gamepad.axes[0]);
-    const lStickY = deadzoneGuard(gamepad.axes[1]);
-    const rStickX = deadzoneGuard(gamepad.axes[2]);
-    const rStickY = deadzoneGuard(gamepad.axes[3]);
-    const stickSensitivity = 1.4;
-    let moveVec = new Vector(lStickX, lStickY).mult(stickSensitivity);
-    let shootVec = new Vector(rStickX, rStickY).mult(stickSensitivity);
-
-    if (moveVec.mag() > 1) {
-      moveVec = moveVec.norm2();
-    }
-    if (shootVec.mag() > 1) {
-      shootVec = shootVec.norm2();
+    /** @type {number[]} */
+    const sticks = new Array(4);
+    for (let i = 0; i < gamepad.axes.length; ++i) {
+      const num = deadzoneGuard(gamepad.axes[i]);
+      if (num !== 0) USING_KEYBOARD = false; // we're using a controller now
+      if (i < 4) sticks[i] = num;    // remember for the first two sticks
     }
 
-    buttons.move.vec = moveVec;
-    buttons.shoot.vec = shootVec;
-
-    if (gamepad.buttons[6].pressed) {
-      buttons.primary.status.pressed = !buttons.primary.status.held;
-      buttons.primary.status.held = true;
-      buttons.primary.status.released = false;
-    } else {
-      buttons.primary.status.released = buttons.primary.status.held;
-      buttons.primary.status.pressed = false;
-      buttons.primary.status.held = false;
+    for (const but of gamepad.buttons) {
+      if (but.value > 0 || but.pressed) {
+        USING_KEYBOARD = false;
+      }
     }
-    if (gamepad.buttons[7].pressed) {
-      buttons.secondary.status.pressed = !buttons.primary.status.held;
-      buttons.secondary.status.held = true;
-      buttons.primary.status.released = false;
-    } else {
-      buttons.secondary.status.released = buttons.primary.status.held;
-      buttons.secondary.status.pressed = false;
-      buttons.secondary.status.held = false;
+
+    if (!USING_KEYBOARD) {
+          const stickSensitivity = 1.4;
+      let moveVec = new Vector(sticks[0], sticks[1]).mult(stickSensitivity);
+      let shootVec = new Vector(sticks[2], sticks[3]).mult(stickSensitivity);
+
+      if (moveVec.mag() > 1) {
+        moveVec = moveVec.norm2();
+      }
+      if (shootVec.mag() > 1) {
+        shootVec = shootVec.norm2();
+      }
+
+      buttons.move.vec = moveVec;
+      buttons.shoot.vec = shootVec;
+
+      if (gamepad.buttons[6].pressed) {
+        buttons.primary.status.pressed = !buttons.primary.status.held;
+        buttons.primary.status.held = true;
+        buttons.primary.status.released = false;
+      } else {
+        buttons.primary.status.released = buttons.primary.status.held;
+        buttons.primary.status.pressed = false;
+        buttons.primary.status.held = false;
+      }
+      if (gamepad.buttons[7].pressed) {
+        buttons.secondary.status.pressed = !buttons.primary.status.held;
+        buttons.secondary.status.held = true;
+        buttons.primary.status.released = false;
+      } else {
+        buttons.secondary.status.released = buttons.primary.status.held;
+        buttons.secondary.status.pressed = false;
+        buttons.secondary.status.held = false;
+      }
     }
   }
 }
