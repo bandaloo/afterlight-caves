@@ -80,7 +80,7 @@ export class Hero extends Creature {
     if (this.invincibilityFrames > 0) {
       this.invincibilityFrames--;
     }
-    this.acc = buttons.move.vec;
+    this.acc = buttons.move.vec.mult(this.movementMultiplier);
     // prevents velocity from getting too small and normalization messing up
     this.shoot(buttons.shoot.vec, true, undefined, this.vel);
     if (!buttons.shoot.vec.isZeroVec()) {

@@ -47,7 +47,10 @@ export class Shooter extends Enemy {
       if (this.avoidTimer >= 0 || dirVec.magnitude() < this.avoidDistace) {
         this.avoidTimer--;
         this.avoiding = true;
-        this.acc = dirVec.norm2().mult(-0.15);
+        this.acc = dirVec
+          .norm2()
+          .mult(-0.15)
+          .mult(this.movementMultiplier);
       } else {
         this.avoiding = false;
         this.acc = new Vector(0, 0);

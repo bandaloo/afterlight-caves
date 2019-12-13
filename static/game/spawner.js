@@ -7,7 +7,18 @@ import { Vector } from "../modules/vector.js";
 import { createNumberGrid } from "./life.js";
 import { randomInt, shuffle } from "../modules/helpers.js";
 import { addToWorld, cellToWorldPosition } from "../modules/gamemanager.js";
+import { Boss } from "./boss.js";
+import { Elastic } from "./powerups/elastic.js";
+import { Damage } from "./powerups/damage.js";
+import { FireRate } from "./powerups/firerate.js";
+import { Xplode } from "./powerups/xplode.js";
+import { Zoom } from "./powerups/zoom.js";
+import { Rubber } from "./powerups/rubber.js";
 
+/**
+ * @param {number[][]} board
+ * @param {number} numEnemies
+ */
 export function populateLevel(board, numEnemies) {
   // board containing distances from nearest solid block
   const { board: distBoard, cells: distCells } = distanceBoard(board);
@@ -48,6 +59,28 @@ export function populateLevel(board, numEnemies) {
       undefined,
       { size: size, speed: 0, explode: 0 }
     );
+
+    //Apply random effects
+    const enemyPowerUpTypes = [Damage, Elastic, FireRate, Xplode, Zoom, Rubber];
+    for (let k = 0; k < enemyPowerUpTypes.length; k++) {
+      if (Math.random() > 0.75) {
+        const p = new enemyPowerUpTypes[
+          Math.floor(Math.random() * enemyPowerUpTypes.length)
+        ](new Vector(0, 0), Math.floor(Math.random() * 5));
+        p.apply(enemy);
+      }
+    }
+
     addToWorld(enemy);
   }
+
+  const boss = new Boss(
+    cellToWorldPosition(distCells[2].pop()),
+    enemyLooks[randomInt(4)],
+    enemyStats[randomInt(4)],
+    undefined,
+    undefined,
+    { size: randomInt(3), speed: 0, explode: 0 }
+  );
+  addToWorld(boss);
 }

@@ -80,8 +80,8 @@ export function initBlockField(terrain) {
       if (terrain[i][j] !== 0) {
         // solid block
         const gem = Math.random() < 0.1 ? pickGem() : undefined;
-        // blockField[i].push(new Block(Math.random() > 0.5 ? 1 : Infinity, gem));
-        blockField[i].push(new Block(Infinity, gem));
+        blockField[i].push(new Block(Math.random() > 0.75 ? 1 : Infinity, gem));
+        // blockField[i].push(new Block(Infinity, gem));
       } else {
         // empty block
         blockField[i].push(undefined);

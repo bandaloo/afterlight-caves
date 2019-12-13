@@ -11,17 +11,21 @@ export class Xplode extends PowerUp {
    * @param {number} magnitude number of new bullets to spawn
    */
   constructor(pos, magnitude = 1) {
-    super(pos, magnitude);
-    this.powerUpName = "Xplode " + this.magnitude;
+    super(pos, magnitude, "Xplode");
+    this.powerUpName = this.powerUpClass + " " + this.magnitude;
   }
 
   /**
    * applies this powerup
    * @param {Creature} creature
    * @override
+   * @returns {Boolean}
    */
   apply(creature) {
-    super.apply(creature);
+    if (!super.apply(creature)) {
+      super.overflowAction(creature);
+      return false;
+    }
     /** @param {Bullet} b */
     const f = b => {
       /** @type {number} */
@@ -30,8 +34,7 @@ export class Xplode extends PowerUp {
       for (let i = 0; i < this.magnitude; i++) {
         // rotate around so new bullets are distributed evenly
         theta += (1 / this.magnitude) * 2 * Math.PI;
-        const newVel = new Vector(Math.cos(theta), Math.sin(theta))
-          .norm2();
+        const newVel = new Vector(Math.cos(theta), Math.sin(theta)).norm2();
         const child = creature.getBullet(newVel, b.good, b.color);
         child.vel = child.vel.norm2().mult(creature.bulletSpeed * 0.75);
         child.pos = b.pos;
@@ -41,6 +44,8 @@ export class Xplode extends PowerUp {
         addToWorld(child);
       }
     };
-    creature.bulletOnDestroy.push(f);
+    if (creature.bulletOnDestroy.length < 10) creature.bulletOnDestroy.push(f);
+    creature.fireDelay *= 2;
+    return true;
   }
 }

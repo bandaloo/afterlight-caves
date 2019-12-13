@@ -2,8 +2,6 @@ import { PowerUp } from "../powerup.js";
 import { Vector } from "../../modules/vector.js";
 import { Creature } from "../creature.js";
 
-const maxRubberiness = 15;
-
 export class Elastic extends PowerUp {
   /**
    * Makes you bigger
@@ -11,21 +9,24 @@ export class Elastic extends PowerUp {
    * @param {number} magnitude how bouncy your bullets are, 1-5
    */
   constructor(pos, magnitude = 1) {
-    super(pos, magnitude);
-    this.powerUpName = "Elastic " + this.magnitude;
+    super(pos, magnitude, "Elastic");
+    this.powerUpName = this.powerUpClass + " " + this.magnitude;
   }
 
   /**
    * applies this powerup
    * @param {Creature} creature
    * @override
+   * @returns {Boolean}
    */
   apply(creature) {
-    super.apply(creature);
+    if (!super.apply(creature)) {
+      super.overflowAction(creature);
+      return false;
+    }
     creature.bulletBounciness = 1;
-    creature.bulletRubberiness = Math.min(
-      creature.bulletRubberiness + this.magnitude / 3,
-      maxRubberiness
-    );
+    creature.bulletRubberiness =
+      creature.bulletRubberiness + this.magnitude / 3;
+    return true;
   }
 }

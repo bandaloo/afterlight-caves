@@ -9,19 +9,24 @@ export class FireRate extends PowerUp {
    * @param {number} magnitude how much to increase fire rate, 1-5
    */
   constructor(pos, magnitude = 1) {
-    super(pos, magnitude);
-    this.powerUpName = "Fire Rate " + this.magnitude;
+    super(pos, magnitude, "Fire Rate");
+    this.powerUpName = this.powerUpClass + " " + this.magnitude;
   }
 
   /**
    * applies this powerup
    * @param {Creature} creature
    * @override
+   * @returns {Boolean}
    */
   apply(creature) {
-    super.apply(creature);
+    if (!super.apply(creature)) {
+      super.overflowAction(creature);
+      return false;
+    }
     if (creature.fireDelay > 0) {
       creature.fireDelay -= this.magnitude;
     }
+    return true;
   }
 }

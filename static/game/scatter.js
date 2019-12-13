@@ -3,7 +3,6 @@ import { Vector } from "../modules/vector.js";
 import { centeredOutlineCircle, drawLine } from "./draw.js";
 
 export class Scatter extends Enemy {
-
   /**
    * constructs a random entity with all the relevant vectors
    * @param {Vector} pos
@@ -33,7 +32,7 @@ export class Scatter extends Enemy {
         Math.cos(randomDir) * 0.1,
         Math.sin(randomDir) * 0.1
       );
-      this.acc = acc;
+      this.acc = acc.mult(this.movementMultiplier);
     }
   }
 
