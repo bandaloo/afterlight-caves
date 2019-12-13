@@ -49,7 +49,10 @@ export class Chase extends Enemy {
       if (this.followTimer >= 0 || dirVec.magnitude() < this.followDistace) {
         this.followTimer--;
         this.following = true;
-        this.acc = dirVec.norm2().mult(0.15);
+        this.acc = dirVec
+          .norm2()
+          .mult(0.15)
+          .mult(this.movementMultiplier);
       } else {
         this.following = false;
         this.acc = new Vector(0, 0);

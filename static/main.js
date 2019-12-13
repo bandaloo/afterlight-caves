@@ -147,11 +147,20 @@ function resetDemo() {
   }
   console.log(caveLocations);
 
-  populateLevel(getTerrain(), 500);
+  populateLevel(getTerrain(), 200);
 
-  const tilesPerAdditionalPowerupChance = 200;
-  // TODO change this with actual powerup spawning
-  const powerUpTypes = [FireRate, Damage, Elastic, Zoom, Xplode];
+  const tilesPerAdditionalPowerupChance = 100;
+
+  const powerUpTypes = [
+    // Bigify,
+    Damage,
+    Elastic,
+    FireRate,
+    // Littlify,
+    // Rubber,
+    Xplode,
+    Zoom
+  ];
   for (let i = 0; i < caveLocations.length; i++) {
     if (i == largestGroup) continue;
 
@@ -193,16 +202,6 @@ function resetDemo() {
       new Vector(blockWidth / 2, blockHeight / 2).add(emptySpaces[11])
     )
   );
-
-  const boss = new Boss(
-    hero.pos.add(new Vector(80, 80)),
-    enemyLooks[randomInt(4)],
-    enemyStats[randomInt(4)],
-    undefined,
-    undefined,
-    { size: randomInt(3), speed: 0, explode: 0 }
-  );
-  addToWorld(boss);
 
   setCameraEntity(hero);
   setImportantEntity("hero", hero);

@@ -120,7 +120,8 @@ export function isColliding(entityA, entityB) {
 export function calculateCollisionVector(entityA, entityB) {
   // If they aren't colliding, the vector is (0,0)
   // TODO: determine if this is needed. Removing it would be slightly faster.
-  if (!isColliding(entityA, entityB)) return new Vector(0, 0);
+  if (!(isColliding(entityA, entityB) && isColliding(entityB, entityA)))
+    return new Vector(0, 0);
 
   // Define the 4 corners of each bounding rectangle
   const aRight = entityA.pos.x + entityA.width / 2;

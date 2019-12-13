@@ -42,6 +42,12 @@ export class Creature extends Entity {
   /** @type {number} the amount of damage each bullet deals */
   bulletDamage = 1;
 
+  /** @type {number} A multiplier for how fast the creature moves */
+  movementMultiplier = 1;
+
+  /** @type {Map<string, number>}*/
+  powerupMagnitudes = new Map();
+
   /**
    * @param {Vector} [pos] initial position
    * @param {Vector} [vel] initial velocity

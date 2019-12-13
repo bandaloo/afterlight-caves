@@ -49,7 +49,7 @@ export class Boss extends Enemy {
       this.shines[i] = {
         angle: Math.random() * 2 * Math.PI,
         width: 0.3 + Math.random() * 0.2,
-        length: (this.width * 0.3) + Math.floor(this.width / 2),
+        length: this.width * 0.3 + Math.floor(this.width / 2),
         speed: 0.01 + Math.random() * 0.01,
         hue: (340 + randomInt(40)) % 360
       };
@@ -70,7 +70,10 @@ export class Boss extends Enemy {
       if (this.followTimer >= 0 || dirVec.magnitude() < this.followDistace) {
         this.followTimer--;
         this.following = true;
-        this.acc = dirVec.norm2().mult(0.15);
+        this.acc = dirVec
+          .norm2()
+          .mult(0.15)
+          .mult(this.movementMultiplier);
       } else {
         this.following = false;
         this.acc = new Vector(0, 0);
@@ -90,7 +93,13 @@ export class Boss extends Enemy {
    */
   drawFace() {
     // TODO implement
-    centeredOutlineCircle(this.drawPos, this.width / 2, 4, this.look.color, "black");
+    centeredOutlineCircle(
+      this.drawPos,
+      this.width / 2,
+      4,
+      this.look.color,
+      "black"
+    );
   }
 
   draw() {
