@@ -129,7 +129,7 @@ function resetDemo() {
     caveLocations.push([]);
   }
 
-  // For each cave, give it a list of avalible terrain.
+  // For each cave, give it a list of available terrain.
   for (let i = 0; i < segregatedBoard.length; i++) {
     for (let j = 0; j < segregatedBoard[i].length; j++) {
       const location = segregatedBoard[i][j];
@@ -151,7 +151,7 @@ function resetDemo() {
 
   const tilesPerAdditionalPowerupChance = 200;
   // TODO change this with actual powerup spawning
-  const powerUpTypes = [FireRate, Damage, Elastic, Zoom];
+  const powerUpTypes = [FireRate, Damage, Elastic, Zoom, Xplode];
   for (let i = 0; i < caveLocations.length; i++) {
     if (i == largestGroup) continue;
 
