@@ -3,7 +3,7 @@ import { numSign } from "../modules/helpers.js";
 
 const noisy = false;
 const DEADZONE = 0.2;
-let USING_KEYBOARD = true;
+let usingKeyboard = true;
 
 /**
  * @typedef {Object} Status
@@ -150,7 +150,7 @@ export function cleanButtons() {
  * @param {KeyboardEvent} e the keydown keyboard event
  */
 export function controlKeydownListener(e) {
-  USING_KEYBOARD = true;
+  usingKeyboard = true;
   const code = e.keyCode;
   const key = String.fromCharCode(code);
 
@@ -216,7 +216,7 @@ export function controlKeydownListener(e) {
  * @param {KeyboardEvent} e the keyup keyboard event
  */
 export function controlKeyupListener(e) {
-  USING_KEYBOARD = true;
+  usingKeyboard = true;
   const code = e.keyCode;
   const key = String.fromCharCode(code);
 
@@ -279,7 +279,7 @@ export function controlKeyupListener(e) {
  */
 export function gamepadConnectListener(e) {
   if (noisy) console.log("GAMEPAD CONNECTED: " + e.gamepad.index);
-  USING_KEYBOARD = false;
+  usingKeyboard = false;
 }
 
 /**
@@ -288,7 +288,7 @@ export function gamepadConnectListener(e) {
  */
 export function gamepadDisconnectListener(e) {
   if (noisy) console.log("GAMEPAD DISCONNECTED: " + e.gamepad.index);
-  USING_KEYBOARD = true;
+  usingKeyboard = true;
 }
 
 /**
@@ -315,17 +315,17 @@ export function getGamepadInput() {
     const sticks = new Array(4);
     for (let i = 0; i < gamepad.axes.length; ++i) {
       const num = deadzoneGuard(gamepad.axes[i]);
-      if (num !== 0) USING_KEYBOARD = false; // we're using a controller now
+      if (num !== 0) usingKeyboard = false; // we're using a controller now
       if (i < 4) sticks[i] = num; // remember for the first two sticks
     }
 
     for (const but of gamepad.buttons) {
       if (but.value > 0 || but.pressed) {
-        USING_KEYBOARD = false;
+        usingKeyboard = false;
       }
     }
 
-    if (!USING_KEYBOARD) {
+    if (!usingKeyboard) {
       const stickSensitivity = 1.4;
       let moveVec = new Vector(sticks[0], sticks[1]).mult(stickSensitivity);
       let shootVec = new Vector(sticks[2], sticks[3]).mult(stickSensitivity);
