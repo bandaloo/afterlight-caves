@@ -278,8 +278,7 @@ export function controlKeyupListener(e) {
  * @param {GamepadEvent} e
  */
 export function gamepadConnectListener(e) {
-  if (noisy)
-    console.log("GAMEPAD CONNECTED: " + e.gamepad.index);
+  if (noisy) console.log("GAMEPAD CONNECTED: " + e.gamepad.index);
   USING_KEYBOARD = false;
 }
 
@@ -288,8 +287,7 @@ export function gamepadConnectListener(e) {
  * @param {GamepadEvent} e
  */
 export function gamepadDisconnectListener(e) {
-  if (noisy)
-    console.log("GAMEPAD DISCONNECTED: " + e.gamepad.index);
+  if (noisy) console.log("GAMEPAD DISCONNECTED: " + e.gamepad.index);
   USING_KEYBOARD = true;
 }
 
@@ -318,7 +316,7 @@ export function getGamepadInput() {
     for (let i = 0; i < gamepad.axes.length; ++i) {
       const num = deadzoneGuard(gamepad.axes[i]);
       if (num !== 0) USING_KEYBOARD = false; // we're using a controller now
-      if (i < 4) sticks[i] = num;    // remember for the first two sticks
+      if (i < 4) sticks[i] = num; // remember for the first two sticks
     }
 
     for (const but of gamepad.buttons) {
@@ -328,7 +326,7 @@ export function getGamepadInput() {
     }
 
     if (!USING_KEYBOARD) {
-          const stickSensitivity = 1.4;
+      const stickSensitivity = 1.4;
       let moveVec = new Vector(sticks[0], sticks[1]).mult(stickSensitivity);
       let shootVec = new Vector(sticks[2], sticks[3]).mult(stickSensitivity);
 
