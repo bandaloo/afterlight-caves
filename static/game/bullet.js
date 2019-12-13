@@ -9,28 +9,34 @@ import { blockField } from "./generator.js";
 export class Bullet extends Entity {
   /**
    * constructs a new bullet
-   * @param {Vector} pos
-   * @param {Vector} vel
-   * @param {Vector} acc
-   * @param {boolean} good
-   * @param {string} [color] default "white"
+   * @param {Vector} [pos]
+   * @param {Vector} [vel]
+   * @param {Vector} [acc]
+   * @param {boolean} [good] false by default
+   * @param {string} [color] default "white",
+   * @param {number} [lifetime] how long this bullet survives, in game steps
+   * @param {number} [damage] how much damage this bullet deals
    */
   constructor(
-    pos,
-    vel,
+    pos = new Vector(0, 0),
+    vel = new Vector(0, 0),
     acc = new Vector(0, 0),
-    good,
+    good = false,
     color = "white",
+    lifetime = 100,
     damage = 1
   ) {
     super(pos, vel, acc);
     this.good = good;
-    this.lifetime = 100;
+    this.lifetime = lifetime;
     this.drag = 0.003;
     this.width = 24;
     this.height = 24;
     this.bounciness = 0;
     this.color = color;
+    this.damage = damage;
+    /** @type {(function(Bullet): void)[]} */
+    this.onDestroy = new Array();
     this.damage = damage;
     good ? (this.type = "PlayerBullet") : (this.type = "EnemyBullet");
   }
@@ -42,10 +48,16 @@ export class Bullet extends Entity {
   }
 
   destroy() {
+    // execute all on-destroy functions
+    for (const f of this.onDestroy) {
+      f(this);
+    }
+
+    // show sparks
     for (let i = 0; i < 3; i++) {
       const spark = new Particle(
         this.pos,
-        "white",
+        this.color,
         EffectEnum.spark,
         8,
         5,

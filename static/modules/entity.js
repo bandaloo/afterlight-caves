@@ -2,6 +2,12 @@ import { Vector } from "./vector.js";
 import { adjustEntity, isColliding } from "./collision.js";
 import { getScreenDimensions, getCameraOffset } from "./gamemanager.js";
 
+/**
+ * an enum for types of actions on far away
+ * @enum {number}
+ */
+export const FarEnum = Object.freeze({ nothing: 1, delete: 2, deactivate: 3 });
+
 /** @abstract */
 export class Entity {
   /** @type {string} */
@@ -28,6 +34,7 @@ export class Entity {
   /** @type {number} 0 if it can't bounce, 1 if it can */
   bounciness = 0;
 
+  // TODO these are only useful for collision tests; is there a better way?
   /** @type {boolean} */
   collidesLeft = true;
 
@@ -77,6 +84,16 @@ export class Entity {
    * @type {boolean}
    */
   deleteMe = false;
+
+  /**
+   * @type {number}
+   */
+  farType = FarEnum.nothing;
+
+  /**
+   * @type {boolean}
+   */
+  active = true;
 
   /**
    * constructs an entity with all the relevant vectors

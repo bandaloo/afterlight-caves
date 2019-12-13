@@ -18,7 +18,13 @@ export class Creature extends Entity {
   /** @type {number} speed of bullets spawned by this */
   bulletSpeed = 1;
 
-  /** @type {string[]} list containing the names of every powerup we have */
+  /** @type {number} how long bullets spawned by this live */
+  bulletLifetime = 100;
+
+  /** @type {(function(Bullet): void)[]} */
+  bulletOnDestroy;
+
+  /** @type {string[]} list containing the names of every pow/erup we have */
   powerUpsList;
 
   /** @type {number} the number of game steps to wait between each shot */
@@ -44,6 +50,7 @@ export class Creature extends Entity {
   constructor(pos, vel = new Vector(0, 0), acc = new Vector(0, 0)) {
     super(pos, vel, acc);
     this.powerUpsList = new Array();
+    this.bulletOnDestroy = new Array();
   }
 
   /**
@@ -52,13 +59,42 @@ export class Creature extends Entity {
   action() {}
 
   /**
+   * gets this creature's bullet
+   * @param {Vector} dir
+   * @param {boolean} [isGood]
+   * @param {string} [color]
+   * @return {Bullet}
+   */
+  getBullet(dir, isGood = false, color = "white") {
+    const b = new Bullet(
+      this.pos.add(dir.mult(this.width / 2)),
+      dir.mult(this.bulletSpeed),
+      new Vector(0, 0),
+      isGood,
+      color,
+      this.bulletLifetime,
+      this.bulletDamage
+    );
+    b.bounciness = this.bulletBounciness;
+    b.rubberiness = this.bulletRubberiness;
+    b.onDestroy = this.bulletOnDestroy;
+    return b;
+  }
+
+  /**
    * Shoots in the given direction
    * @param {Vector} dir the direction to shoot in
    * @param {boolean} [isGood] true if this was shot by the hero, false
    * otherwise (the default)
    * @param {string} [color] color of the bullet, default white
+   * @param {Vector} [additionalVelocity]
    */
-  shoot(dir, isGood = false, color = "white") {
+  shoot(
+    dir,
+    isGood = false,
+    color = "white",
+    additionalVelocity = new Vector(0, 0)
+  ) {
     dir = dir.norm2();
     // Conditional is so fire count doesn't roll over before shooting
     if (this.fireCount < this.fireDelay) {
@@ -71,16 +107,8 @@ export class Creature extends Entity {
     dir = dir.norm();
     // shoot a bullet
     if (this.fireCount >= this.fireDelay) {
-      let b = new Bullet(
-        this.pos.add(dir.mult(this.width / 2)),
-        dir.mult(this.bulletSpeed).add(this.vel),
-        new Vector(0, 0),
-        isGood,
-        color,
-        this.bulletDamage
-      );
-      b.bounciness = this.bulletBounciness;
-      b.rubberiness = this.bulletRubberiness;
+      const b = this.getBullet(dir, isGood, color);
+      b.vel = b.vel.add(additionalVelocity);
       addToWorld(b);
       this.fireCount = 0;
     }

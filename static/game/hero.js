@@ -29,6 +29,7 @@ export class Hero extends Creature {
     this.maxHealth = 100;
     this.currentHealth = this.maxHealth;
     this.bulletSpeed = 10;
+    this.bulletLifetime = 120;
 
     // collect powerups when you collide with them
     this.collideMap.set("PowerUp", entity => {
@@ -81,7 +82,7 @@ export class Hero extends Creature {
     }
     this.acc = buttons.move.vec;
     // prevents velocity from getting too small and normalization messing up
-    this.shoot(buttons.shoot.vec, true);
+    this.shoot(buttons.shoot.vec, true, undefined, this.vel);
     if (!buttons.shoot.vec.isZeroVec()) {
       const normalizedShootVec = buttons.shoot.vec.norm2();
       this.eyeDirection = normalizedShootVec;

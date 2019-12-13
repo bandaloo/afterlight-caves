@@ -27,11 +27,14 @@ import { Vector } from "./modules/vector.js";
 import { shuffle, randomInt, hsl } from "./modules/helpers.js";
 import { Hero } from "./game/hero.js";
 import { initBlockField, distanceBoard } from "./game/generator.js";
+import { Boss } from "./game/boss.js";
 import { PowerUp } from "./game/powerup.js";
 import { Bigify } from "./game/powerups/bigify.js";
 import { Zoom } from "./game/powerups/zoom.js";
 import { Rubber } from "./game/powerups/rubber.js";
 import { Elastic } from "./game/powerups/elastic.js";
+import { Littlify } from "./game/powerups/littlify.js";
+import { Xplode } from "./game/powerups/xplode.js";
 import { Scatter } from "./game/scatter.js";
 import { Chase } from "./game/chase.js";
 import { Shooter } from "./game/shooter.js";
@@ -136,6 +139,17 @@ function resetDemo() {
       new Vector(blockWidth / 2, blockHeight / 2).add(emptySpaces[11])
     )
   );
+
+  const boss = new Boss(
+    hero.pos.add(new Vector(80, 80)),
+    enemyLooks[randomInt(4)],
+    enemyStats[randomInt(4)],
+    undefined,
+    undefined,
+    { size: randomInt(3), speed: 0, explode: 0 }
+  );
+  addToWorld(boss);
+
   setCameraEntity(hero);
   setImportantEntity("hero", hero);
   addToWorld(hero);
