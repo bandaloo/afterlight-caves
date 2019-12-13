@@ -45,7 +45,8 @@ export class Xplode extends PowerUp {
       }
     };
     if (creature.bulletOnDestroy.length < 10) creature.bulletOnDestroy.push(f);
-    creature.fireDelay *= 2;
+    creature.fireDelay *= 1.5;
+    creature.fireDelay = Math.ceil(creature.fireDelay);
     return true;
   }
 }
