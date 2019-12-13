@@ -110,7 +110,6 @@ export class Creature extends Entity {
       // can't shoot without a direction
       return;
     }
-    dir = dir.norm();
     // shoot a bullet
     if (this.fireCount >= this.fireDelay) {
       const b = this.getBullet(dir, isGood, color);

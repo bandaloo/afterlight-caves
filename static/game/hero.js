@@ -96,7 +96,7 @@ export class Hero extends Creature {
    */
   collideWithBlock() {
     if (this.bounciness > 0) {
-      this.vel = this.vel.norm();
+      this.vel = this.vel.norm2();
       this.vel = this.vel.mult(5 * this.rubberiness);
     }
   }
