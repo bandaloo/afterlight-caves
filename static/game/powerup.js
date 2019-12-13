@@ -61,7 +61,7 @@ export class PowerUp extends Entity {
 
   /**
    * draws the powerup as a yellow circle with a letter in the middle
-   * @override 
+   * @override
    */
   draw() {
     // shines

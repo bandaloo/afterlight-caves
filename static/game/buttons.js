@@ -310,19 +310,19 @@ export function getGamepadInput() {
     const lStickY = deadzoneGuard(gamepad.axes[1]);
     const rStickX = deadzoneGuard(gamepad.axes[2]);
     const rStickY = deadzoneGuard(gamepad.axes[3]);
-    let moveVec = new Vector(lStickX, lStickY);
-    let shootVec = new Vector(rStickX, rStickY);
-    const fullMag = 0.7;
-    if (moveVec.mag() > fullMag) {
-      buttons.move.vec = moveVec.norm();
-    } else {
-      buttons.move.vec = moveVec;
+    const stickSensitivity = 1.4;
+    let moveVec = new Vector(lStickX, lStickY).mult(stickSensitivity);
+    let shootVec = new Vector(rStickX, rStickY).mult(stickSensitivity);
+
+    if (moveVec.mag() > 1) {
+      moveVec = moveVec.norm2();
     }
-    if (shootVec.mag() > fullMag) {
-      buttons.shoot.vec = shootVec.norm();
-    } else {
-      buttons.shoot.vec = shootVec;
+    if (shootVec.mag() > 1) {
+      shootVec = shootVec.norm2();
     }
+
+    buttons.move.vec = moveVec;
+    buttons.shoot.vec = shootVec;
 
     if (gamepad.buttons[6].pressed) {
       buttons.primary.status.pressed = !buttons.primary.status.held;

@@ -9,9 +9,19 @@ import {
   destroyEverything,
   setCameraEntity,
   setImportantEntity,
-  getTerrain
+  getTerrain,
+  setGameGuiFunc,
+  getImportantEntity,
+  getContext
 } from "./modules/gamemanager.js";
-import { drawBoard } from "./game/draw.js";
+import {
+  drawBoard,
+  drawCircle,
+  centeredOutlineCircle,
+  centeredOutlineEllipse,
+  centeredText,
+  centeredOutlineRect
+} from "./game/draw.js";
 import { Enemy, randomLook, randomStats } from "./game/enemy.js";
 import { Vector } from "./modules/vector.js";
 import { shuffle, randomInt, hsl } from "./modules/helpers.js";
@@ -31,6 +41,7 @@ import { Shooter } from "./game/shooter.js";
 import { populateLevel } from "./game/spawner.js";
 import { FireRate } from "./game/powerups/firerate.js";
 import { Damage } from "./game/powerups/damage.js";
+import { Creature } from "./game/creature.js";
 
 const blockWidth = 60;
 const blockHeight = 60;
@@ -71,6 +82,31 @@ function resetDemo() {
     drawBoard(board, blockWidth, blockHeight, color);
   });
 
+  setGameGuiFunc(() => {
+    // TODO get rid of magic numbers for drawing the gui
+    const borderVec = new Vector(8, 8);
+    const hero = getImportantEntity("hero");
+    const health = /** @type {Creature} */ (hero).currentHealth;
+    const maxHealth = /** @type {Creature} */ (hero).maxHealth;
+    // Uncenter the centered outline rect
+    const maxHealthWidth = maxHealth * 10;
+    const healthWidth = health * 10;
+    const maxHealthVec = new Vector(maxHealthWidth / 2, 32).add(borderVec);
+    const healthVec = new Vector(healthWidth / 2, 32).add(borderVec);
+    centeredOutlineRect(maxHealthVec, maxHealthWidth, 64, 4, "white");
+    centeredOutlineRect(healthVec, healthWidth, 64, 4, "white", "#ffffff77");
+    centeredText(
+      "" + health,
+      new Vector(16, 32).add(borderVec),
+      "white",
+      "black",
+      undefined,
+      "left",
+      "middle",
+      3
+    );
+  });
+
   let emptySpaces = shuffle(getEmptySpaces(board, 10, blockWidth, blockHeight));
 
   // create four looks with four difficulties
@@ -80,61 +116,6 @@ function resetDemo() {
   }
 
   populateLevel(getTerrain(), 500);
-  /*
-  for (let i = 0; i < 500; i++) {
-    // TODO change this with actual enemy spawning system
-    const enemy = new Shooter(
-      emptySpaces[i % emptySpaces.length].add(
-        new Vector(blockWidth / 2, blockHeight / 2)
-      ),
-      enemyLooks[i % 4],
-      enemyStats[i % 4],
-      undefined,
-      undefined,
-      { size: randomInt(3), speed: 0, explode: 0 }
-    );
-    addToWorld(enemy);
-    */
-    /*
-    if (i % 2) {
-      const enemy = new Chase(
-        emptySpaces[i % emptySpaces.length].add(
-          new Vector(blockWidth / 2, blockHeight / 2)
-        ),
-        enemyLooks[i % 4],
-        enemyStats[i % 4],
-        undefined,
-        undefined,
-        { size: randomInt(3), speed: 0, explode: 0 }
-      );
-      addToWorld(enemy);
-    } else if (i % 3 === 2) {
-      const enemy = new Scatter(
-        emptySpaces[i % emptySpaces.length].add(
-          new Vector(blockWidth / 2, blockHeight / 2)
-        ),
-        enemyLooks[i % 4],
-        enemyStats[i % 4],
-        undefined,
-        undefined,
-        { size: randomInt(3), speed: 0, explode: 0 }
-      );
-      addToWorld(enemy);
-    } else {
-      const enemy = new Shooter(
-        emptySpaces[i % emptySpaces.length].add(
-          new Vector(blockWidth / 2, blockHeight / 2)
-        ),
-        enemyLooks[i % 4],
-        enemyStats[i % 4],
-        undefined,
-        undefined,
-        { size: randomInt(3), speed: 0, explode: 0 }
-      );
-      addToWorld(enemy);
-    }
-  }
-  */
   // TODO change this with actual powerup spawning
   //const powerUpTypes = [Bigify, Elastic, Rubber, Zoom];
   const powerUpTypes = [FireRate, Damage];
@@ -160,9 +141,7 @@ function resetDemo() {
   );
 
   const boss = new Boss(
-    hero.pos.add(
-      new Vector(80, 80)
-    ),
+    hero.pos.add(new Vector(80, 80)),
     enemyLooks[randomInt(4)],
     enemyStats[randomInt(4)],
     undefined,

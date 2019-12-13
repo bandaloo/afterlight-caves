@@ -5,10 +5,14 @@ import { addParticle } from "../modules/gamemanager.js";
 import { Particle, EffectEnum } from "./particle.js";
 import { PowerUp } from "./powerup.js";
 import { Creature } from "./creature.js";
+import { Entity } from "../modules/entity.js";
+import { Bullet } from "./bullet.js";
 
 export class Hero extends Creature {
   drag = 0.1; // movement deceleration
   eyeDirection = new Vector(0, 1);
+  invincibilityFrames = 0;
+  invincibilityFramesMax = 100;
 
   /**
    * @param startingPos {Vector} the starting position of this Hero
@@ -22,7 +26,7 @@ export class Hero extends Creature {
     this.width = 50;
     this.height = 50;
     this.fireDelay = 20;
-    this.maxHealth = 30;
+    this.maxHealth = 100;
     this.currentHealth = this.maxHealth;
     this.bulletSpeed = 10;
     this.bulletLifetime = 120;
@@ -42,11 +46,11 @@ export class Hero extends Creature {
     });
 
     this.collideMap.set("Enemy", entity => {
-      console.log("got hit by enemy");
+      this.hit(entity);
     });
 
     this.collideMap.set("EnemyBullet", entity => {
-      console.log("got hit by enemy bullet");
+      this.hit(entity);
     });
   }
 
@@ -54,7 +58,16 @@ export class Hero extends Creature {
    * Draws the hero at its position in the world
    */
   draw() {
-    centeredOutlineCircle(this.drawPos, this.width / 2, 4, "white", "black");
+    centeredOutlineCircle(
+      this.drawPos,
+      this.width / 2,
+      4,
+      "white",
+      this.invincibilityFrames > 0
+        ? `rgba(255, 255, 255, ${this.invincibilityFrames /
+            this.invincibilityFramesMax})`
+        : "black"
+    );
     centeredOutlineCircle(
       this.drawPos.add(this.eyeDirection.mult(10)),
       10,
@@ -64,9 +77,12 @@ export class Hero extends Creature {
   }
 
   action() {
+    if (this.invincibilityFrames > 0) {
+      this.invincibilityFrames--;
+    }
     this.acc = buttons.move.vec;
     // prevents velocity from getting too small and normalization messing up
-    this.shoot(buttons.shoot.vec, true);
+    this.shoot(buttons.shoot.vec, true, undefined, this.vel);
     if (!buttons.shoot.vec.isZeroVec()) {
       const normalizedShootVec = buttons.shoot.vec.norm2();
       this.eyeDirection = normalizedShootVec;
@@ -82,6 +98,38 @@ export class Hero extends Creature {
     if (this.bounciness > 0) {
       this.vel = this.vel.norm();
       this.vel = this.vel.mult(5 * this.rubberiness);
+    }
+  }
+
+  /**
+   * get hit by an enemy or enemy bullet
+   * @param {Entity} entity
+   */
+  hit(entity) {
+    // TODO move this scalar somewhere else
+    const damageScalar = 10;
+    const damage = Math.floor(
+      (entity.type === "Enemy"
+        ? /** @type {Creature} */ (entity).bulletDamage
+        : /** @type {Bullet} */ (entity).damage) * damageScalar
+    );
+
+    // basically leniency as far as taking damage goes
+    const hitBuffer = 10;
+
+    const hitDist = entity.width + this.width - hitBuffer;
+
+    if (this.invincibilityFrames == 0) {
+      if (this.pos.dist(entity.pos) < hitDist) {
+        this.currentHealth -= damage;
+        this.invincibilityFrames = this.invincibilityFramesMax;
+        if (entity.type === "EnemyBullet") {
+          entity.deleteMe = true;
+        }
+        if (this.currentHealth < 0) {
+          this.currentHealth = 0;
+        }
+      }
     }
   }
 }

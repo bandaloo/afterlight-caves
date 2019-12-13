@@ -72,17 +72,17 @@ export class Shooter extends Enemy {
           new Vector(x * this.look.eyeSpacing, y * this.look.eyeSpacing)
         ),
         this.look.eyeSize,
-        2,
+        4,
         this.look.color,
         "black"
       );
     };
 
     // draw the eyes
-    drawEye(-1, -1);
-    drawEye(1, -1);
-    drawEye(0.6, -2);
-    drawEye(-0.6, -2);
+    drawEye(1, -0.5);
+    drawEye(-1, -0.5);
+    drawEye(0.8, 0.5);
+    drawEye(-0.8, 0.5);
 
     // draw the mouth
     const mouthHalf = this.look.mouthWidth / 2;
@@ -90,11 +90,11 @@ export class Shooter extends Enemy {
     drawLine(
       new Vector(
         this.drawPos.x + mouthHalf,
-        this.drawPos.y + this.look.mouthOffset
+        this.drawPos.y + this.look.mouthOffset + 10
       ),
       new Vector(
         this.drawPos.x - mouthHalf,
-        this.drawPos.y + this.look.mouthOffset
+        this.drawPos.y + this.look.mouthOffset + 10
       ),
       this.look.color,
       4

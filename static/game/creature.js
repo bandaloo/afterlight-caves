@@ -87,8 +87,14 @@ export class Creature extends Entity {
    * @param {boolean} [isGood] true if this was shot by the hero, false
    * otherwise (the default)
    * @param {string} [color] color of the bullet, default white
+   * @param {Vector} [additionalVelocity]
    */
-  shoot(dir, isGood = false, color = "white") {
+  shoot(
+    dir,
+    isGood = false,
+    color = "white",
+    additionalVelocity = new Vector(0, 0)
+  ) {
     dir = dir.norm2();
     // Conditional is so fire count doesn't roll over before shooting
     if (this.fireCount < this.fireDelay) {
@@ -102,6 +108,7 @@ export class Creature extends Entity {
     // shoot a bullet
     if (this.fireCount >= this.fireDelay) {
       const b = this.getBullet(dir, isGood, color);
+      b.vel = b.vel.add(additionalVelocity);
       addToWorld(b);
       this.fireCount = 0;
     }

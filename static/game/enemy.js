@@ -1,4 +1,4 @@
-import { Entity } from "../modules/entity.js";
+import { Entity, FarEnum } from "../modules/entity.js";
 import { Vector } from "../modules/vector.js";
 import { randomFromEnum, randomInt, hsl } from "../modules/helpers.js";
 import { Creature } from "./creature.js";
@@ -119,6 +119,8 @@ export class Enemy extends Creature {
     this.collideMap.set("PlayerBullet", entity => {
       this.hit(entity);
     });
+
+    this.farType = FarEnum.deactivate;
   }
 
   destroy() {

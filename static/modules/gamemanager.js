@@ -1,4 +1,4 @@
-import { Entity } from "./entity.js";
+import { Entity, FarEnum } from "./entity.js";
 import {
   controlKeydownListener,
   controlKeyupListener,
@@ -46,6 +46,9 @@ class GameManager {
   /** @type {number} */
   screenHeight;
 
+  /** @type {number} */
+  farDistance = 3000;
+
   /**
    * map for entities that game programmer might want to access frequently, like player
    * @type {Map<string, Entity>}
@@ -78,6 +81,9 @@ class GameManager {
 
     // drawing func defaults to a no-op
     this.drawFunc = () => {};
+
+    // gui func defaults to a no-op
+    this.guiFunc = () => {};
 
     const exitHandler = () => {
       if (document.fullscreenElement === null) {
@@ -125,25 +131,67 @@ class GameManager {
   }
 
   stepGame() {
+    // do changes on far away entities
+    for (let i = 0; i < this.entities.length; i++) {
+      const {
+        width: screenWidth,
+        height: screenHeight
+      } = getScreenDimensions();
+      const screenCenter = new Vector(screenWidth, screenHeight).mult(0.5);
+      const cameraCenter = getCameraOffset()
+        .mult(-1)
+        .add(screenCenter);
+
+      /*
+      if (this.entities[i].type === "Hero") {
+        console.log(getFarDistance());
+        console.log(this.entities[i].pos.dist2(cameraCenter));
+      }
+      */
+      if (this.entities[i].pos.dist2(cameraCenter) > getFarDistance() ** 2) {
+        if (this.entities[i].farType === FarEnum.delete) {
+          this.entities[i].deleteMe = true;
+        } else if (this.entities[i].farType === FarEnum.deactivate) {
+          this.entities[i].active = false;
+        }
+      } else {
+        if (this.entities[i].farType === FarEnum.deactivate) {
+          // reactivate close enemies
+          this.entities[i].active = true;
+        }
+      }
+    }
+
     // let all entities take their actions
     for (let i = 0; i < this.entities.length; i++) {
-      this.entities[i].action();
+      // exclude inactive entities
+      if (this.entities[i].active) {
+        this.entities[i].action();
+      }
     }
+
     // run a physics step on all entities including particles
     /** @type {Entity[][]} */
     const entityLists = [this.entities, this.particles];
     for (let i = 0; i < entityLists.length; i++) {
       for (let j = 0; j < entityLists[i].length; j++) {
-        entityLists[i][j].lifetime--;
-        if (entityLists[i][j].lifetime <= 0) {
-          entityLists[i][j].deleteMe = true;
+        // exclude inactive entities
+        if (entityLists[i][j].active) {
+          entityLists[i][j].lifetime--;
+          if (entityLists[i][j].lifetime <= 0) {
+            entityLists[i][j].deleteMe = true;
+          }
+          entityLists[i][j].step();
         }
-        entityLists[i][j].step();
       }
     }
+
     // push all entities out of walls
     for (let i = 0; i < this.entities.length; i++) {
-      this.entities[i].adjust();
+      // exclude inactive entities
+      if (this.entities[i].active) {
+        this.entities[i].adjust();
+      }
     }
     // resolve collisions between entities
     this.collideWithEntities();
@@ -174,6 +222,7 @@ class GameManager {
         .mult(-1)
         .add(new Vector(this.screenWidth / 2, this.screenHeight / 2));
     }
+
     // clear the display canvas
     this.displayCanvas.width = this.displayCanvas.width;
     // clear the drawing canvas
@@ -187,8 +236,11 @@ class GameManager {
     // draw all particles
     for (let i = 0; i < this.particles.length; i++) {
       // TODO see if culling particles does anything for performance
-      this.particles[i].draw();
+      if (this.particles[i].onScreen()) {
+        this.particles[i].draw();
+      }
     }
+
     // draw all entities
     for (let i = 0; i < this.entities.length; i++) {
       if (this.entities[i].onScreen()) {
@@ -197,6 +249,12 @@ class GameManager {
     }
     // restore drawing context
     this.context.restore();
+
+    // align camera, draw the gui, reset camera
+    const originalOffset = this.cameraOffset;
+    this.cameraOffset = new Vector(0, 0);
+    this.guiFunc();
+    this.cameraOffset = originalOffset;
 
     // save display context
     this.displayContext.save();
@@ -215,32 +273,38 @@ class GameManager {
     const map = new Map();
     for (let i = 0; i < this.entities.length; i++) {
       const entity = this.entities[i];
-      if (map.get(entity.type) === undefined) {
-        map.set(entity.type, []);
+      // exclude inactive entities
+      if (entity.active) {
+        if (map.get(entity.type) === undefined) {
+          map.set(entity.type, []);
+        }
+        map.get(entity.type).push(entity);
       }
-      map.get(entity.type).push(entity);
     }
 
     for (let i = 0; i < this.entities.length; i++) {
       const targetEntity = this.entities[i];
-      const collideTypes = [];
-      const collideMapIterator = targetEntity.collideMap.keys();
+      // exclude inactive entities
+      if (targetEntity.active) {
+        const collideTypes = [];
+        const collideMapIterator = targetEntity.collideMap.keys();
 
-      // get types that the target entity should collide with
-      for (
-        let nextType = collideMapIterator.next();
-        nextType.done !== true;
-        nextType = collideMapIterator.next()
-      ) {
-        collideTypes.push(nextType.value);
-      }
+        // get types that the target entity should collide with
+        for (
+          let nextType = collideMapIterator.next();
+          nextType.done !== true;
+          nextType = collideMapIterator.next()
+        ) {
+          collideTypes.push(nextType.value);
+        }
 
-      for (let j = 0; j < collideTypes.length; j++) {
-        const collideEntities = map.get(collideTypes[j]);
-        if (collideEntities !== undefined) {
-          for (let k = 0; k < collideEntities.length; k++) {
-            if (isColliding(targetEntity, collideEntities[k])) {
-              targetEntity.collideWithEntity(collideEntities[k]);
+        for (let j = 0; j < collideTypes.length; j++) {
+          const collideEntities = map.get(collideTypes[j]);
+          if (collideEntities !== undefined) {
+            for (let k = 0; k < collideEntities.length; k++) {
+              if (isColliding(targetEntity, collideEntities[k])) {
+                targetEntity.collideWithEntity(collideEntities[k]);
+              }
             }
           }
         }
@@ -254,25 +318,31 @@ class GameManager {
   prepareTween(entityList) {
     // get the tween vectors
     for (let i = 0; i < entityList.length; i++) {
-      entityList[i].lastPos = entityList[i].pos;
+      // exclude inactive entities
+      if (entityList[i].active) {
+        entityList[i].lastPos = entityList[i].pos;
+      }
     }
   }
 
   performTween(entityList, timeLeft) {
     for (let i = 0; i < entityList.length; i++) {
-      // value used for debugging
-      let tempPrevPos = entityList[i].lastPos;
-      let tempDrawPos = entityList[i].lastPos.partway(
-        entityList[i].pos,
-        (this.updateTime + timeLeft) / this.updateTime
-      );
-      // value used for debugging
-      let tempCurrPos = entityList[i].pos;
-      // uncomment these to debug tweening
-      //console.log("prev " + tempPrevPos);
-      //console.log("draw " + tempDrawPos);
-      //console.log("curr " + tempCurrPos);
-      entityList[i].drawPos = tempDrawPos;
+      // exclude inactive entities
+      if (entityList[i].active) {
+        // value used for debugging
+        let tempPrevPos = entityList[i].lastPos;
+        let tempDrawPos = entityList[i].lastPos.partway(
+          entityList[i].pos,
+          (this.updateTime + timeLeft) / this.updateTime
+        );
+        // value used for debugging
+        let tempCurrPos = entityList[i].pos;
+        // uncomment these to debug tweening
+        //console.log("prev " + tempPrevPos);
+        //console.log("draw " + tempDrawPos);
+        //console.log("curr " + tempCurrPos);
+        entityList[i].drawPos = tempDrawPos;
+      }
     }
   }
 
@@ -344,6 +414,10 @@ export function getCanvasHeight() {
  */
 export function setGameDrawFunc(drawFunc) {
   gameManager.drawFunc = drawFunc;
+}
+
+export function setGameGuiFunc(guiFunc) {
+  gameManager.guiFunc = guiFunc;
 }
 
 /**
@@ -516,4 +590,16 @@ export function cellToWorldPosition(vec) {
     vec.x * blockWidth + blockWidth / 2,
     vec.y * blockHeight + blockHeight / 2
   );
+}
+
+export function getFarDistance() {
+  return gameManager.farDistance;
+}
+
+/**
+ * sets the far distance
+ * @param {number} farDistance
+ */
+export function setFarDistance(farDistance) {
+  gameManager.farDistance = farDistance;
 }
