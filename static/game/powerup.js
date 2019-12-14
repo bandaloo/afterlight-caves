@@ -26,12 +26,12 @@ export class PowerUp extends Entity {
     this.width = 60;
     this.height = 60;
     /**
-     * @type {{
-     *  angle: number,
-     *  width: number,
-     *  length: number,
-     *  speed: number,
-     *  hue: number}[]
+     * @type {{ angle: number
+     *        , width: number
+     *        , length: number
+     *        , speed: number
+     *        , hue: number
+     *        }[]
      * }
      */
     this.shines = new Array(30);
@@ -74,7 +74,8 @@ export class PowerUp extends Entity {
   }
 
   /**
-   * returns true if the creature is at the max level for this powerup.
+   * Returns true if the creature is at the max level for this powerup.
+   * 
    * PowerUps should override this, because there is no limit by default
    * The only side-effect this should have is trimming the magnitude of this.
    * For example, if you want to set a maximum total Damage magnitude at 100,
@@ -89,7 +90,8 @@ export class PowerUp extends Entity {
 
   /**
    * The function called when a powerup isn't applied due to reaching the
-   * maximum magnitude for a powerup class
+   * maximum magnitude for a powerup class.
+   *
    * By default it adds 5% health per magnitude level, but can be overridden to
    * do something else
    * @param {Creature} creature

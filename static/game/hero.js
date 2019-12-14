@@ -31,7 +31,7 @@ export class Hero extends Creature {
     this.maxHealth = 100;
     this.currentHealth = this.maxHealth;
     this.bulletSpeed = 10;
-    this.bulletLifetime = 120;
+    this.bulletLifetime = 80;
 
     // collect powerups when you collide with them
     this.collideMap.set("PowerUp", entity => {

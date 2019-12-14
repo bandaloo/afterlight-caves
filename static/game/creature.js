@@ -70,7 +70,9 @@ export class Creature extends Entity {
   action() {}
 
   /**
-   * gets this creature's bullet
+   * gets this creature's bullet.
+   * 
+   * You should always use this method instead of calling `new Bullet' dirrectly
    * @param {Vector} dir
    * @param {boolean} [isGood]
    * @param {string} [color]

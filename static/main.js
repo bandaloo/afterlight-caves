@@ -30,11 +30,12 @@ import { initBlockField, segregateTerrain } from "./game/generator.js";
 import { Boss } from "./game/boss.js";
 import { PowerUp } from "./game/powerup.js";
 import { Bigify } from "./game/powerups/bigify.js";
-import { Zoom } from "./game/powerups/zoom.js";
-import { Rubber } from "./game/powerups/rubber.js";
 import { Elastic } from "./game/powerups/elastic.js";
 import { Littlify } from "./game/powerups/littlify.js";
+import { Rubber } from "./game/powerups/rubber.js";
+import { Sniper } from "./game/powerups/sniper.js";
 import { Xplode } from "./game/powerups/xplode.js";
+import { Zoom } from "./game/powerups/zoom.js";
 import { Scatter } from "./game/scatter.js";
 import { Chase } from "./game/chase.js";
 import { Shooter } from "./game/shooter.js";
@@ -150,14 +151,15 @@ function resetDemo() {
   const tilesPerAdditionalPowerupChance = 150;
 
   const powerUpTypes = [
-    Bigify,
-    Damage,
-    Elastic,
-    MachineGun,
-    Littlify,
-    Rubber,
-    Xplode,
-    Zoom
+    //Bigify,
+    //Damage,
+    //Elastic,
+    //MachineGun,
+    //Littlify,
+    //Rubber,
+    Sniper,
+    //Xplode,
+    //Zoom
   ];
   for (let i = 0; i < caveLocations.length; i++) {
     if (i == largestGroup) continue;
