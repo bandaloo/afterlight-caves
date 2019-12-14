@@ -30,7 +30,7 @@ export class Hero extends Creature {
     this.fireDelay = 20;
     this.maxHealth = 100;
     this.currentHealth = this.maxHealth;
-    this.bulletSpeed = 10;
+    this.bulletSpeed = 5;
     this.bulletLifetime = 80;
 
     // collect powerups when you collide with them

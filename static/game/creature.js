@@ -81,7 +81,7 @@ export class Creature extends Entity {
   getBullet(dir, isGood = false, color = "white") {
     const b = new Bullet(
       this.pos.add(dir.mult(this.width / 2)),
-      dir.mult(this.bulletSpeed),
+      dir.norm2().mult(this.bulletSpeed),
       new Vector(0, 0),
       isGood,
       color,

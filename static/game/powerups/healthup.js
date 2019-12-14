@@ -2,17 +2,17 @@ import { PowerUp } from "../powerup.js";
 import { Vector } from "../../modules/vector.js";
 import { Creature } from "../creature.js";
 
-const MAX_BULLET_LIFETIME = 500;
-const RANGE_FACTOR = 5;
+const MAX_MAX_HEALTH = 1000;
+const HEALTH_FACTOR = 10;
 
-export class Sniper extends PowerUp {
+export class HealthUp extends PowerUp {
   /**
-   * Increases your range (by increasing bullet lifetime)
+   * Increases your max health
    * @param {Vector} pos
-   * @param {number} magnitude how much this increases your range by, 1-5
+   * @param {number} magnitude how much this increases you max health by, 1-5
    */
   constructor(pos, magnitude = 1) {
-    super(pos, magnitude, "Sniper");
+    super(pos, magnitude, "Health Up");
   }
 
   /**
@@ -23,7 +23,8 @@ export class Sniper extends PowerUp {
   apply(creature) {
     if (!this.isAtMax(creature)) {
       super.apply(creature);
-      creature.bulletLifetime += this.magnitude * RANGE_FACTOR;
+      creature.maxHealth += this.magnitude * HEALTH_FACTOR;
+      creature.currentHealth += this.magnitude * HEALTH_FACTOR;
     } else {
       this.overflowAction(creature);
     }
@@ -37,13 +38,13 @@ export class Sniper extends PowerUp {
    */
   isAtMax(creature) {
     // creature is just too big
-    if (creature.bulletLifetime >= MAX_BULLET_LIFETIME) {
+    if (creature.maxHealth >= MAX_MAX_HEALTH) {
       return true;
     }
 
     // see if we need to trim magnitude
     const availMag = Math.floor(
-      Math.abs(MAX_BULLET_LIFETIME - creature.bulletLifetime) / RANGE_FACTOR
+      (MAX_MAX_HEALTH - creature.maxHealth) / HEALTH_FACTOR
     );
     if (availMag < 1) return true;
 

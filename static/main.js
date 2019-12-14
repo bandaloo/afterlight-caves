@@ -31,6 +31,7 @@ import { Boss } from "./game/boss.js";
 import { PowerUp } from "./game/powerup.js";
 import { Bigify } from "./game/powerups/bigify.js";
 import { Elastic } from "./game/powerups/elastic.js";
+import { HealthUp } from "./game/powerups/healthup.js";
 import { Littlify } from "./game/powerups/littlify.js";
 import { Rubber } from "./game/powerups/rubber.js";
 import { Sniper } from "./game/powerups/sniper.js";
@@ -151,15 +152,16 @@ function resetDemo() {
   const tilesPerAdditionalPowerupChance = 150;
 
   const powerUpTypes = [
-    //Bigify,
-    //Damage,
-    //Elastic,
-    //MachineGun,
-    //Littlify,
-    //Rubber,
+    Bigify,
+    Damage,
+    Elastic,
+    HealthUp,
+    MachineGun,
+    Littlify,
+    Rubber,
     Sniper,
-    //Xplode,
-    //Zoom
+    Xplode,
+    Zoom
   ];
   for (let i = 0; i < caveLocations.length; i++) {
     if (i == largestGroup) continue;
