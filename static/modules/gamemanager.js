@@ -491,6 +491,8 @@ export function getDimensions() {
  * @param {Entity} entity
  */
 export function addToWorld(entity) {
+  entity.drawPos = entity.pos;
+  entity.lastPos = entity.pos;
   gameManager.entities.push(entity);
 }
 

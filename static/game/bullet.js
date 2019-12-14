@@ -96,7 +96,7 @@ export class Bullet extends Entity {
       this.deleteMe = true;
     } else {
       // bounce off
-      this.vel = this.vel.norm();
+      this.vel = this.vel.norm2();
       this.vel = this.vel.mult(5 * this.rubberiness);
     }
   }

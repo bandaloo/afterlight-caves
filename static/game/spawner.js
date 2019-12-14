@@ -74,6 +74,7 @@ export function populateLevel(board, numEnemies) {
     addToWorld(enemy);
   }
 
+  /*
   const boss = new Boss(
     cellToWorldPosition(distCells[2].pop()),
     enemyLooks[randomInt(4)],
@@ -83,4 +84,5 @@ export function populateLevel(board, numEnemies) {
     { size: randomInt(3), speed: 0, explode: 0 }
   );
   addToWorld(boss);
+  */
 }

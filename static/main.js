@@ -145,9 +145,9 @@ function resetDemo() {
     if (caveLocations[i].length == 0) caveLocations.splice(i, i);
   }
 
-  populateLevel(getTerrain(), 200);
+  populateLevel(getTerrain(), 320);
 
-  const tilesPerAdditionalPowerupChance = 100;
+  const tilesPerAdditionalPowerupChance = 150;
 
   const powerUpTypes = [
     Bigify,
