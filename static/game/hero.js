@@ -8,6 +8,8 @@ import { Creature } from "./creature.js";
 import { Entity } from "../modules/entity.js";
 import { Bullet } from "./bullet.js";
 
+const DEFAULT_SIZE = 50;
+
 export class Hero extends Creature {
   drag = 0.1; // movement deceleration
   eyeDirection = new Vector(0, 1);
@@ -23,8 +25,8 @@ export class Hero extends Creature {
     this.type = "Hero";
 
     // set initial attributes
-    this.width = 50;
-    this.height = 50;
+    this.width = DEFAULT_SIZE;
+    this.height = DEFAULT_SIZE;
     this.fireDelay = 20;
     this.maxHealth = 100;
     this.currentHealth = this.maxHealth;
@@ -77,6 +79,17 @@ export class Hero extends Creature {
   }
 
   action() {
+    if (Math.random() < 0.01) {
+      if (this.width > DEFAULT_SIZE || this.height > DEFAULT_SIZE) {
+        this.width--;
+        this.height--;
+      }
+      if (this.width < DEFAULT_SIZE || this.height < DEFAULT_SIZE) {
+        this.width++;
+        this.height++;
+      }
+    }
+
     if (this.invincibilityFrames > 0) {
       this.invincibilityFrames--;
     }
