@@ -39,7 +39,7 @@ import { Scatter } from "./game/scatter.js";
 import { Chase } from "./game/chase.js";
 import { Shooter } from "./game/shooter.js";
 import { populateLevel } from "./game/spawner.js";
-import { FireRate } from "./game/powerups/firerate.js";
+import { MachineGun } from "./game/powerups/machinegun.js";
 import { Damage } from "./game/powerups/damage.js";
 import { Creature } from "./game/creature.js";
 
@@ -122,7 +122,6 @@ function resetDemo() {
     largestGroup: largestGroup
   } = segregateTerrain(board);
 
-  console.log("Group Num " + groupNum);
   // Init the cave locations array
   const caveLocations = [];
   for (let i = 0; i < groupNum; i++) {
@@ -145,19 +144,18 @@ function resetDemo() {
   for (let i = 0; i < caveLocations.length; i++) {
     if (caveLocations[i].length == 0) caveLocations.splice(i, i);
   }
-  console.log(caveLocations);
 
   populateLevel(getTerrain(), 200);
 
   const tilesPerAdditionalPowerupChance = 100;
 
   const powerUpTypes = [
-    // Bigify,
+    Bigify,
     Damage,
     Elastic,
-    FireRate,
-    // Littlify,
-    // Rubber,
+    MachineGun,
+    Littlify,
+    Rubber,
     Xplode,
     Zoom
   ];
@@ -171,10 +169,6 @@ function resetDemo() {
     );
     const powerup_num = Math.floor(Math.random() * additional_powerups) + 1;
     caveLocations[i].length;
-
-    console.log("Spawning for cave " + i);
-    console.log("additional = " + additional_powerups);
-    console.log("Spawning " + powerup_num + " powerups ");
 
     for (let p = 0; p < powerup_num; p++) {
       /** @type {Vector} */

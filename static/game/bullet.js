@@ -35,7 +35,12 @@ export class Bullet extends Entity {
     this.bounciness = 0;
     this.color = color;
     this.damage = damage;
-    /** @type {(function(Bullet): void)[]} */
+    /**
+     * @type {{ name: string
+     *        , data: number
+     *        , func: (function(Bullet, number): void)
+     *        }[]}
+     */
     this.onDestroy = new Array();
     this.damage = damage;
     good ? (this.type = "PlayerBullet") : (this.type = "EnemyBullet");
@@ -49,8 +54,8 @@ export class Bullet extends Entity {
 
   destroy() {
     // execute all on-destroy functions
-    for (const f of this.onDestroy) {
-      f(this);
+    for (const od of this.onDestroy) {
+      if (od["func"]) od["func"](this, od["data"]);
     }
 
     // show sparks
