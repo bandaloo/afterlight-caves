@@ -54,8 +54,8 @@ export class PowerUp extends Entity {
    */
   apply(creature) {
     // Set the creature's powerup magnitude for this type of powerup
-    const new_mag = this.magnitude + creature.powerUps.get(this.powerUpClass);
-    creature.powerUps.set(this.powerUpClass, new_mag);
+    const newMag = this.magnitude + creature.powerUps.get(this.powerUpClass);
+    creature.powerUps.set(this.powerUpClass, newMag);
 
     // display the name on the screen if the hero picked it up
     // this needs to be last in case something changes before we get here
@@ -97,10 +97,10 @@ export class PowerUp extends Entity {
    * @param {Creature} creature
    */
   overflowAction(creature) {
-    creature.currentHealth = Math.min(
+    creature.currentHealth = Math.floor(Math.min(
       creature.currentHealth + creature.maxHealth * (0.5 * this.magnitude),
       creature.maxHealth
-    );
+    ));
     if (creature.type === "Hero") {
       const textPos = this.drawPos.add(new Vector(0, -100));
       console.log("Hero at max");

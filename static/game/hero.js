@@ -81,12 +81,12 @@ export class Hero extends Creature {
   action() {
     if (Math.random() < 0.01) {
       if (this.width > DEFAULT_SIZE || this.height > DEFAULT_SIZE) {
-        this.width--;
-        this.height--;
+        this.width = Math.floor(this.width - 1);
+        this.height = Math.floor(this.height - 1);
       }
       if (this.width < DEFAULT_SIZE || this.height < DEFAULT_SIZE) {
-        this.width++;
-        this.height++;
+        this.width = Math.ceil(this.width + 1);
+        this.height = Math.ceil(this.height + 1);
       }
     }
 
