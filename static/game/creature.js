@@ -21,11 +21,17 @@ export class Creature extends Entity {
   /** @type {number} how long bullets spawned by this live */
   bulletLifetime = 100;
 
-  /** @type {(function(Bullet): void)[]} */
+  /**
+   * An array of objects, where each object has a name, which is the name of
+   * the powerup the function came from, a data, which is some number the
+   * function takes, and a func, which is a funciton to execute when the bullet
+   * gets destroyed
+   * @type {{ name: string
+   *        , data: number
+   *        , func: (function(Bullet, number): void)
+   *        }[]}
+   */
   bulletOnDestroy;
-
-  /** @type {string[]} list containing the names of every pow/erup we have */
-  powerUpsList;
 
   /** @type {number} the number of game steps to wait between each shot */
   fireDelay = 30;
@@ -46,7 +52,7 @@ export class Creature extends Entity {
   movementMultiplier = 1;
 
   /** @type {Map<string, number>}*/
-  powerupMagnitudes = new Map();
+  powerUps = new Map();
 
   /**
    * @param {Vector} [pos] initial position
@@ -55,7 +61,6 @@ export class Creature extends Entity {
    */
   constructor(pos, vel = new Vector(0, 0), acc = new Vector(0, 0)) {
     super(pos, vel, acc);
-    this.powerUpsList = new Array();
     this.bulletOnDestroy = new Array();
   }
 
@@ -65,7 +70,9 @@ export class Creature extends Entity {
   action() {}
 
   /**
-   * gets this creature's bullet
+   * gets this creature's bullet.
+   * 
+   * You should always use this method instead of calling `new Bullet' dirrectly
    * @param {Vector} dir
    * @param {boolean} [isGood]
    * @param {string} [color]
@@ -74,7 +81,7 @@ export class Creature extends Entity {
   getBullet(dir, isGood = false, color = "white") {
     const b = new Bullet(
       this.pos.add(dir.mult(this.width / 2)),
-      dir.mult(this.bulletSpeed),
+      dir.norm2().mult(this.bulletSpeed),
       new Vector(0, 0),
       isGood,
       color,

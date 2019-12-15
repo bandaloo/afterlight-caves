@@ -30,16 +30,19 @@ import { initBlockField, segregateTerrain } from "./game/generator.js";
 import { Boss } from "./game/boss.js";
 import { PowerUp } from "./game/powerup.js";
 import { Bigify } from "./game/powerups/bigify.js";
-import { Zoom } from "./game/powerups/zoom.js";
-import { Rubber } from "./game/powerups/rubber.js";
 import { Elastic } from "./game/powerups/elastic.js";
+import { HealthUp } from "./game/powerups/healthup.js";
 import { Littlify } from "./game/powerups/littlify.js";
+import { QuickShot } from "./game/powerups/quickshot.js";
+import { Rubber } from "./game/powerups/rubber.js";
+import { Sniper } from "./game/powerups/sniper.js";
 import { Xplode } from "./game/powerups/xplode.js";
+import { Zoom } from "./game/powerups/zoom.js";
 import { Scatter } from "./game/scatter.js";
 import { Chase } from "./game/chase.js";
 import { Shooter } from "./game/shooter.js";
 import { populateLevel } from "./game/spawner.js";
-import { FireRate } from "./game/powerups/firerate.js";
+import { MachineGun } from "./game/powerups/machinegun.js";
 import { Damage } from "./game/powerups/damage.js";
 import { Creature } from "./game/creature.js";
 
@@ -122,7 +125,6 @@ function resetDemo() {
     largestGroup: largestGroup
   } = segregateTerrain(board);
 
-  console.log("Group Num " + groupNum);
   // Init the cave locations array
   const caveLocations = [];
   for (let i = 0; i < groupNum; i++) {
@@ -145,19 +147,21 @@ function resetDemo() {
   for (let i = 0; i < caveLocations.length; i++) {
     if (caveLocations[i].length == 0) caveLocations.splice(i, i);
   }
-  console.log(caveLocations);
 
   populateLevel(getTerrain(), 320);
 
   const tilesPerAdditionalPowerupChance = 150;
 
   const powerUpTypes = [
-    // Bigify,
+    Bigify,
     Damage,
     Elastic,
-    FireRate,
-    // Littlify,
-    // Rubber,
+    HealthUp,
+    MachineGun,
+    Littlify,
+    QuickShot,
+    Rubber,
+    Sniper,
     Xplode,
     Zoom
   ];
@@ -171,10 +175,6 @@ function resetDemo() {
     );
     const powerup_num = Math.floor(Math.random() * additional_powerups) + 1;
     caveLocations[i].length;
-
-    console.log("Spawning for cave " + i);
-    console.log("additional = " + additional_powerups);
-    console.log("Spawning " + powerup_num + " powerups ");
 
     for (let p = 0; p < powerup_num; p++) {
       /** @type {Vector} */

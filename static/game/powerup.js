@@ -5,17 +5,6 @@ import { centeredOutlineCircle, centeredText, drawShines } from "./draw.js";
 import { TextDisplay } from "./textdisplay.js";
 import { addToWorld } from "../modules/gamemanager.js";
 
-const maxMagnitudes = {
-  Bigify: 3,
-  Damage: 100,
-  Elastic: 15,
-  "Fire Rate": 100,
-  Littlify: 3,
-  Rubber: 10,
-  Xplode: 5,
-  Zoom: 100
-};
-
 /**
  * @abstract
  */
@@ -24,22 +13,26 @@ export class PowerUp extends Entity {
    * constructs a new powerup
    * @param {Vector} pos
    * @param {number} [magnitude] each powerup has a magnitude 1-5, e.g. how big
-   * @param {String} powerUpClass the class of powerup, e.g. "Damage" or "Zoom"
    * Bigify makes you. 1 by default.
+   * @param {String} powerUpClass the class of powerup, e.g. "Damage" or "Zoom"
    */
   constructor(pos, magnitude = 1, powerUpClass = "Null Powerup") {
     super(pos);
     this.type = "PowerUp";
     this.magnitude = magnitude;
+    // set color based on magnitude
     this.hue = [0, 134, 204, 275, 39][this.magnitude - 1];
     this.powerUpClass = powerUpClass;
-    this.powerUpName = this.powerUpClass + " " + this.magnitude;
-    // this.powerUpName = "Null PowerUp";
-    // this.powerUpClass = "Null PowerUp";
     this.width = 60;
     this.height = 60;
     /**
-     * @type {{angle: number, width: number, length: number, speed: number,hue: number}[]}
+     * @type {{ angle: number
+     *        , width: number
+     *        , length: number
+     *        , speed: number
+     *        , hue: number
+     *        }[]
+     * }
      */
     this.shines = new Array(30);
     for (let i = 0; i < 30; ++i) {
@@ -54,70 +47,77 @@ export class PowerUp extends Entity {
   }
 
   /**
-   * applies this powerup to a creature
+   * applies this powerup to a creature, if it's not at max. If it isAtMax,
+   * this function calls overflowAction
    * @param {Creature} creature
    * @virtual
-   * @returns {Boolean}
    */
   apply(creature) {
-    // Update the creature's powerups
-    let old_magnitude = 0;
-    if (creature.powerupMagnitudes.has(this.powerUpClass)) {
-      old_magnitude += creature.powerupMagnitudes.get(this.powerUpClass);
-    }
-    let new_magnitude = old_magnitude + this.magnitude;
+    // Set the creature's powerup magnitude for this type of powerup
+    const newMag = this.magnitude + creature.powerUps.get(this.powerUpClass);
+    creature.powerUps.set(this.powerUpClass, newMag);
 
-    let apply = true;
-
-    // Check the new upgrade to make sure the maximum magnitude isn't exceeded
-    if (maxMagnitudes[this.powerUpClass] != undefined) {
-      if (new_magnitude > maxMagnitudes[this.powerUpClass]) {
-        // If it exceeds the max, cut off the overflow.
-        const diff = new_magnitude - maxMagnitudes[this.powerUpClass];
-        // If the entire powerup is overflow, don't apply it.
-        if (diff >= this.magnitude) {
-          apply = false;
-        }
-        // Cut off the overflow
-        new_magnitude -= diff;
-        this.magnitude -= diff;
-      }
-    }
-    // Set the creatures magnitude
-    creature.powerupMagnitudes.set(this.powerUpClass, new_magnitude);
-    // Add the powerup to the creature's list
-    creature.powerUpsList.push(this.powerUpName);
-
-    // display the name on the screen
-    const textPos = this.drawPos.add(new Vector(0, -100));
-    const td = new TextDisplay(
-      apply ? this.powerUpName : "Max " + this.powerUpClass + " Reached!",
-      textPos,
-      120,
-      this.hue,
-      "rgba(0, 0, 0, 0)"
-    );
-
+    // display the name on the screen if the hero picked it up
+    // this needs to be last in case something changes before we get here
     if (creature.type === "Hero") {
+      const textPos = this.drawPos.add(new Vector(0, -100));
+      const td = new TextDisplay(
+        this.powerUpClass + " " + this.magnitude,
+        textPos,
+        120,
+        this.hue,
+        "rgba(0, 0, 0, 0)"
+      );
+
       addToWorld(td);
     }
-
-    return apply;
   }
 
   /**
-   * The function called when a powerup isn't applied due to reaching the maximum magnitude for a powerup class
+   * Returns true if the creature is at the max level for this powerup.
+   * 
+   * PowerUps should override this, because there is no limit by default
+   * The only side-effect this should have is trimming the magnitude of this.
+   * For example, if you want to set a maximum total Damage magnitude at 100,
+   * and the player has 97 and picks up a Damage 5, it is acceptable to trim it
+   * to a Damage 3 in this method
+   * @param {Creature} creature
+   * @return {boolean} true if this can't be applied
+   */
+  isAtMax(creature) {
+    return false;
+  }
+
+  /**
+   * The function called when a powerup isn't applied due to reaching the
+   * maximum magnitude for a powerup class.
+   *
+   * By default it adds 5% health per magnitude level, but can be overridden to
+   * do something else
    * @param {Creature} creature
    */
   overflowAction(creature) {
-    creature.currentHealth = Math.min(
-      creature.currentHealth + creature.maxHealth * 0.15,
+    creature.currentHealth = Math.floor(Math.min(
+      creature.currentHealth + creature.maxHealth * (0.5 * this.magnitude),
       creature.maxHealth
-    );
+    ));
+    if (creature.type === "Hero") {
+      const textPos = this.drawPos.add(new Vector(0, -100));
+      console.log("Hero at max");
+      const td = new TextDisplay(
+        "Max " + this.powerUpClass + " reached",
+        textPos,
+        120,
+        this.hue,
+        "rgba(0, 0, 0, 0)"
+      );
+
+      addToWorld(td);
+    }
   }
 
   /**
-   * draws the powerup as a yellow circle with a letter in the middle
+   * draws the powerup as a circle with a letter in the middle
    * @override
    */
   draw() {
@@ -141,7 +141,7 @@ export class PowerUp extends Entity {
     );
     // text
     centeredText(
-      this.powerUpName.slice(0, 1),
+      this.powerUpClass.slice(0, 1),
       this.drawPos.add(new Vector(0, 16)),
       "hsl(" + this.hue + ", 100%, 50%)",
       "rgba(0, 0, 0, 0)",

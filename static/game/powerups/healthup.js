@@ -2,17 +2,17 @@ import { PowerUp } from "../powerup.js";
 import { Vector } from "../../modules/vector.js";
 import { Creature } from "../creature.js";
 
-const MAX_DAMAGE = 1000;
-const DAMAGE_FACTOR = 1;
+const MAX_MAX_HEALTH = 1000;
+const HEALTH_FACTOR = 10;
 
-export class Damage extends PowerUp {
+export class HealthUp extends PowerUp {
   /**
-   * Increases your damage
+   * Increases your max health
    * @param {Vector} pos
-   * @param {number} magnitude how much to increase damage, 1-5
+   * @param {number} magnitude how much this increases you max health by, 1-5
    */
   constructor(pos, magnitude = 1) {
-    super(pos, magnitude, "Damage");
+    super(pos, magnitude, "Health Up");
   }
 
   /**
@@ -23,7 +23,8 @@ export class Damage extends PowerUp {
   apply(creature) {
     if (!this.isAtMax(creature)) {
       super.apply(creature);
-      creature.bulletDamage += this.magnitude * DAMAGE_FACTOR;
+      creature.maxHealth += this.magnitude * HEALTH_FACTOR;
+      creature.currentHealth += this.magnitude * HEALTH_FACTOR;
     } else {
       this.overflowAction(creature);
     }
@@ -36,14 +37,14 @@ export class Damage extends PowerUp {
    * @override
    */
   isAtMax(creature) {
-    // creature bullet damage is already at or over the limit
-    if (creature.bulletDamage >= MAX_DAMAGE) {
+    // creature is just too big
+    if (creature.maxHealth >= MAX_MAX_HEALTH) {
       return true;
     }
 
     // see if we need to trim magnitude
     const availMag = Math.floor(
-      (MAX_DAMAGE - creature.bulletDamage) / DAMAGE_FACTOR
+      (MAX_MAX_HEALTH - creature.maxHealth) / HEALTH_FACTOR
     );
     if (availMag < 1) return true;
 

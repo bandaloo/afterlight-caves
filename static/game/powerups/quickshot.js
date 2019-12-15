@@ -2,17 +2,17 @@ import { PowerUp } from "../powerup.js";
 import { Vector } from "../../modules/vector.js";
 import { Creature } from "../creature.js";
 
-const MAX_DAMAGE = 1000;
-const DAMAGE_FACTOR = 1;
+const MAX_BULLET_SPEED = 50;
+const BULLET_SPEED_FACTOR = 1;
 
-export class Damage extends PowerUp {
+export class QuickShot extends PowerUp {
   /**
-   * Increases your damage
+   * Increases the speed of your bullets
    * @param {Vector} pos
-   * @param {number} magnitude how much to increase damage, 1-5
+   * @param {number} magnitude how much this increases your bullet speed by, 1-5
    */
   constructor(pos, magnitude = 1) {
-    super(pos, magnitude, "Damage");
+    super(pos, magnitude, "Quick Shot");
   }
 
   /**
@@ -23,7 +23,7 @@ export class Damage extends PowerUp {
   apply(creature) {
     if (!this.isAtMax(creature)) {
       super.apply(creature);
-      creature.bulletDamage += this.magnitude * DAMAGE_FACTOR;
+      creature.bulletSpeed += this.magnitude * BULLET_SPEED_FACTOR;
     } else {
       this.overflowAction(creature);
     }
@@ -36,14 +36,14 @@ export class Damage extends PowerUp {
    * @override
    */
   isAtMax(creature) {
-    // creature bullet damage is already at or over the limit
-    if (creature.bulletDamage >= MAX_DAMAGE) {
+    // creature is just too big
+    if (creature.bulletSpeed >= MAX_BULLET_SPEED) {
       return true;
     }
 
     // see if we need to trim magnitude
     const availMag = Math.floor(
-      (MAX_DAMAGE - creature.bulletDamage) / DAMAGE_FACTOR
+      Math.abs(MAX_BULLET_SPEED - creature.bulletSpeed) / BULLET_SPEED_FACTOR
     );
     if (availMag < 1) return true;
 
