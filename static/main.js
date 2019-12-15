@@ -33,6 +33,7 @@ import { Bigify } from "./game/powerups/bigify.js";
 import { Elastic } from "./game/powerups/elastic.js";
 import { HealthUp } from "./game/powerups/healthup.js";
 import { Littlify } from "./game/powerups/littlify.js";
+import { QuickShot } from "./game/powerups/quickshot.js";
 import { Rubber } from "./game/powerups/rubber.js";
 import { Sniper } from "./game/powerups/sniper.js";
 import { Xplode } from "./game/powerups/xplode.js";
@@ -158,6 +159,7 @@ function resetDemo() {
     HealthUp,
     MachineGun,
     Littlify,
+    QuickShot,
     Rubber,
     Sniper,
     Xplode,
