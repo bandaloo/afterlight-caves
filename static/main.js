@@ -31,6 +31,7 @@ import { Boss } from "./game/boss.js";
 import { PowerUp } from "./game/powerup.js";
 import { Bigify } from "./game/powerups/bigify.js";
 import { Elastic } from "./game/powerups/elastic.js";
+import { FlameThrower } from "./game/powerups/flamethrower.js";
 import { HealthUp } from "./game/powerups/healthup.js";
 import { Littlify } from "./game/powerups/littlify.js";
 import { QuickShot } from "./game/powerups/quickshot.js";
@@ -89,7 +90,7 @@ function resetDemo() {
     // TODO get rid of magic numbers for drawing the gui
     const borderVec = new Vector(8, 8);
     const hero = getImportantEntity("hero");
-    const health = /** @type {Creature} */ (hero).currentHealth;
+    const health = /** @type {Creature} */ (hero).getCurrentHealth();
     const maxHealth = /** @type {Creature} */ (hero).maxHealth;
     // Uncenter the centered outline rect
     const maxHealthWidth = maxHealth * 10;
@@ -156,6 +157,7 @@ function resetDemo() {
     Bigify,
     Damage,
     Elastic,
+    FlameThrower,
     HealthUp,
     MachineGun,
     Littlify,
