@@ -42,8 +42,41 @@ export class Bullet extends Entity {
      *        }[]}
      */
     this.onDestroy = new Array();
+
+    /**
+     * @type {{ name: string
+     *        , data: number
+     *        , func: (function( Bullet
+     *                         , number
+     *                         , import("./creature.js").Creature
+     *                         ): void
+     *                )
+     *        }[]}
+     */
+    this.onHitEnemy = new Array();
     this.damage = damage;
     good ? (this.type = "PlayerBullet") : (this.type = "EnemyBullet");
+    // execute all onHitEnemy functions when we hit an enemy
+    if (good) {
+      this.collideMap.set(
+        "Enemy",
+        /** @param {import("./enemy.js").Enemy} e */ e => {
+          for (const ohe of this.onHitEnemy) {
+            if (ohe["func"]) ohe["func"](this, ohe["data"], e);
+          }
+        }
+      );
+    } else {
+      // Enemies consider the Hero as their enemy
+      this.collideMap.set(
+        "Hero",
+        /** @param {import("./hero.js").Hero} h */ h => {
+          for (const ohe of this.onHitEnemy) {
+            if (ohe["func"]) ohe["func"](this, ohe["data"], h);
+          }
+        }
+      );
+    }
   }
 
   action() {}

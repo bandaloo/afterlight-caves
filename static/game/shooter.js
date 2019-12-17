@@ -32,13 +32,14 @@ export class Shooter extends Enemy {
   ) {
     super(pos, look, stats, vel, acc, modifiers);
     this.maxHealth = 2;
-    this.currentHealth = 2;
+    this.gainHealth(2);
     this.fireDelay = 90;
     this.bulletSpeed = 3;
     this.bulletLifetime = 120;
   }
 
   action() {
+    super.action();
     // TODO make this AI better
     if (hasImportantEntity("hero")) {
       const hero = getImportantEntity("hero");

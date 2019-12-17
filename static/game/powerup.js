@@ -97,10 +97,7 @@ export class PowerUp extends Entity {
    * @param {Creature} creature
    */
   overflowAction(creature) {
-    creature.currentHealth = Math.floor(Math.min(
-      creature.currentHealth + creature.maxHealth * (0.5 * this.magnitude),
-      creature.maxHealth
-    ));
+    creature.gainHealth(creature.maxHealth * 0.5 * this.magnitude);
     if (creature.type === "Hero") {
       const textPos = this.drawPos.add(new Vector(0, -100));
       console.log("Hero at max");

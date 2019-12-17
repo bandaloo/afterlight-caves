@@ -24,7 +24,7 @@ export class HealthUp extends PowerUp {
     if (!this.isAtMax(creature)) {
       super.apply(creature);
       creature.maxHealth += this.magnitude * HEALTH_FACTOR;
-      creature.currentHealth += this.magnitude * HEALTH_FACTOR;
+      creature.gainHealth(this.magnitude * HEALTH_FACTOR);
     } else {
       this.overflowAction(creature);
     }

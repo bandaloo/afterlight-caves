@@ -29,7 +29,7 @@ export class Hero extends Creature {
     this.height = DEFAULT_SIZE;
     this.fireDelay = 20;
     this.maxHealth = 100;
-    this.currentHealth = this.maxHealth;
+    this.gainHealth(this.maxHealth);
     this.bulletSpeed = 4;
     this.bulletLifetime = 80;
 
@@ -76,9 +76,14 @@ export class Hero extends Creature {
       4,
       "white"
     );
+
+    // draw status effects
+    super.draw();
   }
 
   action() {
+    super.action();
+    // gradually return to default size
     if (Math.random() < 0.01) {
       if (this.width > DEFAULT_SIZE || this.height > DEFAULT_SIZE) {
         this.width = Math.floor(this.width - 1);
@@ -134,13 +139,12 @@ export class Hero extends Creature {
 
     if (this.invincibilityFrames == 0) {
       if (this.pos.dist(entity.pos) < hitDist) {
-        this.currentHealth -= damage;
+        this.takeDamage(damage);
         this.invincibilityFrames = this.invincibilityFramesMax;
+        // TODO bullets should have a better system for being deleted when they
+        // hit stuff
         if (entity.type === "EnemyBullet") {
           entity.deleteMe = true;
-        }
-        if (this.currentHealth < 0) {
-          this.currentHealth = 0;
         }
       }
     }

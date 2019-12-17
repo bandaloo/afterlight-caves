@@ -2,6 +2,7 @@ import { Entity } from "../modules/entity.js";
 import { Vector } from "../modules/vector.js";
 import { Bullet } from "./bullet.js";
 import { addToWorld, getDimensions } from "../modules/gamemanager.js";
+import { StatusEffect } from "./statuseffect.js";
 
 /**
  * Class representing an entity that moves around and shoots, such as enemies
@@ -33,6 +34,18 @@ export class Creature extends Entity {
    */
   bulletOnDestroy;
 
+  /**
+   * An array of objects, where each object has a name, which is the name of
+   * the powerup or effect the function came from, a data, which is some number
+   * the function takes, and a func, which is a function to execute when the
+   * bullet hits an enemy
+   * @type {{ name: string
+   *        , data: number
+   *        , func: (function(Bullet, number, Creature): void)
+   *        }[]}
+   */
+  bulletOnHitEnemy;
+
   /** @type {number} the number of game steps to wait between each shot */
   fireDelay = 30;
 
@@ -42,7 +55,11 @@ export class Creature extends Entity {
   /** @type {number} the amount of damage this can take before dying */
   maxHealth = 10;
 
-  /** @type {number} this creature's current health */
+  /**
+   * @type {number} this creature's current health. Don't directly get or set
+   * this! Instead use `takeDamage()` or `gainHealth()`
+   * @private
+   */
   currentHealth = 10;
 
   /** @type {number} the amount of damage each bullet deals */
@@ -54,6 +71,9 @@ export class Creature extends Entity {
   /** @type {Map<string, number>}*/
   powerUps = new Map();
 
+  /** @type {StatusEffect[]} */
+  statusEffects = new Array();
+
   /**
    * @param {Vector} [pos] initial position
    * @param {Vector} [vel] initial velocity
@@ -62,16 +82,33 @@ export class Creature extends Entity {
   constructor(pos, vel = new Vector(0, 0), acc = new Vector(0, 0)) {
     super(pos, vel, acc);
     this.bulletOnDestroy = new Array();
+    this.bulletOnHitEnemy = new Array();
   }
 
   /**
-   * action, e.g. shoot, that a creature does every step
+   * An action, e.g. shoot, that a creature does every step. Sub-classes should
+   * call `super.action()` in their own action methods to apply status effects
+   * each step
    */
-  action() {}
+  action() {
+    for (const se of this.statusEffects) {
+      if (se) se.action(this);
+    }
+  }
 
   /**
-   * gets this creature's bullet.
-   * 
+   * Draw this creature. Sub-classes should call `super.draw()` in their action
+   * methods to draw status effects each step
+   */
+  draw() {
+    for (const se of this.statusEffects) {
+      if (se) se.draw(this);
+    }
+  }
+
+  /**
+   * Gets this creature's bullet.
+   *
    * You should always use this method instead of calling `new Bullet' dirrectly
    * @param {Vector} dir
    * @param {boolean} [isGood]
@@ -91,6 +128,7 @@ export class Creature extends Entity {
     b.bounciness = this.bulletBounciness;
     b.rubberiness = this.bulletRubberiness;
     b.onDestroy = this.bulletOnDestroy;
+    b.onHitEnemy = this.bulletOnHitEnemy;
     return b;
   }
 
@@ -124,5 +162,33 @@ export class Creature extends Entity {
       addToWorld(b);
       this.fireCount = 0;
     }
+  }
+
+  /**
+   * Decreases the creatures current health by amt, killing it if necessary
+   * @param {number} amt the amount of damage dealt
+   */
+  takeDamage(amt) {
+    this.currentHealth -= amt;
+    if (this.currentHealth <= 0) {
+      if (this.type !== "Hero") // TODO remove this so the hero can die
+        this.deleteMe = true;
+    }
+  }
+
+  /**
+   * Increases current health by amt, up to a cap of maxHealth
+   * @param {number} amt the amount of health to gain
+   */
+  gainHealth(amt) {
+    this.currentHealth = Math.min(this.currentHealth + amt, this.maxHealth);
+  }
+
+  /**
+   * Returns this creature's current health
+   * @return {number}
+   */
+  getCurrentHealth() {
+    return this.currentHealth;
   }
 }

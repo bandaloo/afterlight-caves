@@ -37,10 +37,11 @@ export class Chase extends Enemy {
     super(pos, look, stats, vel, acc, modifiers);
     this.drag = 0.015;
     this.maxHealth = 2;
-    this.currentHealth = 2;
+    this.gainHealth(2);
   }
 
   action() {
+    super.action();
     if (hasImportantEntity("hero")) {
       const hero = getImportantEntity("hero");
       // TODO make vector to helper function in entity

@@ -123,6 +123,11 @@ export class Enemy extends Creature {
     this.farType = FarEnum.deactivate;
   }
 
+  /** * @override */
+  action() {
+    super.action();
+  }
+
   destroy() {
     for (let i = 0; i < 30; i++) {
       let p = new Particle(this.pos, this.look.color, EffectEnum.spark);
@@ -182,6 +187,7 @@ export class Enemy extends Creature {
   draw() {
     this.drawBody();
     this.drawFace();
+    super.draw();
   }
 
   toString() {

@@ -21,10 +21,11 @@ export class Scatter extends Enemy {
   ) {
     super(pos, look, stats, vel, acc, modifiers);
     this.maxHealth = 2;
-    this.currentHealth = 2;
+    this.gainHealth(2);
   }
 
   action() {
+    super.action();
     // TODO change this
     if (Math.random() < 0.01) {
       const randomDir = Math.random() * 2 * Math.PI;

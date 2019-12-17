@@ -42,6 +42,7 @@ export class Particle extends Entity {
     this.height = 16;
     this.style = style;
     this.drag = drag;
+    this.strokeStyle = "white";
     this.multiplier = 5;
   }
 
@@ -52,7 +53,7 @@ export class Particle extends Entity {
         this.width,
         this.height,
         1,
-        "white",
+        this.strokeStyle,
         this.style
       );
     } else if (this.effect === EffectEnum.spark) {
