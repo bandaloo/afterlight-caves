@@ -36,10 +36,7 @@ export class Bullet extends Entity {
     this.color = color;
     this.damage = damage;
     /**
-     * @type {{ name: string
-     *        , data: number
-     *        , func: (function(Bullet, number): void)
-     *        }[]}
+     * @type {{ name: string, data: number, func: (function(Bullet, number): void) }[]}
      */
     this.onDestroy = new Array();
     this.damage = damage;

@@ -5,8 +5,12 @@ import { Scatter } from "./scatter.js";
 import { randomLook, randomStats } from "./enemy.js";
 import { Vector } from "../modules/vector.js";
 import { createNumberGrid } from "./life.js";
-import { randomInt, shuffle } from "../modules/helpers.js";
-import { addToWorld, cellToWorldPosition } from "../modules/gamemanager.js";
+import { randomInt, shuffle, randomPop } from "../modules/helpers.js";
+import {
+  addToWorld,
+  cellToWorldPosition,
+  getImportantEntity
+} from "../modules/gamemanager.js";
 import { Boss } from "./boss.js";
 import { Elastic } from "./powerups/elastic.js";
 import { Damage } from "./powerups/damage.js";
@@ -24,11 +28,13 @@ export function populateLevel(board, numEnemies) {
   const { board: distBoard, cells: distCells } = distanceBoard(board);
 
   // randomize the distance cells
+  /*
   for (let i = 0; i < distCells.length; i++) {
     if (distCells[i] !== undefined) {
       distCells[i] = shuffle(distCells[i]);
     }
   }
+  */
 
   const creatureClasses = [Chase, Scatter, Shooter];
 
@@ -49,7 +55,40 @@ export function populateLevel(board, numEnemies) {
       console.log("undefined? " + size);
       continue;
     }
-    const position = cellToWorldPosition(distCells[size + 1].pop());
+    const safetyDistance = 1000;
+    const easyDistance = 8000;
+    const easyRespawns = 3;
+
+    let cellPosition;
+    let position;
+    let respawns = 0;
+
+    let positionOkay = false;
+
+    while (!positionOkay) {
+      cellPosition = randomPop(distCells[size + 1]);
+      position = cellToWorldPosition(cellPosition);
+
+      const distanceToHero2 = position.dist2(getImportantEntity("hero").pos);
+
+      if (distanceToHero2 < safetyDistance ** 2) {
+        // too close, not okay to spawn
+        continue;
+      }
+
+      // choose another spot if spawning in the easy zone
+      if (respawns < easyRespawns && distanceToHero2 < easyDistance ** 2) {
+        respawns++;
+        // calculate respawn chance based on distance from hero
+        const easyRespawnChance =
+          (easyDistance - Math.sqrt(distanceToHero2)) / easyDistance;
+        if (Math.random() < easyRespawnChance) {
+          console.log("easy respawning");
+          continue;
+        }
+      }
+      positionOkay = true;
+    }
     // TODO catch the situation where enemy is too large to spawn anywhere
     const enemy = new creatureClasses[randomChoice](
       position,
@@ -61,7 +100,14 @@ export function populateLevel(board, numEnemies) {
     );
 
     //Apply random effects
-    const enemyPowerUpTypes = [Damage, Elastic, MachineGun, Xplode, Zoom, Rubber];
+    const enemyPowerUpTypes = [
+      Damage,
+      Elastic,
+      MachineGun,
+      Xplode,
+      Zoom,
+      Rubber
+    ];
     for (let k = 0; k < enemyPowerUpTypes.length; k++) {
       if (Math.random() > 0.75) {
         const p = new enemyPowerUpTypes[

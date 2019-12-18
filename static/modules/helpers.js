@@ -119,3 +119,19 @@ export function numSign(n) {
   const r = n > 0 ? 1 : n < 0 ? -1 : 0;
   return r;
 }
+
+/**
+ * pop a random element from an array
+ * @param {any[]} arr
+ */
+export function randomPop(arr) {
+  if (arr.length === 0) {
+    new Error("can't pop from an empty array");
+  }
+
+  const i = randomInt(arr.length);
+  const elem = arr[i];
+  // remove the chosen element from the array
+  arr.splice(i, 1);
+  return elem;
+}

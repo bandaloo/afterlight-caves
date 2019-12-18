@@ -148,18 +148,28 @@ function resetDemo() {
     if (caveLocations[i].length == 0) caveLocations.splice(i, i);
   }
 
+  const hero = new Hero(
+    new Vector(0, 0).add(
+      new Vector(blockWidth / 2, blockHeight / 2).add(emptySpaces[11])
+    )
+  );
+
+  setImportantEntity("hero", hero);
+  setCameraEntity(hero);
+  addToWorld(hero);
+
   populateLevel(getTerrain(), 320);
 
   const tilesPerAdditionalPowerupChance = 150;
 
   const powerUpTypes = [
-    Bigify,
+    //Bigify,
     Damage,
-    Elastic,
+    //Elastic,
     HealthUp,
     MachineGun,
     Littlify,
-    QuickShot,
+    //QuickShot,
     Rubber,
     Sniper,
     Xplode,
@@ -196,16 +206,6 @@ function resetDemo() {
       }
     }
   }
-
-  const hero = new Hero(
-    new Vector(0, 0).add(
-      new Vector(blockWidth / 2, blockHeight / 2).add(emptySpaces[11])
-    )
-  );
-
-  setCameraEntity(hero);
-  setImportantEntity("hero", hero);
-  addToWorld(hero);
 }
 
 document.addEventListener("keydown", e => {
