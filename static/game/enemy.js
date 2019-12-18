@@ -10,6 +10,7 @@ import {
 import { addParticle, addToWorld } from "../modules/gamemanager.js";
 import { Particle, EffectEnum } from "./particle.js";
 import { Bullet } from "./bullet.js";
+import { playSound } from "../modules/sound.js";
 
 /**
  * an enum for allowed shapes of enemies
@@ -198,6 +199,7 @@ export class Enemy extends Creature {
    * @param {Entity} entity
    */
   hit(entity) {
+    playSound("../sounds/enemy-hurt.wav");
     this.vel = this.vel.add(entity.vel.mult(0.7 / (1 + this.modifiers.size)));
     // Cast entity to a bullet because it can only be hit by a bullet for now
     if (!entity.deleteMe) {

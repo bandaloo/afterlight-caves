@@ -25,10 +25,6 @@ $ npm start
 
 Then point your favorite browser to `http://localhost:4000` to try it out.
 
-## External sources
-
-None. We made absolutely everything from scratch using plain ECMAScript 2016.
-
 ## Development
 
 We don't use any front end build tools. Instead, we just use JavaScript modules
@@ -45,3 +41,8 @@ with the help of [this article](https://medium.com/dailyjs/running-mocha-tests-a
 The easiest way to run the tests is to launch a local server and open
 `tests.html` in your browser.
 
+## Sound credits
+
+["explosion12" by V-ktor](https://freesound.org/people/V-ktor/sounds/435413/)
+["Spacey 1up/Powerup" by GameAudio](https://freesound.org/people/GameAudio/sounds/220173/)
+["a shot" by Halgrimm](https://freesound.org/people/Halgrimm/sounds/156895/)

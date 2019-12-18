@@ -34,8 +34,8 @@ export class Shooter extends Enemy {
     this.maxHealth = 2;
     this.currentHealth = 2;
     this.fireDelay = 90;
-    this.bulletSpeed = 3;
-    this.bulletLifetime = 120;
+    this.bulletSpeed = 5;
+    this.bulletLifetime = 180;
   }
 
   action() {

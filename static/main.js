@@ -87,13 +87,14 @@ function resetDemo() {
 
   setGameGuiFunc(() => {
     // TODO get rid of magic numbers for drawing the gui
+    const sizeScalar = 2;
     const borderVec = new Vector(8, 8);
     const hero = getImportantEntity("hero");
     const health = /** @type {Creature} */ (hero).currentHealth;
     const maxHealth = /** @type {Creature} */ (hero).maxHealth;
     // Uncenter the centered outline rect
-    const maxHealthWidth = maxHealth * 10;
-    const healthWidth = health * 10;
+    const maxHealthWidth = maxHealth * sizeScalar;
+    const healthWidth = health * sizeScalar;
     const maxHealthVec = new Vector(maxHealthWidth / 2, 32).add(borderVec);
     const healthVec = new Vector(healthWidth / 2, 32).add(borderVec);
     centeredOutlineRect(maxHealthVec, maxHealthWidth, 64, 4, "white");
@@ -160,17 +161,17 @@ function resetDemo() {
 
   populateLevel(getTerrain(), 320);
 
-  const tilesPerAdditionalPowerupChance = 150;
+  const tilesPerAdditionalPowerupChance = 300;
 
   const powerUpTypes = [
     //Bigify,
     Damage,
-    //Elastic,
+    Elastic,
     HealthUp,
     MachineGun,
     Littlify,
     //QuickShot,
-    Rubber,
+    //Rubber,
     Sniper,
     Xplode,
     Zoom

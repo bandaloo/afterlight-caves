@@ -7,6 +7,7 @@ import { PowerUp } from "./powerup.js";
 import { Creature } from "./creature.js";
 import { Entity } from "../modules/entity.js";
 import { Bullet } from "./bullet.js";
+import { playSound } from "../modules/sound.js";
 
 const DEFAULT_SIZE = 50;
 
@@ -30,11 +31,12 @@ export class Hero extends Creature {
     this.fireDelay = 20;
     this.maxHealth = 100;
     this.currentHealth = this.maxHealth;
-    this.bulletSpeed = 4;
+    this.bulletSpeed = 8;
     this.bulletLifetime = 80;
 
     // collect powerups when you collide with them
     this.collideMap.set("PowerUp", entity => {
+      playSound("sounds/spacey-snd.wav");
       /** @type {PowerUp} */ (entity).apply(this);
       for (let i = 0; i < 60; i++) {
         let randColor =
@@ -95,7 +97,10 @@ export class Hero extends Creature {
     }
     this.acc = buttons.move.vec.mult(this.movementMultiplier);
     // prevents velocity from getting too small and normalization messing up
-    this.shoot(buttons.shoot.vec, true, undefined, this.vel);
+    if (this.shoot(buttons.shoot.vec, true, undefined, this.vel)) {
+      console.log("shot");
+      playSound("sounds/laser-shot.wav");
+    }
     if (!buttons.shoot.vec.isZeroVec()) {
       const normalizedShootVec = buttons.shoot.vec.norm2();
       this.eyeDirection = normalizedShootVec;

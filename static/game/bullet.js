@@ -1,5 +1,5 @@
 import { Vector } from "../modules/vector.js";
-import { Entity } from "../modules/entity.js";
+import { Entity, FarEnum } from "../modules/entity.js";
 import { centeredOutlineCircle } from "./draw.js";
 import { getCell } from "../modules/collision.js";
 import { setBlock, addParticle, inbounds } from "../modules/gamemanager.js";
@@ -40,7 +40,9 @@ export class Bullet extends Entity {
      */
     this.onDestroy = new Array();
     this.damage = damage;
-    good ? (this.type = "PlayerBullet") : (this.type = "EnemyBullet");
+    //good ? (this.type = "PlayerBullet") : (this.type = "EnemyBullet");
+    this.type = good ? "PlayerBullet" : "EnemyBullet";
+    this.farType = FarEnum.delete;
   }
 
   action() {}

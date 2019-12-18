@@ -71,7 +71,7 @@ export class Creature extends Entity {
 
   /**
    * gets this creature's bullet.
-   * 
+   *
    * You should always use this method instead of calling `new Bullet' dirrectly
    * @param {Vector} dir
    * @param {boolean} [isGood]
@@ -95,12 +95,13 @@ export class Creature extends Entity {
   }
 
   /**
-   * Shoots in the given direction
+   * Shoots in the given direction, returning true if bullet was actually shot
    * @param {Vector} dir the direction to shoot in
    * @param {boolean} [isGood] true if this was shot by the hero, false
    * otherwise (the default)
    * @param {string} [color] color of the bullet, default white
    * @param {Vector} [additionalVelocity]
+   * @returns {boolean}
    */
   shoot(
     dir,
@@ -115,7 +116,7 @@ export class Creature extends Entity {
     }
     if (dir.isZeroVec()) {
       // can't shoot without a direction
-      return;
+      return false;
     }
     // shoot a bullet
     if (this.fireCount >= this.fireDelay) {
@@ -123,6 +124,8 @@ export class Creature extends Entity {
       b.vel = b.vel.add(additionalVelocity);
       addToWorld(b);
       this.fireCount = 0;
+      return true;
     }
+    return false;
   }
 }
