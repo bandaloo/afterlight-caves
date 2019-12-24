@@ -17,8 +17,6 @@ export class Burning extends StatusEffect {
   constructor(lifetime) {
     super("Burning", lifetime);
     this.burned = false; // set to true if we should burn this step
-    /** @type {string} */
-    this.creatureOrigColor = undefined;
   }
 
   /**

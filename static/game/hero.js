@@ -82,7 +82,6 @@ export class Hero extends Creature {
   }
 
   action() {
-    super.action();
     // gradually return to default size
     if (Math.random() < 0.01) {
       if (this.width > DEFAULT_SIZE || this.height > DEFAULT_SIZE) {
@@ -107,6 +106,9 @@ export class Hero extends Creature {
     } else if (this.vel.magnitude() > 0.001) {
       this.eyeDirection = this.vel.norm();
     }
+
+    // apply powerup effects
+    super.action();
   }
 
   /**

@@ -47,6 +47,8 @@ import { populateLevel } from "./game/spawner.js";
 import { MachineGun } from "./game/powerups/machinegun.js";
 import { DamageUp } from "./game/powerups/damageup.js";
 import { Creature } from "./game/creature.js";
+import { Frozen } from "./game/statuseffects/frozen.js";
+import { Icy } from "./game/powerups/icy.js";
 
 const blockWidth = 60;
 const blockHeight = 60;
@@ -161,6 +163,7 @@ function resetDemo() {
     Elastic,
     FlameThrower,
     HealthUp,
+    Icy,
     MachineGun,
     Littlify,
     QuickShot,

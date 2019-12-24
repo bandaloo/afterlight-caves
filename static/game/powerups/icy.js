@@ -2,18 +2,18 @@ import { PowerUp } from "../powerup.js";
 import { Vector } from "../../modules/vector.js";
 import { Creature } from "../creature.js";
 import { Bullet } from "../bullet.js";
-import { Burning } from "../statuseffects/burning.js";
+import { Frozen } from "../statuseffects/frozen.js";
 
-const BURNING_LENGTH_FACTOR = 1;
+const FROZEN_LENGTH_FACTOR = 1;
 
-export class FlameThrower extends PowerUp {
+export class Icy extends PowerUp {
   /**
-   * Your bullets set enemies on fire
+   * Your bullets freeze enemies
    * @param {Vector} pos
-   * @param {number} magnitude how long the enemies burn for
+   * @param {number} magnitude how long the enemies are frozen for
    */
   constructor(pos, magnitude = 1) {
-    super(pos, magnitude, "Flamethrower");
+    super(pos, magnitude, "Icy");
   }
 
   /**
@@ -26,13 +26,11 @@ export class FlameThrower extends PowerUp {
       super.apply(creature);
       /**
        * @param {Bullet} b the bullet this spawned
-       * @param {number} [duration] the duration for burning to last, in seconds
+       * @param {number} [duration] the duration for frozen to last, in seconds
        * @param {Creature} other the creature we hit
        */
       const f = (b, duration = 1, other) => {
-        other.addStatusEffect(
-          new Burning(duration * BURNING_LENGTH_FACTOR * 60)
-        );
+        other.addStatusEffect(new Frozen(duration * FROZEN_LENGTH_FACTOR * 60));
       };
 
       creature.bulletOnHitEnemy.push({
@@ -52,7 +50,7 @@ export class FlameThrower extends PowerUp {
    * @override
    */
   isAtMax(creature) {
-    // For now I don't think it's possible to have too much flamethrower
+    // For now I don't think it's possible to have too much icy
     return false;
   }
 }

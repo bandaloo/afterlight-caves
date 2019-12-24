@@ -195,4 +195,13 @@ export class Creature extends Entity {
   getCurrentHealth() {
     return this.currentHealth;
   }
+
+  /**
+   * Adds a status effect to this creature
+   * @param {StatusEffect} statusEffect 
+   */
+  addStatusEffect(statusEffect) {
+    this.statusEffects.push(statusEffect);
+    statusEffect.initialize(this);
+  }
 }

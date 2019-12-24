@@ -58,6 +58,84 @@ export function centeredOutlineRectFill(
 }
 
 /**
+ * draw a centered, rounded rectangle with border at position
+ * @param {Vector} centerVec
+ * @param {number} width
+ * @param {number} height
+ * @param {string|CanvasGradient|CanvasPattern} [fillStyle] leave undefined for
+ * no fill
+ * @param {string|CanvasGradient|CanvasPattern} [borderStyle] leave undefined
+ * for no border
+ * @param {number} [borderThickness] leave undefined for no border
+ * @param {number | { tl: number
+ *                  , tr: number
+ *                  , br: number
+ *                  , bl: number
+ *                  }
+ *        } [borderRadius = 0] in pixels
+ */
+export function centeredRoundedRect(
+  centerVec,
+  width,
+  height,
+  fillStyle,
+  borderStyle,
+  borderThickness,
+  borderRadius = 0
+) {
+  const context = getContext();
+  context.save();
+  centerVec = centerVec.add(getCameraOffset());
+
+  /** @type {{tl: number, tr: number, br: number, bl: number}} */
+  let corners;
+  if (typeof borderRadius === "number") {
+    corners = {
+      tl: borderRadius,
+      tr: borderRadius,
+      br: borderRadius,
+      bl: borderRadius
+    };
+  } else {
+    corners = borderRadius;
+  }
+
+  const x = centerVec.x - width / 2;
+  const y = centerVec.y - height / 2;
+
+  // the JavaScript canvas API doesn't have a built-in function for drawing
+  // rounded rectangles, so we trace out the path manually
+  context.beginPath();
+  context.moveTo(x + corners.tl, y);
+  context.lineTo(x + width - corners.tr, y);
+  context.quadraticCurveTo(x + width, y, x + width, y + corners.tr);
+  context.lineTo(x + width, y + height - corners.br);
+  context.quadraticCurveTo(
+    x + width,
+    y + height,
+    x + width - corners.br,
+    y + height
+  );
+  context.lineTo(x + corners.bl, y + height);
+  context.quadraticCurveTo(x, y + height, x, y + height - corners.bl);
+  context.lineTo(x, y + corners.tl);
+  context.quadraticCurveTo(x, y, x + corners.tl, y);
+  context.closePath();
+  if (fillStyle !== undefined) {
+    context.fillStyle = fillStyle;
+    context.fill();
+  }
+  if (borderStyle !== undefined && borderThickness !== undefined) {
+    context.strokeStyle = borderStyle;
+    context.lineWidth = borderThickness;
+    context.stroke();
+  }
+
+  // reset to original values
+  context.restore();
+}
+
+/**
  *
  * @param {Vector} centerVec
  * @param {number} width

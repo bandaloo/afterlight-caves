@@ -34,6 +34,9 @@ export class Entity {
   /** @type {number} 0 if it can't bounce, 1 if it can */
   bounciness = 0;
 
+  /** @type {number} overrules drag */
+  maxSpeed = Infinity;
+
   // TODO these are only useful for collision tests; is there a better way?
   /** @type {boolean} */
   collidesLeft = true;
@@ -134,6 +137,8 @@ export class Entity {
    */
   step() {
     this.vel = this.vel.add(this.acc).mult(1 - this.drag);
+    if (this.vel.mag() > this.maxSpeed)
+      this.vel = this.vel.norm2().mult(this.maxSpeed);
     this.pos = this.pos.add(this.vel);
   }
 
