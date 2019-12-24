@@ -29,6 +29,7 @@ import { Hero } from "./game/hero.js";
 import { initBlockField, segregateTerrain } from "./game/generator.js";
 import { Boss } from "./game/boss.js";
 import { PowerUp } from "./game/powerup.js";
+import { Amplify } from "./game/powerups/amplify.js";
 import { Bigify } from "./game/powerups/bigify.js";
 import { Elastic } from "./game/powerups/elastic.js";
 import { FlameThrower } from "./game/powerups/flamethrower.js";
@@ -154,6 +155,7 @@ function resetDemo() {
   const tilesPerAdditionalPowerupChance = 150;
 
   const powerUpTypes = [
+    Amplify,
     Bigify,
     DamageUp,
     Elastic,

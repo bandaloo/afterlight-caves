@@ -65,6 +65,9 @@ export class Creature extends Entity {
   /** @type {number} the amount of damage each bullet deals */
   bulletDamage = 1;
 
+  /** @type {number} size of bullets spawned by this */
+  bulletSize = 24;
+
   /** @type {number} A multiplier for how fast the creature moves */
   movementMultiplier = 1;
 
@@ -129,6 +132,7 @@ export class Creature extends Entity {
     b.rubberiness = this.bulletRubberiness;
     b.onDestroy = this.bulletOnDestroy;
     b.onHitEnemy = this.bulletOnHitEnemy;
+    b.width = this.bulletSize;
     return b;
   }
 
