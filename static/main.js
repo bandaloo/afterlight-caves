@@ -44,7 +44,7 @@ import { Chase } from "./game/chase.js";
 import { Shooter } from "./game/shooter.js";
 import { populateLevel } from "./game/spawner.js";
 import { MachineGun } from "./game/powerups/machinegun.js";
-import { Damage } from "./game/powerups/damage.js";
+import { DamageUp } from "./game/powerups/damageup.js";
 import { Creature } from "./game/creature.js";
 
 const blockWidth = 60;
@@ -155,7 +155,7 @@ function resetDemo() {
 
   const powerUpTypes = [
     Bigify,
-    Damage,
+    DamageUp,
     Elastic,
     FlameThrower,
     HealthUp,

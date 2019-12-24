@@ -9,7 +9,7 @@ import { randomInt, shuffle } from "../modules/helpers.js";
 import { addToWorld, cellToWorldPosition } from "../modules/gamemanager.js";
 import { Boss } from "./boss.js";
 import { Elastic } from "./powerups/elastic.js";
-import { Damage } from "./powerups/damage.js";
+import { DamageUp } from "./powerups/damageup.js";
 import { MachineGun } from "./powerups/machinegun.js";
 import { Xplode } from "./powerups/xplode.js";
 import { Zoom } from "./powerups/zoom.js";
@@ -61,7 +61,7 @@ export function populateLevel(board, numEnemies) {
     );
 
     //Apply random effects
-    const enemyPowerUpTypes = [Damage, Elastic, MachineGun, Xplode, Zoom, Rubber];
+    const enemyPowerUpTypes = [DamageUp, Elastic, MachineGun, Xplode, Zoom, Rubber];
     for (let k = 0; k < enemyPowerUpTypes.length; k++) {
       if (Math.random() > 0.75) {
         const p = new enemyPowerUpTypes[

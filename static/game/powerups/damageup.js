@@ -5,14 +5,14 @@ import { Creature } from "../creature.js";
 const MAX_DAMAGE = 1000;
 const DAMAGE_FACTOR = 1;
 
-export class Damage extends PowerUp {
+export class DamageUp extends PowerUp {
   /**
    * Increases your damage
    * @param {Vector} pos
    * @param {number} magnitude how much to increase damage, 1-5
    */
   constructor(pos, magnitude = 1) {
-    super(pos, magnitude, "Damage");
+    super(pos, magnitude, "Damage Up");
   }
 
   /**
