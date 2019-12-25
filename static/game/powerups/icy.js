@@ -30,7 +30,7 @@ export class Icy extends PowerUp {
        * @param {Creature} other the creature we hit
        */
       const f = (b, duration = 1, other) => {
-        other.addStatusEffect(new Frozen(duration * FROZEN_LENGTH_FACTOR * 60));
+        new Frozen(duration * FROZEN_LENGTH_FACTOR * 60).apply(other);
       };
 
       creature.bulletOnHitEnemy.push({

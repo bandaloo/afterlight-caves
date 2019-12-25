@@ -11,7 +11,7 @@ export class Burning extends StatusEffect {
   /**
    * Constructs a new Burning effect. This effect causes the creature to burn,
    * taking small amounts of damage over time
-   * @param {number} lifetime amount of time in game seconds before this status
+   * @param {number} lifetime amount of time in game steps before this status
    * effect wears off. Set it to Infinity for an effect that lasts forever
    */
   constructor(lifetime) {

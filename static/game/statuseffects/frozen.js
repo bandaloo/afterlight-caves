@@ -3,18 +3,24 @@ import { Creature } from "../creature.js";
 import { centeredRoundedRect } from "../draw.js";
 import { getContext, getCameraOffset } from "../../modules/gamemanager.js";
 
-const MAX_FROZEN_SPEED = 0.4; // max speed of frozen entities
-const FROZEN_DRAG = 0.001;    // drag of frozen entities
+const MAX_FROZEN_SPEED = 0.4;
+const MAX_FROZEN_ACCELERATION = 0.1;
+const FROZEN_DRAG = 0.001; // drag of frozen entities
 
 export class Frozen extends StatusEffect {
   /**
    * Constructs a new Frozen effect. This effect freezes the creature, making
    * only able to move very slowly
-   * @param {number} lifetime amount of time in game seconds before this status
+   * @param {number} lifetime amount of time in game steps before this status
    * effect wears off. Set it to Infinity for an effect that lasts forever
    */
   constructor(lifetime) {
     super("Frozen", lifetime);
+    this.prevAcc = undefined;
+    this.previousMaxSpeed = undefined;
+    this.previousMaxAcc = undefined;
+    this.previousBounciness = undefined;
+    this.previousDrag = undefined;
   }
 
   /**
@@ -24,11 +30,48 @@ export class Frozen extends StatusEffect {
    */
   initialize(creature) {
     this.previousMaxSpeed = creature.maxSpeed;
+    this.previousMaxAcc = creature.maxAcc;
     this.previousBounciness = creature.bounciness;
     this.previousDrag = creature.drag;
     creature.maxSpeed = MAX_FROZEN_SPEED;
+    creature.maxAcc = MAX_FROZEN_ACCELERATION;
     creature.bounciness = 0;
     creature.drag = FROZEN_DRAG;
+  }
+
+  /**
+   * Multiple Frozen effects shouldn't exist on the same creature at once,
+   * instead getting a new Frozen while you're already Frozen should just
+   * extend the lifetime of the first one
+   * @override
+   * @param {Creature} creature
+   */
+  apply(creature) {
+    for (const se of creature.statusEffects) {
+      if (se && se.statusEffectClass === this.statusEffectClass) {
+        se.lifetime += this.lifetime;
+        return;
+      }
+    }
+
+    // the creature doesn't have a Frozen effect yet, we'll just add this one
+    super.apply(creature);
+  }
+
+  /**
+   * Changing direction while frozen should be difficult
+   * @override
+   * @param {Creature} creature
+   */
+  action(creature) {
+    super.action(creature);
+    if (this.prevAcc !== undefined && this.prevAcc.mag() > 0) {
+      creature.acc = creature.acc.mult(
+        Math.abs(this.prevAcc.x) * 0.1,
+        Math.abs(this.prevAcc.y) * 0.1
+      );
+    }
+    this.prevAcc = creature.acc;
   }
 
   /**

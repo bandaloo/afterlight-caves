@@ -19,6 +19,17 @@ export class StatusEffect {
   }
 
   /**
+   * Applies this status effect to a creature. By default it adds this to the
+   * creatures list of status effects. Sub-classes can override this for
+   * different functionality
+   * @param {Creature} creature the creature to apply this status effect to
+   */
+  apply(creature) {
+    creature.statusEffects.push(this);
+    this.initialize(creature);
+  }
+
+  /**
    * Exectues each game step. Concrete subclasses should override this to apply
    * the functionality of their status effect to the creature taken as an
    * argument (e.g. "Burning" should have the creature take damage each step).

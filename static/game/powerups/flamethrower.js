@@ -30,9 +30,7 @@ export class FlameThrower extends PowerUp {
        * @param {Creature} other the creature we hit
        */
       const f = (b, duration = 1, other) => {
-        other.addStatusEffect(
-          new Burning(duration * BURNING_LENGTH_FACTOR * 60)
-        );
+        new Burning(duration * BURNING_LENGTH_FACTOR * 60).apply(other);
       };
 
       creature.bulletOnHitEnemy.push({
