@@ -25,6 +25,17 @@ export class Xplode extends PowerUp {
   apply(creature) {
     if (!this.isAtMax(creature)) {
       super.apply(creature);
+
+      // if the creature already has an Xplode powerup, just increase its data
+      // value so it spawns more bullets to implement stacking
+      for (const bod of creature.bulletOnDestroy) {
+        if (bod.name === this.powerUpClass) {
+          bod.data += this.magnitude;
+          return;
+        }
+      }
+
+      // otherwise add a new bulletOnDestroy function to make the bullets split
       /**
        * @param {Bullet} b the parent bullet
        * @param {number} [num] the number of bullets to spawn
