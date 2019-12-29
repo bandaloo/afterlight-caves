@@ -11,12 +11,17 @@ import { addToWorld } from "../modules/gamemanager.js";
 export class PowerUp extends Entity {
   /**
    * constructs a new powerup
-   * @param {Vector} pos
-   * @param {number} [magnitude] each powerup has a magnitude 1-5, e.g. how big
-   * Bigify makes you. 1 by default.
-   * @param {String} powerUpClass the class of powerup, e.g. "Damage" or "Zoom"
+   * @param {Vector} [pos = new Vector(0, 0)]
+   * @param {number} [magnitude = 1] each powerup has a magnitude 1-5, e.g. how
+   * big Bigify makes you. 1 by default.
+   * @param {String} [powerUpClass] the class of powerup, e.g. "Damage Up" or
+   * "Zoom"
    */
-  constructor(pos, magnitude = 1, powerUpClass = "Null Powerup") {
+  constructor(
+    pos = new Vector(0, 0),
+    magnitude = 1,
+    powerUpClass = "Null Powerup"
+  ) {
     super(pos);
     this.type = "PowerUp";
     this.magnitude = magnitude;
@@ -75,7 +80,7 @@ export class PowerUp extends Entity {
 
   /**
    * Returns true if the creature is at the max level for this powerup.
-   * 
+   *
    * PowerUps should override this, because there is no limit by default
    * The only side-effect this should have is trimming the magnitude of this.
    * For example, if you want to set a maximum total Damage magnitude at 100,

@@ -42,7 +42,6 @@ export class Xplode extends PowerUp {
        */
       const f = (b, num = 1) => {
         /** @type {number} */
-        const mag = b.vel.mag();
         let theta = Math.random() * 2 * Math.PI;
         for (let i = 0; i < num; i++) {
           // rotate around so new bullets are distributed evenly

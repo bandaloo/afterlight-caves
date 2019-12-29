@@ -77,6 +77,9 @@ export class Creature extends Entity {
   /** @type {StatusEffect[]} */
   statusEffects = new Array();
 
+  /** @type {number} number of bullets per shot, spread into a 30 degree cone */
+  bulletsPerShot = 1;
+
   /**
    * @param {Vector} [pos] initial position
    * @param {Vector} [vel] initial velocity
@@ -161,10 +164,23 @@ export class Creature extends Entity {
     }
     // shoot a bullet
     if (this.fireCount >= this.fireDelay) {
-      const b = this.getBullet(dir, isGood, color);
-      b.vel = b.vel.add(additionalVelocity);
-      addToWorld(b);
-      this.fireCount = 0;
+      for (let i = 0; i < this.bulletsPerShot; ++i) {
+        // calculate a new direction so bullets are spread evenly across a 30
+        // degree cone
+        let newDir = dir;
+        if (this.bulletsPerShot > 1) {
+          let theta = Math.atan(dir.y / dir.x);
+          if (dir.x < 0) theta += Math.PI; // account for left-facing shots
+          const r = dir.mag();
+          const degreesToAdd = (i / (this.bulletsPerShot - 1)) * 30 - 15;
+          theta += degreesToAdd * (Math.PI / 180);
+          newDir = new Vector(r * Math.cos(theta), r * Math.sin(theta));
+        }
+        const b = this.getBullet(newDir, isGood, color);
+        b.vel = b.vel.add(additionalVelocity);
+        addToWorld(b);
+        this.fireCount = 0;
+      }
     }
   }
 
@@ -175,7 +191,8 @@ export class Creature extends Entity {
   takeDamage(amt) {
     this.currentHealth -= amt;
     if (this.currentHealth <= 0) {
-      if (this.type !== "Hero") // TODO remove this so the hero can die
+      if (this.type !== "Hero")
+        // TODO remove this so the hero can die
         this.deleteMe = true;
     }
   }

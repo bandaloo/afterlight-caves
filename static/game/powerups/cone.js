@@ -2,17 +2,17 @@ import { PowerUp } from "../powerup.js";
 import { Vector } from "../../modules/vector.js";
 import { Creature } from "../creature.js";
 
-const MAX_RUBBERINESS = 5;
-const RUBBER_FACTOR = 1 / 3;
+const MAX_SPLIT_BULLETS = 10;
+const BULLET_DAMAGE_FACTOR = 1.2;
 
-export class Rubber extends PowerUp {
+export class Cone extends PowerUp {
   /**
-   * Makes you bouncy
+   * Instead of firing one bullet you fire a cone of bullets
    * @param {Vector} pos
-   * @param {number} magnitude how bouncy you become, 1-5
+   * @param {number} magnitude number of new bullets to add to the cone
    */
   constructor(pos, magnitude = 1) {
-    super(pos, magnitude, "Rubber");
+    super(pos, magnitude, "Cone");
   }
 
   /**
@@ -23,10 +23,11 @@ export class Rubber extends PowerUp {
   apply(creature) {
     if (!this.isAtMax(creature)) {
       super.apply(creature);
-      creature.bounciness = 1;
-      creature.rubberiness += this.magnitude * RUBBER_FACTOR;
+      creature.bulletsPerShot += this.magnitude;
+      creature.bulletDamage *= (1 / this.magnitude) * BULLET_DAMAGE_FACTOR;
+      console.log(creature.bulletDamage);
     } else {
-      this.overflowAction(creature);
+      super.overflowAction(creature);
     }
   }
 
@@ -37,14 +38,12 @@ export class Rubber extends PowerUp {
    * @override
    */
   isAtMax(creature) {
-    // check if bulletRubberiness is already too high
-    if (creature.rubberiness >= MAX_RUBBERINESS) {
-      return true;
-    }
+    // is the number of explodes already too high?
+    if (creature.bulletsPerShot >= MAX_SPLIT_BULLETS) return true;
 
     // see if we need to trim magnitude
     const availMag = Math.floor(
-      Math.abs(MAX_RUBBERINESS - creature.rubberiness) / RUBBER_FACTOR
+      Math.abs(MAX_SPLIT_BULLETS - creature.bulletsPerShot)
     );
     if (availMag < 1) return true;
 
