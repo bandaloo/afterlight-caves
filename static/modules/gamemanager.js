@@ -2,11 +2,11 @@ import { Entity, FarEnum } from "./entity.js";
 import {
   controlKeydownListener,
   controlKeyupListener,
-  cleanButtons,
+  ageButtons,
   gamepadConnectListener,
   gamepadDisconnectListener,
   getGamepadInput
-} from "../game/buttons.js";
+} from "./buttons.js";
 import { inPlaceFilter } from "./helpers.js";
 import { isColliding } from "./collision.js";
 import { Vector } from "./vector.js";
@@ -142,12 +142,6 @@ class GameManager {
         .mult(-1)
         .add(screenCenter);
 
-      /*
-      if (this.entities[i].type === "Hero") {
-        console.log(getFarDistance());
-        console.log(this.entities[i].pos.dist2(cameraCenter));
-      }
-      */
       if (this.entities[i].pos.dist2(cameraCenter) > getFarDistance() ** 2) {
         if (this.entities[i].farType === FarEnum.delete) {
           this.entities[i].deleteMe = true;
@@ -198,8 +192,8 @@ class GameManager {
     // destroy entities that have an expired lifetime or are flagged
     this.destroyEntities(this.entities);
     this.destroyEntities(this.particles);
-    // set presses and releases to false
-    cleanButtons();
+    // tell buttons that a step has passed
+    ageButtons();
   }
 
   /**

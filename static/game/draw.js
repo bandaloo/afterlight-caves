@@ -58,6 +58,119 @@ export function centeredOutlineRectFill(
 }
 
 /**
+ * Draws an octagon centered at a particular point
+ * @param {Vector} centerVec
+ * @param {number} sideLength
+ * @param {string|CanvasGradient|CanvasPattern} [fillStyle] leave undefined for
+ * no fill
+ * @param {string|CanvasGradient|CanvasPattern} [borderStyle] leave undefined
+ * for no border
+ * @param {number} [borderThickness] leave undefined for no border
+ * @param {number} [chamferPercent = 0.5] 0-1, what proportion of the side
+ * length is included in the chamfer (diagonal edge). 0 creates a square, 1
+ * creates a diamond
+ */
+export function centeredOctagon(
+  centerVec,
+  sideLength,
+  fillStyle,
+  borderStyle,
+  borderThickness,
+  chamferPercent = 0.5
+) {
+  const context = getContext();
+  context.save();
+  centerVec = centerVec.add(getCameraOffset());
+
+  if (chamferPercent < 0 || chamferPercent > 1)
+    throw new RangeError("chamferPercent must be in the range 0..1 inclusive");
+
+  /*
+   *    8---1
+   *   /     \
+   *  7       2
+   *  |   c   |
+   *  6       3
+   *   \     /
+   *    5---4
+   */
+  const flatSideLength = sideLength * (1 - chamferPercent);
+  const x1 = centerVec.x - sideLength / 2;
+  const x2 = centerVec.x - flatSideLength / 2;
+  const x3 = centerVec.x + flatSideLength / 2;
+  const x4 = centerVec.x + sideLength / 2;
+  const y1 = centerVec.y - sideLength / 2;
+  const y2 = centerVec.y - flatSideLength / 2;
+  const y3 = centerVec.y + flatSideLength / 2;
+  const y4 = centerVec.y + sideLength / 2;
+
+  context.beginPath();
+  context.moveTo(x3, y1); // p1
+  context.lineTo(x4, y2); // p2
+  context.lineTo(x4, y3); // p3
+  context.lineTo(x3, y4); // p4
+  context.lineTo(x2, y4); // p5
+  context.lineTo(x1, y3); // p6
+  context.lineTo(x1, y2); // p7
+  context.lineTo(x2, y1); // p8
+  context.closePath();
+  context.closePath();
+
+  if (fillStyle !== undefined) {
+    context.fillStyle = fillStyle;
+    context.fill();
+  }
+  if (borderStyle !== undefined && borderThickness !== undefined) {
+    context.strokeStyle = borderStyle;
+    context.lineWidth = borderThickness;
+    context.stroke();
+  }
+
+  // reset to original values
+  context.restore();
+}
+
+/**
+ * Draws a circle centered at a particular point
+ * @param {Vector} centerVec
+ * @param {number} radius
+ * @param {string|CanvasGradient|CanvasPattern} [fillStyle] leave undefined for
+ * no fill
+ * @param {string|CanvasGradient|CanvasPattern} [borderStyle] leave undefined
+ * for no border
+ * @param {number} [borderThickness] leave undefined for no border
+ */
+export function centeredCircle(
+  centerVec,
+  radius,
+  fillStyle,
+  borderThickness,
+  borderStyle,
+) {
+  const context = getContext();
+  context.save();
+  centerVec = centerVec.add(getCameraOffset());
+
+  context.moveTo(centerVec.x, centerVec.y);
+  context.beginPath();
+  context.arc(centerVec.x, centerVec.y, radius, 0, 2 * Math.PI);
+
+  if (fillStyle !== undefined) {
+    context.fillStyle = fillStyle;
+    context.fill();
+  }
+  if (borderStyle !== undefined && borderThickness !== undefined) {
+    context.strokeStyle = borderStyle;
+    context.lineWidth = borderThickness;
+    context.stroke();
+  }
+
+  // reset to original values
+  context.restore();
+}
+
+
+/**
  * draw a centered, rounded rectangle with border at position
  * @param {Vector} centerVec
  * @param {number} width

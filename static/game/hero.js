@@ -1,6 +1,6 @@
 import { Vector } from "../modules/vector.js";
 import { centeredOutlineCircle } from "./draw.js";
-import { buttons } from "./buttons.js";
+import { buttons } from "../modules/buttons.js";
 import { addParticle } from "../modules/gamemanager.js";
 import { Particle, EffectEnum } from "./particle.js";
 import { PowerUp } from "./powerup.js";
@@ -32,6 +32,7 @@ export class Hero extends Creature {
     this.gainHealth(this.maxHealth);
     this.bulletSpeed = 4;
     this.bulletLifetime = 80;
+    this.bombFuseTime = 450;
 
     // collect powerups when you collide with them
     this.collideMap.set("PowerUp", entity => {
@@ -105,6 +106,13 @@ export class Hero extends Creature {
       this.eyeDirection = normalizedShootVec;
     } else if (this.vel.magnitude() > 0.001) {
       this.eyeDirection = this.vel.norm();
+    }
+
+    if (buttons.primary.status.isPressed) {
+      this.placeBomb(this.drawPos, true, "green");
+    }
+    if (buttons.secondary.status.isPressed) {
+      console.log("Secondary pressed");
     }
 
     // apply powerup effects

@@ -3,6 +3,7 @@ import { Vector } from "../modules/vector.js";
 import { Bullet } from "./bullet.js";
 import { addToWorld, getDimensions } from "../modules/gamemanager.js";
 import { StatusEffect } from "./statuseffect.js";
+import { Bomb } from "./bomb.js";
 
 /**
  * Class representing an entity that moves around and shoots, such as enemies
@@ -52,6 +53,38 @@ export class Creature extends Entity {
   /** @type {number} counter for fireDelay */
   fireCount = 0;
 
+  /** @type {number} the number of game steps before bombs detonate */
+  bombFuseTime = 180;
+
+  /**
+   * An array of objects, where each object has a name, which is the name of
+   * the source of the function, a data, which is some number the function
+   * takes, and a func, which is a funciton to execute when the bomb detonates
+   * @type {{ name: string
+   *        , data: number
+   *        , func: (function(Bomb, number): void)
+   *        }[]}
+   */
+  bombOnDetonate;
+
+  /**
+   * An array of objects, where each object has a name, which is the name of
+   * the source of the function, a data, which is some number the function
+   * takes, and a func, which is a function to execute when a creature is
+   * caught in the blast of the bomb
+   * @type {{ name: string
+   *        , data: number
+   *        , func: function( Bomb
+   *                        , number
+   *                        , Creature
+   *                        ): void
+   *        }[]}
+   */
+  bombOnBlastCreature;
+
+  /** @type {number} damage dealt by bomb's basic damage ability */
+  bombDamage = 3;
+
   /** @type {number} the amount of damage this can take before dying */
   maxHealth = 10;
 
@@ -89,6 +122,14 @@ export class Creature extends Entity {
     super(pos, vel, acc);
     this.bulletOnDestroy = new Array();
     this.bulletOnHitEnemy = new Array();
+    this.bombOnDetonate = new Array();
+    this.bombOnBlastCreature = new Array();
+
+    // bombs deal basic damage
+    this.bombOnBlastCreature.push({ name: "Basic Damage", data: this.bombDamage, func: (bomb, num, creature) => {
+      creature.takeDamage(num);
+    }});
+
   }
 
   /**
@@ -182,6 +223,35 @@ export class Creature extends Entity {
         this.fireCount = 0;
       }
     }
+  }
+
+  /**
+   * Places a bomb into the world
+   * @param {Vector} pos the position to place the bomb, by default the
+   * creature's position
+   * @param {boolean} [isGood] true if the bomb was planted by the player,
+   * false otherwise
+   * @param {string|CanvasGradient|CanvasPattern} [fillStyle]
+   */
+  placeBomb(pos = this.drawPos, isGood = false, fillStyle = "white") {
+    const b = this.getBomb(pos, isGood, fillStyle);
+    addToWorld(b);
+  }
+
+  /**
+   * Gets this creature's bomb.
+   *
+   * You should always use this method instead of calling `new Bomb' dirrectly
+   * @param {Vector} pos
+   * @param {string|CanvasGradient|CanvasPattern} [fillStyle]
+   * @param {boolean} [isGood]
+   * @return {Bomb}
+   */
+  getBomb(pos, isGood = false, fillStyle = "white") {
+    const b = new Bomb(pos, isGood, fillStyle, this.bombFuseTime);
+    b.onDetonate = this.bombOnDetonate;
+    b.onBlastCreature = this.bombOnBlastCreature;
+    return b;
   }
 
   /**
