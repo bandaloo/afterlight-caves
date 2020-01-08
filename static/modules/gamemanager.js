@@ -6,7 +6,7 @@ import {
   gamepadConnectListener,
   gamepadDisconnectListener,
   getGamepadInput
-} from "../game/buttons.js";
+} from "./buttons.js";
 import { inPlaceFilter } from "./helpers.js";
 import { isColliding } from "./collision.js";
 import { Vector } from "./vector.js";

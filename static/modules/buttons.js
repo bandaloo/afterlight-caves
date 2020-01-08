@@ -1,4 +1,4 @@
-import { Vector } from "../modules/vector.js";
+import { Vector } from "./vector.js";
 
 const noisy = false;
 const DEADZONE = 0.2;

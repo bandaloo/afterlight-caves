@@ -1,6 +1,6 @@
 import { Vector } from "../modules/vector.js";
 import { centeredOutlineCircle } from "./draw.js";
-import { buttons } from "./buttons.js";
+import { buttons } from "../modules/buttons.js";
 import { addParticle } from "../modules/gamemanager.js";
 import { Particle, EffectEnum } from "./particle.js";
 import { PowerUp } from "./powerup.js";
@@ -105,6 +105,13 @@ export class Hero extends Creature {
       this.eyeDirection = normalizedShootVec;
     } else if (this.vel.magnitude() > 0.001) {
       this.eyeDirection = this.vel.norm();
+    }
+
+    if (buttons.primary.status.isPressed) {
+      console.log("Primary pressed");
+    }
+    if (buttons.secondary.status.isPressed) {
+      console.log("Secondary pressed");
     }
 
     // apply powerup effects
