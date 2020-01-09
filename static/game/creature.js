@@ -82,9 +82,6 @@ export class Creature extends Entity {
    */
   bombOnBlastCreature;
 
-  /** @type {number} damage dealt by bomb's basic damage ability */
-  bombDamage = 3;
-
   /** @type {number} the amount of damage this can take before dying */
   maxHealth = 10;
 
@@ -126,10 +123,13 @@ export class Creature extends Entity {
     this.bombOnBlastCreature = new Array();
 
     // bombs deal basic damage
-    this.bombOnBlastCreature.push({ name: "Basic Damage", data: this.bombDamage, func: (bomb, num, creature) => {
-      creature.takeDamage(num);
-    }});
-
+    this.bombOnBlastCreature.push({
+      name: "Basic Damage",
+      data: 1,
+      func: (bomb, num, creature) => {
+        creature.takeDamage(num);
+      }
+    });
   }
 
   /**
@@ -281,5 +281,28 @@ export class Creature extends Entity {
    */
   getCurrentHealth() {
     return this.currentHealth;
+  }
+
+  /**
+   * @return {number} the amount of basic damage this creature's bombs deal
+   */
+  getBombDamage() {
+    for (const obj of this.bombOnBlastCreature) {
+      if (obj.name === "Basic Damage") {
+        return obj.data;
+      }
+    }
+  }
+
+  /**
+   * @param {number} newBombDamage new damage dealt by this creature's bombs
+   */
+  setBombDamage(newBombDamage) {
+    for (const obj of this.bombOnBlastCreature) {
+      if (obj.name === "Basic Damage") {
+        obj.data = newBombDamage;
+        return;
+      }
+    }
   }
 }
