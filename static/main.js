@@ -50,6 +50,8 @@ import { DamageUp } from "./game/powerups/damageup.js";
 import { Creature } from "./game/creature.js";
 import { Frozen } from "./game/statuseffects/frozen.js";
 import { Icy } from "./game/powerups/icy.js";
+import { Burning } from "./game/statuseffects/burning.js";
+import { Nitroglycerin } from "./game/powerups/nitroglycerin.js";
 
 const blockWidth = 60;
 const blockHeight = 60;
@@ -167,6 +169,7 @@ function resetDemo() {
     HealthUp,
     Icy,
     MachineGun,
+    Nitroglycerin,
     Littlify,
     QuickShot,
     Rubber,
