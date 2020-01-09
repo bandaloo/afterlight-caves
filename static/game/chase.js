@@ -38,6 +38,9 @@ export class Chase extends Enemy {
     this.drag = 0.015;
     this.maxHealth = 2;
     this.gainHealth(2);
+    this.collideMap.set("Hero", e => {
+      this.followTimer = this.followTimerMax;
+    });
   }
 
   action() {
@@ -72,8 +75,8 @@ export class Chase extends Enemy {
         this.look.eyeSize * 3,
         this.look.eyeSize * 1.5,
         4,
-        this.look.color,
-        "black"
+        this.drawColor,
+        "rgba(0, 0, 0, 0)"
       );
     };
 
@@ -86,8 +89,8 @@ export class Chase extends Enemy {
         this.drawPos.add(new Vector(scalar * this.look.eyeSpacing, 0)),
         this.look.eyeSize,
         4,
-        this.look.color,
-        "black"
+        this.drawColor,
+        "rgba(0, 0, 0, 0)"
       );
     };
 
@@ -98,7 +101,7 @@ export class Chase extends Enemy {
       drawLine(
         this.drawPos.sub(new Vector(this.look.eyeSize * 3, 0)),
         this.drawPos.add(new Vector(this.look.eyeSize * 3, 0)),
-        this.look.color,
+        this.drawColor,
         4
       );
     }
@@ -115,16 +118,8 @@ export class Chase extends Enemy {
         this.drawPos.x - mouthHalf,
         this.drawPos.y + this.look.mouthOffset
       ),
-      this.look.color,
+      this.drawColor,
       4
     );
-  }
-
-  /**
-   * @param {Entity} entity
-   */
-  hit(entity) {
-    super.hit(entity);
-    this.followTimer = this.followTimerMax;
   }
 }

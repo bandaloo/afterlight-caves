@@ -98,7 +98,7 @@ export class Boss extends Enemy {
       this.drawPos,
       this.width / 2,
       4,
-      this.look.color,
+      this.drawColor,
       "black"
     );
   }

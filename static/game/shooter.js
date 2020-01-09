@@ -36,6 +36,9 @@ export class Shooter extends Enemy {
     this.fireDelay = 90;
     this.bulletSpeed = 3;
     this.bulletLifetime = 120;
+    this.collideMap.set("Hero", e => {
+      this.avoidTimer = this.avoidTimerMax;
+    });
   }
 
   action() {
@@ -77,8 +80,8 @@ export class Shooter extends Enemy {
         ),
         this.look.eyeSize,
         4,
-        this.look.color,
-        "black"
+        this.drawColor,
+        "rgba(0, 0, 0, 0)"
       );
     };
 
@@ -100,16 +103,8 @@ export class Shooter extends Enemy {
         this.drawPos.x - mouthHalf,
         this.drawPos.y + this.look.mouthOffset + 10
       ),
-      this.look.color,
+      this.drawColor,
       4
     );
-  }
-
-  /**
-   * @param {Entity} entity
-   */
-  hit(entity) {
-    super.hit(entity);
-    this.avoidTimer = this.avoidTimerMax;
   }
 }

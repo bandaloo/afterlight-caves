@@ -115,10 +115,14 @@ export class Enemy extends Creature {
     this.bounciness = 1;
     this.drag = 0.005;
     this.touchDamage = 1;
+    this.maxRedFrames = 60;
+    this.redFrames = 0;
+    this.drawColor = this.look.color;
 
     this.farType = FarEnum.deactivate;
 
-    this.collideMap.set("Hero",
+    this.collideMap.set(
+      "Hero",
       /** @param {import("./hero.js").Hero} h */ h => {
         h.takeDamage(this.touchDamage);
       }
@@ -158,13 +162,14 @@ export class Enemy extends Creature {
 
   drawBody() {
     // draw the body
+    const bgColor = this.redFrames === 0 ? "black" : "rgba(255, 69, 0, 0.3)";
     if (this.look.shape === ShapeEnum.circle) {
       centeredOutlineCircle(
         this.drawPos,
         this.width / 2,
         4,
-        this.look.color,
-        "black"
+        this.drawColor,
+        bgColor
       );
     } else {
       centeredOutlineRect(
@@ -172,8 +177,8 @@ export class Enemy extends Creature {
         this.width,
         this.height,
         4,
-        this.look.color,
-        "black"
+        this.drawColor,
+        bgColor
       );
     }
   }
@@ -194,5 +199,26 @@ export class Enemy extends Creature {
       `accuracy: ${this.stats.accuracy} ` +
       `rate of fire: ${this.stats.rateOfFire}`
     );
+  }
+
+  /**
+   * @override
+   * @param {number} amt amount of damage to take
+   */
+  takeDamage(amt) {
+    this.redFrames = this.maxRedFrames;
+    this.drawColor = "orangered";
+    super.takeDamage(amt);
+  }
+
+  /**
+   * @override
+   */
+  action() {
+    if (this.redFrames > 0) {
+      if (this.redFrames === 1) this.drawColor = this.look.color;
+      this.redFrames--;
+    }
+    super.action();
   }
 }

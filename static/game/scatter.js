@@ -47,8 +47,8 @@ export class Scatter extends Enemy {
         this.drawPos.add(new Vector(scalar * this.look.eyeSpacing, 0)),
         this.look.eyeSize,
         4,
-        this.look.color,
-        "black"
+        this.drawColor,
+        "rgba(0, 0, 0, 0)"
       );
     };
 
@@ -68,7 +68,7 @@ export class Scatter extends Enemy {
         this.drawPos.x - mouthHalf,
         this.drawPos.y + this.look.mouthOffset
       ),
-      this.look.color,
+      this.drawColor,
       4
     );
   }
