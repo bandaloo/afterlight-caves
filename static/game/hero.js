@@ -32,7 +32,7 @@ export class Hero extends Creature {
     this.gainHealth(this.maxHealth);
     this.bulletSpeed = 4;
     this.bulletLifetime = 80;
-    this.bombFuseTime = 450;
+    this.bombFuseTime = 180;
 
     // collect powerups when you collide with them
     this.collideMap.set("PowerUp", entity => {
@@ -41,7 +41,7 @@ export class Hero extends Creature {
         let randColor =
           "hsl(" + Math.floor(Math.random() * 360) + ", 100%, 50%)";
         const spark = new Particle(this.pos, randColor, EffectEnum.spark);
-        spark.width = 15;
+        spark.lineWidth = 15;
         spark.multiplier = 8;
         addParticle(spark);
       }

@@ -131,7 +131,7 @@ export class Enemy extends Creature {
   destroy() {
     for (let i = 0; i < 30; i++) {
       let p = new Particle(this.pos, this.look.color, EffectEnum.spark);
-      p.width = 5;
+      p.lineWidth = 5;
       addParticle(p);
     }
 

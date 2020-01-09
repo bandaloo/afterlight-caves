@@ -22,7 +22,7 @@ const overDraw = 0.5;
  * @param {Vector} centerVec
  * @param {number} width
  * @param {number} height
- * @param {number} borderThickness
+ * @param {number} lineWidth
  * @param {string} centerColor
  * @param {string} [borderColor]
  */
@@ -30,7 +30,7 @@ export function centeredOutlineRectFill(
   centerVec,
   width,
   height,
-  borderThickness,
+  lineWidth,
   centerColor,
   borderColor = "black"
 ) {
@@ -41,10 +41,10 @@ export function centeredOutlineRectFill(
   // draw the outline rect
   context.fillStyle = borderColor;
   context.fillRect(
-    centerVec.x - width / 2 - borderThickness,
-    centerVec.y - height / 2 - borderThickness,
-    width + borderThickness * 2,
-    height + borderThickness * 2
+    centerVec.x - width / 2 - lineWidth,
+    centerVec.y - height / 2 - lineWidth,
+    width + lineWidth * 2,
+    height + lineWidth * 2
   );
 
   // draw the center rect
@@ -63,9 +63,9 @@ export function centeredOutlineRectFill(
  * @param {number} sideLength
  * @param {string|CanvasGradient|CanvasPattern} [fillStyle] leave undefined for
  * no fill
- * @param {string|CanvasGradient|CanvasPattern} [borderStyle] leave undefined
+ * @param {string|CanvasGradient|CanvasPattern} [strokeStyle] leave undefined
  * for no border
- * @param {number} [borderThickness] leave undefined for no border
+ * @param {number} [lineWidth] leave undefined for no border
  * @param {number} [chamferPercent = 0.5] 0-1, what proportion of the side
  * length is included in the chamfer (diagonal edge). 0 creates a square, 1
  * creates a diamond
@@ -74,8 +74,8 @@ export function centeredOctagon(
   centerVec,
   sideLength,
   fillStyle,
-  borderStyle,
-  borderThickness,
+  strokeStyle,
+  lineWidth,
   chamferPercent = 0.5
 ) {
   const context = getContext();
@@ -120,9 +120,9 @@ export function centeredOctagon(
     context.fillStyle = fillStyle;
     context.fill();
   }
-  if (borderStyle !== undefined && borderThickness !== undefined) {
-    context.strokeStyle = borderStyle;
-    context.lineWidth = borderThickness;
+  if (strokeStyle !== undefined && lineWidth !== undefined && lineWidth !== 0) {
+    context.strokeStyle = strokeStyle;
+    context.lineWidth = lineWidth;
     context.stroke();
   }
 
@@ -136,16 +136,16 @@ export function centeredOctagon(
  * @param {number} radius
  * @param {string|CanvasGradient|CanvasPattern} [fillStyle] leave undefined for
  * no fill
- * @param {string|CanvasGradient|CanvasPattern} [borderStyle] leave undefined
+ * @param {string|CanvasGradient|CanvasPattern} [strokeStyle] leave undefined
  * for no border
- * @param {number} [borderThickness] leave undefined for no border
+ * @param {number} [lineWidth] leave undefined for no border
  */
 export function centeredCircle(
   centerVec,
   radius,
   fillStyle,
-  borderThickness,
-  borderStyle,
+  lineWidth,
+  strokeStyle,
 ) {
   const context = getContext();
   context.save();
@@ -159,9 +159,9 @@ export function centeredCircle(
     context.fillStyle = fillStyle;
     context.fill();
   }
-  if (borderStyle !== undefined && borderThickness !== undefined) {
-    context.strokeStyle = borderStyle;
-    context.lineWidth = borderThickness;
+  if (strokeStyle !== undefined && lineWidth !== undefined && lineWidth !== 0) {
+    context.strokeStyle = strokeStyle;
+    context.lineWidth = lineWidth;
     context.stroke();
   }
 
@@ -177,9 +177,9 @@ export function centeredCircle(
  * @param {number} height
  * @param {string|CanvasGradient|CanvasPattern} [fillStyle] leave undefined for
  * no fill
- * @param {string|CanvasGradient|CanvasPattern} [borderStyle] leave undefined
+ * @param {string|CanvasGradient|CanvasPattern} [strokeStyle] leave undefined
  * for no border
- * @param {number} [borderThickness] leave undefined for no border
+ * @param {number} [lineWidth] leave undefined for no border
  * @param {number | { tl: number
  *                  , tr: number
  *                  , br: number
@@ -192,8 +192,8 @@ export function centeredRoundedRect(
   width,
   height,
   fillStyle,
-  borderStyle,
-  borderThickness,
+  strokeStyle,
+  lineWidth,
   borderRadius = 0
 ) {
   const context = getContext();
@@ -238,9 +238,9 @@ export function centeredRoundedRect(
     context.fillStyle = fillStyle;
     context.fill();
   }
-  if (borderStyle !== undefined && borderThickness !== undefined) {
-    context.strokeStyle = borderStyle;
-    context.lineWidth = borderThickness;
+  if (strokeStyle !== undefined && lineWidth !== undefined && lineWidth !== 0) {
+    context.strokeStyle = strokeStyle;
+    context.lineWidth = lineWidth;
     context.stroke();
   }
 
@@ -322,18 +322,18 @@ export function drawCircle(pos, radius, color) {
  * draw outline circle
  * @param {Vector} centerVec
  * @param {number} radius
- * @param {number} borderThickness
+ * @param {number} lineWidth
  * @param {string} centerColor
  * @param {string} borderColor
  */
 export function outlineCircleFill(
   centerVec,
   radius,
-  borderThickness,
+  lineWidth,
   centerColor,
   borderColor = "black"
 ) {
-  drawCircle(centerVec, radius + borderThickness, borderColor);
+  drawCircle(centerVec, radius + lineWidth, borderColor);
   drawCircle(centerVec, radius, centerColor);
 }
 
