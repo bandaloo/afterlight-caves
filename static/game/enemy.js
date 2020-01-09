@@ -114,18 +114,15 @@ export class Enemy extends Creature {
     this.height = 50 + 50 * this.modifiers.size;
     this.bounciness = 1;
     this.drag = 0.005;
-
-    // what to do when colliding with other entities
-    this.collideMap.set("PlayerBullet", entity => {
-      this.hit(entity);
-    });
+    this.touchDamage = 1;
 
     this.farType = FarEnum.deactivate;
-  }
 
-  /** * @override */
-  action() {
-    super.action();
+    this.collideMap.set("Hero",
+      /** @param {import("./hero.js").Hero} h */ h => {
+        h.takeDamage(this.touchDamage);
+      }
+    );
   }
 
   destroy() {
@@ -197,21 +194,5 @@ export class Enemy extends Creature {
       `accuracy: ${this.stats.accuracy} ` +
       `rate of fire: ${this.stats.rateOfFire}`
     );
-  }
-
-  /**
-   * what to do when being hit by a bullet
-   * @param {Entity} entity
-   */
-  hit(entity) {
-    this.vel = this.vel.add(entity.vel.mult(0.7 / (1 + this.modifiers.size)));
-    // Cast entity to a bullet because it can only be hit by a bullet for now
-    if (!entity.deleteMe) {
-      this.health -= /** @type {Bullet} */ (entity).damage;
-    }
-    if (this.health <= 0) {
-      this.deleteMe = true;
-    }
-    entity.deleteMe = true;
   }
 }

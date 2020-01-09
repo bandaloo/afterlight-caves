@@ -60,10 +60,21 @@ export class Bullet extends Entity {
     if (good) {
       this.collideMap.set(
         "Enemy",
-        /** @param {import("./enemy.js").Enemy} e */ e => {
+        /** 
+         * @param {import("./enemy.js").Enemy} e
+         */ 
+        e => {
+          // deal basic damage
+          e.takeDamage(this.damage);
+
+          // add bullet velocity to enemy velocity
+          e.vel = e.vel.add(this.vel.mult(0.7 / (1 + e.modifiers.size)));
+
           for (const ohe of this.onHitEnemy) {
-            if (ohe["func"]) ohe["func"](this, ohe["data"], e);
+            if (ohe.func) ohe.func(this, ohe.data, e);
           }
+
+          this.deleteMe = true;
         }
       );
     } else {
@@ -71,9 +82,14 @@ export class Bullet extends Entity {
       this.collideMap.set(
         "Hero",
         /** @param {import("./hero.js").Hero} h */ h => {
+          // deal basic damage
+          h.takeDamage(this.damage);
+
           for (const ohe of this.onHitEnemy) {
-            if (ohe["func"]) ohe["func"](this, ohe["data"], h);
+            if (ohe.func) ohe.func(this, ohe.data, h);
           }
+
+          this.deleteMe = true;
         }
       );
     }

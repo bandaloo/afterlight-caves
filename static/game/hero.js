@@ -47,14 +47,6 @@ export class Hero extends Creature {
       }
       entity.deleteMe = true;
     });
-
-    this.collideMap.set("Enemy", entity => {
-      this.hit(entity);
-    });
-
-    this.collideMap.set("EnemyBullet", entity => {
-      this.hit(entity);
-    });
   }
 
   /**
@@ -130,33 +122,13 @@ export class Hero extends Creature {
   }
 
   /**
-   * get hit by an enemy or enemy bullet
-   * @param {Entity} entity
+   * @param {number} amt of damage to take
+   * @override
    */
-  hit(entity) {
-    // TODO move this scalar somewhere else
-    const damageScalar = 10;
-    const damage = Math.floor(
-      (entity.type === "Enemy"
-        ? /** @type {Creature} */ (entity).bulletDamage
-        : /** @type {Bullet} */ (entity).damage) * damageScalar
-    );
-
-    // basically leniency as far as taking damage goes
-    const hitBuffer = 10;
-
-    const hitDist = entity.width + this.width - hitBuffer;
-
-    if (this.invincibilityFrames == 0) {
-      if (this.pos.dist(entity.pos) < hitDist) {
-        this.takeDamage(damage);
-        this.invincibilityFrames = this.invincibilityFramesMax;
-        // TODO bullets should have a better system for being deleted when they
-        // hit stuff
-        if (entity.type === "EnemyBullet") {
-          entity.deleteMe = true;
-        }
-      }
+  takeDamage(amt) {
+    if (this.invincibilityFrames === 0) {
+      super.takeDamage(amt);
+      this.invincibilityFrames = this.invincibilityFramesMax;
     }
   }
 }
