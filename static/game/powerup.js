@@ -13,7 +13,7 @@ export class PowerUp extends Entity {
    * constructs a new powerup
    * @param {Vector} [pos = new Vector(0, 0)]
    * @param {number} [magnitude = 1] each powerup has a magnitude 1-5, e.g. how
-   * big Bigify makes you. 1 by default.
+   * much more damage you deal. 1 by default.
    * @param {String} [powerUpClass] the class of powerup, e.g. "Damage Up" or
    * "Zoom"
    */

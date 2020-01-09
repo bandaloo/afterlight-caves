@@ -25,7 +25,6 @@ export class Cone extends PowerUp {
       super.apply(creature);
       creature.bulletsPerShot += this.magnitude;
       creature.bulletDamage *= (1 / this.magnitude) * BULLET_DAMAGE_FACTOR;
-      console.log(creature.bulletDamage);
     } else {
       super.overflowAction(creature);
     }
