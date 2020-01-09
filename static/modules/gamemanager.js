@@ -183,7 +183,7 @@ class GameManager {
     // push all entities out of walls
     for (let i = 0; i < this.entities.length; i++) {
       // exclude inactive entities
-      if (this.entities[i].active) {
+      if (this.entities[i].active && this.entities[i].collidesWithWalls) {
         this.entities[i].adjust();
       }
     }

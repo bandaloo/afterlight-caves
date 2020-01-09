@@ -65,12 +65,11 @@ export class Entity {
   /** @type {Map<string, (arg0: Entity) => void>}*/
   collideMap = new Map();
 
-  // TODO incorporate this
   /**
    * whether entity will be pushed out of walls
    * @type {boolean}
    */
-  hitsWalls = true;
+  collidesWithWalls = true;
 
   /**
    * how fast it bounces off after a collision. Only has an
@@ -115,7 +114,6 @@ export class Entity {
     this.vel = vel;
     /** @type {Vector} */
     this.acc = acc;
-    //this.powerUpsList = new Array(); /** @type {string[]} */
   }
 
   onScreen() {

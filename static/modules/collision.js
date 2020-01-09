@@ -177,7 +177,7 @@ export function adjustEntity(entity) {
   // Initialize collision list with collisions between entity and the world
   //console.log(entity.type);
   let collidingEntities;
-  if (entity.hitsWalls) collidingEntities = collideWithWorld(entity);
+  if (entity.collidesWithWalls) collidingEntities = collideWithWorld(entity);
   else collidingEntities = [];
 
   let collisionVectors = [];
