@@ -36,7 +36,7 @@ export class BiggerBombs extends PowerUp {
    * @override
    */
   isAtMax(creature) {
-    // creature is just too big
+    // bomb radius is already too big
     if (creature.bombBlastRadius >= MAX_BLAST_RADIUS) {
       return true;
     }

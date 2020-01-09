@@ -41,7 +41,6 @@ export class Xplode extends PowerUp {
        * @param {number} [num] the number of bullets to spawn
        */
       const f = (b, num = 1) => {
-        /** @type {number} */
         let theta = Math.random() * 2 * Math.PI;
         for (let i = 0; i < num; i++) {
           // rotate around so new bullets are distributed evenly
