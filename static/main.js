@@ -53,6 +53,7 @@ import { Icy } from "./game/powerups/icy.js";
 import { Burning } from "./game/statuseffects/burning.js";
 import { Nitroglycerin } from "./game/powerups/nitroglycerin.js";
 import { GroupBomb } from "./game/powerups/groupbomb.js";
+import { Knapsack } from "./game/powerups/knapsack.js";
 
 const blockWidth = 60;
 const blockHeight = 60;
@@ -99,6 +100,8 @@ function resetDemo() {
     const hero = getImportantEntity("hero");
     const health = /** @type {Creature} */ (hero).getCurrentHealth();
     const maxHealth = /** @type {Creature} */ (hero).maxHealth;
+    const currentBombs = /** @type {Creature} */ (hero).currentBombs;
+    const maxBombs = /** @type {Creature} */ (hero).maxBombs;
     // Uncenter the centered outline rect
     const maxHealthWidth = maxHealth * 10;
     const healthWidth = health * 10;
@@ -115,6 +118,15 @@ function resetDemo() {
       "left",
       "middle",
       3
+    );
+    centeredText(
+      `${currentBombs} / ${maxBombs}`,
+      new Vector(16, 116).add(borderVec),
+      "black",
+      "white",
+      undefined,
+      "left",
+      "middle"
     );
   });
 
@@ -170,6 +182,7 @@ function resetDemo() {
     GroupBomb,
     HealthUp,
     Icy,
+    Knapsack,
     MachineGun,
     Nitroglycerin,
     Littlify,
@@ -216,6 +229,8 @@ function resetDemo() {
       new Vector(blockWidth / 2, blockHeight / 2).add(emptySpaces[11])
     )
   );
+  const pu = new Knapsack(hero.drawPos.add(new Vector(100, 0)), 3);
+  addToWorld(pu);
 
   setCameraEntity(hero);
   setImportantEntity("hero", hero);
