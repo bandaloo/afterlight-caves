@@ -59,11 +59,6 @@ export class Bomb extends Entity {
     // amount of time (in game steps) it takes to animate exploding
     this.timeToExplode = 20;
     this.blastRadius = 400;
-    /**
-     * @type {Map<string, import("./creature.js").Creature>} use a Map for that
-     * sweet constant time lookup
-     */
-    this.creaturesHit = new Map();
   }
 
   /**
