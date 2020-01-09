@@ -48,8 +48,8 @@ export class Burning extends StatusEffect {
       } else {
         color = "hsl(" + Math.floor(Math.random() * 55 - 5) + ", 100%, 50%)";
       }
-      const xOffset = Math.random() * creature.width - creature.width;
-      const yOffset = Math.random() * creature.height - creature.height;
+      const xOffset = Math.random() * creature.width - (creature.width / 2);
+      const yOffset = Math.random() * creature.height - (creature.height / 2);
       const p = new Particle(
         new Vector(creature.drawPos.x + xOffset, creature.drawPos.y + yOffset),
         color,
@@ -62,7 +62,8 @@ export class Burning extends StatusEffect {
         new Vector(Math.random() - 0.5, -0.3)
       );
       p.vel = new Vector(Math.random() * 0.7 - 0.35, Math.random() * 0.2 - 0.2);
-      p.strokeStyle = "none";
+      p.strokeStyle = "white";
+      p.lineWidth = 1;
       p.width = 20;
       p.height = 20;
       addParticle(p);
