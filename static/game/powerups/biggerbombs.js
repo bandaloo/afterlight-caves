@@ -2,17 +2,17 @@ import { PowerUp } from "../powerup.js";
 import { Vector } from "../../modules/vector.js";
 import { Creature } from "../creature.js";
 
-const MAX_SIZE = 500;
-const SIZE_FACTOR = 5;
+const MAX_BLAST_RADIUS = 1000;
+const BLAST_RADIUS_FACTOR = 30;
 
-export class Bigify extends PowerUp {
+export class BiggerBombs extends PowerUp {
   /**
-   * Makes you bigger
+   * Makes your bombs bigger
    * @param {Vector} pos
-   * @param {number} magnitude how big this makes you, 1-5
+   * @param {number} magnitude how much bigger your bombs get, 1-5
    */
   constructor(pos, magnitude = 1) {
-    super(pos, magnitude, "Bigify");
+    super(pos, magnitude, "Bigger Bombs");
   }
 
   /**
@@ -23,8 +23,7 @@ export class Bigify extends PowerUp {
   apply(creature) {
     if (!this.isAtMax(creature)) {
       super.apply(creature);
-      creature.width += this.magnitude * SIZE_FACTOR;
-      creature.height += this.magnitude * SIZE_FACTOR;
+      creature.bombBlastRadius += this.magnitude * BLAST_RADIUS_FACTOR;
     } else {
       this.overflowAction(creature);
     }
@@ -38,12 +37,14 @@ export class Bigify extends PowerUp {
    */
   isAtMax(creature) {
     // creature is just too big
-    if (creature.width >= MAX_SIZE || creature.height >= MAX_SIZE) {
+    if (creature.bombBlastRadius >= MAX_BLAST_RADIUS) {
       return true;
     }
 
     // see if we need to trim magnitude
-    const availMag = Math.floor((MAX_SIZE - creature.width) / SIZE_FACTOR);
+    const availMag = Math.floor(
+      (MAX_BLAST_RADIUS - creature.bombBlastRadius) / BLAST_RADIUS_FACTOR
+    );
     if (availMag < 1) return true;
 
     this.magnitude = Math.min(availMag, this.magnitude);

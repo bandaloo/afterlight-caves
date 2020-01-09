@@ -82,6 +82,8 @@ export class Creature extends Entity {
    */
   bombOnBlastCreature;
 
+  bombBlastRadius = 300;
+
   /** @type {number} the amount of damage this can take before dying */
   maxHealth = 10;
 
@@ -251,6 +253,7 @@ export class Creature extends Entity {
     const b = new Bomb(pos, isGood, fillStyle, this.bombFuseTime);
     b.onDetonate = this.bombOnDetonate;
     b.onBlastCreature = this.bombOnBlastCreature;
+    b.blastRadius = this.bombBlastRadius;
     return b;
   }
 

@@ -30,7 +30,7 @@ import { initBlockField, segregateTerrain } from "./game/generator.js";
 import { Boss } from "./game/boss.js";
 import { PowerUp } from "./game/powerup.js";
 import { Amplify } from "./game/powerups/amplify.js";
-import { Bigify } from "./game/powerups/bigify.js";
+import { BiggerBombs } from "./game/powerups/biggerbombs.js";
 import { Cone } from "./game/powerups/cone.js";
 import { Elastic } from "./game/powerups/elastic.js";
 import { FlameThrower } from "./game/powerups/flamethrower.js";
@@ -161,7 +161,7 @@ function resetDemo() {
 
   const powerUpTypes = [
     Amplify,
-    Bigify,
+    BiggerBombs,
     Cone,
     DamageUp,
     Elastic,

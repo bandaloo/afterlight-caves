@@ -58,7 +58,7 @@ export class Bomb extends Entity {
     this.height = 75;
     // amount of time (in game steps) it takes to animate exploding
     this.timeToExplode = 20;
-    this.blastRadius = 400;
+    this.blastRadius = 300;
   }
 
   /**
@@ -142,8 +142,8 @@ export class Bomb extends Entity {
         );
         const diff = p.drawPos.sub(this.drawPos);
         let theta = Math.atan(diff.y / diff.x);
-          if (diff.x < 0) theta += Math.PI; // account for left-facing diff
-        const r = 10 + (1 / diff.mag()) + 0.2;
+        if (diff.x < 0) theta += Math.PI; // account for left-facing diff
+        const r = 10 + 1 / diff.mag() + 0.2;
         p.vel = new Vector(r * Math.cos(theta), r * Math.sin(theta));
         p.strokeStyle = "white";
         p.lineWidth = 1;
@@ -156,7 +156,7 @@ export class Bomb extends Entity {
         (Math.abs(this.fuseTime) / this.timeToExplode) * this.blastRadius;
       const thickness = (radius / this.blastRadius) * 60;
       centeredCircle(this.drawPos, radius, undefined, thickness, "red");
-    } 
+    }
   }
 
   /**
