@@ -52,6 +52,7 @@ import { Frozen } from "./game/statuseffects/frozen.js";
 import { Icy } from "./game/powerups/icy.js";
 import { Burning } from "./game/statuseffects/burning.js";
 import { Nitroglycerin } from "./game/powerups/nitroglycerin.js";
+import { GroupBomb } from "./game/powerups/groupbomb.js";
 
 const blockWidth = 60;
 const blockHeight = 60;
@@ -166,6 +167,7 @@ function resetDemo() {
     DamageUp,
     Elastic,
     FlameThrower,
+    GroupBomb,
     HealthUp,
     Icy,
     MachineGun,
