@@ -15,6 +15,12 @@ export class Xplode extends PowerUp {
    */
   constructor(pos, magnitude = 1) {
     super(pos, magnitude, "Xplode");
+    /** 
+     * @type {{
+     *  name: string, data: number, func: (b: Bullet, n: number) => void
+     * }}
+     */
+    this.existingXplode = undefined;
   }
 
   /**
@@ -28,11 +34,9 @@ export class Xplode extends PowerUp {
 
       // if the creature already has an Xplode powerup, just increase its data
       // value so it spawns more bullets to implement stacking
-      for (const bod of creature.bulletOnDestroy) {
-        if (bod.name === this.powerUpClass) {
-          bod.data += this.magnitude;
-          return;
-        }
+      if (this.existingXplode) {
+        this.existingXplode.data += this.magnitude;
+        return;
       }
 
       // otherwise add a new bulletOnDestroy function to make the bullets split
@@ -44,7 +48,7 @@ export class Xplode extends PowerUp {
         let theta = Math.random() * 2 * Math.PI;
         for (let i = 0; i < num; i++) {
           // rotate around so new bullets are distributed evenly
-          theta += (1 / num) * 2 * Math.PI;
+          if (i !== 0) theta += (1 / num) * 2 * Math.PI;
           const newVel = new Vector(Math.cos(theta), Math.sin(theta)).norm2();
           const child = creature.getBullet(newVel, b.good, b.color);
           child.vel = child.vel.norm2().mult(creature.bulletSpeed * 0.75);
@@ -85,22 +89,21 @@ export class Xplode extends PowerUp {
    */
   isAtMax(creature) {
     // figure out how many bullets this already explodes into
-    let totalExplodes = 0;
-    for (const od of creature.bulletOnDestroy) {
-      if (od["name"] === this.powerUpClass) {
-        totalExplodes += od["data"];
+    for (const obj of creature.bulletOnDestroy) {
+      if (obj.name && obj.name === this.powerUpClass) {
+        this.existingXplode = obj;
+        // is the number of explodes already too high?
+        if (obj.data >= MAX_EXPLODES)
+          return true;
+
+        // see if we need to trim magnitude
+        const availMag = Math.floor(Math.abs(MAX_EXPLODES - obj.data));
+        if (availMag < 1) return true;
+
+        this.magnitude = Math.min(availMag, this.magnitude);
+        return false;
       }
     }
-
-    // is the number of explodes already too high?
-    if (totalExplodes >= MAX_EXPLODES)
-      return true;
-
-    // see if we need to trim magnitude
-    const availMag = Math.floor(Math.abs(MAX_EXPLODES - totalExplodes));
-    if (availMag < 1) return true;
-
-    this.magnitude = Math.min(availMag, this.magnitude);
     return false;
   }
 }
