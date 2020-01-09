@@ -4,6 +4,7 @@ import { Bullet } from "./bullet.js";
 import { addToWorld, getDimensions } from "../modules/gamemanager.js";
 import { StatusEffect } from "./statuseffect.js";
 import { Bomb } from "./bomb.js";
+import { clamp } from "../modules/helpers.js";
 
 /**
  * Class representing an entity that moves around and shoots, such as enemies
@@ -93,6 +94,15 @@ export class Creature extends Entity {
    * @private
    */
   currentHealth = 10;
+
+  /** @type {number} maximum number of bombs this creature can hold */
+  maxBombs = 3;
+
+  /**
+   * @type {number} current number of bombs this creature is holding. Don't
+   * directly set this! Instead use `changeNumBombs()`
+   */
+  currentBombs = 3;
 
   /** @type {number} the amount of damage each bullet deals */
   bulletDamage = 1;
@@ -236,8 +246,11 @@ export class Creature extends Entity {
    * @param {string|CanvasGradient|CanvasPattern} [fillStyle]
    */
   placeBomb(pos = this.drawPos, isGood = false, fillStyle = "white") {
-    const b = this.getBomb(pos, isGood, fillStyle);
-    addToWorld(b);
+    if (this.currentBombs > 0) {
+      const b = this.getBomb(pos, isGood, fillStyle);
+      addToWorld(b);
+      this.addBombs(-1);
+    }
   }
 
   /**
@@ -307,5 +320,13 @@ export class Creature extends Entity {
         return;
       }
     }
+  }
+
+  /**
+   * add or subtract bombs from this creature
+   * @param {number} amt amount of bombs, can be negative
+   */
+  addBombs(amt) {
+    this.currentBombs = clamp(this.currentBombs + amt, 0, this.maxBombs);
   }
 }
