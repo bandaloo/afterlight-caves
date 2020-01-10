@@ -25,6 +25,7 @@ export class Jalapeno extends PowerUp {
   apply(creature) {
     if (!this.isAtMax(creature)) {
       super.apply(creature);
+      creature.bombHue = 20;
       /**
        * @param {Bomb} b the bomb this came from
        * @param {number} [duration] the duration for burning to last, in seconds

@@ -39,18 +39,12 @@ export class Bomb extends Entity {
   /**
    * @param {Vector} [pos]
    * @param {boolean} [good] true if this bomb was planted by the hero
-   * @param {string|CanvasGradient|CanvasPattern} [fillStyle]
+   * @param {number} [hue] HSL hue for this bomb's color
    * @param {number} [fuseTime] number of game steps to detonation
    */
-  constructor(
-    pos = new Vector(0, 0),
-    good = false,
-    fillStyle = "white",
-    fuseTime = 180
-  ) {
+  constructor(pos = new Vector(0, 0), good = false, hue = 0, fuseTime = 180) {
     super(pos);
     this.good = good;
-    this.fillStyle = fillStyle;
     this.fuseTime = fuseTime;
     this.onDetonate = new Array();
     this.onBlastCreature = new Array();
@@ -59,6 +53,7 @@ export class Bomb extends Entity {
     // amount of time (in game steps) it takes to animate exploding
     this.timeToExplode = 20;
     this.blastRadius = 300;
+    this.hue = hue;
   }
 
   /**
@@ -90,7 +85,7 @@ export class Bomb extends Entity {
       centeredOctagon(
         this.drawPos,
         this.width,
-        this.fillStyle,
+        `hsl(${this.hue}, 100%, 25%)`,
         "white",
         4,
         0.5
@@ -117,15 +112,11 @@ export class Bomb extends Entity {
         );
       }
     } else if (this.fuseTime >= -1 * this.timeToExplode) {
-      // create some fire particles
+      // create some particles
       const numParticles = Math.floor(Math.random() * 20) + 6;
       for (let i = 0; i < numParticles; ++i) {
-        let color;
-        if (Math.random() < 0.1) {
-          color = "hsl(19, 87%, 4%)"; // smoke
-        } else {
-          color = "hsl(" + Math.floor(Math.random() * 55 - 5) + ", 100%, 50%)";
-        }
+        let particleHue = (this.hue - 30 + Math.random() * 30) % 360;
+        let color = `hsl(${particleHue}, 100%, 50%)`;
         const xOffset = Math.random() * this.width - this.width / 2;
         const yOffset = Math.random() * this.height - this.height / 2;
         const p = new Particle(
@@ -155,7 +146,13 @@ export class Bomb extends Entity {
       const radius =
         (Math.abs(this.fuseTime) / this.timeToExplode) * this.blastRadius;
       const thickness = (radius / this.blastRadius) * 60;
-      centeredCircle(this.drawPos, radius, undefined, thickness, "red");
+      centeredCircle(
+        this.drawPos,
+        radius,
+        undefined,
+        thickness,
+        `hsl(${this.hue}, 100%, 50%)`
+      );
     }
   }
 

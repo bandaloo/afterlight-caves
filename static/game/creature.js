@@ -57,6 +57,9 @@ export class Creature extends Entity {
   /** @type {number} the number of game steps before bombs detonate */
   bombFuseTime = 180;
 
+  /** @type {number} HSL hue of this creature's bombs */
+  bombHue = 0;
+
   /**
    * An array of objects, where each object has a name, which is the name of
    * the source of the function, a data, which is some number the function
@@ -243,11 +246,11 @@ export class Creature extends Entity {
    * creature's position
    * @param {boolean} [isGood] true if the bomb was planted by the player,
    * false otherwise
-   * @param {string|CanvasGradient|CanvasPattern} [fillStyle]
+   * @param {number} hue
    */
-  placeBomb(pos = this.drawPos, isGood = false, fillStyle = "white") {
+  placeBomb(pos = this.drawPos, isGood = false, hue = 0) {
     if (this.currentBombs > 0) {
-      const b = this.getBomb(pos, isGood, fillStyle);
+      const b = this.getBomb(pos, isGood, hue);
       addToWorld(b);
       this.addBombs(-1);
     }
@@ -258,12 +261,12 @@ export class Creature extends Entity {
    *
    * You should always use this method instead of calling `new Bomb' dirrectly
    * @param {Vector} pos
-   * @param {string|CanvasGradient|CanvasPattern} [fillStyle]
+   * @param {number} hue
    * @param {boolean} [isGood]
    * @return {Bomb}
    */
-  getBomb(pos, isGood = false, fillStyle = "white") {
-    const b = new Bomb(pos, isGood, fillStyle, this.bombFuseTime);
+  getBomb(pos, isGood = false, hue = 0) {
+    const b = new Bomb(pos, isGood, hue, this.bombFuseTime);
     b.onDetonate = this.bombOnDetonate;
     b.onBlastCreature = this.bombOnBlastCreature;
     b.blastRadius = this.bombBlastRadius;

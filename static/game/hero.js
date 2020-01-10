@@ -33,6 +33,7 @@ export class Hero extends Creature {
     this.bulletSpeed = 4;
     this.bulletLifetime = 80;
     this.bombFuseTime = 180;
+    this.bombHue = 126;
 
     // collect powerups when you collide with them
     this.collideMap.set("PowerUp", entity => {
@@ -101,7 +102,7 @@ export class Hero extends Creature {
     }
 
     if (buttons.primary.status.isPressed) {
-      this.placeBomb(this.drawPos, true, "green");
+      this.placeBomb(this.drawPos, true, this.bombHue);
     }
     if (buttons.secondary.status.isPressed) {
       console.log("Secondary pressed");
