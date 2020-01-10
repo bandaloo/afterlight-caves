@@ -34,8 +34,12 @@ import { BiggerBombs } from "./game/powerups/biggerbombs.js";
 import { Cone } from "./game/powerups/cone.js";
 import { Elastic } from "./game/powerups/elastic.js";
 import { FlameThrower } from "./game/powerups/flamethrower.js";
+import { GroupBomb } from "./game/powerups/groupbomb.js";
 import { HealthUp } from "./game/powerups/healthup.js";
+import { Jalapeno } from "./game/powerups/jalapeno.js";
+import { Knapsack } from "./game/powerups/knapsack.js";
 import { Littlify } from "./game/powerups/littlify.js";
+import { Nitroglycerin } from "./game/powerups/nitroglycerin.js";
 import { QuickShot } from "./game/powerups/quickshot.js";
 import { Rubber } from "./game/powerups/rubber.js";
 import { Sniper } from "./game/powerups/sniper.js";
@@ -51,9 +55,6 @@ import { Creature } from "./game/creature.js";
 import { Frozen } from "./game/statuseffects/frozen.js";
 import { Icy } from "./game/powerups/icy.js";
 import { Burning } from "./game/statuseffects/burning.js";
-import { Nitroglycerin } from "./game/powerups/nitroglycerin.js";
-import { GroupBomb } from "./game/powerups/groupbomb.js";
-import { Knapsack } from "./game/powerups/knapsack.js";
 
 const blockWidth = 60;
 const blockHeight = 60;
@@ -183,6 +184,7 @@ function resetDemo() {
     HealthUp,
     Icy,
     Knapsack,
+    Jalapeno,
     MachineGun,
     Nitroglycerin,
     Littlify,
@@ -229,8 +231,6 @@ function resetDemo() {
       new Vector(blockWidth / 2, blockHeight / 2).add(emptySpaces[11])
     )
   );
-  const pu = new Knapsack(hero.drawPos.add(new Vector(100, 0)), 3);
-  addToWorld(pu);
 
   setCameraEntity(hero);
   setImportantEntity("hero", hero);
