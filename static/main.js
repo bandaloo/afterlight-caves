@@ -40,6 +40,7 @@ import { Jalapeno } from "./game/powerups/jalapeno.js";
 import { Knapsack } from "./game/powerups/knapsack.js";
 import { Littlify } from "./game/powerups/littlify.js";
 import { Nitroglycerin } from "./game/powerups/nitroglycerin.js";
+import { Popsicle } from "./game/powerups/popsicle.js";
 import { QuickShot } from "./game/powerups/quickshot.js";
 import { Rubber } from "./game/powerups/rubber.js";
 import { Sniper } from "./game/powerups/sniper.js";
@@ -185,9 +186,10 @@ function resetDemo() {
     Icy,
     Knapsack,
     Jalapeno,
+    Littlify,
     MachineGun,
     Nitroglycerin,
-    Littlify,
+    Popsicle,
     QuickShot,
     Rubber,
     Sniper,
