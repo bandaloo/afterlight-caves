@@ -38,10 +38,18 @@ export class Chase extends Enemy {
     this.drag = 0.015;
     this.maxHealth = 2;
     this.gainHealth(2);
-    this.collideMap.set("Hero", e => {
-      this.followTimer = this.followTimerMax;
-    });
+    this.touchDamage = 2;
   }
+
+  /**
+   * @override
+   * @param {import("./hero.js").Hero} hero
+   */
+  touchHero(hero) {
+    this.followTimer = this.followTimerMax;
+    super.touchHero(hero);
+  }
+  
 
   action() {
     super.action();

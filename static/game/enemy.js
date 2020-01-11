@@ -123,10 +123,15 @@ export class Enemy extends Creature {
 
     this.collideMap.set(
       "Hero",
-      /** @param {import("./hero.js").Hero} h */ h => {
-        h.takeDamage(this.touchDamage);
-      }
+      /** @param {import("./hero.js").Hero} h */ h => this.touchHero(h)
     );
+  }
+
+  /**
+   * @param {import("./hero.js").Hero} hero
+   */
+  touchHero(hero) {
+    hero.takeDamage(this.touchDamage);
   }
 
   destroy() {

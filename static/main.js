@@ -44,6 +44,7 @@ import { Popsicle } from "./game/powerups/popsicle.js";
 import { QuickShot } from "./game/powerups/quickshot.js";
 import { Rubber } from "./game/powerups/rubber.js";
 import { Sniper } from "./game/powerups/sniper.js";
+import { Wall } from "./game/powerups/wall.js";
 import { Xplode } from "./game/powerups/xplode.js";
 import { Zoom } from "./game/powerups/zoom.js";
 import { Scatter } from "./game/scatter.js";
@@ -193,6 +194,7 @@ function resetDemo() {
     QuickShot,
     Rubber,
     Sniper,
+    Wall,
     Xplode,
     Zoom
   ];

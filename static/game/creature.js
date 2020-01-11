@@ -7,6 +7,15 @@ import { Bomb } from "./bomb.js";
 import { clamp } from "../modules/helpers.js";
 
 /**
+ * Reduces damage according to defense
+ * @param {number} amt
+ * @param {number} defense
+ * @return {number}
+ */
+export const defenseFunc = (amt, defense) =>
+  amt * (-1 * Math.atan(defense + 1 / Math.tan(1)) + Math.PI / 2);
+
+/**
  * Class representing an entity that moves around and shoots, such as enemies
  * or the Hero
  * @abstract
@@ -124,6 +133,22 @@ export class Creature extends Entity {
 
   /** @type {number} number of bullets per shot, spread into a 30 degree cone */
   bulletsPerShot = 1;
+
+  /**
+   * @type {number}
+   * Higher defense decreases the amount of damage dealt. It will never be
+   * reduced all the way to zero because y=0 is an asymptote of the damage
+   * calculation function.
+   *
+   * A defense of 1.2 reduces damage by about half, 3.25 reduces damage by
+   * about 75%
+   *
+   * Technically negative defense is possible, but it shouldn't happen since it
+   * will make damage taken tend toward multiplying by pi.
+   *
+   * Damage taken = dmg_received * -1 * arctan(defense + cot(1)) + (pi / 2)
+   */
+  defense = 0;
 
   /**
    * @param {Vector} [pos] initial position
@@ -278,7 +303,8 @@ export class Creature extends Entity {
    * @param {number} amt the amount of damage dealt
    */
   takeDamage(amt) {
-    this.currentHealth -= amt;
+    const damageToTake = defenseFunc(amt, this.defense);
+    this.currentHealth -= damageToTake;
     if (this.currentHealth <= 0) {
       if (this.type !== "Hero")
         // TODO remove this so the hero can die
