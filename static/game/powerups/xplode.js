@@ -42,22 +42,22 @@ export class Xplode extends PowerUp {
       // otherwise add a new bulletOnDestroy function to make the bullets split
       /**
        * @param {Bullet} b the parent bullet
-       * @param {number} [num] the number of bullets to spawn
+       * @param {number} num the number of bullets to spawn
        */
-      const f = (b, num = 1) => {
+      const f = (b, num) => {
         let theta = Math.random() * 2 * Math.PI;
         for (let i = 0; i < num; i++) {
           // rotate around so new bullets are distributed evenly
           if (i !== 0) theta += (1 / num) * 2 * Math.PI;
           const newVel = new Vector(Math.cos(theta), Math.sin(theta)).norm2();
-          const child = creature.getBullet(newVel, b.good, b.color);
+          const child = creature.getBullet(newVel);
           child.vel = child.vel.norm2().mult(creature.bulletSpeed * 0.75);
           child.pos = b.pos;
           /**
-           * remove xplode functions from child so it doesn't multiply forever
-           * @type {
-           *   {name: string, data: number, func: (function(Bullet): void)}[]
-           * }
+           * @type {{ name: string
+           *        , data: number
+           *        , func: (b: Bullet, num: number) => void
+           *        }[]}
            */
           const newOnDestroy = new Array();
           for (const od of b.onDestroy) {

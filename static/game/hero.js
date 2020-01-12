@@ -33,6 +33,7 @@ export class Hero extends Creature {
     this.bulletLifetime = 80;
     this.bombFuseTime = 300;
     this.bombHue = 126;
+    this.bulletColor = "white";
 
     // collect powerups when you collide with them
     this.collideMap.set("PowerUp", entity => {
@@ -96,7 +97,7 @@ export class Hero extends Creature {
     }
     this.acc = buttons.move.vec.mult(this.movementMultiplier);
     // prevents velocity from getting too small and normalization messing up
-    this.shoot(buttons.shoot.vec, true, undefined, this.vel);
+    this.shoot(buttons.shoot.vec, this.vel);
     if (!buttons.shoot.vec.isZeroVec()) {
       const normalizedShootVec = buttons.shoot.vec.norm2();
       this.eyeDirection = normalizedShootVec;
@@ -105,7 +106,7 @@ export class Hero extends Creature {
     }
 
     if (buttons.primary.status.isPressed) {
-      this.placeBomb(this.drawPos, true, this.bombHue);
+      this.placeBomb(this.drawPos);
     }
     if (buttons.secondary.status.isPressed) {
       console.log("Secondary pressed");

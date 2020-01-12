@@ -21,9 +21,6 @@ export const defenseFunc = (amt, defense) =>
  * @abstract
  */
 export class Creature extends Entity {
-  /** @type {boolean} can be used to tell that this entity is a creature */
-  isCreature = true;
-
   /** @type {boolean} whether bullets bounce off walls */
   bulletReflectsOffWalls = false;
 
@@ -59,6 +56,9 @@ export class Creature extends Entity {
    *        }[]}
    */
   bulletOnHitEnemy;
+
+  /** @type {string} */
+  bulletColor = "white";
 
   /** @type {number} the number of game steps to wait between each shot */
   fireDelay = 30;
@@ -208,17 +208,15 @@ export class Creature extends Entity {
    *
    * You should always use this method instead of calling `new Bullet' dirrectly
    * @param {Vector} dir
-   * @param {boolean} [isGood]
-   * @param {string} [color]
    * @return {Bullet}
    */
-  getBullet(dir, isGood = false, color = "white") {
+  getBullet(dir) {
     const b = new Bullet(
       this.pos.add(dir.mult(this.width / 2)),
       dir.norm2().mult(this.bulletSpeed),
       new Vector(0, 0),
-      isGood,
-      color,
+      (this.type === "Hero"),
+      this.bulletColor,
       this.bulletLifetime,
       this.bulletDamage
     );
@@ -234,15 +232,10 @@ export class Creature extends Entity {
   /**
    * Shoots in the given direction
    * @param {Vector} dir the direction to shoot in
-   * @param {boolean} [isGood] true if this was shot by the hero, false
-   * otherwise (the default)
-   * @param {string} [color] color of the bullet, default white
    * @param {Vector} [additionalVelocity]
    */
   shoot(
     dir,
-    isGood = false,
-    color = "white",
     additionalVelocity = new Vector(0, 0)
   ) {
     dir = dir.norm2();
@@ -268,7 +261,7 @@ export class Creature extends Entity {
           theta += degreesToAdd * (Math.PI / 180);
           newDir = new Vector(r * Math.cos(theta), r * Math.sin(theta));
         }
-        const b = this.getBullet(newDir, isGood, color);
+        const b = this.getBullet(newDir);
         b.vel = b.vel.add(additionalVelocity);
         addToWorld(b);
         this.fireCount = 0;
@@ -282,11 +275,10 @@ export class Creature extends Entity {
    * creature's position
    * @param {boolean} [isGood] true if the bomb was planted by the player,
    * false otherwise
-   * @param {number} hue
    */
-  placeBomb(pos = this.drawPos, isGood = false, hue = 0) {
+  placeBomb(pos = this.drawPos, isGood = false) {
     if (this.currentBombs > 0) {
-      const b = this.getBomb(pos, isGood, hue);
+      const b = this.getBomb(pos);
       addToWorld(b);
       this.addBombs(-1);
     }
@@ -297,16 +289,20 @@ export class Creature extends Entity {
    *
    * You should always use this method instead of calling `new Bomb' dirrectly
    * @param {Vector} pos
-   * @param {number} hue
-   * @param {boolean} [isGood]
    * @return {Bomb}
    */
-  getBomb(pos, isGood = false, hue = 0) {
-    const b = new Bomb(pos, isGood, hue, this.bombFuseTime);
+  getBomb(pos) {
+    const b = new Bomb(
+      pos,
+      this.type === "Hero",
+      this.bombHue,
+      this.bombFuseTime
+    );
     b.onDetonate = this.bombOnDetonate;
     b.onBlastCreature = this.bombOnBlastCreature;
     b.blastRadius = this.bombBlastRadius;
     b.speed = this.bombSpeed;
+    b.owner = this;
     if (!this.vel.isZeroVec()) {
       b.vel = this.vel.norm2().mult(b.speed);
     } else {

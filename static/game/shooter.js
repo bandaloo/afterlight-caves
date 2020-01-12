@@ -60,7 +60,7 @@ export class Shooter extends Enemy {
       }
 
       if (dirVec.magnitude() < this.shootDistance) {
-        this.shoot(dirVec, false, this.look.color);
+        this.shoot(dirVec, this.vel);
       }
     }
   }

@@ -55,6 +55,8 @@ export class Bomb extends Entity {
     this.blastRadius = 300;
     this.hue = hue;
     this.speed = 0;
+    /** @type {import("./creature.js").Creature} */
+    this.owner = undefined; // the creature that created this bomb
   }
 
   /**

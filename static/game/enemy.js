@@ -115,6 +115,7 @@ export class Enemy extends Creature {
     this.redFrames = 0;
     this.drawColor = this.look.color;
     this.bulletKnockback = 3;
+    this.bulletColor = this.look.color;
 
     this.farType = FarEnum.deactivate;
 
