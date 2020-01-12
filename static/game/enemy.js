@@ -114,6 +114,7 @@ export class Enemy extends Creature {
     this.maxRedFrames = 60;
     this.redFrames = 0;
     this.drawColor = this.look.color;
+    this.bulletKnockback = 3;
 
     this.farType = FarEnum.deactivate;
 
@@ -127,6 +128,13 @@ export class Enemy extends Creature {
    * @param {import("./hero.js").Hero} hero
    */
   touchHero(hero) {
+    // impart momentum
+    if (!(hero.invincibilityFrames > 0)) {
+      const sizeDiff =
+        (0.5 * (this.width * this.height)) / (hero.width * hero.height);
+      hero.vel = hero.vel.add(this.vel.mult(sizeDiff));
+    }
+    // deal basic touch damage
     hero.takeDamage(this.touchDamage);
   }
 

@@ -65,7 +65,7 @@ export class Bullet extends Entity {
         c.takeDamage(this.damage);
         // impart momentum
         const size = (c.width * c.height) / 300;
-        c.vel = c.vel.add(this.vel.mult(3 / size));
+        c.vel = c.vel.add(this.vel.mult(this.knockback / size));
         // call onHitEnemy functions
         for (const ohe of this.onHitEnemy) {
           if (ohe.func) ohe.func(this, ohe.data, c);
