@@ -5,7 +5,7 @@ import { Creature } from "../creature.js";
 const MAX_BULLET_KNOCKBACK = 40;
 const BULLET_KNOCKBACK_FACTOR = 1;
 
-export class HEAVE extends PowerUp {
+export class Heave extends PowerUp {
   /**
    * Increases bullet knockback
    * @param {Vector} pos
