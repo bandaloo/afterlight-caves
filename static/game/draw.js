@@ -466,7 +466,8 @@ export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
  * @param {string} [fontStyle] default "bold 50px sans-serif"
  * @param {CanvasTextAlign} [align] default "center"
  * @param {CanvasTextBaseline} [baseline] default "alphabetic"
- * @param {string} [fillStyle] leave undefined for no fill
+ * @param {string|CanvasGradient|CanvasPattern} [fillStyle] leave undefined for
+ * no fill
  * @param {string|CanvasGradient|CanvasPattern} [strokeStyle] leave undefined
  * for no outline
  * @param {number} [lineWidth]

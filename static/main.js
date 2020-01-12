@@ -69,7 +69,6 @@ function resetDemo() {
     const maxHealth = /** @type {Creature} */ (hero).maxHealth;
     const currentBombs = /** @type {Creature} */ (hero).currentBombs;
     const maxBombs = /** @type {Creature} */ (hero).maxBombs;
-    // Uncenter the centered outline rect
     const maxHealthWidth = maxHealth * 10;
     const healthWidth = health * 10;
     const healthColor = "rgba(255, 50, 122, 50%)";

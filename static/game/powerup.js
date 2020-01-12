@@ -70,8 +70,8 @@ export class PowerUp extends Entity {
         this.powerUpClass + " " + this.magnitude,
         textPos,
         120,
-        this.hue,
-        "rgba(0, 0, 0, 0)"
+        undefined,
+        this.hue
       );
 
       addToWorld(td);
@@ -110,8 +110,8 @@ export class PowerUp extends Entity {
         "Max " + this.powerUpClass + " reached",
         textPos,
         120,
-        this.hue,
-        "rgba(0, 0, 0, 0)"
+        undefined,
+        this.hue
       );
 
       addToWorld(td);
