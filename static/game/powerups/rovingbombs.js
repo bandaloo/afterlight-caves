@@ -37,13 +37,13 @@ export class RovingBombs extends PowerUp {
    */
   isAtMax(creature) {
     // check if bombSpeed is already too high
-    if (creature.wallReflectSpeed >= MAX_BOMB_SPEED) {
+    if (creature.bombSpeed >= MAX_BOMB_SPEED) {
       return true;
     }
 
     // see if we need to trim magnitude
     const availMag = Math.floor(
-      Math.abs(MAX_BOMB_SPEED - creature.wallReflectSpeed) / BOMB_SPEED_FACTOR
+      Math.abs(MAX_BOMB_SPEED - creature.bombSpeed) / BOMB_SPEED_FACTOR
     );
     if (availMag < 1) return true;
 
