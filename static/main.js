@@ -28,35 +28,12 @@ import { shuffle, randomInt, hsl } from "./modules/helpers.js";
 import { Hero } from "./game/hero.js";
 import { initBlockField, segregateTerrain } from "./game/generator.js";
 import { Boss } from "./game/boss.js";
-import { PowerUp } from "./game/powerup.js";
-import { Amplify } from "./game/powerups/amplify.js";
-import { BiggerBombs } from "./game/powerups/biggerbombs.js";
-import { Cone } from "./game/powerups/cone.js";
-import { Elastic } from "./game/powerups/elastic.js";
-import { FlameThrower } from "./game/powerups/flamethrower.js";
-import { GroupBomb } from "./game/powerups/groupbomb.js";
-import { HealthUp } from "./game/powerups/healthup.js";
-import { Jalapeno } from "./game/powerups/jalapeno.js";
-import { Knapsack } from "./game/powerups/knapsack.js";
-import { Littlify } from "./game/powerups/littlify.js";
-import { Nitroglycerin } from "./game/powerups/nitroglycerin.js";
-import { Popsicle } from "./game/powerups/popsicle.js";
-import { QuickShot } from "./game/powerups/quickshot.js";
-import { Rubber } from "./game/powerups/rubber.js";
-import { Sniper } from "./game/powerups/sniper.js";
-import { Wall } from "./game/powerups/wall.js";
-import { Xplode } from "./game/powerups/xplode.js";
-import { Zoom } from "./game/powerups/zoom.js";
 import { Scatter } from "./game/scatter.js";
 import { Chase } from "./game/chase.js";
 import { Shooter } from "./game/shooter.js";
 import { populateLevel } from "./game/spawner.js";
-import { MachineGun } from "./game/powerups/machinegun.js";
-import { DamageUp } from "./game/powerups/damageup.js";
 import { Creature } from "./game/creature.js";
-import { Frozen } from "./game/statuseffects/frozen.js";
-import { Icy } from "./game/powerups/icy.js";
-import { Burning } from "./game/statuseffects/burning.js";
+import { powerUpTypes } from "./game/powerups/poweruptypes.js";
 
 const blockWidth = 60;
 const blockHeight = 60;
@@ -175,29 +152,6 @@ function resetDemo() {
 
   const tilesPerAdditionalPowerupChance = 150;
 
-  const powerUpTypes = [
-    Amplify,
-    BiggerBombs,
-    Cone,
-    DamageUp,
-    Elastic,
-    FlameThrower,
-    GroupBomb,
-    HealthUp,
-    Icy,
-    Knapsack,
-    Jalapeno,
-    Littlify,
-    MachineGun,
-    Nitroglycerin,
-    Popsicle,
-    QuickShot,
-    Rubber,
-    Sniper,
-    Wall,
-    Xplode,
-    Zoom
-  ];
   for (let i = 0; i < caveLocations.length; i++) {
     if (i == largestGroup) continue;
 
