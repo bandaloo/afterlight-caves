@@ -5,14 +5,14 @@ import { Creature } from "../creature.js";
 const MAX_MAX_HEALTH = 1000;
 const HEALTH_FACTOR = 10;
 
-export class HealthUp extends PowerUp {
+export class Vitality extends PowerUp {
   /**
    * Increases your max health
    * @param {Vector} pos
    * @param {number} magnitude how much this increases you max health by, 1-5
    */
   constructor(pos, magnitude = 1) {
-    super(pos, magnitude, "Health Up");
+    super(pos, magnitude, "Vitality");
   }
 
   /**
