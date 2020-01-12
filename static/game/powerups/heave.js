@@ -3,7 +3,7 @@ import { Vector } from "../../modules/vector.js";
 import { Creature } from "../creature.js";
 
 const MAX_BULLET_KNOCKBACK = 40;
-const BULLET_KNOCKBACK_FACTOR = 1;
+const BULLET_KNOCKBACK_FACTOR = 4;
 
 export class Heave extends PowerUp {
   /**
@@ -37,7 +37,7 @@ export class Heave extends PowerUp {
    */
   isAtMax(creature) {
     // check if bullet knockback is already too high
-    if (creature.bulletKnockback <= MAX_BULLET_KNOCKBACK) {
+    if (creature.bulletKnockback >= MAX_BULLET_KNOCKBACK) {
       return true;
     }
 
