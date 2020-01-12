@@ -12,12 +12,17 @@ import { Knapsack } from "./knapsack.js";
 import { Littlify } from "./littlify.js";
 import { MachineGun } from "./machinegun.js";
 import { Nitroglycerin } from "./nitroglycerin.js";
+// O
 import { Popsicle } from "./popsicle.js";
 import { QuickShot } from "./quickshot.js";
 import { Rubber } from "./rubber.js";
 import { Sniper } from "./sniper.js";
+// T
+// U
+// V
 import { Wall } from "./wall.js";
 import { Xplode } from "./xplode.js";
+// Y
 import { Zoom } from "./zoom.js";
 
 export const powerUpTypes = [

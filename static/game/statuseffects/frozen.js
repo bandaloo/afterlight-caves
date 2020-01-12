@@ -19,7 +19,7 @@ export class Frozen extends StatusEffect {
     this.prevAcc = undefined;
     this.previousMaxSpeed = undefined;
     this.previousMaxAcc = undefined;
-    this.previousBounciness = undefined;
+    this.previousReflectsOffWalls = undefined;
     this.previousDrag = undefined;
   }
 
@@ -31,11 +31,11 @@ export class Frozen extends StatusEffect {
   initialize(creature) {
     this.previousMaxSpeed = creature.maxSpeed;
     this.previousMaxAcc = creature.maxAcc;
-    this.previousBounciness = creature.bounciness;
+    this.previousReflectsOffWalls = creature.reflectsOffWalls;
     this.previousDrag = creature.drag;
     creature.maxSpeed = MAX_FROZEN_SPEED;
     creature.maxAcc = MAX_FROZEN_ACCELERATION;
-    creature.bounciness = 0;
+    creature.reflectsOffWalls = false;
     creature.drag = FROZEN_DRAG;
   }
 
@@ -82,8 +82,8 @@ export class Frozen extends StatusEffect {
   wearOff(creature) {
     if (this.previousMaxSpeed !== undefined)
       creature.maxSpeed = this.previousMaxSpeed;
-    if (this.previousBounciness !== undefined)
-      creature.bounciness = this.previousBounciness;
+    if (this.previousReflectsOffWalls !== undefined)
+      creature.reflectsOffWalls = this.previousReflectsOffWalls;
     if (this.previousDrag !== undefined) creature.drag = this.previousDrag;
   }
 

@@ -21,11 +21,14 @@ export const defenseFunc = (amt, defense) =>
  * @abstract
  */
 export class Creature extends Entity {
-  /** @type {number} 0 if bullets don't bounce, 1 if they do */
-  bulletBounciness = 0;
+  /** @type {boolean} can be used to tell that this entity is a creature */
+  isCreature = true;
 
-  /** @type {number} rubberiness of bullets spawned by this */
-  bulletRubberiness = 0;
+  /** @type {boolean} whether bullets bounce off walls */
+  bulletReflectsOffWalls = false;
+
+  /** @type {number} speed of bullets when they bounce off walls */
+  bulletWallReflectSpeed = 0;
 
   /** @type {number} speed of bullets spawned by this */
   bulletSpeed = 1;
@@ -212,8 +215,8 @@ export class Creature extends Entity {
       this.bulletLifetime,
       this.bulletDamage
     );
-    b.bounciness = this.bulletBounciness;
-    b.rubberiness = this.bulletRubberiness;
+    b.reflectsOffWalls = this.bulletReflectsOffWalls;
+    b.wallReflectSpeed = this.bulletWallReflectSpeed;
     b.onDestroy = this.bulletOnDestroy;
     b.onHitEnemy = this.bulletOnHitEnemy;
     b.width = this.bulletSize;

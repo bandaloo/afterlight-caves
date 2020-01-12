@@ -2,12 +2,12 @@ import { PowerUp } from "../powerup.js";
 import { Vector } from "../../modules/vector.js";
 import { Creature } from "../creature.js";
 
-const MAX_BULLET_RUBBERINESS = 5;
-const ELASTICITY_FACTOR = 1 / 3;
+const MAX_BULLET_WALL_REFLECT_SPEED = 5;
+const ELASTICITY_FACTOR = 0.75;
 
 export class Elastic extends PowerUp {
   /**
-   * Makes your bullets bouncy
+   * Makes your bullets bounce off walls
    * @param {Vector} pos
    * @param {number} magnitude how bouncy your bullets are, 1-5
    */
@@ -23,8 +23,8 @@ export class Elastic extends PowerUp {
   apply(creature) {
     if (!this.isAtMax(creature)) {
       super.apply(creature);
-      creature.bulletBounciness = 1;
-      creature.bulletRubberiness += this.magnitude * ELASTICITY_FACTOR;
+      creature.bulletReflectsOffWalls = true;
+      creature.bulletWallReflectSpeed += this.magnitude * ELASTICITY_FACTOR;
     } else {
       this.overflowAction(creature);
     }
@@ -37,14 +37,15 @@ export class Elastic extends PowerUp {
    * @override
    */
   isAtMax(creature) {
-    // check if bulletRubberiness is already too high
-    if (creature.bulletRubberiness >= MAX_BULLET_RUBBERINESS) {
+    // check if bulletWallReflectSpeed is already too high
+    if (creature.bulletWallReflectSpeed >= MAX_BULLET_WALL_REFLECT_SPEED) {
       return true;
     }
 
     // see if we need to trim magnitude
     const availMag = Math.floor(
-      (MAX_BULLET_RUBBERINESS - creature.bulletRubberiness) / ELASTICITY_FACTOR
+      (MAX_BULLET_WALL_REFLECT_SPEED - creature.bulletWallReflectSpeed) /
+        ELASTICITY_FACTOR
     );
     if (availMag < 1) return true;
 

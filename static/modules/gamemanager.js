@@ -263,6 +263,7 @@ class GameManager {
   }
 
   collideWithEntities() {
+    // TODO why is this logic not part of the collision.js file?
     // generate the type map for faster access
     const map = new Map();
     for (let i = 0; i < this.entities.length; i++) {

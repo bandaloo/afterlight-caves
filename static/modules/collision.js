@@ -170,18 +170,20 @@ export function calculateCollisionVector(entityA, entityB) {
 }
 
 /**
- * move the entity based on collisions with walls and other entities
+ * move the entity based on collisions with walls
  * @param {Entity} entity
  */
 export function adjustEntity(entity) {
   // Initialize collision list with collisions between entity and the world
   //console.log(entity.type);
-  let collidingEntities;
+  /** @type {Entity[]} */
+  let collidingEntities = [];
   if (entity.collidesWithWalls) collidingEntities = collideWithWorld(entity);
-  else collidingEntities = [];
 
-  let collisionVectors = [];
+  /** @type {Vector[]} */
+  const collisionVectors = [];
 
+  /** @type {Entity[]} */
   const hitEntities = [];
 
   // Iterate through each colliding entity, and get a vector that defines how
@@ -191,8 +193,7 @@ export function adjustEntity(entity) {
       entity,
       collidingEntities[i]
     );
-    // TODO replace with isZeroVector
-    if (!(collisionVector.x == 0 && collisionVector.y == 0)) {
+    if (!(collisionVector.isZeroVec())) {
       collisionVectors.push(collisionVector);
       hitEntities.push(collidingEntities[i]);
     }
@@ -222,8 +223,13 @@ export function adjustEntity(entity) {
   entity.pos = entity.pos.sub(mv);
 
   // bounce based on the move vector
-  if (mv.x !== 0) entity.vel.x *= -entity.bounciness;
-  if (mv.y !== 0) entity.vel.y *= -entity.bounciness;
+  if (entity.reflectsOffWalls) {
+    if (mv.x !== 0) entity.vel.x *= -1;
+    if (mv.y !== 0) entity.vel.y *= -1;
+    if (hitEntities.length > 0 && entity.wallReflectSpeed !== 0) {
+      entity.vel = entity.vel.norm2().mult(entity.wallReflectSpeed);
+    }
+  }
 
   for (let i = 0; i < hitEntities.length; i++) {
     entity.collideWithBlock(hitEntities[i]);

@@ -32,7 +32,7 @@ export class Bullet extends Entity {
     this.drag = 0.003;
     this.width = 24;
     this.height = 24;
-    this.bounciness = 0;
+    this.reflectsOffWalls = false;
     this.color = color;
     this.damage = damage;
     /**
@@ -142,12 +142,8 @@ export class Bullet extends Entity {
       }
     }
     // remove the bullet if it's not supposed to bounce
-    if (this.bounciness === 0) {
+    if (!this.reflectsOffWalls) {
       this.deleteMe = true;
-    } else {
-      // bounce off
-      this.vel = this.vel.norm2();
-      this.vel = this.vel.mult(5 * this.rubberiness);
     }
   }
 }

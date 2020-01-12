@@ -113,16 +113,6 @@ export class Hero extends Creature {
   }
 
   /**
-   * @override
-   */
-  collideWithBlock() {
-    if (this.bounciness > 0) {
-      this.vel = this.vel.norm2();
-      this.vel = this.vel.mult(5 * this.rubberiness);
-    }
-  }
-
-  /**
    * @param {number} amt of damage to take
    * @override
    */

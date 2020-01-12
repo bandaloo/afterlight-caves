@@ -112,7 +112,7 @@ export class Enemy extends Creature {
     this.modifiers = modifiers;
     this.width = 50 + 50 * this.modifiers.size;
     this.height = 50 + 50 * this.modifiers.size;
-    this.bounciness = 1;
+    this.reflectsOffWalls = true;
     this.drag = 0.005;
     this.touchDamage = 1;
     this.maxRedFrames = 60;

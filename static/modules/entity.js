@@ -31,8 +31,16 @@ export class Entity {
   /** @type {number} */
   depth = 0;
 
-  /** @type {number} 0 if it can't bounce, 1 if it can */
-  bounciness = 0;
+  /** @type {boolean} whether or not this bounces off of walls */
+  reflectsOffWalls = false;
+
+  /**
+   * Speed of this entity after bouncing off a wall. If set to 0 the entity
+   * will have the same speed it had before the collision. Only has an effect
+   * if this.reflectsOffWalls is true
+   * @type {number}
+   */
+  wallReflectSpeed = 0;
 
   /** @type {number} maximum magnitude velocity can have */
   maxSpeed = Infinity;
@@ -70,13 +78,6 @@ export class Entity {
    * @type {boolean}
    */
   collidesWithWalls = true;
-
-  /**
-   * how fast it bounces off after a collision. Only has an
-   * effect if bounciness if 1.
-   * @type {number}
-   */
-  rubberiness = 0;
 
   /**
    * draw position slightly differs from original position to tween between frames
