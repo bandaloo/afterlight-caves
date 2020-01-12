@@ -12,7 +12,7 @@ import { Knapsack } from "./knapsack.js";
 import { Littlify } from "./littlify.js";
 import { MachineGun } from "./machinegun.js";
 import { Nitroglycerin } from "./nitroglycerin.js";
-// O
+import { Orb } from "./orb.js";
 import { Popsicle } from "./popsicle.js";
 import { QuickShot } from "./quickshot.js";
 import { RovingBombs } from "./rovingbombs.js";
@@ -40,6 +40,7 @@ export const powerUpTypes = [
   Littlify,
   MachineGun,
   Nitroglycerin,
+  Orb,
   Popsicle,
   QuickShot,
   RovingBombs,
