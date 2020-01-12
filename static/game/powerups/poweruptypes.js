@@ -17,7 +17,7 @@ import { Popsicle } from "./popsicle.js";
 import { QuickShot } from "./quickshot.js";
 import { RovingBombs } from "./rovingbombs.js";
 import { Sniper } from "./sniper.js";
-// T
+import { Thermalite } from "./thermalite.js";
 // U
 // V
 import { Wall } from "./wall.js";
@@ -44,6 +44,7 @@ export const powerUpTypes = [
   QuickShot,
   RovingBombs,
   Sniper,
+  Thermalite,
   Wall,
   Xplode,
   Zoom
