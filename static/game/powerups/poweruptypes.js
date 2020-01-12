@@ -15,7 +15,7 @@ import { Nitroglycerin } from "./nitroglycerin.js";
 // O
 import { Popsicle } from "./popsicle.js";
 import { QuickShot } from "./quickshot.js";
-import { Rubber } from "./rubber.js";
+import { RovingBombs } from "./rovingbombs.js";
 import { Sniper } from "./sniper.js";
 // T
 // U
@@ -42,7 +42,7 @@ export const powerUpTypes = [
   Nitroglycerin,
   Popsicle,
   QuickShot,
-  Rubber,
+  RovingBombs,
   Sniper,
   Wall,
   Xplode,

@@ -98,7 +98,11 @@ export class Creature extends Entity {
    */
   bombOnBlastCreature;
 
+  /** @type {number} radius of bomb explosions */
   bombBlastRadius = 300;
+
+  /** @type {number} speed of bombs placed by this creature */
+  bombSpeed = 0;
 
   /** @type {number} the amount of damage this can take before dying */
   maxHealth = 10;
@@ -298,6 +302,17 @@ export class Creature extends Entity {
     b.onDetonate = this.bombOnDetonate;
     b.onBlastCreature = this.bombOnBlastCreature;
     b.blastRadius = this.bombBlastRadius;
+    b.speed = this.bombSpeed;
+    if (!this.vel.isZeroVec()) {
+      b.vel = this.vel.norm2().mult(b.speed);
+    } else {
+      // pick a random direction
+      const theta = Math.random() * Math.PI * 2;
+      const r = b.speed;
+      b.vel = new Vector(Math.cos(theta) * r, Math.sin(theta) * r);
+    }
+    b.reflectsOffWalls = true;
+    b.wallReflectSpeed = this.bombSpeed;
     return b;
   }
 

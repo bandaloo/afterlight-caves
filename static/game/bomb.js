@@ -54,6 +54,7 @@ export class Bomb extends Entity {
     this.timeToExplode = 20;
     this.blastRadius = 300;
     this.hue = hue;
+    this.speed = 0;
   }
 
   /**

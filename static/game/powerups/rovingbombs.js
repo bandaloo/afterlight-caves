@@ -2,17 +2,17 @@ import { PowerUp } from "../powerup.js";
 import { Vector } from "../../modules/vector.js";
 import { Creature } from "../creature.js";
 
-const MAX_RUBBERINESS = 5;
-const RUBBER_FACTOR = 1 / 3;
+const MAX_BOMB_SPEED = 20;
+const BOMB_SPEED_FACTOR = 1;
 
-export class Rubber extends PowerUp {
+export class RovingBombs extends PowerUp {
   /**
-   * Makes you bouncy
+   * Makes your bombs move after being placed
    * @param {Vector} pos
-   * @param {number} magnitude how bouncy you become, 1-5
+   * @param {number} magnitude how fast the bombs will move you become, 1-5
    */
   constructor(pos, magnitude = 1) {
-    super(pos, magnitude, "Rubber");
+    super(pos, magnitude, "Roving Bombs");
   }
 
   /**
@@ -23,8 +23,7 @@ export class Rubber extends PowerUp {
   apply(creature) {
     if (!this.isAtMax(creature)) {
       super.apply(creature);
-      creature.bounciness = 1;
-      creature.rubberiness += this.magnitude * RUBBER_FACTOR;
+      creature.bombSpeed += this.magnitude * BOMB_SPEED_FACTOR;
     } else {
       this.overflowAction(creature);
     }
@@ -37,14 +36,14 @@ export class Rubber extends PowerUp {
    * @override
    */
   isAtMax(creature) {
-    // check if bulletRubberiness is already too high
-    if (creature.rubberiness >= MAX_RUBBERINESS) {
+    // check if bombSpeed is already too high
+    if (creature.wallReflectSpeed >= MAX_BOMB_SPEED) {
       return true;
     }
 
     // see if we need to trim magnitude
     const availMag = Math.floor(
-      Math.abs(MAX_RUBBERINESS - creature.rubberiness) / RUBBER_FACTOR
+      Math.abs(MAX_BOMB_SPEED - creature.wallReflectSpeed) / BOMB_SPEED_FACTOR
     );
     if (availMag < 1) return true;
 

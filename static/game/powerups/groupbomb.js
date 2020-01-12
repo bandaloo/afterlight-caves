@@ -42,13 +42,13 @@ export class GroupBomb extends PowerUp {
         for (let i = 0; i < num; i++) {
           // rotate around so new bombs are distributed evenly
           if (i !== 0) theta += (1 / num) * 2 * Math.PI;
-          const newVel = new Vector(Math.cos(theta), Math.sin(theta)).mult(2);
-          const child = creature.getBomb(
-            bomb.drawPos,
-            bomb.good,
-            bomb.fillStyle
-          );
+          let r = bomb.speed;
+          if (r < 2) r = 2;
+          const newVel = new Vector(Math.cos(theta) * r, Math.sin(theta) * r);
+          const child = creature.getBomb(bomb.drawPos, bomb.good, bomb.hue);
           child.vel = newVel;
+          child.speed = r;
+          child.wallReflectSpeed = r;
           /**
            * remove Group Bomb functions from child so it doesn't multiply
            * forever
