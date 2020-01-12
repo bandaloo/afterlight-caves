@@ -1,4 +1,4 @@
-import { boardToString, getGrid, getEmptySpaces } from "./game/life.js";
+import { getGrid, getEmptySpaces } from "./game/life.js";
 import { caveRules, EdgesEnum } from "./game/rules.js";
 import {
   startUp,
@@ -11,26 +11,14 @@ import {
   setImportantEntity,
   getTerrain,
   setGameGuiFunc,
-  getImportantEntity,
-  getContext
+  getImportantEntity
 } from "./modules/gamemanager.js";
-import {
-  drawBoard,
-  drawCircle,
-  centeredOutlineCircle,
-  centeredOutlineEllipse,
-  centeredText,
-  centeredOutlineRect
-} from "./game/draw.js";
-import { Enemy, randomLook, randomStats } from "./game/enemy.js";
+import { drawBoard, centeredText, rect } from "./game/draw.js";
+import { randomLook, randomStats } from "./game/enemy.js";
 import { Vector } from "./modules/vector.js";
 import { shuffle, randomInt, hsl } from "./modules/helpers.js";
 import { Hero } from "./game/hero.js";
 import { initBlockField, segregateTerrain } from "./game/generator.js";
-import { Boss } from "./game/boss.js";
-import { Scatter } from "./game/scatter.js";
-import { Chase } from "./game/chase.js";
-import { Shooter } from "./game/shooter.js";
 import { populateLevel } from "./game/spawner.js";
 import { Creature } from "./game/creature.js";
 import { powerUpTypes } from "./game/powerups/poweruptypes.js";
@@ -76,7 +64,6 @@ function resetDemo() {
 
   setGameGuiFunc(() => {
     // TODO get rid of magic numbers for drawing the gui
-    const borderVec = new Vector(8, 8);
     const hero = getImportantEntity("hero");
     const health = /** @type {Creature} */ (hero).getCurrentHealth();
     const maxHealth = /** @type {Creature} */ (hero).maxHealth;
@@ -85,28 +72,24 @@ function resetDemo() {
     // Uncenter the centered outline rect
     const maxHealthWidth = maxHealth * 10;
     const healthWidth = health * 10;
-    const maxHealthVec = new Vector(maxHealthWidth / 2, 32).add(borderVec);
-    const healthVec = new Vector(healthWidth / 2, 32).add(borderVec);
-    centeredOutlineRect(maxHealthVec, maxHealthWidth, 64, 4, "white");
-    centeredOutlineRect(healthVec, healthWidth, 64, 4, "white", "#ffffff77");
+    const healthColor = "rgba(255, 50, 122, 50%)";
+    rect(new Vector(0, 0), healthWidth, 64, healthColor, healthColor, 4);
+    rect(new Vector(0, 0), maxHealthWidth, 64, undefined, "white", 4);
     centeredText(
       "" + health,
-      new Vector(16, 32).add(borderVec),
-      "white",
-      "black",
-      undefined,
+      new Vector(20, 36),
+      "bold 50px sans-serif",
       "left",
       "middle",
-      3
+      "white"
     );
     centeredText(
       `${currentBombs} / ${maxBombs}`,
-      new Vector(16, 116).add(borderVec),
-      "black",
-      "white",
-      undefined,
+      new Vector(20, 100),
+      "bold 50px sans-serif",
       "left",
-      "middle"
+      "middle",
+      "white"
     );
   });
 

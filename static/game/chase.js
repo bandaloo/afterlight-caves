@@ -1,16 +1,10 @@
 import { Enemy, ShapeEnum } from "./enemy.js";
 import { Vector } from "../modules/vector.js";
-import {
-  centeredOutlineCircle,
-  centeredOutlineRect,
-  drawLine,
-  centeredOutlineEllipse
-} from "./draw.js";
+import { line, ellipse, circle } from "./draw.js";
 import {
   hasImportantEntity,
   getImportantEntity
 } from "../modules/gamemanager.js";
-import { Entity } from "../modules/entity.js";
 
 export class Chase extends Enemy {
   followDistace = 500;
@@ -49,7 +43,6 @@ export class Chase extends Enemy {
     this.followTimer = this.followTimerMax;
     super.touchHero(hero);
   }
-  
 
   action() {
     super.action();
@@ -78,13 +71,13 @@ export class Chase extends Enemy {
      * @param {number} scalar change this to modify what side of face to draw
      */
     const drawEye = scalar => {
-      centeredOutlineEllipse(
+      ellipse(
         this.drawPos.add(new Vector(scalar * this.look.eyeSpacing, 0)),
         this.look.eyeSize * 3,
         this.look.eyeSize * 1.5,
+        undefined,
         4,
-        this.drawColor,
-        "rgba(0, 0, 0, 0)"
+        this.drawColor
       );
     };
 
@@ -93,12 +86,12 @@ export class Chase extends Enemy {
      * @param {number} scalar change this to modify what side of face to draw
      */
     const drawPupil = scalar => {
-      centeredOutlineCircle(
+      circle(
         this.drawPos.add(new Vector(scalar * this.look.eyeSpacing, 0)),
         this.look.eyeSize,
+        undefined,
         4,
-        this.drawColor,
-        "rgba(0, 0, 0, 0)"
+        this.drawColor
       );
     };
 
@@ -106,7 +99,7 @@ export class Chase extends Enemy {
       drawEye(0);
       drawPupil(0);
     } else {
-      drawLine(
+      line(
         this.drawPos.sub(new Vector(this.look.eyeSize * 3, 0)),
         this.drawPos.add(new Vector(this.look.eyeSize * 3, 0)),
         this.drawColor,
@@ -117,7 +110,7 @@ export class Chase extends Enemy {
     // draw the mouth
     const mouthHalf = this.look.mouthWidth / 2;
 
-    drawLine(
+    line(
       new Vector(
         this.drawPos.x + mouthHalf,
         this.drawPos.y + this.look.mouthOffset

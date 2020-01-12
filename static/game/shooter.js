@@ -1,11 +1,10 @@
 import { Enemy } from "./enemy.js";
 import { Vector } from "../modules/vector.js";
-import { centeredOutlineCircle, drawLine } from "./draw.js";
+import { line, circle } from "./draw.js";
 import {
   hasImportantEntity,
   getImportantEntity
 } from "../modules/gamemanager.js";
-import { Entity } from "../modules/entity.js";
 
 export class Shooter extends Enemy {
   avoidDistace = 500;
@@ -74,14 +73,14 @@ export class Shooter extends Enemy {
      * @param {number} y change this to modify what side of face to draw
      */
     const drawEye = (x, y) => {
-      centeredOutlineCircle(
+      circle(
         this.drawPos.add(
           new Vector(x * this.look.eyeSpacing, y * this.look.eyeSpacing)
         ),
         this.look.eyeSize,
+        undefined,
         4,
-        this.drawColor,
-        "rgba(0, 0, 0, 0)"
+        this.drawColor
       );
     };
 
@@ -94,14 +93,14 @@ export class Shooter extends Enemy {
     // draw the mouth
     const mouthHalf = this.look.mouthWidth / 2;
 
-    drawLine(
+    line(
       new Vector(
         this.drawPos.x + mouthHalf,
-        this.drawPos.y + this.look.mouthOffset + 10
+        this.drawPos.y + this.look.mouthOffset + 5
       ),
       new Vector(
         this.drawPos.x - mouthHalf,
-        this.drawPos.y + this.look.mouthOffset + 10
+        this.drawPos.y + this.look.mouthOffset + 5
       ),
       this.drawColor,
       4

@@ -1,6 +1,6 @@
 import { Entity } from "../modules/entity.js";
 import { Vector } from "../modules/vector.js";
-import { centeredOctagon, centeredCircle } from "./draw.js";
+import { centeredOctagon, circle } from "./draw.js";
 import { Particle, EffectEnum } from "./particle.js";
 import { addParticle } from "../modules/gamemanager.js";
 
@@ -147,7 +147,7 @@ export class Bomb extends Entity {
       const radius =
         (Math.abs(this.fuseTime) / this.timeToExplode) * this.blastRadius;
       const thickness = (radius / this.blastRadius) * 60;
-      centeredCircle(
+      circle(
         this.drawPos,
         radius,
         undefined,

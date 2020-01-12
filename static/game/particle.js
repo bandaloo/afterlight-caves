@@ -1,6 +1,6 @@
 import { Entity } from "../modules/entity.js";
 import { randomInt, randomNormalVec } from "../modules/helpers.js";
-import { centeredOutlineRect, drawLine, centeredRoundedRect } from "./draw.js";
+import { line, centeredRoundedRect } from "./draw.js";
 import { Vector } from "../modules/vector.js";
 
 /**
@@ -58,7 +58,7 @@ export class Particle extends Entity {
         this.lineWidth
       );
     } else if (this.effect === EffectEnum.spark) {
-      drawLine(
+      line(
         this.drawPos,
         this.drawPos.add(this.vel.mult(this.multiplier)),
         this.fillStyle,

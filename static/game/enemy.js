@@ -2,11 +2,7 @@ import { Entity, FarEnum } from "../modules/entity.js";
 import { Vector } from "../modules/vector.js";
 import { randomFromEnum, randomInt, hsl } from "../modules/helpers.js";
 import { Creature } from "./creature.js";
-import {
-  centeredOutlineRect,
-  centeredOutlineCircle,
-  drawLine
-} from "./draw.js";
+import { centeredRect, circle } from "./draw.js";
 import { addParticle, addToWorld } from "../modules/gamemanager.js";
 import { Particle, EffectEnum } from "./particle.js";
 import { Bullet } from "./bullet.js";
@@ -169,21 +165,15 @@ export class Enemy extends Creature {
     // draw the body
     const bgColor = this.redFrames === 0 ? "black" : "rgba(255, 69, 0, 0.3)";
     if (this.look.shape === ShapeEnum.circle) {
-      centeredOutlineCircle(
-        this.drawPos,
-        this.width / 2,
-        4,
-        this.drawColor,
-        bgColor
-      );
+      circle(this.drawPos, this.width / 2, bgColor, 4, this.drawColor);
     } else {
-      centeredOutlineRect(
+      centeredRect(
         this.drawPos,
         this.width,
         this.height,
-        4,
+        bgColor,
         this.drawColor,
-        bgColor
+        4
       );
     }
   }

@@ -1,6 +1,6 @@
 import { Enemy } from "./enemy.js";
 import { Vector } from "../modules/vector.js";
-import { centeredOutlineCircle, drawLine } from "./draw.js";
+import { line, circle } from "./draw.js";
 
 export class Scatter extends Enemy {
   /**
@@ -43,12 +43,12 @@ export class Scatter extends Enemy {
      * @param {number} scalar change this to modify what side of face to draw
      */
     const drawEye = scalar => {
-      centeredOutlineCircle(
+      circle(
         this.drawPos.add(new Vector(scalar * this.look.eyeSpacing, 0)),
         this.look.eyeSize,
+        undefined,
         4,
-        this.drawColor,
-        "rgba(0, 0, 0, 0)"
+        this.drawColor
       );
     };
 
@@ -59,7 +59,7 @@ export class Scatter extends Enemy {
     // draw the mouth
     const mouthHalf = this.look.mouthWidth / 2;
 
-    drawLine(
+    line(
       new Vector(
         this.drawPos.x + mouthHalf,
         this.drawPos.y + this.look.mouthOffset

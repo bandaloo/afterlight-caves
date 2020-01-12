@@ -1,7 +1,7 @@
 import { Vector } from "../modules/vector.js";
 import { Entity } from "../modules/entity.js";
 import { Creature } from "./creature.js";
-import { centeredOutlineCircle, centeredText, drawShines } from "./draw.js";
+import { centeredText, drawShines, circle } from "./draw.js";
 import { TextDisplay } from "./textdisplay.js";
 import { addToWorld } from "../modules/gamemanager.js";
 
@@ -134,20 +134,15 @@ export class PowerUp extends Entity {
       }
     }
     // circle
-    centeredOutlineCircle(
-      this.drawPos,
-      30,
-      4,
-      "hsl(" + this.hue + ", 100%, 50%)",
-      "black"
-    );
+    circle(this.drawPos, 32, "black", 4, "hsl(" + this.hue + ", 100%, 50%)");
     // text
     centeredText(
       this.powerUpClass.slice(0, 1),
       this.drawPos.add(new Vector(0, 16)),
-      "hsl(" + this.hue + ", 100%, 50%)",
-      "rgba(0, 0, 0, 0)",
-      "bold 50px Arial"
+      "bold 50px sans-serif",
+      "center",
+      "alphabetic",
+      "hsl(" + this.hue + ", 100%, 50%)"
     );
   }
 }

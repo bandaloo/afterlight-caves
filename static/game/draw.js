@@ -14,49 +14,6 @@ import { getCell } from "../modules/collision.js";
 // this is to get rid of weird lines when moving the camera
 const overDraw = 0.5;
 
-// TODO some of these are more generic drawing functions that could be moved to
-// the engine
-
-/**
- * draw a centered rectangle with border at position
- * @param {Vector} centerVec
- * @param {number} width
- * @param {number} height
- * @param {number} lineWidth
- * @param {string} centerColor
- * @param {string} [borderColor]
- */
-export function centeredOutlineRectFill(
-  centerVec,
-  width,
-  height,
-  lineWidth,
-  centerColor,
-  borderColor = "black"
-) {
-  let context = getContext();
-
-  centerVec = centerVec.add(getCameraOffset());
-
-  // draw the outline rect
-  context.fillStyle = borderColor;
-  context.fillRect(
-    centerVec.x - width / 2 - lineWidth,
-    centerVec.y - height / 2 - lineWidth,
-    width + lineWidth * 2,
-    height + lineWidth * 2
-  );
-
-  // draw the center rect
-  context.fillStyle = centerColor;
-  context.fillRect(
-    centerVec.x - width / 2,
-    centerVec.y - height / 2,
-    width,
-    height
-  );
-}
-
 /**
  * Draws an octagon centered at a particular point
  * @param {Vector} centerVec
@@ -131,29 +88,44 @@ export function centeredOctagon(
 }
 
 /**
- * Draws a circle centered at a particular point
+ * Draws an ellipse
  * @param {Vector} centerVec
- * @param {number} radius
+ * @param {number} radiusX
+ * @param {number} radiusY
  * @param {string|CanvasGradient|CanvasPattern} [fillStyle] leave undefined for
  * no fill
  * @param {string|CanvasGradient|CanvasPattern} [strokeStyle] leave undefined
  * for no border
  * @param {number} [lineWidth] leave undefined for no border
  */
-export function centeredCircle(
+export function ellipse(
   centerVec,
-  radius,
+  radiusX,
+  radiusY,
   fillStyle,
   lineWidth,
-  strokeStyle,
+  strokeStyle
 ) {
   const context = getContext();
   context.save();
   centerVec = centerVec.add(getCameraOffset());
 
-  context.moveTo(centerVec.x, centerVec.y);
+  // account for border
+  if (lineWidth === undefined) lineWidth = 0;
+  radiusX -= lineWidth / 2;
+  radiusY -= lineWidth / 2;
+
   context.beginPath();
-  context.arc(centerVec.x, centerVec.y, radius, 0, 2 * Math.PI);
+  context.ellipse(
+    centerVec.x,
+    centerVec.y,
+    radiusX,
+    radiusY,
+    0,
+    0,
+    Math.PI * 2,
+    false
+  );
 
   if (fillStyle !== undefined) {
     context.fillStyle = fillStyle;
@@ -169,12 +141,56 @@ export function centeredCircle(
   context.restore();
 }
 
+/**
+ * Draws a circle centered at a particular point
+ * @param {Vector} centerVec
+ * @param {number} radius
+ * @param {string|CanvasGradient|CanvasPattern} [fillStyle] leave undefined for
+ * no fill
+ * @param {string|CanvasGradient|CanvasPattern} [strokeStyle] leave undefined
+ * for no border
+ * @param {number} [lineWidth] leave undefined for no border
+ */
+export function circle(centerVec, radius, fillStyle, lineWidth, strokeStyle) {
+  ellipse(centerVec, radius, radius, fillStyle, lineWidth, strokeStyle);
+}
 
 /**
- * draw a centered, rounded rectangle with border at position
+ * draw a centered rectangle, optionally with fill and border, at position
  * @param {Vector} centerVec
- * @param {number} width
- * @param {number} height
+ * @param {number} width including border
+ * @param {number} height including border
+ * @param {string|CanvasGradient|CanvasPattern} [fillStyle] leave undefined for
+ * no fill
+ * @param {string|CanvasGradient|CanvasPattern} [strokeStyle] leave undefined
+ * for no border
+ * @param {number} [lineWidth] leave undefined for no border
+ */
+export function centeredRect(
+  centerVec,
+  width,
+  height,
+  fillStyle,
+  strokeStyle,
+  lineWidth
+) {
+  centeredRoundedRect(
+    centerVec,
+    width,
+    height,
+    fillStyle,
+    strokeStyle,
+    lineWidth,
+    0
+  );
+}
+
+/**
+ * Draw a centered, rounded rectangle, optionally with fill and border, at
+ * position.
+ * @param {Vector} centerVec
+ * @param {number} width including border
+ * @param {number} height including border
  * @param {string|CanvasGradient|CanvasPattern} [fillStyle] leave undefined for
  * no fill
  * @param {string|CanvasGradient|CanvasPattern} [strokeStyle] leave undefined
@@ -196,9 +212,70 @@ export function centeredRoundedRect(
   lineWidth,
   borderRadius = 0
 ) {
+  roundedRect(
+    centerVec.sub(new Vector(width / 2, height / 2)),
+    width,
+    height,
+    fillStyle,
+    strokeStyle,
+    lineWidth,
+    borderRadius
+  );
+}
+
+/**
+ * Draw a normal rectangle, optionally with fill and border, with its top left
+ * corner at the specified position
+ * @param {Vector} topLeftVec top left, outside of border
+ * @param {number} width including border
+ * @param {number} height including border
+ * @param {string|CanvasGradient|CanvasPattern} [fillStyle] leave undefined for
+ * no fill
+ * @param {string|CanvasGradient|CanvasPattern} [strokeStyle] leave undefined
+ * for no border
+ * @param {number} [lineWidth] leave undefined for no border
+ */
+export function rect(
+  topLeftVec,
+  width,
+  height,
+  fillStyle,
+  strokeStyle,
+  lineWidth
+) {
+  roundedRect(topLeftVec, width, height, fillStyle, strokeStyle, lineWidth, 0);
+}
+
+/**
+ * Draw a normal, rounded rectangle, optionally with fill and border, with its
+ * top left corner at the specified position
+ * @param {Vector} topLeftVec top left, outside of border
+ * @param {number} width including border
+ * @param {number} height including border
+ * @param {string|CanvasGradient|CanvasPattern} [fillStyle] leave undefined for
+ * no fill
+ * @param {string|CanvasGradient|CanvasPattern} [strokeStyle] leave undefined
+ * for no border
+ * @param {number} [lineWidth] leave undefined for no border
+ * @param {number | { tl: number
+ *                  , tr: number
+ *                  , br: number
+ *                  , bl: number
+ *                  }
+ *        } [borderRadius = 0] in pixels
+ */
+export function roundedRect(
+  topLeftVec,
+  width,
+  height,
+  fillStyle,
+  strokeStyle,
+  lineWidth,
+  borderRadius = 0
+) {
   const context = getContext();
   context.save();
-  centerVec = centerVec.add(getCameraOffset());
+  topLeftVec = topLeftVec.add(getCameraOffset());
 
   /** @type {{tl: number, tr: number, br: number, bl: number}} */
   let corners;
@@ -213,26 +290,24 @@ export function centeredRoundedRect(
     corners = borderRadius;
   }
 
-  const x = centerVec.x - width / 2;
-  const y = centerVec.y - height / 2;
+  if (lineWidth === undefined) lineWidth = 0;
+  const x1 = topLeftVec.x + lineWidth / 2;
+  const y1 = topLeftVec.y + lineWidth / 2;
+  const x2 = topLeftVec.x + width - lineWidth / 2;
+  const y2 = topLeftVec.y + height + lineWidth / 2;
 
   // the JavaScript canvas API doesn't have a built-in function for drawing
   // rounded rectangles, so we trace out the path manually
   context.beginPath();
-  context.moveTo(x + corners.tl, y);
-  context.lineTo(x + width - corners.tr, y);
-  context.quadraticCurveTo(x + width, y, x + width, y + corners.tr);
-  context.lineTo(x + width, y + height - corners.br);
-  context.quadraticCurveTo(
-    x + width,
-    y + height,
-    x + width - corners.br,
-    y + height
-  );
-  context.lineTo(x + corners.bl, y + height);
-  context.quadraticCurveTo(x, y + height, x, y + height - corners.bl);
-  context.lineTo(x, y + corners.tl);
-  context.quadraticCurveTo(x, y, x + corners.tl, y);
+  context.moveTo(x1 + corners.tl, y1);
+  context.lineTo(x2 - corners.tr, y1);
+  context.quadraticCurveTo(x2, y1, x2, y1 + corners.tr);
+  context.lineTo(x2, y2 - corners.br);
+  context.quadraticCurveTo(x2, y2, x2 - corners.br, y2);
+  context.lineTo(x1 + corners.bl, y2);
+  context.quadraticCurveTo(x1, y2, x1, y2 - corners.bl);
+  context.lineTo(x1, y1 + corners.tl);
+  context.quadraticCurveTo(x1, y1, x1 + corners.tl, y1);
   context.closePath();
   if (fillStyle !== undefined) {
     context.fillStyle = fillStyle;
@@ -249,184 +324,24 @@ export function centeredRoundedRect(
 }
 
 /**
- *
- * @param {Vector} centerVec
- * @param {number} width
- * @param {number} height
- * @param {number} strokeWidth
- * @param {string} strokeStyle usually this will just be a color string
- * @param {string} [fillStyle]
- */
-export function centeredOutlineRect(
-  centerVec,
-  width,
-  height,
-  strokeWidth,
-  strokeStyle,
-  fillStyle
-) {
-  centerVec = centerVec.add(getCameraOffset());
-  const context = getContext();
-  context.beginPath();
-  context.lineWidth = strokeWidth;
-  context.strokeStyle = strokeStyle;
-  context.rect(
-    centerVec.x - width / 2,
-    centerVec.y - height / 2,
-    width,
-    height
-  );
-  if (fillStyle !== undefined) {
-    context.fillStyle = fillStyle;
-    context.fill();
-  }
-  context.stroke();
-}
-
-/**
- * draws a normal rectangle from the corner
- * @param {number} x
- * @param {number} y
- * @param {number} width
- * @param {number} height
- * @param {string} style
- */
-export function normalRect(x, y, width, height, style) {
-  x += getCameraOffset().x;
-  y += getCameraOffset().y;
-  // TODO technically kind of redundant to keep resetting style when drawing
-  // the game board
-  const context = getContext();
-  context.fillStyle = style;
-  context.fillRect(x, y, width, height);
-}
-
-// TODO get rid of the following function
-/**
- * draw a circle onto the draw canvas
- * @param {Vector} pos
- * @param {number} radius
- * @param {string} color
- */
-export function drawCircle(pos, radius, color) {
-  const context = getContext();
-  context.beginPath();
-  context.arc(pos.x, pos.y, radius, 0, 2 * Math.PI);
-  context.fillStyle = color;
-  context.fill();
-}
-
-// TODO get rid of this
-
-/**
- * draw outline circle
- * @param {Vector} centerVec
- * @param {number} radius
- * @param {number} lineWidth
- * @param {string} centerColor
- * @param {string} borderColor
- */
-export function outlineCircleFill(
-  centerVec,
-  radius,
-  lineWidth,
-  centerColor,
-  borderColor = "black"
-) {
-  drawCircle(centerVec, radius + lineWidth, borderColor);
-  drawCircle(centerVec, radius, centerColor);
-}
-
-// TODO could just make this call centeredOutlineEllipse
-/**
- * draw centered outline circle
- * @param {Vector} centerVec
- * @param {number} radius
- * @param {number} strokeWidth
- * @param {string} strokeStyle
- * @param {string} [fillStyle]
- */
-export function centeredOutlineCircle(
-  centerVec,
-  radius,
-  strokeWidth,
-  strokeStyle,
-  fillStyle
-) {
-  const context = getContext();
-
-  centerVec = centerVec.add(getCameraOffset());
-
-  context.beginPath();
-  context.lineWidth = strokeWidth;
-  context.strokeStyle = strokeStyle;
-  context.arc(centerVec.x, centerVec.y, radius, 0, 2 * Math.PI);
-  if (fillStyle !== undefined) {
-    context.fillStyle = fillStyle;
-    context.fill();
-  }
-  context.stroke();
-}
-
-/**
- * draw centered outline ellipse
- * @param {Vector} centerVec
- * @param {number} radiusX
- * @param {number} radiusY
- * @param {number} strokeWidth
- * @param {string} strokeStyle
- * @param {string} [fillStyle]
- */
-export function centeredOutlineEllipse(
-  centerVec,
-  radiusX,
-  radiusY,
-  strokeWidth,
-  strokeStyle,
-  fillStyle
-) {
-  const context = getContext();
-
-  centerVec = centerVec.add(getCameraOffset());
-
-  context.beginPath();
-  context.lineWidth = strokeWidth;
-  context.strokeStyle = strokeStyle;
-  context.ellipse(
-    centerVec.x,
-    centerVec.y,
-    radiusX,
-    radiusY,
-    0,
-    0,
-    2 * Math.PI
-  );
-  if (fillStyle !== undefined) {
-    context.fillStyle = fillStyle;
-    context.fill();
-  }
-  context.stroke();
-}
-
-/**
- * draw a line
+ * Draws a line between two positions
  * @param {Vector} pos1
  * @param {Vector} pos2
- * @param {string} style
- * @param {number} width
+ * @param {string|CanvasGradient|CanvasPattern} strokeStyle
+ * @param {number} lineWidth
  */
-export function drawLine(pos1, pos2, style, width) {
+export function line(pos1, pos2, strokeStyle, lineWidth) {
   const context = getContext();
-
+  context.save();
   pos1 = pos1.add(getCameraOffset());
   pos2 = pos2.add(getCameraOffset());
-
   context.beginPath();
-  context.strokeStyle = style;
-  context.lineWidth = width;
   context.moveTo(pos1.x, pos1.y);
   context.lineTo(pos2.x, pos2.y);
+  context.strokeStyle = strokeStyle;
+  context.lineWidth = lineWidth;
   context.stroke();
+  context.restore();
 }
 
 /**
@@ -439,11 +354,14 @@ export function drawLine(pos1, pos2, style, width) {
 export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
   // TODO get rid of the need to pass in block width and height
   let context = getContext();
+  context.save();
+
   // clear the canvas
   context.fillRect(0, 0, getCanvasWidth(), getCanvasHeight());
 
   // get the cells to draw based on position
-  const topLeftCell = getCell(getCameraOffset().mult(-1));
+  const cameraOffset = getCameraOffset();
+  const topLeftCell = getCell(cameraOffset.mult(-1));
   const { width: screenWidth, height: screenHeight } = getScreenDimensions();
   const screenVec = new Vector(screenWidth, screenHeight);
   const bottomRightCell = getCell(
@@ -464,18 +382,20 @@ export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
   /**
    * draw underneath square of tile
    * @param {number} thickness extra width of underneath tile
-   * @param {string} style
+   * @param {string|CanvasGradient|CanvasPattern} style
+   * @param {Vector} cameraOffset
    */
-  const drawBorder = (thickness, style) => {
+  const drawBorder = (thickness, style, cameraOffset) => {
+    context.fillStyle = style;
     for (let i = topLeftCell.x; i < bottomRightCell.x; i++) {
       for (let j = topLeftCell.y; j < bottomRightCell.y; j++) {
         if (board[i][j] >= 1) {
-          normalRect(
-            i * blockWidth - thickness,
-            j * blockHeight - thickness,
-            blockWidth + thickness * 2,
+          // interact with context directly for efficiency
+          context.fillRect(
+            i * blockWidth - thickness + cameraOffset.x,
+            j * blockHeight - thickness + cameraOffset.y,
             blockHeight + thickness * 2,
-            style
+            blockHeight + thickness * 2
           );
         }
       }
@@ -483,20 +403,21 @@ export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
   };
 
   // draw squares underneath to create outline
-  drawBorder(6, color);
-  drawBorder(2, "white");
+  drawBorder(6, color, cameraOffset);
+  drawBorder(2, "white", cameraOffset);
 
   // draw black squares on top
   for (let i = topLeftCell.x; i < bottomRightCell.x; i++) {
     for (let j = topLeftCell.y; j < bottomRightCell.y; j++) {
       // TODO could be checking the block field instead of the terrain
       if (board[i][j] >= 1) {
-        normalRect(
-          i * blockWidth - overDraw,
-          j * blockHeight - overDraw,
+        context.fillStyle =
+          blockField[i][j].durability === Infinity ? "black" : "#202020";
+        context.fillRect(
+          i * blockWidth - overDraw + cameraOffset.x,
+          j * blockHeight - overDraw + cameraOffset.y,
           blockWidth + overDraw * 2,
-          blockHeight + overDraw * 2,
-          blockField[i][j].durability === Infinity ? "black" : "#202020"
+          blockHeight + overDraw * 2
         );
       }
     }
@@ -525,58 +446,54 @@ export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
           const shinePosition = gemPosition.add(
             new Vector(-2 + 2 * gemMod, -2 + 2 * gemMod)
           );
-          centeredOutlineRectFill(
-            gemPosition,
-            gemSize,
-            gemSize,
-            0,
-            gemInfo.color
-          );
-          centeredOutlineRectFill(
+          centeredRect(gemPosition, gemSize, gemSize, gemInfo.color);
+          centeredRect(
             shinePosition,
             shineSize + gemMod * 0.7,
             shineSize + gemMod * 0.7,
-            1,
-            "white",
             "white"
           );
         }
       }
     }
   }
+  context.restore();
 }
 
 /**
  * @param {string} text
  * @param {Vector} centerVec
- * @param {string} fillStyle
- * @param {string | CanvasGradient} [strokeStyle] default "black"
  * @param {string} [fontStyle] default "bold 50px sans-serif"
  * @param {CanvasTextAlign} [align] default "center"
- * @param {CanvasTextBaseline} [baseline]
- * @param {number} [lineWidth] default 4
+ * @param {CanvasTextBaseline} [baseline] default "alphabetic"
+ * @param {string} [fillStyle] leave undefined for no fill
+ * @param {string|CanvasGradient|CanvasPattern} [strokeStyle] leave undefined
+ * for no outline
+ * @param {number} [lineWidth]
  */
 export function centeredText(
   text,
   centerVec,
-  fillStyle,
-  strokeStyle = "black",
   fontStyle = "bold 50px sans-serif",
   align = "center",
   baseline = "alphabetic",
-  lineWidth = 4
+  fillStyle,
+  strokeStyle,
+  lineWidth
 ) {
   const context = getContext();
   centerVec = centerVec.add(getCameraOffset());
   context.save();
-  context.strokeStyle = strokeStyle;
-  context.lineWidth = lineWidth;
-  context.fillStyle = fillStyle;
   context.font = fontStyle;
   context.textAlign = align;
   context.textBaseline = baseline;
+  if (fillStyle !== undefined) context.fillStyle = fillStyle;
   context.fillText(text, centerVec.x, centerVec.y);
-  context.strokeText(text, centerVec.x, centerVec.y);
+  if (strokeStyle !== undefined && lineWidth !== undefined && lineWidth > 0) {
+    context.lineWidth = lineWidth;
+    context.strokeStyle = strokeStyle;
+    context.strokeText(text, centerVec.x, centerVec.y);
+  }
   context.restore();
 }
 
@@ -588,8 +505,7 @@ export function centeredText(
  *  length: number,
  *  speed: number,
  *  hue: number
- * }[]} data each shine has
- * an angle in radians and a width in radians
+ * }[]} data shine data
  */
 export function drawShines(centerVec, data) {
   centerVec = centerVec.add(getCameraOffset());

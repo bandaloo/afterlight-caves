@@ -1,7 +1,8 @@
 import { StatusEffect } from "../statuseffect.js";
 import { Creature } from "../creature.js";
-import { centeredRoundedRect } from "../draw.js";
+import { centeredRoundedRect, line } from "../draw.js";
 import { getContext, getCameraOffset } from "../../modules/gamemanager.js";
+import { Vector } from "../../modules/vector.js";
 
 const MAX_FROZEN_SPEED = 0.4;
 const MAX_FROZEN_ACCELERATION = 0.1;
@@ -103,51 +104,44 @@ export class Frozen extends StatusEffect {
       4,
       8
     );
-    const context = getContext();
-    context.save();
-    context.strokeStyle = "white";
-    context.lineWidth = 3;
-    const centerVec = creature.drawPos.add(getCameraOffset());
-
-    // draw long center line
-    context.beginPath();
-    context.moveTo(
-      centerVec.x - creature.width * 0.25,
-      centerVec.y + creature.width * 0.25
+    // long center line
+    line(
+      new Vector(
+        creature.drawPos.x - creature.width * 0.25,
+        creature.drawPos.y + creature.height * 0.25
+      ),
+      new Vector(
+        creature.drawPos.x + creature.width * 0.25,
+        creature.drawPos.y - creature.width * 0.25
+      ),
+      "white",
+      3
     );
-    context.lineTo(
-      centerVec.x + creature.width * 0.25,
-      centerVec.y - creature.width * 0.25
+    // right line
+    line(
+      new Vector(
+        creature.drawPos.x - creature.width * 0.15 + creature.width * 0.15,
+        creature.drawPos.y + creature.width * 0.15 + creature.width * 0.15
+      ),
+      new Vector(
+        creature.drawPos.x + creature.width * 0.15 + creature.width * 0.15,
+        creature.drawPos.y - creature.width * 0.15 + creature.width * 0.15
+      ),
+      "white",
+      3
     );
-    context.closePath();
-    context.stroke();
-
-    // draw right line
-    context.beginPath();
-    context.moveTo(
-      centerVec.x - creature.width * 0.15 + creature.width * 0.15,
-      centerVec.y + creature.width * 0.15 + creature.width * 0.15
+    // left line
+    line(
+      new Vector(
+        creature.drawPos.x - creature.width * 0.08 - creature.width * 0.1,
+        creature.drawPos.y + creature.width * 0.08 - creature.width * 0.1
+      ),
+      new Vector(
+        creature.drawPos.x + creature.width * 0.08 - creature.width * 0.1,
+        creature.drawPos.y - creature.width * 0.08 - creature.width * 0.1
+      ),
+      "white",
+      3
     );
-    context.lineTo(
-      centerVec.x + creature.width * 0.15 + creature.width * 0.15,
-      centerVec.y - creature.width * 0.15 + creature.width * 0.15
-    );
-    context.closePath();
-    context.stroke();
-
-    // draw left line
-    context.beginPath();
-    context.moveTo(
-      centerVec.x - creature.width * 0.08 - creature.width * 0.1,
-      centerVec.y + creature.width * 0.08 - creature.width * 0.1
-    );
-    context.lineTo(
-      centerVec.x + creature.width * 0.08 - creature.width * 0.1,
-      centerVec.y - creature.width * 0.08 - creature.width * 0.1
-    );
-    context.closePath();
-    context.stroke();
-
-    context.restore();
   }
 }

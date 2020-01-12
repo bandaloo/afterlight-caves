@@ -4,7 +4,7 @@ import {
   hasImportantEntity,
   getImportantEntity
 } from "../modules/gamemanager.js";
-import { drawShines, centeredOutlineCircle } from "./draw.js";
+import { drawShines, circle } from "./draw.js";
 import { randomInt } from "../modules/helpers.js";
 
 /**
@@ -94,13 +94,7 @@ export class Boss extends Enemy {
    */
   drawFace() {
     // TODO implement
-    centeredOutlineCircle(
-      this.drawPos,
-      this.width / 2,
-      4,
-      this.drawColor,
-      "black"
-    );
+    circle(this.drawPos, this.width / 2, "black", 4, this.drawColor);
   }
 
   draw() {

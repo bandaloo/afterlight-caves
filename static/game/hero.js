@@ -1,11 +1,10 @@
 import { Vector } from "../modules/vector.js";
-import { centeredOutlineCircle } from "./draw.js";
+import { circle } from "./draw.js";
 import { buttons } from "../modules/buttons.js";
 import { addParticle } from "../modules/gamemanager.js";
 import { Particle, EffectEnum } from "./particle.js";
 import { PowerUp } from "./powerup.js";
 import { Creature } from "./creature.js";
-import { Entity } from "../modules/entity.js";
 import { Bullet } from "./bullet.js";
 
 const DEFAULT_SIZE = 50;
@@ -54,19 +53,23 @@ export class Hero extends Creature {
    * Draws the hero at its position in the world
    */
   draw() {
-    centeredOutlineCircle(
+    // draw body
+    circle(
       this.drawPos,
       this.width / 2,
-      4,
-      "white",
       this.invincibilityFrames > 0
         ? `rgba(255, 255, 255, ${this.invincibilityFrames /
             this.invincibilityFramesMax})`
-        : "black"
+        : "black",
+      4,
+      "white"
     );
-    centeredOutlineCircle(
+
+    // draw eye
+    circle(
       this.drawPos.add(this.eyeDirection.mult(10)),
-      10,
+      12,
+      undefined,
       4,
       "white"
     );

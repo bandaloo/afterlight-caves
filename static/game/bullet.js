@@ -1,6 +1,6 @@
 import { Vector } from "../modules/vector.js";
 import { Entity } from "../modules/entity.js";
-import { centeredOutlineCircle } from "./draw.js";
+import { circle } from "./draw.js";
 import { getCell } from "../modules/collision.js";
 import { setBlock, addParticle, inbounds } from "../modules/gamemanager.js";
 import { Particle, EffectEnum } from "./particle.js";
@@ -60,9 +60,10 @@ export class Bullet extends Entity {
     if (good) {
       this.collideMap.set(
         "Enemy",
-        /** 
+        /**
          * @param {import("./enemy.js").Enemy} e
-         */ 
+         */
+
         e => {
           // deal basic damage
           e.takeDamage(this.damage);
@@ -98,7 +99,7 @@ export class Bullet extends Entity {
   action() {}
 
   draw() {
-    centeredOutlineCircle(this.drawPos, this.width / 2, 4, this.color, "black");
+    circle(this.drawPos, this.width / 2, "black", 4, this.color);
   }
 
   destroy() {
