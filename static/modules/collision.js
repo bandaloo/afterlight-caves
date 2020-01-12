@@ -229,6 +229,10 @@ export function adjustEntity(entity) {
     if (hitEntities.length > 0 && entity.wallReflectSpeed !== 0) {
       entity.vel = entity.vel.norm2().mult(entity.wallReflectSpeed);
     }
+  } else {
+    // if we're not supposed to bounce then just stop
+    if (mv.x !== 0) entity.vel.x = 0;
+    if (mv.y !== 0) entity.vel.y = 0;
   }
 
   for (let i = 0; i < hitEntities.length; i++) {
