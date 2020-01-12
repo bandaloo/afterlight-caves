@@ -132,7 +132,7 @@ export class Creature extends Entity {
   /** @type {number} A multiplier for how fast the creature moves */
   movementMultiplier = 1;
 
-  /** @type {Map<string, number>}*/
+  /** @type {Map<string, number>} */
   powerUps = new Map();
 
   /** @type {StatusEffect[]} */
@@ -140,6 +140,9 @@ export class Creature extends Entity {
 
   /** @type {number} number of bullets per shot, spread into a 30 degree cone */
   bulletsPerShot = 1;
+
+  /** @type {number} scalar that determines how much knockback bullets apply */
+  bulletKnockback = 3;
 
   /**
    * @type {number}
@@ -224,6 +227,7 @@ export class Creature extends Entity {
     b.onDestroy = this.bulletOnDestroy;
     b.onHitEnemy = this.bulletOnHitEnemy;
     b.width = this.bulletSize;
+    b.knockback = this.bulletKnockback;
     return b;
   }
 

@@ -35,6 +35,7 @@ export class Bullet extends Entity {
     this.reflectsOffWalls = false;
     this.color = color;
     this.damage = damage;
+    this.knockback = 3;
     /**
      * @type {{ name: string
      *        , data: number
@@ -55,45 +56,23 @@ export class Bullet extends Entity {
      */
     this.onHitEnemy = new Array();
     this.damage = damage;
-    good ? (this.type = "PlayerBullet") : (this.type = "EnemyBullet");
-    // execute all onHitEnemy functions when we hit an enemy
-    if (good) {
-      this.collideMap.set(
-        "Enemy",
-        /**
-         * @param {import("./enemy.js").Enemy} e
-         */
-
-        e => {
-          // deal basic damage
-          e.takeDamage(this.damage);
-
-          // add bullet velocity to enemy velocity
-          e.vel = e.vel.add(this.vel.mult(0.7 / (1 + e.modifiers.size)));
-
-          for (const ohe of this.onHitEnemy) {
-            if (ohe.func) ohe.func(this, ohe.data, e);
-          }
-
-          this.deleteMe = true;
+    this.type = good ? "PlayerBullet" : "EnemyBullet";
+    // set function for when we hit enemies
+    this.collideMap.set(
+      this.good ? "Enemy" : "Hero",
+      /** @param {import ("./creature.js").Creature} c */ c => {
+        // deal basic damage
+        c.takeDamage(this.damage);
+        // impart momentum
+        const size = (c.width * c.height) / 300;
+        c.vel = c.vel.add(this.vel.mult(3 / size));
+        // call onHitEnemy functions
+        for (const ohe of this.onHitEnemy) {
+          if (ohe.func) ohe.func(this, ohe.data, c);
         }
-      );
-    } else {
-      // Enemies consider the Hero as their enemy
-      this.collideMap.set(
-        "Hero",
-        /** @param {import("./hero.js").Hero} h */ h => {
-          // deal basic damage
-          h.takeDamage(this.damage);
-
-          for (const ohe of this.onHitEnemy) {
-            if (ohe.func) ohe.func(this, ohe.data, h);
-          }
-
-          this.deleteMe = true;
-        }
-      );
-    }
+        this.deleteMe = true;
+      }
+    );
   }
 
   action() {}
