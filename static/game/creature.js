@@ -69,6 +69,9 @@ export class Creature extends Entity {
   /** @type {number} the number of game steps before bombs detonate */
   bombFuseTime = 180;
 
+  /** @type {number} how long our bombs spend exploding */
+  bombTimeToExplode = 20;
+
   /** @type {number} HSL hue of this creature's bombs */
   bombHue = 0;
 
@@ -302,6 +305,7 @@ export class Creature extends Entity {
     b.onBlastCreature = this.bombOnBlastCreature;
     b.blastRadius = this.bombBlastRadius;
     b.speed = this.bombSpeed;
+    b.timeToExplode = this.bombTimeToExplode;
     b.owner = this;
     if (!this.vel.isZeroVec()) {
       b.vel = this.vel.norm2().mult(b.speed);

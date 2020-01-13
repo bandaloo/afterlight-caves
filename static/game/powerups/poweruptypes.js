@@ -18,12 +18,40 @@ import { QuickShot } from "./quickshot.js";
 import { RovingBombs } from "./rovingbombs.js";
 import { Sniper } from "./sniper.js";
 import { Thermalite } from "./thermalite.js";
-// U
+import { UltraBomb } from "./ultrabomb.js";
 import { Vitality } from "./vitality.js";
 import { Wall } from "./wall.js";
 import { Xplode } from "./xplode.js";
 // Y
 import { Zoom } from "./zoom.js";
+
+export {
+  Amplify,
+  BiggerBombs,
+  Cone,
+  DamageUp,
+  Elastic,
+  FlameThrower,
+  GroupBomb,
+  Heave,
+  Icy,
+  Jalapeno,
+  Knapsack,
+  Littlify,
+  MachineGun,
+  Nitroglycerin,
+  Orb,
+  Popsicle,
+  QuickShot,
+  RovingBombs,
+  Sniper,
+  Thermalite,
+  UltraBomb,
+  Vitality,
+  Wall,
+  Xplode,
+  Zoom
+};
 
 export const powerUpTypes = [
   Amplify,
@@ -46,6 +74,7 @@ export const powerUpTypes = [
   RovingBombs,
   Sniper,
   Thermalite,
+  UltraBomb,
   Vitality,
   Wall,
   Xplode,
