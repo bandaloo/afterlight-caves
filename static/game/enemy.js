@@ -135,6 +135,11 @@ export class Enemy extends Creature {
         (0.5 * (this.width * this.height)) / (hero.width * hero.height);
       hero.vel = hero.vel.add(this.vel.mult(sizeDiff));
     }
+
+    // execute onTouchEnemy functions
+    for (const ote of this.onTouchEnemy) {
+      if (ote.func) ote.func(ote.data, /** @type{Creature} */ (hero));
+    }
     // deal basic touch damage
     hero.takeDamage(this.touchDamage);
   }

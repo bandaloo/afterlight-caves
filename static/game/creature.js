@@ -148,6 +148,18 @@ export class Creature extends Entity {
   bulletKnockback = 3;
 
   /**
+   * An array of objects, where each object has a name, which is the name of
+   * the source of the function, a data, which is some number the function
+   * takes, and a func, which is a function to execute when this creature
+   * touches an enemy
+   * @type {{ name: string
+   *        , data: number
+   *        , func: (num: number, other: Creature) => void
+   *        }[]}
+   */
+  onTouchEnemy;
+
+  /**
    * @type {number}
    * Higher defense decreases the amount of damage dealt. It will never be
    * reduced all the way to zero because y=0 is an asymptote of the damage
@@ -174,6 +186,7 @@ export class Creature extends Entity {
     this.bulletOnHitEnemy = new Array();
     this.bombOnDetonate = new Array();
     this.bombOnBlastCreature = new Array();
+    this.onTouchEnemy = new Array();
 
     // bombs deal basic damage
     this.bombOnBlastCreature.push({

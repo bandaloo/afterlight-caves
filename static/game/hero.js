@@ -48,6 +48,12 @@ export class Hero extends Creature {
       }
       entity.deleteMe = true;
     });
+
+    this.collideMap.set("Enemy", entity => {
+      for (const ote of this.onTouchEnemy) {
+        if (ote.func) ote.func(ote.data, /** @type{Creature} */ (entity));
+      }
+    });
   }
 
   /**
