@@ -13,7 +13,7 @@ export class FlameThrower extends PowerUp {
    * @param {number} magnitude how long the enemies burn for
    */
   constructor(pos, magnitude = 1) {
-    super(pos, magnitude, "Flamethrower");
+    super(pos, magnitude, "Flamethrower", "Your bullets light enemies on fire");
   }
 
   /**

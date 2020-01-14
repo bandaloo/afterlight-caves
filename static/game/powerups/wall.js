@@ -13,7 +13,7 @@ export class Wall extends PowerUp {
    * @param {number} magnitude how much this increases your defense by, 1-5
    */
   constructor(pos, magnitude = 1) {
-    super(pos, magnitude, "Wall");
+    super(pos, magnitude, "Wall", "Increases your defense");
   }
 
   /**

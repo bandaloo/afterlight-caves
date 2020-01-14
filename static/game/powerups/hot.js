@@ -13,7 +13,7 @@ export class Hot extends PowerUp {
    * @param {number} magnitude how long the enemies burn for
    */
   constructor(pos, magnitude = 1) {
-    super(pos, magnitude, "Hot");
+    super(pos, magnitude, "Hot", "You light enemies on fire");
     /**
      * @type {{ name: string
      *        , data: number

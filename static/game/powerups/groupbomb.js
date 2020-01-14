@@ -13,7 +13,7 @@ export class GroupBomb extends PowerUp {
    * @param {number} magnitude how many extra bombs to spawn
    */
   constructor(pos, magnitude = 1) {
-    super(pos, magnitude, "Group Bomb");
+    super(pos, magnitude, "Group Bomb", "Your bombs explode into sub-bombs");
     /**
      * @type {{name: string, data: number, func: (b: Bomb, n: number) => void}} */
     this.existingGroupBomb = undefined;
@@ -45,7 +45,7 @@ export class GroupBomb extends PowerUp {
           let r = bomb.speed;
           if (r < 2) r = 2;
           const newVel = new Vector(Math.cos(theta) * r, Math.sin(theta) * r);
-          const child = creature.getBomb(bomb.drawPos, bomb.good, bomb.hue);
+          const child = creature.getBomb(bomb.drawPos);
           child.vel = newVel;
           child.speed = r;
           child.wallReflectSpeed = r;

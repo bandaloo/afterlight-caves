@@ -14,13 +14,15 @@ export class PowerUp extends Entity {
    * @param {Vector} [pos = new Vector(0, 0)]
    * @param {number} [magnitude = 1] each powerup has a magnitude 1-5, e.g. how
    * much more damage you deal. 1 by default.
-   * @param {String} [powerUpClass] the class of powerup, e.g. "Damage Up" or
+   * @param {string} [powerUpClass] the class of powerup, e.g. "Damage Up" or
    * "Zoom"
+   * @param {string} [description] short description of what this powerup does
    */
   constructor(
     pos = new Vector(0, 0),
     magnitude = 1,
-    powerUpClass = "Null Powerup"
+    powerUpClass = "Null Power Up",
+    description = "This Power Up is a mystery"
   ) {
     super(pos);
     this.type = "PowerUp";
@@ -28,6 +30,7 @@ export class PowerUp extends Entity {
     // set color based on magnitude
     this.hue = [0, 134, 204, 275, 39][this.magnitude - 1];
     this.powerUpClass = powerUpClass;
+    this.description = description;
     this.width = 60;
     this.height = 60;
     /**

@@ -12,7 +12,7 @@ export class Nitroglycerin extends PowerUp {
    * @param {number} magnitude how much to increase bomb damage, 1-5
    */
   constructor(pos, magnitude = 1) {
-    super(pos, magnitude, "Nitroglycerin");
+    super(pos, magnitude, "Nitroglycerin", "Increases your bomb damage");
   }
 
   /**

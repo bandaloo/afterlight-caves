@@ -12,7 +12,7 @@ export class QuickShot extends PowerUp {
    * @param {number} magnitude how much this increases your bullet speed by, 1-5
    */
   constructor(pos, magnitude = 1) {
-    super(pos, magnitude, "Quick Shot");
+    super(pos, magnitude, "Quick Shot", "Makes your bullets faster");
   }
 
   /**

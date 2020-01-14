@@ -12,7 +12,7 @@ export class Yeet extends PowerUp {
    * @param {number} magnitude how much to increase bullet knockback by, 1-5
    */
   constructor(pos, magnitude = 1) {
-    super(pos, magnitude, "Yeet");
+    super(pos, magnitude, "Yeet", "Your bullets deal more knock-back");
   }
 
   /**

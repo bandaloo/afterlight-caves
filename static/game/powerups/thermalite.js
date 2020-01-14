@@ -12,7 +12,7 @@ export class Thermalite extends PowerUp {
    * @param {number} magnitude how much to decrease fuse time by, 1-5
    */
   constructor(pos, magnitude = 1) {
-    super(pos, magnitude, "Thermalite");
+    super(pos, magnitude, "Thermalite", "Makes your bombs explode sooner");
   }
 
   /**

@@ -14,7 +14,7 @@ export class Jalapeno extends PowerUp {
    * @param {number} magnitude how long the enemies burn for
    */
   constructor(pos, magnitude = 1) {
-    super(pos, magnitude, "Jalapeño");
+    super(pos, magnitude, "Jalapeño", "Your bombs light enemies on fire");
   }
 
   /**

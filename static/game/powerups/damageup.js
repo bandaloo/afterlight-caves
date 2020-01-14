@@ -12,7 +12,7 @@ export class DamageUp extends PowerUp {
    * @param {number} magnitude how much to increase damage, 1-5
    */
   constructor(pos, magnitude = 1) {
-    super(pos, magnitude, "Damage Up");
+    super(pos, magnitude, "Damage Up", "Increases your bullet damage");
   }
 
   /**

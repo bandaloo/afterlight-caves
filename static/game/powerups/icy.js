@@ -13,7 +13,7 @@ export class Icy extends PowerUp {
    * @param {number} magnitude how long the enemies are frozen for
    */
   constructor(pos, magnitude = 1) {
-    super(pos, magnitude, "Icy");
+    super(pos, magnitude, "Icy", "Your bullets freeze enemies");
   }
 
   /**

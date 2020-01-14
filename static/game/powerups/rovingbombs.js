@@ -12,7 +12,7 @@ export class RovingBombs extends PowerUp {
    * @param {number} magnitude how fast the bombs will move you become, 1-5
    */
   constructor(pos, magnitude = 1) {
-    super(pos, magnitude, "Roving Bombs");
+    super(pos, magnitude, "Roving Bombs", "Your bombs move");
   }
 
   /**

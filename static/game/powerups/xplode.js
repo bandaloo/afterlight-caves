@@ -14,7 +14,7 @@ export class Xplode extends PowerUp {
    * @param {number} magnitude number of new bullets to spawn
    */
   constructor(pos, magnitude = 1) {
-    super(pos, magnitude, "Xplode");
+    super(pos, magnitude, "Xplode", "Your bullets explode into more bullets");
     /** 
      * @type {{
      *  name: string, data: number, func: (b: Bullet, n: number) => void

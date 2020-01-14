@@ -13,7 +13,7 @@ export class Popsicle extends PowerUp {
    * @param {number} magnitude how long the enemies are frozen for
    */
   constructor(pos, magnitude = 1) {
-    super(pos, magnitude, "Popsicle");
+    super(pos, magnitude, "Popsicle", "Your bombs freeze enemies");
   }
 
   /**

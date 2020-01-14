@@ -12,7 +12,7 @@ export class Vitality extends PowerUp {
    * @param {number} magnitude how much this increases you max health by, 1-5
    */
   constructor(pos, magnitude = 1) {
-    super(pos, magnitude, "Vitality");
+    super(pos, magnitude, "Vitality", "Increases your health");
   }
 
   /**

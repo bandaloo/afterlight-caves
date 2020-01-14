@@ -14,7 +14,7 @@ export class Orb extends PowerUp {
    * @param {number} magnitude how many bombs to spawn
    */
   constructor(pos, magnitude = 1) {
-    super(pos, magnitude, "Orb");
+    super(pos, magnitude, "Orb", "Bombs create into bullets when they explode");
     /**
      * @type {{name: string, data: number, func: (b: Bomb, n: number) => void}} */
     this.existingOrb = undefined;

@@ -12,7 +12,7 @@ export class UltraBomb extends PowerUp {
    * @param {number} magnitude how much to increase bomb explosion time, 1-5
    */
   constructor(pos, magnitude = 1) {
-    super(pos, magnitude, "Ultra Bomb");
+    super(pos, magnitude, "Ultra Bomb", "Makes your bombs explode longer");
   }
 
   /**

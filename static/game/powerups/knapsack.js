@@ -11,7 +11,7 @@ export class Knapsack extends PowerUp {
    * @param {number} magnitude how much this increases you max bombs by, 1-5
    */
   constructor(pos, magnitude = 1) {
-    super(pos, magnitude, "Knapsack");
+    super(pos, magnitude, "Knapsack", "You can carry more bombs");
   }
 
   /**

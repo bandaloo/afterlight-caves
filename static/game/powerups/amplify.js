@@ -12,7 +12,7 @@ export class Amplify extends PowerUp {
    * @param {number} magnitude how much to increase bullet size, 1-5
    */
   constructor(pos, magnitude = 1) {
-    super(pos, magnitude, "Amplify");
+    super(pos, magnitude, "Amplify", "Makes your bullets bigger");
   }
 
   /**

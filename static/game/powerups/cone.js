@@ -12,7 +12,7 @@ export class Cone extends PowerUp {
    * @param {number} magnitude number of new bullets to add to the cone
    */
   constructor(pos, magnitude = 1) {
-    super(pos, magnitude, "Cone");
+    super(pos, magnitude, "Cone", "Fire a cone of bullets when you shoot");
   }
 
   /**

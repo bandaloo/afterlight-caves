@@ -12,7 +12,7 @@ export class Littlify extends PowerUp {
    * @param {number} magnitude how much smaller this makes you, 1-5
    */
   constructor(pos, magnitude = 1) {
-    super(pos, magnitude, "Littlify");
+    super(pos, magnitude, "Littlify", "Makes you smaller");
   }
 
   /**
