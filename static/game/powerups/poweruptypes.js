@@ -5,7 +5,7 @@ import { DamageUp } from "./damageup.js";
 import { Elastic } from "./elastic.js";
 import { FlameThrower } from "./flamethrower.js";
 import { GroupBomb } from "./groupbomb.js";
-import { Heave } from "./heave.js";
+// H
 import { Icy } from "./icy.js";
 import { Jalapeno } from "./jalapeno.js";
 import { Knapsack } from "./knapsack.js";
@@ -22,7 +22,7 @@ import { UltraBomb } from "./ultrabomb.js";
 import { Vitality } from "./vitality.js";
 import { Wall } from "./wall.js";
 import { Xplode } from "./xplode.js";
-// Y
+import { Yeet } from "./yeet.js";
 import { Zoom } from "./zoom.js";
 
 export {
@@ -33,7 +33,6 @@ export {
   Elastic,
   FlameThrower,
   GroupBomb,
-  Heave,
   Icy,
   Jalapeno,
   Knapsack,
@@ -50,6 +49,7 @@ export {
   Vitality,
   Wall,
   Xplode,
+  Yeet,
   Zoom
 };
 
@@ -61,7 +61,6 @@ export const powerUpTypes = [
   Elastic,
   FlameThrower,
   GroupBomb,
-  Heave,
   Icy,
   Jalapeno,
   Knapsack,
@@ -78,5 +77,6 @@ export const powerUpTypes = [
   Vitality,
   Wall,
   Xplode,
+  Yeet,
   Zoom
 ];

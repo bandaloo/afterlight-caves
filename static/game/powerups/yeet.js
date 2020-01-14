@@ -5,14 +5,14 @@ import { Creature } from "../creature.js";
 const MAX_BULLET_KNOCKBACK = 40;
 const BULLET_KNOCKBACK_FACTOR = 4;
 
-export class Heave extends PowerUp {
+export class Yeet extends PowerUp {
   /**
    * Increases bullet knockback
    * @param {Vector} pos
    * @param {number} magnitude how much to increase bullet knockback by, 1-5
    */
   constructor(pos, magnitude = 1) {
-    super(pos, magnitude, "Heave");
+    super(pos, magnitude, "Yeet");
   }
 
   /**
