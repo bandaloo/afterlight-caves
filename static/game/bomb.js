@@ -2,7 +2,9 @@ import { Entity } from "../modules/entity.js";
 import { Vector } from "../modules/vector.js";
 import { centeredOctagon, circle } from "./draw.js";
 import { Particle, EffectEnum } from "./particle.js";
-import { addParticle } from "../modules/gamemanager.js";
+import { addParticle, inbounds, setBlock } from "../modules/gamemanager.js";
+import { getCell } from "../modules/collision.js";
+import { blockField } from "./generator.js";
 
 /**
  * This class represents a bomb that creatures can place in the game world,
@@ -162,7 +164,7 @@ export class Bomb extends Entity {
    * makes the bomb go kaboom
    */
   detonate() {
-    this.collidesWithWalls = false;
+    this.occludedByWalls = false;
     for (const od of this.onDetonate) {
       if (od) od.func(this, od.data);
     }
@@ -180,5 +182,23 @@ export class Bomb extends Entity {
         }
       }
     );
+  }
+
+  /**
+   * @override
+   * @param {Entity} entity
+   */
+  collideWithBlock(entity) {
+    const cellVec = getCell(entity.pos);
+    if (this.fuseTime <= 0) {
+      if (setBlock(cellVec.x, cellVec.y, 0)) {
+        for (let i = 0; i < 15; i++) {
+          const p = new Particle(entity.pos, "black", EffectEnum.square, 5, 3);
+          p.lineWidth = 1;
+          p.strokeStyle = "white";
+          addParticle(p);
+        }
+      }
+    }
   }
 }

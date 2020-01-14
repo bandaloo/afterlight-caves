@@ -74,10 +74,10 @@ export class Entity {
   collideMap = new Map();
 
   /**
-   * whether entity will be pushed out of walls
+   * whether entity will get pushed out of walls
    * @type {boolean}
    */
-  collidesWithWalls = true;
+  occludedByWalls = true;
 
   /**
    * draw position slightly differs from original position to tween between frames
