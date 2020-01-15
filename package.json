@@ -1,6 +1,6 @@
 {
   "name": "proc-cave-game",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "a game where you shoot procedurally generated enemies in procedurally generated caves",
   "main": "main.js",
   "directories": {
@@ -19,12 +19,24 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bandaloo/bounce-game.git"
+    "url": "git+https://github.com/bandaloo/proc-cave-game.git"
   },
-  "author": "Cole Granof",
-  "license": "ISC",
+  "contributors": [
+    {
+      "name": "Cole Granof"
+    },
+    {
+      "name": "Joseph Petitti",
+      "url": "https://josephpetitti.com",
+      "email": "jppetitti@wpi.edu"
+    },
+    {
+      "name": "Matthew Puentes"
+    }
+  ],
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/bandaloo/bounce-game/issues"
+    "url": "https://github.com/bandaloo/proc-cave-game/issues"
   },
-  "homepage": "https://github.com/bandaloo/bounce-game#readme"
+  "homepage": "https://github.com/bandaloo/proc-cave-game#readme"
 }
