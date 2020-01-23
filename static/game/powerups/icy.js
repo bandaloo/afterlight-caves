@@ -5,6 +5,7 @@ import { Bullet } from "../bullet.js";
 import { Frozen } from "../statuseffects/frozen.js";
 
 const FROZEN_LENGTH_FACTOR = 1;
+const CHANCE_TO_FREEZE_CONST = 9;
 
 export class Icy extends PowerUp {
   /**
@@ -13,7 +14,7 @@ export class Icy extends PowerUp {
    * @param {number} magnitude how long the enemies are frozen for
    */
   constructor(pos, magnitude = 1) {
-    super(pos, magnitude, "Icy", "Your bullets freeze enemies");
+    super(pos, magnitude, "Icy", "Your bullets have a chance to freeze");
   }
 
   /**
@@ -30,7 +31,9 @@ export class Icy extends PowerUp {
        * @param {Creature} other the creature we hit
        */
       const f = (b, duration = 1, other) => {
-        new Frozen(duration * FROZEN_LENGTH_FACTOR * 60).apply(other);
+        // the duration (level of the powerup) determines the chance to freeze
+        if (Math.random() < 1 / (CHANCE_TO_FREEZE_CONST - duration))
+          new Frozen(duration * FROZEN_LENGTH_FACTOR * 60).apply(other);
       };
 
       creature.bulletOnHitEnemy.push({
