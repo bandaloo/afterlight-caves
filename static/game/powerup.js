@@ -68,6 +68,7 @@ export class PowerUp extends Entity {
     // display the name on the screen if the hero picked it up
     // this needs to be last in case something changes before we get here
     if (creature.type === "Hero") {
+      // this draw position usage is fine
       const textPos = this.drawPos.add(new Vector(0, -100));
       const td = new TextDisplay(
         this.powerUpClass + " " + this.magnitude,

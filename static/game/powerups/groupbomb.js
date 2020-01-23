@@ -45,7 +45,7 @@ export class GroupBomb extends PowerUp {
           let r = bomb.speed;
           if (r < 2) r = 2;
           const newVel = new Vector(Math.cos(theta) * r, Math.sin(theta) * r);
-          const child = creature.getBomb(bomb.drawPos);
+          const child = creature.getBomb(bomb.pos);
           child.vel = newVel;
           child.speed = r;
           child.wallReflectSpeed = r;
