@@ -74,8 +74,12 @@ function resetDemo() {
     const healthColor = "rgba(255, 50, 122, 50%)";
     rect(new Vector(0, 0), healthWidth, 64, healthColor, healthColor, 4);
     rect(new Vector(0, 0), maxHealthWidth, 64, undefined, "white", 4);
+    // round health to nearest tenth if it's not a whole number
+    let healthString = "" + health;
+    if (Math.floor(health) !== health)
+      healthString = health.toFixed(1);
     centeredText(
-      "" + health,
+      healthString,
       new Vector(20, 36),
       "bold 50px sans-serif",
       "left",
