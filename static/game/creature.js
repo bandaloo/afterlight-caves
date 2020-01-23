@@ -231,7 +231,7 @@ export class Creature extends Entity {
       this.pos.add(dir.mult(this.width / 2)),
       dir.norm2().mult(this.bulletSpeed),
       new Vector(0, 0),
-      (this.type === "Hero"),
+      this.type === "Hero",
       this.bulletColor,
       this.bulletLifetime,
       this.bulletDamage
@@ -250,10 +250,7 @@ export class Creature extends Entity {
    * @param {Vector} dir the direction to shoot in
    * @param {Vector} [additionalVelocity]
    */
-  shoot(
-    dir,
-    additionalVelocity = new Vector(0, 0)
-  ) {
+  shoot(dir, additionalVelocity = new Vector(0, 0)) {
     dir = dir.norm2();
     // Conditional is so fire count doesn't roll over before shooting
     if (this.fireCount < this.fireDelay) {
@@ -291,7 +288,7 @@ export class Creature extends Entity {
    * @param {boolean} [isGood] true if the bomb was planted by the player,
    * false otherwise
    */
-  placeBomb(pos = this.drawPos, isGood = false) {
+  placeBomb(pos = this.pos, isGood = false) {
     if (this.currentBombs > 0) {
       const b = this.getBomb(pos);
       addToWorld(b);

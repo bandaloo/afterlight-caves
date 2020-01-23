@@ -112,7 +112,7 @@ export class Hero extends Creature {
     }
 
     if (buttons.primary.status.isPressed) {
-      this.placeBomb(this.drawPos);
+      this.placeBomb(this.pos);
     }
     if (buttons.secondary.status.isPressed) {
       console.log("Secondary pressed");
