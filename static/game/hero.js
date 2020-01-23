@@ -1,11 +1,10 @@
 import { Vector } from "../modules/vector.js";
-import { centeredOutlineCircle } from "./draw.js";
-import { buttons } from "./buttons.js";
+import { circle } from "./draw.js";
+import { buttons } from "../modules/buttons.js";
 import { addParticle } from "../modules/gamemanager.js";
 import { Particle, EffectEnum } from "./particle.js";
 import { PowerUp } from "./powerup.js";
 import { Creature } from "./creature.js";
-import { Entity } from "../modules/entity.js";
 import { Bullet } from "./bullet.js";
 
 const DEFAULT_SIZE = 50;
@@ -29,9 +28,12 @@ export class Hero extends Creature {
     this.height = DEFAULT_SIZE;
     this.fireDelay = 20;
     this.maxHealth = 100;
-    this.currentHealth = this.maxHealth;
+    this.gainHealth(this.maxHealth);
     this.bulletSpeed = 4;
     this.bulletLifetime = 80;
+    this.bombFuseTime = 300;
+    this.bombHue = 126;
+    this.bulletColor = "white";
 
     // collect powerups when you collide with them
     this.collideMap.set("PowerUp", entity => {
@@ -40,7 +42,7 @@ export class Hero extends Creature {
         let randColor =
           "hsl(" + Math.floor(Math.random() * 360) + ", 100%, 50%)";
         const spark = new Particle(this.pos, randColor, EffectEnum.spark);
-        spark.width = 15;
+        spark.lineWidth = 15;
         spark.multiplier = 8;
         addParticle(spark);
       }
@@ -48,11 +50,9 @@ export class Hero extends Creature {
     });
 
     this.collideMap.set("Enemy", entity => {
-      this.hit(entity);
-    });
-
-    this.collideMap.set("EnemyBullet", entity => {
-      this.hit(entity);
+      for (const ote of this.onTouchEnemy) {
+        if (ote.func) ote.func(ote.data, /** @type{Creature} */ (entity));
+      }
     });
   }
 
@@ -60,25 +60,33 @@ export class Hero extends Creature {
    * Draws the hero at its position in the world
    */
   draw() {
-    centeredOutlineCircle(
+    // draw body
+    circle(
       this.drawPos,
       this.width / 2,
-      4,
-      "white",
       this.invincibilityFrames > 0
         ? `rgba(255, 255, 255, ${this.invincibilityFrames /
             this.invincibilityFramesMax})`
-        : "black"
-    );
-    centeredOutlineCircle(
-      this.drawPos.add(this.eyeDirection.mult(10)),
-      10,
+        : "black",
       4,
       "white"
     );
+
+    // draw eye
+    circle(
+      this.drawPos.add(this.eyeDirection.mult(10)),
+      12,
+      undefined,
+      4,
+      "white"
+    );
+
+    // draw status effects
+    super.draw();
   }
 
   action() {
+    // gradually return to default size
     if (Math.random() < 0.01) {
       if (this.width > DEFAULT_SIZE || this.height > DEFAULT_SIZE) {
         this.width = Math.floor(this.width - 1);
@@ -95,54 +103,33 @@ export class Hero extends Creature {
     }
     this.acc = buttons.move.vec.mult(this.movementMultiplier);
     // prevents velocity from getting too small and normalization messing up
-    this.shoot(buttons.shoot.vec, true, undefined, this.vel);
+    this.shoot(buttons.shoot.vec, this.vel);
     if (!buttons.shoot.vec.isZeroVec()) {
       const normalizedShootVec = buttons.shoot.vec.norm2();
       this.eyeDirection = normalizedShootVec;
     } else if (this.vel.magnitude() > 0.001) {
       this.eyeDirection = this.vel.norm();
     }
+
+    if (buttons.primary.status.isPressed) {
+      this.placeBomb(this.drawPos);
+    }
+    if (buttons.secondary.status.isPressed) {
+      console.log("Secondary pressed");
+    }
+
+    // apply powerup effects
+    super.action();
   }
 
   /**
+   * @param {number} amt of damage to take
    * @override
    */
-  collideWithBlock() {
-    if (this.bounciness > 0) {
-      this.vel = this.vel.norm2();
-      this.vel = this.vel.mult(5 * this.rubberiness);
-    }
-  }
-
-  /**
-   * get hit by an enemy or enemy bullet
-   * @param {Entity} entity
-   */
-  hit(entity) {
-    // TODO move this scalar somewhere else
-    const damageScalar = 10;
-    const damage = Math.floor(
-      (entity.type === "Enemy"
-        ? /** @type {Creature} */ (entity).bulletDamage
-        : /** @type {Bullet} */ (entity).damage) * damageScalar
-    );
-
-    // basically leniency as far as taking damage goes
-    const hitBuffer = 10;
-
-    const hitDist = entity.width + this.width - hitBuffer;
-
-    if (this.invincibilityFrames == 0) {
-      if (this.pos.dist(entity.pos) < hitDist) {
-        this.currentHealth -= damage;
-        this.invincibilityFrames = this.invincibilityFramesMax;
-        if (entity.type === "EnemyBullet") {
-          entity.deleteMe = true;
-        }
-        if (this.currentHealth < 0) {
-          this.currentHealth = 0;
-        }
-      }
+  takeDamage(amt) {
+    if (this.invincibilityFrames <= 0) {
+      super.takeDamage(amt);
+      this.invincibilityFrames = this.invincibilityFramesMax;
     }
   }
 }

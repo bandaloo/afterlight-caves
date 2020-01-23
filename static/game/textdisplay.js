@@ -8,26 +8,34 @@ export class TextDisplay extends Entity {
    * @param {string} text text to display
    * @param {Vector} pos
    * @param {number} [duration] amount of time this text display lasts in game
-   * @param {number} [hue] hsl hue
-   * @param {string | CanvasGradient} [strokeStyle] default "black"
-   * @param {string} [font] default "bold 100px arial"
    * steps before fading. Default = Infinity
+   * @param {string} [font] default "bold 100px arial"
+   * @param {number} [hue] hsl hue
+   * @param {string|CanvasGradient|CanvasPattern} [strokeStyle] leave undefined
+   * for no outline
+   * @param {number} [lineWidth]
    */
   constructor(
     text,
     pos,
     duration = Infinity,
+    font = "bold 100px arial",
     hue = 0,
-    strokeStyle = "black",
-    font = "bold 100px arial"
+    strokeStyle,
+    lineWidth
   ) {
     super(pos);
     this.type = "TextDisplay";
     this.text = text;
     this.hue = hue;
     this.strokeStyle = strokeStyle;
+    this.lineWidth = lineWidth,
     this.font = font;
     this.duration = duration;
+    this.align =
+      /** @type {CanvasTextAlign} */ ("center");
+    this.baseline = 
+      /** @type {CanvasTextBaseline} */ ("alphabetic");
     this.opacity = 1; // for fadeout
   }
 
@@ -53,9 +61,12 @@ export class TextDisplay extends Entity {
     centeredText(
       this.text,
       this.drawPos,
-      "hsla(" + this.hue + ", 100%, 50%, " + this.opacity + ")",
+      this.font,
+      this.align,
+      this.baseline,
+      `hsla(${this.hue}, 100%, 50%, ${this.opacity})`,
       this.strokeStyle,
-      this.font
+      this.lineWidth
     );
   }
 }

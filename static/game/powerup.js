@@ -1,7 +1,7 @@
 import { Vector } from "../modules/vector.js";
 import { Entity } from "../modules/entity.js";
 import { Creature } from "./creature.js";
-import { centeredOutlineCircle, centeredText, drawShines } from "./draw.js";
+import { centeredText, drawShines, circle } from "./draw.js";
 import { TextDisplay } from "./textdisplay.js";
 import { addToWorld } from "../modules/gamemanager.js";
 
@@ -11,18 +11,26 @@ import { addToWorld } from "../modules/gamemanager.js";
 export class PowerUp extends Entity {
   /**
    * constructs a new powerup
-   * @param {Vector} pos
-   * @param {number} [magnitude] each powerup has a magnitude 1-5, e.g. how big
-   * Bigify makes you. 1 by default.
-   * @param {String} powerUpClass the class of powerup, e.g. "Damage" or "Zoom"
+   * @param {Vector} [pos = new Vector(0, 0)]
+   * @param {number} [magnitude = 1] each powerup has a magnitude 1-5, e.g. how
+   * much more damage you deal. 1 by default.
+   * @param {string} [powerUpClass] the class of powerup, e.g. "Damage Up" or
+   * "Zoom"
+   * @param {string} [description] short description of what this powerup does
    */
-  constructor(pos, magnitude = 1, powerUpClass = "Null Powerup") {
+  constructor(
+    pos = new Vector(0, 0),
+    magnitude = 1,
+    powerUpClass = "Null Power Up",
+    description = "This Power Up is a mystery"
+  ) {
     super(pos);
     this.type = "PowerUp";
     this.magnitude = magnitude;
     // set color based on magnitude
     this.hue = [0, 134, 204, 275, 39][this.magnitude - 1];
     this.powerUpClass = powerUpClass;
+    this.description = description;
     this.width = 60;
     this.height = 60;
     /**
@@ -65,8 +73,8 @@ export class PowerUp extends Entity {
         this.powerUpClass + " " + this.magnitude,
         textPos,
         120,
-        this.hue,
-        "rgba(0, 0, 0, 0)"
+        undefined,
+        this.hue
       );
 
       addToWorld(td);
@@ -75,7 +83,7 @@ export class PowerUp extends Entity {
 
   /**
    * Returns true if the creature is at the max level for this powerup.
-   * 
+   *
    * PowerUps should override this, because there is no limit by default
    * The only side-effect this should have is trimming the magnitude of this.
    * For example, if you want to set a maximum total Damage magnitude at 100,
@@ -97,10 +105,7 @@ export class PowerUp extends Entity {
    * @param {Creature} creature
    */
   overflowAction(creature) {
-    creature.currentHealth = Math.floor(Math.min(
-      creature.currentHealth + creature.maxHealth * (0.5 * this.magnitude),
-      creature.maxHealth
-    ));
+    creature.gainHealth(creature.maxHealth * 0.5 * this.magnitude);
     if (creature.type === "Hero") {
       const textPos = this.drawPos.add(new Vector(0, -100));
       console.log("Hero at max");
@@ -108,8 +113,8 @@ export class PowerUp extends Entity {
         "Max " + this.powerUpClass + " reached",
         textPos,
         120,
-        this.hue,
-        "rgba(0, 0, 0, 0)"
+        undefined,
+        this.hue
       );
 
       addToWorld(td);
@@ -132,20 +137,15 @@ export class PowerUp extends Entity {
       }
     }
     // circle
-    centeredOutlineCircle(
-      this.drawPos,
-      30,
-      4,
-      "hsl(" + this.hue + ", 100%, 50%)",
-      "black"
-    );
+    circle(this.drawPos, 32, "black", 4, "hsl(" + this.hue + ", 100%, 50%)");
     // text
     centeredText(
       this.powerUpClass.slice(0, 1),
       this.drawPos.add(new Vector(0, 16)),
-      "hsl(" + this.hue + ", 100%, 50%)",
-      "rgba(0, 0, 0, 0)",
-      "bold 50px Arial"
+      "bold 50px sans-serif",
+      "center",
+      "alphabetic",
+      "hsl(" + this.hue + ", 100%, 50%)"
     );
   }
 }

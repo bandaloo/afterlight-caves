@@ -2,11 +2,7 @@ import { Entity, FarEnum } from "../modules/entity.js";
 import { Vector } from "../modules/vector.js";
 import { randomFromEnum, randomInt, hsl } from "../modules/helpers.js";
 import { Creature } from "./creature.js";
-import {
-  centeredOutlineRect,
-  centeredOutlineCircle,
-  drawLine
-} from "./draw.js";
+import { centeredRect, circle } from "./draw.js";
 import { addParticle, addToWorld } from "../modules/gamemanager.js";
 import { Particle, EffectEnum } from "./particle.js";
 import { Bullet } from "./bullet.js";
@@ -112,21 +108,46 @@ export class Enemy extends Creature {
     this.modifiers = modifiers;
     this.width = 50 + 50 * this.modifiers.size;
     this.height = 50 + 50 * this.modifiers.size;
-    this.bounciness = 1;
+    this.reflectsOffWalls = true;
     this.drag = 0.005;
-
-    // what to do when colliding with other entities
-    this.collideMap.set("PlayerBullet", entity => {
-      this.hit(entity);
-    });
+    this.touchDamage = 1;
+    this.maxRedFrames = 60;
+    this.redFrames = 0;
+    this.drawColor = this.look.color;
+    this.bulletKnockback = 3;
+    this.bulletColor = this.look.color;
 
     this.farType = FarEnum.deactivate;
+
+    this.collideMap.set(
+      "Hero",
+      /** @param {import("./hero.js").Hero} h */ h => this.touchHero(h)
+    );
+  }
+
+  /**
+   * @param {import("./hero.js").Hero} hero
+   */
+  touchHero(hero) {
+    // impart momentum
+    if (hero.invincibilityFrames <= 0) {
+      const sizeDiff =
+        (0.5 * this.width * this.height) / (hero.width * hero.height);
+      hero.vel = hero.vel.add(this.vel.mult(sizeDiff));
+    }
+
+    // execute onTouchEnemy functions
+    for (const ote of this.onTouchEnemy) {
+      if (ote.func) ote.func(ote.data, /** @type{Creature} */ (hero));
+    }
+    // deal basic touch damage
+    hero.takeDamage(this.touchDamage);
   }
 
   destroy() {
     for (let i = 0; i < 30; i++) {
       let p = new Particle(this.pos, this.look.color, EffectEnum.spark);
-      p.width = 5;
+      p.lineWidth = 5;
       addParticle(p);
     }
 
@@ -156,22 +177,17 @@ export class Enemy extends Creature {
 
   drawBody() {
     // draw the body
+    const bgColor = this.redFrames === 0 ? "black" : "rgba(255, 69, 0, 0.3)";
     if (this.look.shape === ShapeEnum.circle) {
-      centeredOutlineCircle(
-        this.drawPos,
-        this.width / 2,
-        4,
-        this.look.color,
-        "black"
-      );
+      circle(this.drawPos, this.width / 2, bgColor, 4, this.drawColor);
     } else {
-      centeredOutlineRect(
+      centeredRect(
         this.drawPos,
         this.width,
         this.height,
-        4,
-        this.look.color,
-        "black"
+        bgColor,
+        this.drawColor,
+        4
       );
     }
   }
@@ -182,6 +198,7 @@ export class Enemy extends Creature {
   draw() {
     this.drawBody();
     this.drawFace();
+    super.draw();
   }
 
   toString() {
@@ -194,18 +211,23 @@ export class Enemy extends Creature {
   }
 
   /**
-   * what to do when being hit by a bullet
-   * @param {Entity} entity
+   * @override
+   * @param {number} amt amount of damage to take
    */
-  hit(entity) {
-    this.vel = this.vel.add(entity.vel.mult(0.7 / (1 + this.modifiers.size)));
-    // Cast entity to a bullet because it can only be hit by a bullet for now
-    if (!entity.deleteMe) {
-      this.health -= /** @type {Bullet} */ (entity).damage;
+  takeDamage(amt) {
+    this.redFrames = this.maxRedFrames;
+    this.drawColor = "orangered";
+    super.takeDamage(amt);
+  }
+
+  /**
+   * @override
+   */
+  action() {
+    if (this.redFrames > 0) {
+      if (this.redFrames === 1) this.drawColor = this.look.color;
+      this.redFrames--;
     }
-    if (this.health <= 0) {
-      this.deleteMe = true;
-    }
-    entity.deleteMe = true;
+    super.action();
   }
 }

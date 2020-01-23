@@ -2,17 +2,17 @@ import { PowerUp } from "../powerup.js";
 import { Vector } from "../../modules/vector.js";
 import { Creature } from "../creature.js";
 
-const MIN_SIZE = 20;
-const SIZE_FACTOR = 5;
+const MAX_BOMB_TIME_TO_EXPLODE = 1000;
+const EXPLOSION_TIME_FACTOR = 15;
 
-export class Littlify extends PowerUp {
+export class UltraBomb extends PowerUp {
   /**
-   * Makes you smaller
+   * Increases your bomb explosion time
    * @param {Vector} pos
-   * @param {number} magnitude how much smaller this makes you, 1-5
+   * @param {number} magnitude how much to increase bomb explosion time, 1-5
    */
   constructor(pos, magnitude = 1) {
-    super(pos, magnitude, "Littlify", "Makes you smaller");
+    super(pos, magnitude, "Ultra Bomb", "Makes your bombs explode longer");
   }
 
   /**
@@ -23,8 +23,7 @@ export class Littlify extends PowerUp {
   apply(creature) {
     if (!this.isAtMax(creature)) {
       super.apply(creature);
-      creature.width -= this.magnitude * SIZE_FACTOR;
-      creature.height -= this.magnitude * SIZE_FACTOR;
+      creature.bombTimeToExplode += this.magnitude * EXPLOSION_TIME_FACTOR;
     } else {
       this.overflowAction(creature);
     }
@@ -37,14 +36,15 @@ export class Littlify extends PowerUp {
    * @override
    */
   isAtMax(creature) {
-    // creature is just too big
-    if (creature.width <= MIN_SIZE || creature.height <= MIN_SIZE) {
+    // creature bomb explosion time is already at or over the limit
+    if (creature.bombTimeToExplode >= MAX_BOMB_TIME_TO_EXPLODE) {
       return true;
     }
 
     // see if we need to trim magnitude
     const availMag = Math.floor(
-      Math.abs(MIN_SIZE - creature.width) / SIZE_FACTOR
+      (MAX_BOMB_TIME_TO_EXPLODE - creature.bombTimeToExplode) /
+        EXPLOSION_TIME_FACTOR
     );
     if (availMag < 1) return true;
 

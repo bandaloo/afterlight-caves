@@ -1,4 +1,4 @@
-import { boardToString, getGrid, getEmptySpaces } from "./game/life.js";
+import { getGrid, getEmptySpaces } from "./game/life.js";
 import { caveRules, EdgesEnum } from "./game/rules.js";
 import {
   startUp,
@@ -11,40 +11,17 @@ import {
   setImportantEntity,
   getTerrain,
   setGameGuiFunc,
-  getImportantEntity,
-  getContext
+  getImportantEntity
 } from "./modules/gamemanager.js";
-import {
-  drawBoard,
-  drawCircle,
-  centeredOutlineCircle,
-  centeredOutlineEllipse,
-  centeredText,
-  centeredOutlineRect
-} from "./game/draw.js";
-import { Enemy, randomLook, randomStats } from "./game/enemy.js";
+import { drawBoard, centeredText, rect } from "./game/draw.js";
+import { randomLook, randomStats } from "./game/enemy.js";
 import { Vector } from "./modules/vector.js";
 import { shuffle, randomInt, hsl } from "./modules/helpers.js";
 import { Hero } from "./game/hero.js";
 import { initBlockField, segregateTerrain } from "./game/generator.js";
-import { Boss } from "./game/boss.js";
-import { PowerUp } from "./game/powerup.js";
-import { Bigify } from "./game/powerups/bigify.js";
-import { Elastic } from "./game/powerups/elastic.js";
-import { HealthUp } from "./game/powerups/healthup.js";
-import { Littlify } from "./game/powerups/littlify.js";
-import { QuickShot } from "./game/powerups/quickshot.js";
-import { Rubber } from "./game/powerups/rubber.js";
-import { Sniper } from "./game/powerups/sniper.js";
-import { Xplode } from "./game/powerups/xplode.js";
-import { Zoom } from "./game/powerups/zoom.js";
-import { Scatter } from "./game/scatter.js";
-import { Chase } from "./game/chase.js";
-import { Shooter } from "./game/shooter.js";
 import { populateLevel } from "./game/spawner.js";
-import { MachineGun } from "./game/powerups/machinegun.js";
-import { Damage } from "./game/powerups/damage.js";
 import { Creature } from "./game/creature.js";
+import { powerUpTypes } from "./game/powerups/poweruptypes.js";
 
 const blockWidth = 60;
 const blockHeight = 60;
@@ -87,26 +64,31 @@ function resetDemo() {
 
   setGameGuiFunc(() => {
     // TODO get rid of magic numbers for drawing the gui
-    const borderVec = new Vector(8, 8);
     const hero = getImportantEntity("hero");
-    const health = /** @type {Creature} */ (hero).currentHealth;
+    const health = /** @type {Creature} */ (hero).getCurrentHealth();
     const maxHealth = /** @type {Creature} */ (hero).maxHealth;
-    // Uncenter the centered outline rect
+    const currentBombs = /** @type {Creature} */ (hero).currentBombs;
+    const maxBombs = /** @type {Creature} */ (hero).maxBombs;
     const maxHealthWidth = maxHealth * 10;
     const healthWidth = health * 10;
-    const maxHealthVec = new Vector(maxHealthWidth / 2, 32).add(borderVec);
-    const healthVec = new Vector(healthWidth / 2, 32).add(borderVec);
-    centeredOutlineRect(maxHealthVec, maxHealthWidth, 64, 4, "white");
-    centeredOutlineRect(healthVec, healthWidth, 64, 4, "white", "#ffffff77");
+    const healthColor = "rgba(255, 50, 122, 50%)";
+    rect(new Vector(0, 0), healthWidth, 64, healthColor, healthColor, 4);
+    rect(new Vector(0, 0), maxHealthWidth, 64, undefined, "white", 4);
     centeredText(
       "" + health,
-      new Vector(16, 32).add(borderVec),
-      "white",
-      "black",
-      undefined,
+      new Vector(20, 36),
+      "bold 50px sans-serif",
       "left",
       "middle",
-      3
+      "white"
+    );
+    centeredText(
+      `${currentBombs} / ${maxBombs}`,
+      new Vector(20, 100),
+      "bold 50px sans-serif",
+      "left",
+      "middle",
+      "white"
     );
   });
 
@@ -152,19 +134,6 @@ function resetDemo() {
 
   const tilesPerAdditionalPowerupChance = 150;
 
-  const powerUpTypes = [
-    Bigify,
-    Damage,
-    Elastic,
-    HealthUp,
-    MachineGun,
-    Littlify,
-    QuickShot,
-    Rubber,
-    Sniper,
-    Xplode,
-    Zoom
-  ];
   for (let i = 0; i < caveLocations.length; i++) {
     if (i == largestGroup) continue;
 

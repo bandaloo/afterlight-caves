@@ -1,6 +1,6 @@
 import { Entity } from "../modules/entity.js";
 import { randomInt, randomNormalVec } from "../modules/helpers.js";
-import { centeredOutlineRect, drawLine } from "./draw.js";
+import { line, centeredRoundedRect } from "./draw.js";
 import { Vector } from "../modules/vector.js";
 
 /**
@@ -13,7 +13,7 @@ export class Particle extends Entity {
   /**
    * constructs a particle
    * @param {Vector} pos
-   * @param {string} style
+   * @param {string} fillStyle
    * @param {EffectEnum} effect
    * @param {number} [baseSpeed]
    * @param {number} [randSpeed]
@@ -24,7 +24,7 @@ export class Particle extends Entity {
    */
   constructor(
     pos,
-    style,
+    fillStyle,
     effect,
     baseSpeed = 10,
     randSpeed = 3,
@@ -40,27 +40,29 @@ export class Particle extends Entity {
     this.lifetime = baseLifetime + randomInt(randLifetime);
     this.width = 16;
     this.height = 16;
-    this.style = style;
+    this.fillStyle = fillStyle;
     this.drag = drag;
+    this.strokeStyle = "white";
+    this.lineWidth = 1;
     this.multiplier = 5;
   }
 
   draw() {
     if (this.effect === EffectEnum.square) {
-      centeredOutlineRect(
+      centeredRoundedRect(
         this.drawPos,
         this.width,
         this.height,
-        1,
-        "white",
-        this.style
+        this.fillStyle,
+        this.strokeStyle,
+        this.lineWidth
       );
     } else if (this.effect === EffectEnum.spark) {
-      drawLine(
+      line(
         this.drawPos,
         this.drawPos.add(this.vel.mult(this.multiplier)),
-        this.style,
-        this.width
+        this.fillStyle,
+        this.lineWidth
       );
     }
   }
