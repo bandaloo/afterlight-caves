@@ -130,9 +130,9 @@ export class Enemy extends Creature {
    */
   touchHero(hero) {
     // impart momentum
-    if (!(hero.invincibilityFrames > 0)) {
+    if (hero.invincibilityFrames <= 0) {
       const sizeDiff =
-        (0.5 * (this.width * this.height)) / (hero.width * hero.height);
+        (0.5 * this.width * this.height) / (hero.width * hero.height);
       hero.vel = hero.vel.add(this.vel.mult(sizeDiff));
     }
 

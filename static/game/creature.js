@@ -222,7 +222,7 @@ export class Creature extends Entity {
   /**
    * Gets this creature's bullet.
    *
-   * You should always use this method instead of calling `new Bullet' dirrectly
+   * You should always use this method instead of calling `new Bullet' directly
    * @param {Vector} dir
    * @return {Bullet}
    */
@@ -270,8 +270,7 @@ export class Creature extends Entity {
         // degree cone
         let newDir = dir;
         if (this.bulletsPerShot > 1) {
-          let theta = Math.atan(dir.y / dir.x);
-          if (dir.x < 0) theta += Math.PI; // account for left-facing shots
+          let theta = Math.atan2(dir.y, dir.x);
           const r = dir.mag();
           const degreesToAdd = (i / (this.bulletsPerShot - 1)) * 30 - 15;
           theta += degreesToAdd * (Math.PI / 180);
@@ -303,7 +302,7 @@ export class Creature extends Entity {
   /**
    * Gets this creature's bomb.
    *
-   * You should always use this method instead of calling `new Bomb' dirrectly
+   * You should always use this method instead of calling `new Bomb' directly
    * @param {Vector} pos
    * @return {Bomb}
    */
@@ -334,7 +333,8 @@ export class Creature extends Entity {
   }
 
   /**
-   * Decreases the creatures current health by amt, killing it if necessary
+   * Decreases the creature's current health by the given amount, killing it if
+   * necessary
    * @param {number} amt the amount of damage dealt
    */
   takeDamage(amt) {

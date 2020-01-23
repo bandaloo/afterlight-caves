@@ -46,7 +46,7 @@ export class Entity {
   maxSpeed = Infinity;
 
   /** @type {number} maximum magnitude acceleration can have */
-  maxAcc = Infinity;
+  maxAccMag = Infinity;
 
   // TODO these are only useful for collision tests; is there a better way?
   /** @type {boolean} */
@@ -139,8 +139,8 @@ export class Entity {
    * steps the entity using position, velocity, acceleration and drag
    */
   step() {
-    if (this.acc.mag() > this.maxAcc)
-      this.acc = this.acc.norm2().mult(this.maxAcc);
+    if (this.acc.mag() > this.maxAccMag)
+      this.acc = this.acc.norm2().mult(this.maxAccMag);
     this.vel = this.vel.add(this.acc).mult(1 - this.drag);
     if (this.vel.mag() > this.maxSpeed)
       this.vel = this.vel.norm2().mult(this.maxSpeed);

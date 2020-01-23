@@ -29,16 +29,7 @@ export class Burning extends StatusEffect {
     if (this.burned) {
       creature.takeDamage(BURNING_DAMAGE);
     }
-    // call the super-class's action to step down lifetime
-    super.action(creature);
-  }
-
-  /**
-   * Draw flames and smoke coming out of the creature
-   * @override
-   * @param {Creature} creature the creature that has this status effect
-   */
-  draw(creature) {
+    // make some particles
     // TODO this could probably look better
     if (Math.random() < 0.4) {
       // create a fire particle
@@ -68,5 +59,7 @@ export class Burning extends StatusEffect {
       p.height = 20;
       addParticle(p);
     }
+    // call the super-class's action to step down lifetime
+    super.action(creature);
   }
 }

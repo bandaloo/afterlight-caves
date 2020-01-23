@@ -19,7 +19,7 @@ export class Frozen extends StatusEffect {
     super("Frozen", lifetime);
     this.prevAcc = undefined;
     this.previousMaxSpeed = undefined;
-    this.previousMaxAcc = undefined;
+    this.previousMaxAccMag = undefined;
     this.previousReflectsOffWalls = undefined;
     this.previousDrag = undefined;
   }
@@ -31,11 +31,11 @@ export class Frozen extends StatusEffect {
    */
   initialize(creature) {
     this.previousMaxSpeed = creature.maxSpeed;
-    this.previousMaxAcc = creature.maxAcc;
+    this.previousMaxAccMag = creature.maxAccMag;
     this.previousReflectsOffWalls = creature.reflectsOffWalls;
     this.previousDrag = creature.drag;
     creature.maxSpeed = MAX_FROZEN_SPEED;
-    creature.maxAcc = MAX_FROZEN_ACCELERATION;
+    creature.maxAccMag = MAX_FROZEN_ACCELERATION;
     creature.reflectsOffWalls = false;
     creature.drag = FROZEN_DRAG;
   }

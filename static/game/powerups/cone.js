@@ -37,7 +37,7 @@ export class Cone extends PowerUp {
    * @override
    */
   isAtMax(creature) {
-    // is the number of explodes already too high?
+    // is the number of bullets per shot already too high?
     if (creature.bulletsPerShot >= MAX_SPLIT_BULLETS) return true;
 
     // see if we need to trim magnitude

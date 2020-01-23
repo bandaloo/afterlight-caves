@@ -75,6 +75,34 @@ export class Bomb extends Entity {
         (Math.abs(this.fuseTime) / this.timeToExplode) * this.blastRadius;
       this.width = radius * 2;
       this.height = radius * 2;
+      // create some particles
+      const numParticles = Math.floor(Math.random() * 20) + 6;
+      for (let i = 0; i < numParticles; ++i) {
+        let particleHue = (this.hue - 30 + Math.random() * 30) % 360;
+        let color = `hsl(${particleHue}, 100%, 50%)`;
+        const xOffset = (Math.random() * this.width - this.width / 2) / 2;
+        const yOffset = (Math.random() * this.height - this.height / 2) / 2;
+        const p = new Particle(
+          new Vector(this.drawPos.x + xOffset, this.drawPos.y + yOffset),
+          color,
+          EffectEnum.spark,
+          5,
+          5,
+          0.04,
+          80,
+          40,
+          new Vector(0, 0)
+        );
+        const diff = p.drawPos.sub(this.drawPos);
+        let theta = Math.atan2(diff.y, diff.x);
+        const r = 10 + 1 / diff.mag() + 0.2;
+        p.vel = new Vector(r * Math.cos(theta), r * Math.sin(theta));
+        p.strokeStyle = "white";
+        p.lineWidth = 8;
+        p.width = 20;
+        p.height = 20;
+        addParticle(p);
+      }
     } else if (this.fuseTime < -1 * this.timeToExplode) {
       // done exploding
       this.deleteMe = true;
@@ -117,35 +145,6 @@ export class Bomb extends Entity {
         );
       }
     } else if (this.fuseTime >= -1 * this.timeToExplode) {
-      // create some particles
-      const numParticles = Math.floor(Math.random() * 20) + 6;
-      for (let i = 0; i < numParticles; ++i) {
-        let particleHue = (this.hue - 30 + Math.random() * 30) % 360;
-        let color = `hsl(${particleHue}, 100%, 50%)`;
-        const xOffset = (Math.random() * this.width - this.width / 2) / 2;
-        const yOffset = (Math.random() * this.height - this.height / 2) / 2;
-        const p = new Particle(
-          new Vector(this.drawPos.x + xOffset, this.drawPos.y + yOffset),
-          color,
-          EffectEnum.spark,
-          5,
-          5,
-          0.04,
-          80,
-          40,
-          new Vector(0, 0)
-        );
-        const diff = p.drawPos.sub(this.drawPos);
-        let theta = Math.atan(diff.y / diff.x);
-        if (diff.x < 0) theta += Math.PI; // account for left-facing diff
-        const r = 10 + 1 / diff.mag() + 0.2;
-        p.vel = new Vector(r * Math.cos(theta), r * Math.sin(theta));
-        p.strokeStyle = "white";
-        p.lineWidth = 8;
-        p.width = 20;
-        p.height = 20;
-        addParticle(p);
-      }
       // draw explosion
       const radius =
         (Math.abs(this.fuseTime) / this.timeToExplode) * this.blastRadius;

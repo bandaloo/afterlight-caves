@@ -127,7 +127,7 @@ export class Hero extends Creature {
    * @override
    */
   takeDamage(amt) {
-    if (this.invincibilityFrames === 0) {
+    if (this.invincibilityFrames <= 0) {
       super.takeDamage(amt);
       this.invincibilityFrames = this.invincibilityFramesMax;
     }
