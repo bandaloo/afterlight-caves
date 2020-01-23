@@ -28,7 +28,13 @@ export class PowerUp extends Entity {
     this.type = "PowerUp";
     this.magnitude = magnitude;
     // set color based on magnitude
-    this.hue = [0, 134, 204, 275, 39][this.magnitude - 1];
+    this.colors = [
+      [168, 157, 157], // gray
+      [21, 189, 79], // green
+      [46, 98, 219], // blue
+      [211, 9, 222], // purple
+      [255, 165, 0] // orange
+    ][this.magnitude - 1];
     this.powerUpClass = powerUpClass;
     this.description = description;
     this.width = 60;
@@ -75,7 +81,7 @@ export class PowerUp extends Entity {
         textPos,
         120,
         undefined,
-        this.hue
+        ...this.colors
       );
 
       addToWorld(td);
@@ -115,7 +121,7 @@ export class PowerUp extends Entity {
         textPos,
         120,
         undefined,
-        this.hue
+        ...this.colors
       );
 
       addToWorld(td);
@@ -138,7 +144,13 @@ export class PowerUp extends Entity {
       }
     }
     // circle
-    circle(this.drawPos, 32, "black", 4, "hsl(" + this.hue + ", 100%, 50%)");
+    circle(
+      this.drawPos,
+      32,
+      "black",
+      4,
+      `rgb(${this.colors[0]}, ${this.colors[1]}, ${this.colors[2]})`
+    );
     // text
     centeredText(
       this.powerUpClass.slice(0, 1),
@@ -146,7 +158,7 @@ export class PowerUp extends Entity {
       "bold 50px sans-serif",
       "center",
       "alphabetic",
-      "hsl(" + this.hue + ", 100%, 50%)"
+      `rgb(${this.colors[0]}, ${this.colors[1]}, ${this.colors[2]})`
     );
   }
 }

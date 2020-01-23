@@ -10,7 +10,9 @@ export class TextDisplay extends Entity {
    * @param {number} [duration] amount of time this text display lasts in game
    * steps before fading. Default = Infinity
    * @param {string} [font] default "bold 100px arial"
-   * @param {number} [hue] hsl hue
+   * @param {number} [red] red value, 0-255
+   * @param {number} [green] green value, 0-255
+   * @param {number} [blue] blue value, 0-255
    * @param {string|CanvasGradient|CanvasPattern} [strokeStyle] leave undefined
    * for no outline
    * @param {number} [lineWidth]
@@ -20,14 +22,18 @@ export class TextDisplay extends Entity {
     pos,
     duration = Infinity,
     font = "bold 100px arial",
-    hue = 0,
+    red = 255,
+    green = 255,
+    blue = 255,
     strokeStyle,
     lineWidth
   ) {
     super(pos);
     this.type = "TextDisplay";
     this.text = text;
-    this.hue = hue;
+    this.red = red;
+    this.green = green;
+    this.blue = blue;
     this.strokeStyle = strokeStyle;
     this.lineWidth = lineWidth,
     this.font = font;
@@ -64,7 +70,7 @@ export class TextDisplay extends Entity {
       this.font,
       this.align,
       this.baseline,
-      `hsla(${this.hue}, 100%, 50%, ${this.opacity})`,
+      `rgba(${this.red}, ${this.green}, ${this.blue}, ${this.opacity})`,
       this.strokeStyle,
       this.lineWidth
     );
