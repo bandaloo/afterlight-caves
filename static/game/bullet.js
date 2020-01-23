@@ -1,6 +1,6 @@
 import { Vector } from "../modules/vector.js";
 import { Entity, FarEnum } from "../modules/entity.js";
-import { centeredOutlineCircle } from "./draw.js";
+import { circle } from "./draw.js";
 import { getCell } from "../modules/collision.js";
 import { setBlock, addParticle, inbounds } from "../modules/gamemanager.js";
 import { Particle, EffectEnum } from "./particle.js";
@@ -32,23 +32,51 @@ export class Bullet extends Entity {
     this.drag = 0.003;
     this.width = 24;
     this.height = 24;
-    this.bounciness = 0;
+    this.reflectsOffWalls = false;
     this.color = color;
     this.damage = damage;
+    this.knockback = 3;
     /**
      * @type {{ name: string, data: number, func: (function(Bullet, number): void) }[]}
      */
     this.onDestroy = new Array();
+
+    /**
+     * @type {{ name: string
+     *        , data: number
+     *        , func: (function( Bullet
+     *                         , number
+     *                         , import("./creature.js").Creature
+     *                         ): void
+     *                )
+     *        }[]}
+     */
+    this.onHitEnemy = new Array();
     this.damage = damage;
-    //good ? (this.type = "PlayerBullet") : (this.type = "EnemyBullet");
-    this.type = good ? "PlayerBullet" : "EnemyBullet";
     this.farType = FarEnum.delete;
+    this.type = good ? "PlayerBullet" : "EnemyBullet";
+    // set function for when we hit enemies
+    this.collideMap.set(
+      this.good ? "Enemy" : "Hero",
+      /** @param {import ("./creature.js").Creature} c */ c => {
+        // deal basic damage
+        c.takeDamage(this.damage);
+        // impart momentum
+        const size = (c.width * c.height) / 300;
+        c.vel = c.vel.add(this.vel.mult(this.knockback / size));
+        // call onHitEnemy functions
+        for (const ohe of this.onHitEnemy) {
+          if (ohe.func) ohe.func(this, ohe.data, c);
+        }
+        this.deleteMe = true;
+      }
+    );
   }
 
   action() {}
 
   draw() {
-    centeredOutlineCircle(this.drawPos, this.width / 2, 4, this.color, "black");
+    circle(this.drawPos, this.width / 2, "black", 4, this.color);
   }
 
   destroy() {
@@ -67,7 +95,7 @@ export class Bullet extends Entity {
         5,
         0.12
       );
-      spark.width = 5;
+      spark.lineWidth = 5;
       addParticle(spark);
     }
   }
@@ -84,19 +112,16 @@ export class Bullet extends Entity {
     ) {
       if (setBlock(cellVec.x, cellVec.y, 0)) {
         for (let i = 0; i < 15; i++) {
-          addParticle(
-            new Particle(entity.pos, "black", EffectEnum.square, 5, 3)
-          );
+          const p = new Particle(entity.pos, "black", EffectEnum.square, 5, 3);
+          p.lineWidth = 1;
+          p.strokeStyle = "white";
+          addParticle(p);
         }
       }
     }
     // remove the bullet if it's not supposed to bounce
-    if (this.bounciness === 0) {
+    if (!this.reflectsOffWalls) {
       this.deleteMe = true;
-    } else {
-      // bounce off
-      this.vel = this.vel.norm2();
-      this.vel = this.vel.mult(5 * this.rubberiness);
     }
   }
 }

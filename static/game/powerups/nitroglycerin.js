@@ -2,17 +2,17 @@ import { PowerUp } from "../powerup.js";
 import { Vector } from "../../modules/vector.js";
 import { Creature } from "../creature.js";
 
-const MIN_SIZE = 20;
-const SIZE_FACTOR = 5;
+const MAX_BOMB_DAMAGE = 1000;
+const DAMAGE_FACTOR = 1;
 
-export class Littlify extends PowerUp {
+export class Nitroglycerin extends PowerUp {
   /**
-   * Makes you smaller
+   * Increases your bomb damage
    * @param {Vector} pos
-   * @param {number} magnitude how much smaller this makes you, 1-5
+   * @param {number} magnitude how much to increase bomb damage, 1-5
    */
   constructor(pos, magnitude = 1) {
-    super(pos, magnitude, "Littlify", "Makes you smaller");
+    super(pos, magnitude, "Nitroglycerin", "Increases your bomb damage");
   }
 
   /**
@@ -23,8 +23,9 @@ export class Littlify extends PowerUp {
   apply(creature) {
     if (!this.isAtMax(creature)) {
       super.apply(creature);
-      creature.width -= this.magnitude * SIZE_FACTOR;
-      creature.height -= this.magnitude * SIZE_FACTOR;
+      creature.setBombDamage(
+        this.existingBombDamage + this.magnitude * DAMAGE_FACTOR
+      );
     } else {
       this.overflowAction(creature);
     }
@@ -37,14 +38,15 @@ export class Littlify extends PowerUp {
    * @override
    */
   isAtMax(creature) {
-    // creature is just too big
-    if (creature.width <= MIN_SIZE || creature.height <= MIN_SIZE) {
+    // creature bomb damage is already at or over the limit
+    this.existingBombDamage = creature.getBombDamage();
+    if (this.existingBombDamage >= MAX_BOMB_DAMAGE) {
       return true;
     }
 
     // see if we need to trim magnitude
     const availMag = Math.floor(
-      Math.abs(MIN_SIZE - creature.width) / SIZE_FACTOR
+      (MAX_BOMB_DAMAGE - this.existingBombDamage) / DAMAGE_FACTOR
     );
     if (availMag < 1) return true;
 

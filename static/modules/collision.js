@@ -170,18 +170,19 @@ export function calculateCollisionVector(entityA, entityB) {
 }
 
 /**
- * move the entity based on collisions with walls and other entities
+ * move the entity based on collisions with walls
  * @param {Entity} entity
  */
 export function adjustEntity(entity) {
   // Initialize collision list with collisions between entity and the world
   //console.log(entity.type);
-  let collidingEntities;
-  if (entity.hitsWalls) collidingEntities = collideWithWorld(entity);
-  else collidingEntities = [];
+  /** @type {Entity[]} */
+  const collidingEntities = collideWithWorld(entity);
 
-  let collisionVectors = [];
+  /** @type {Vector[]} */
+  const collisionVectors = [];
 
+  /** @type {Entity[]} */
   const hitEntities = [];
 
   // Iterate through each colliding entity, and get a vector that defines how
@@ -191,40 +192,51 @@ export function adjustEntity(entity) {
       entity,
       collidingEntities[i]
     );
-    // TODO replace with isZeroVector
-    if (!(collisionVector.x == 0 && collisionVector.y == 0)) {
+    if (!(collisionVector.isZeroVec())) {
       collisionVectors.push(collisionVector);
       hitEntities.push(collidingEntities[i]);
     }
   }
-  // Keep track of how far entity moved during adjustment.
-  const mv = new Vector(0, 0);
-  // For each colliding vector, resolve the collision.
-  for (let i = 0; i < collisionVectors.length; i++) {
-    const cv = collisionVectors[i];
-    if (Math.abs(cv.x) > Math.abs(cv.y) && cv.x != 0) {
-      // If x is the "easiest" solution (but not 0), use x.
-      if (Math.abs(cv.x) > Math.abs(mv.x)) {
-        mv.x = cv.x;
+  if (entity.occludedByWalls) {
+    // Keep track of how far entity moved during adjustment.
+    const mv = new Vector(0, 0);
+    // For each colliding vector, resolve the collision.
+    for (let i = 0; i < collisionVectors.length; i++) {
+      const cv = collisionVectors[i];
+      if (Math.abs(cv.x) > Math.abs(cv.y) && cv.x != 0) {
+        // If x is the "easiest" solution (but not 0), use x.
+        if (Math.abs(cv.x) > Math.abs(mv.x)) {
+          mv.x = cv.x;
+        }
+      } else if (Math.abs(cv.y) > Math.abs(cv.x) && cv.y != 0) {
+        // If y is the "easiest" solution (but not 0), use y.
+        if (Math.abs(cv.y) > Math.abs(mv.y)) {
+          mv.y = cv.y;
+        }
+      } else {
+        // If X and Y are equal, resolve them both.
+        entity.pos.x -= cv.x;
+        entity.pos.y -= cv.y;
       }
-    } else if (Math.abs(cv.y) > Math.abs(cv.x) && cv.y != 0) {
-      // If y is the "easiest" solution (but not 0), use y.
-      if (Math.abs(cv.y) > Math.abs(mv.y)) {
-        mv.y = cv.y;
+    }
+
+    entity.pos = entity.pos.sub(mv);
+
+    // bounce based on the move vector
+    if (entity.reflectsOffWalls) {
+      if (mv.x !== 0) entity.vel.x *= -1;
+      if (mv.y !== 0) entity.vel.y *= -1;
+      if (hitEntities.length > 0 && entity.wallReflectSpeed !== 0) {
+        entity.vel = entity.vel.norm2().mult(entity.wallReflectSpeed);
       }
     } else {
-      // If X and Y are equal, resolve them both.
-      entity.pos.x -= cv.x;
-      entity.pos.y -= cv.y;
+      // if we're not supposed to bounce then just stop
+      if (mv.x !== 0) entity.vel.x = 0;
+      if (mv.y !== 0) entity.vel.y = 0;
     }
   }
 
-  entity.pos = entity.pos.sub(mv);
-
-  // bounce based on the move vector
-  if (mv.x !== 0) entity.vel.x *= -entity.bounciness;
-  if (mv.y !== 0) entity.vel.y *= -entity.bounciness;
-
+  // fire block collision method
   for (let i = 0; i < hitEntities.length; i++) {
     entity.collideWithBlock(hitEntities[i]);
   }

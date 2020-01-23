@@ -2,17 +2,17 @@ import { PowerUp } from "../powerup.js";
 import { Vector } from "../../modules/vector.js";
 import { Creature } from "../creature.js";
 
-const MIN_SIZE = 20;
-const SIZE_FACTOR = 5;
+const MAX_BULLET_KNOCKBACK = 40;
+const BULLET_KNOCKBACK_FACTOR = 4;
 
-export class Littlify extends PowerUp {
+export class Yeet extends PowerUp {
   /**
-   * Makes you smaller
+   * Increases bullet knockback
    * @param {Vector} pos
-   * @param {number} magnitude how much smaller this makes you, 1-5
+   * @param {number} magnitude how much to increase bullet knockback by, 1-5
    */
   constructor(pos, magnitude = 1) {
-    super(pos, magnitude, "Littlify", "Makes you smaller");
+    super(pos, magnitude, "Yeet", "Your bullets deal more knock-back");
   }
 
   /**
@@ -23,8 +23,7 @@ export class Littlify extends PowerUp {
   apply(creature) {
     if (!this.isAtMax(creature)) {
       super.apply(creature);
-      creature.width -= this.magnitude * SIZE_FACTOR;
-      creature.height -= this.magnitude * SIZE_FACTOR;
+      creature.bulletKnockback += this.magnitude * BULLET_KNOCKBACK_FACTOR;
     } else {
       this.overflowAction(creature);
     }
@@ -37,14 +36,15 @@ export class Littlify extends PowerUp {
    * @override
    */
   isAtMax(creature) {
-    // creature is just too big
-    if (creature.width <= MIN_SIZE || creature.height <= MIN_SIZE) {
+    // check if bullet knockback is already too high
+    if (creature.bulletKnockback >= MAX_BULLET_KNOCKBACK) {
       return true;
     }
 
     // see if we need to trim magnitude
     const availMag = Math.floor(
-      Math.abs(MIN_SIZE - creature.width) / SIZE_FACTOR
+      (MAX_BULLET_KNOCKBACK - creature.bulletKnockback) /
+        BULLET_KNOCKBACK_FACTOR
     );
     if (availMag < 1) return true;
 

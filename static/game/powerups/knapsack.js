@@ -2,17 +2,16 @@ import { PowerUp } from "../powerup.js";
 import { Vector } from "../../modules/vector.js";
 import { Creature } from "../creature.js";
 
-const MAX_SIZE = 500;
-const SIZE_FACTOR = 5;
+const KNAPSACK_FACTOR = 1;
 
-export class Bigify extends PowerUp {
+export class Knapsack extends PowerUp {
   /**
-   * Makes you bigger
+   * Increases your max bombs
    * @param {Vector} pos
-   * @param {number} magnitude how big this makes you, 1-5
+   * @param {number} magnitude how much this increases you max bombs by, 1-5
    */
   constructor(pos, magnitude = 1) {
-    super(pos, magnitude, "Bigify");
+    super(pos, magnitude, "Knapsack", "You can carry more bombs");
   }
 
   /**
@@ -23,8 +22,8 @@ export class Bigify extends PowerUp {
   apply(creature) {
     if (!this.isAtMax(creature)) {
       super.apply(creature);
-      creature.width += this.magnitude * SIZE_FACTOR;
-      creature.height += this.magnitude * SIZE_FACTOR;
+      creature.maxBombs += this.magnitude * KNAPSACK_FACTOR;
+      creature.addBombs(this.magnitude * KNAPSACK_FACTOR);
     } else {
       this.overflowAction(creature);
     }
@@ -37,16 +36,7 @@ export class Bigify extends PowerUp {
    * @override
    */
   isAtMax(creature) {
-    // creature is just too big
-    if (creature.width >= MAX_SIZE || creature.height >= MAX_SIZE) {
-      return true;
-    }
-
-    // see if we need to trim magnitude
-    const availMag = Math.floor((MAX_SIZE - creature.width) / SIZE_FACTOR);
-    if (availMag < 1) return true;
-
-    this.magnitude = Math.min(availMag, this.magnitude);
+    // I don't think it's possible to have too many max bombs
     return false;
   }
 }

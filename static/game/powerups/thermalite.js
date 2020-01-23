@@ -2,17 +2,17 @@ import { PowerUp } from "../powerup.js";
 import { Vector } from "../../modules/vector.js";
 import { Creature } from "../creature.js";
 
-const MAX_MAX_HEALTH = 1000;
-const HEALTH_FACTOR = 10;
+const MIN_FUSE_TIME = 30;
+const FUSE_TIME_FACTOR = 20;
 
-export class HealthUp extends PowerUp {
+export class Thermalite extends PowerUp {
   /**
-   * Increases your max health
+   * Decreases the fuse time of your bombs
    * @param {Vector} pos
-   * @param {number} magnitude how much this increases you max health by, 1-5
+   * @param {number} magnitude how much to decrease fuse time by, 1-5
    */
   constructor(pos, magnitude = 1) {
-    super(pos, magnitude, "Health Up");
+    super(pos, magnitude, "Thermalite", "Makes your bombs explode sooner");
   }
 
   /**
@@ -23,8 +23,7 @@ export class HealthUp extends PowerUp {
   apply(creature) {
     if (!this.isAtMax(creature)) {
       super.apply(creature);
-      creature.maxHealth += this.magnitude * HEALTH_FACTOR;
-      creature.currentHealth += this.magnitude * HEALTH_FACTOR;
+      creature.bombFuseTime -= this.magnitude * FUSE_TIME_FACTOR;
     } else {
       this.overflowAction(creature);
     }
@@ -37,14 +36,14 @@ export class HealthUp extends PowerUp {
    * @override
    */
   isAtMax(creature) {
-    // creature is just too big
-    if (creature.maxHealth >= MAX_MAX_HEALTH) {
+    // creature bomb fuse time is already under the limit
+    if (creature.bombFuseTime <= MIN_FUSE_TIME) {
       return true;
     }
 
     // see if we need to trim magnitude
     const availMag = Math.floor(
-      (MAX_MAX_HEALTH - creature.maxHealth) / HEALTH_FACTOR
+      Math.abs(MIN_FUSE_TIME - creature.bombFuseTime) / FUSE_TIME_FACTOR
     );
     if (availMag < 1) return true;
 

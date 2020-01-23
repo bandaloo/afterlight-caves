@@ -4,7 +4,7 @@ import {
   hasImportantEntity,
   getImportantEntity
 } from "../modules/gamemanager.js";
-import { drawShines, centeredOutlineCircle } from "./draw.js";
+import { drawShines, circle } from "./draw.js";
 import { randomInt } from "../modules/helpers.js";
 
 /**
@@ -43,7 +43,7 @@ export class Boss extends Enemy {
     super(pos, look, stats, vel, acc, modifiers);
     this.drag = 0.015;
     this.maxHealth = 10;
-    this.currentHealth = 10;
+    this.gainHealth(10);
     this.shines = new Array(30);
     for (let i = 0; i < 30; ++i) {
       this.shines[i] = {
@@ -61,6 +61,7 @@ export class Boss extends Enemy {
    * @override
    */
   action() {
+    super.action();
     // TODO probably add more complex AI
     if (hasImportantEntity("hero")) {
       const hero = getImportantEntity("hero");
@@ -93,13 +94,7 @@ export class Boss extends Enemy {
    */
   drawFace() {
     // TODO implement
-    centeredOutlineCircle(
-      this.drawPos,
-      this.width / 2,
-      4,
-      this.look.color,
-      "black"
-    );
+    circle(this.drawPos, this.width / 2, "black", 4, this.drawColor);
   }
 
   draw() {

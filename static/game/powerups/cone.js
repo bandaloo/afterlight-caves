@@ -2,17 +2,17 @@ import { PowerUp } from "../powerup.js";
 import { Vector } from "../../modules/vector.js";
 import { Creature } from "../creature.js";
 
-const MIN_SIZE = 20;
-const SIZE_FACTOR = 5;
+const MAX_SPLIT_BULLETS = 10;
+const BULLET_DAMAGE_FACTOR = 1.2;
 
-export class Littlify extends PowerUp {
+export class Cone extends PowerUp {
   /**
-   * Makes you smaller
+   * Instead of firing one bullet you fire a cone of bullets
    * @param {Vector} pos
-   * @param {number} magnitude how much smaller this makes you, 1-5
+   * @param {number} magnitude number of new bullets to add to the cone
    */
   constructor(pos, magnitude = 1) {
-    super(pos, magnitude, "Littlify", "Makes you smaller");
+    super(pos, magnitude, "Cone", "Fire a cone of bullets when you shoot");
   }
 
   /**
@@ -23,10 +23,10 @@ export class Littlify extends PowerUp {
   apply(creature) {
     if (!this.isAtMax(creature)) {
       super.apply(creature);
-      creature.width -= this.magnitude * SIZE_FACTOR;
-      creature.height -= this.magnitude * SIZE_FACTOR;
+      creature.bulletsPerShot += this.magnitude;
+      creature.bulletDamage *= (1 / this.magnitude) * BULLET_DAMAGE_FACTOR;
     } else {
-      this.overflowAction(creature);
+      super.overflowAction(creature);
     }
   }
 
@@ -37,14 +37,12 @@ export class Littlify extends PowerUp {
    * @override
    */
   isAtMax(creature) {
-    // creature is just too big
-    if (creature.width <= MIN_SIZE || creature.height <= MIN_SIZE) {
-      return true;
-    }
+    // is the number of bullets per shot already too high?
+    if (creature.bulletsPerShot >= MAX_SPLIT_BULLETS) return true;
 
     // see if we need to trim magnitude
     const availMag = Math.floor(
-      Math.abs(MIN_SIZE - creature.width) / SIZE_FACTOR
+      Math.abs(MAX_SPLIT_BULLETS - creature.bulletsPerShot)
     );
     if (availMag < 1) return true;
 

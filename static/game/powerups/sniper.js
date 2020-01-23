@@ -12,7 +12,7 @@ export class Sniper extends PowerUp {
    * @param {number} magnitude how much this increases your range by, 1-5
    */
   constructor(pos, magnitude = 1) {
-    super(pos, magnitude, "Sniper");
+    super(pos, magnitude, "Sniper", "You can shoot farther");
   }
 
   /**

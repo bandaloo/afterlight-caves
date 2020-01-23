@@ -12,7 +12,12 @@ export class MachineGun extends PowerUp {
    * @param {number} magnitude how much to increase fire rate, 1-5
    */
   constructor(pos, magnitude = 1) {
-    super(pos, magnitude, "MachineGun");
+    super(
+      pos,
+      magnitude,
+      "Machine Gun",
+      "You can fire more bullets per second"
+    );
   }
 
   /**

@@ -31,8 +31,22 @@ export class Entity {
   /** @type {number} */
   depth = 0;
 
-  /** @type {number} 0 if it can't bounce, 1 if it can */
-  bounciness = 0;
+  /** @type {boolean} whether or not this bounces off of walls */
+  reflectsOffWalls = false;
+
+  /**
+   * Speed of this entity after bouncing off a wall. If set to 0 the entity
+   * will have the same speed it had before the collision. Only has an effect
+   * if this.reflectsOffWalls is true
+   * @type {number}
+   */
+  wallReflectSpeed = 0;
+
+  /** @type {number} maximum magnitude velocity can have */
+  maxSpeed = Infinity;
+
+  /** @type {number} maximum magnitude acceleration can have */
+  maxAccMag = Infinity;
 
   // TODO these are only useful for collision tests; is there a better way?
   /** @type {boolean} */
@@ -59,19 +73,11 @@ export class Entity {
   /** @type {Map<string, (arg0: Entity) => void>}*/
   collideMap = new Map();
 
-  // TODO incorporate this
   /**
-   * whether entity will be pushed out of walls
+   * whether entity will get pushed out of walls
    * @type {boolean}
    */
-  hitsWalls = true;
-
-  /**
-   * how fast it bounces off after a collision. Only has an
-   * effect if bounciness if 1.
-   * @type {number}
-   */
-  rubberiness = 0;
+  occludedByWalls = true;
 
   /**
    * draw position slightly differs from original position to tween between frames
@@ -107,8 +113,8 @@ export class Entity {
     this.lastPos = pos;
     /** @type {Vector} */
     this.vel = vel;
+    /** @type {Vector} */
     this.acc = acc;
-    //this.powerUpsList = new Array(); /** @type {string[]} */
   }
 
   onScreen() {
@@ -133,7 +139,11 @@ export class Entity {
    * steps the entity using position, velocity, acceleration and drag
    */
   step() {
+    if (this.acc.mag() > this.maxAccMag)
+      this.acc = this.acc.norm2().mult(this.maxAccMag);
     this.vel = this.vel.add(this.acc).mult(1 - this.drag);
+    if (this.vel.mag() > this.maxSpeed)
+      this.vel = this.vel.norm2().mult(this.maxSpeed);
     this.pos = this.pos.add(this.vel);
   }
 
