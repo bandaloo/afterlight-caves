@@ -48,12 +48,12 @@ export class PowerUp extends Entity {
      *        }[]
      * }
      */
-    this.shines = new Array(30);
-    for (let i = 0; i < 30; ++i) {
+    this.shines = new Array(10);
+    for (let i = 0; i < 10; ++i) {
       this.shines[i] = {
         angle: Math.random() * 2 * Math.PI,
-        width: 0.15 + Math.random() * 0.2,
-        length: 50 + Math.floor(Math.random() * 25),
+        width: 0.35 + Math.random() * 0.2,
+        length: 40 + Math.floor(Math.random() * 25),
         speed: 0.01 + Math.random() * 0.03,
         hue: Math.floor(Math.random() * 360)
       };
@@ -137,7 +137,7 @@ export class PowerUp extends Entity {
     drawShines(this.drawPos, this.shines);
     for (const s of this.shines) {
       s.angle += s.speed;
-      s.hue += 5;
+      s.hue += 1;
       if (s.angle > 2 * Math.PI) s.angle -= 2 * Math.PI;
       if (s.hue >= 360) {
         s.hue = 0;
