@@ -64,13 +64,15 @@ function resetDemo() {
 
   setGameGuiFunc(() => {
     // TODO get rid of magic numbers for drawing the gui
+    const sizeScalar = 6;
+    const borderVec = new Vector(8, 8);
     const hero = getImportantEntity("hero");
     const health = /** @type {Creature} */ (hero).getCurrentHealth();
     const maxHealth = /** @type {Creature} */ (hero).maxHealth;
     const currentBombs = /** @type {Creature} */ (hero).currentBombs;
     const maxBombs = /** @type {Creature} */ (hero).maxBombs;
-    const maxHealthWidth = maxHealth * 10;
-    const healthWidth = health * 10;
+    const maxHealthWidth = maxHealth * sizeScalar;
+    const healthWidth = health * sizeScalar;
     const healthColor = "rgba(255, 50, 122, 50%)";
     rect(new Vector(0, 0), healthWidth, 64, healthColor, healthColor, 4);
     rect(new Vector(0, 0), maxHealthWidth, 64, undefined, "white", 4);
@@ -134,9 +136,19 @@ function resetDemo() {
     if (caveLocations[i].length == 0) caveLocations.splice(i, i);
   }
 
+  const hero = new Hero(
+    new Vector(0, 0).add(
+      new Vector(blockWidth / 2, blockHeight / 2).add(emptySpaces[11])
+    )
+  );
+
+  setImportantEntity("hero", hero);
+  setCameraEntity(hero);
+  addToWorld(hero);
+
   populateLevel(getTerrain(), 320);
 
-  const tilesPerAdditionalPowerupChance = 150;
+  const tilesPerAdditionalPowerupChance = 300;
 
   for (let i = 0; i < caveLocations.length; i++) {
     if (i == largestGroup) continue;
@@ -169,16 +181,6 @@ function resetDemo() {
       }
     }
   }
-
-  const hero = new Hero(
-    new Vector(0, 0).add(
-      new Vector(blockWidth / 2, blockHeight / 2).add(emptySpaces[11])
-    )
-  );
-
-  setCameraEntity(hero);
-  setImportantEntity("hero", hero);
-  addToWorld(hero);
 }
 
 document.addEventListener("keydown", e => {

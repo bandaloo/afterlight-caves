@@ -1,5 +1,5 @@
 import { Vector } from "../modules/vector.js";
-import { Entity } from "../modules/entity.js";
+import { Entity, FarEnum } from "../modules/entity.js";
 import { circle } from "./draw.js";
 import { getCell } from "../modules/collision.js";
 import { setBlock, addParticle, inbounds } from "../modules/gamemanager.js";
@@ -37,10 +37,7 @@ export class Bullet extends Entity {
     this.damage = damage;
     this.knockback = 3;
     /**
-     * @type {{ name: string
-     *        , data: number
-     *        , func: (function(Bullet, number): void)
-     *        }[]}
+     * @type {{ name: string, data: number, func: (function(Bullet, number): void) }[]}
      */
     this.onDestroy = new Array();
 
@@ -56,6 +53,7 @@ export class Bullet extends Entity {
      */
     this.onHitEnemy = new Array();
     this.damage = damage;
+    this.farType = FarEnum.delete;
     this.type = good ? "PlayerBullet" : "EnemyBullet";
     // set function for when we hit enemies
     this.collideMap.set(

@@ -246,9 +246,10 @@ export class Creature extends Entity {
   }
 
   /**
-   * Shoots in the given direction
+   * Shoots in the given direction, returning true if bullet was actually shot
    * @param {Vector} dir the direction to shoot in
    * @param {Vector} [additionalVelocity]
+   * @returns {boolean}
    */
   shoot(dir, additionalVelocity = new Vector(0, 0)) {
     dir = dir.norm2();
@@ -258,7 +259,7 @@ export class Creature extends Entity {
     }
     if (dir.isZeroVec()) {
       // can't shoot without a direction
-      return;
+      return false;
     }
     // shoot a bullet
     if (this.fireCount >= this.fireDelay) {
@@ -278,7 +279,9 @@ export class Creature extends Entity {
         addToWorld(b);
         this.fireCount = 0;
       }
+      return true;
     }
+    return false;
   }
 
   /**
@@ -381,6 +384,7 @@ export class Creature extends Entity {
         return;
       }
     }
+    return false;
   }
 
   /**

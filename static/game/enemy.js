@@ -6,6 +6,7 @@ import { centeredRect, circle } from "./draw.js";
 import { addParticle, addToWorld } from "../modules/gamemanager.js";
 import { Particle, EffectEnum } from "./particle.js";
 import { Bullet } from "./bullet.js";
+import { playSound } from "../modules/sound.js";
 
 /**
  * an enum for allowed shapes of enemies
@@ -215,6 +216,7 @@ export class Enemy extends Creature {
    * @param {number} amt amount of damage to take
    */
   takeDamage(amt) {
+    playSound("../sounds/enemy-hurt.wav");
     this.redFrames = this.maxRedFrames;
     this.drawColor = "orangered";
     super.takeDamage(amt);
