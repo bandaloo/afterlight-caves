@@ -1,7 +1,9 @@
-body, html {
+body,
+html {
   height: 100%;
   margin: 0;
 }
+
 body {
   background-color: #2f3236;
   margin: 0;
@@ -27,13 +29,12 @@ div#gamediv-holder {
 
 div#credits-container {
   display: flex;
-  justify-content: center;
+  align-items: center;
+  flex-direction: column;
   width: 100%;
 }
 
-p#credits {
-  text-align: center;
-  width: 400px;
-  display: flex;
-  justify-content: space-around;
+div#credits-container > p {
+  margin: 0.2em 0;
+  font-size: 0.7em;
 }
