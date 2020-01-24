@@ -106,7 +106,6 @@ export class Hero extends Creature {
     this.acc = buttons.move.vec.mult(this.movementMultiplier);
     // prevents velocity from getting too small and normalization messing up
     if (this.shoot(buttons.shoot.vec, this.vel)) {
-      console.log("shot");
       playSound("sounds/laser-shot.wav");
     }
     if (!buttons.shoot.vec.isZeroVec()) {
