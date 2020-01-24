@@ -46,3 +46,4 @@ The easiest way to run the tests is to launch a local server and open
 ["explosion12" by V-ktor](https://freesound.org/people/V-ktor/sounds/435413/)
 ["Spacey 1up/Powerup" by GameAudio](https://freesound.org/people/GameAudio/sounds/220173/)
 ["a shot" by Halgrimm](https://freesound.org/people/Halgrimm/sounds/156895/)
+["Captive Portal" by Me As](https://files.freemusicarchive.org/storage-freemusicarchive-org/music/no_curator/Captive_Portal/Toy_Sounds_Vol_1/Captive_Portal_-_02_-_Me_As.mp3)

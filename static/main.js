@@ -22,6 +22,22 @@ import { initBlockField, segregateTerrain } from "./game/generator.js";
 import { populateLevel } from "./game/spawner.js";
 import { Creature } from "./game/creature.js";
 import { powerUpTypes } from "./game/powerups/poweruptypes.js";
+import {
+  addSound,
+  playSound,
+  pauseSound,
+  resetSound
+} from "./modules/sound.js";
+
+// load resources
+addSound("enemy-hurt", "../sounds/enemy-hurt.wav");
+addSound("laser-shot", "../sounds/laser-shot.wav");
+addSound("spacey-snd", "../sounds/spacey-snd.wav");
+addSound("captive-portal", "../sounds/captive-portal.mp3");
+
+setTimeout(() => {
+  playSound("captive-portal", false);
+}, 2000);
 
 const blockWidth = 60;
 const blockHeight = 60;
@@ -78,8 +94,7 @@ function resetDemo() {
     rect(new Vector(0, 0), maxHealthWidth, 64, undefined, "white", 4);
     // round health to nearest tenth if it's not a whole number
     let healthString = "" + health;
-    if (Math.floor(health) !== health)
-      healthString = health.toFixed(1);
+    if (Math.floor(health) !== health) healthString = health.toFixed(1);
     centeredText(
       healthString,
       new Vector(20, 36),
@@ -192,6 +207,6 @@ document.addEventListener("keydown", e => {
   }
 });
 
-resetDemo();
+//resetDemo();
 
 startUp();
