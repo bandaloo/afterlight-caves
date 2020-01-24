@@ -38,3 +38,8 @@ div#credits-container > p {
   margin: 0.2em 0;
   font-size: 0.7em;
 }
+
+source {
+  display: none;
+}
+
