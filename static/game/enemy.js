@@ -15,6 +15,11 @@ import { Pickup, PickupEnum } from "./pickup.js";
  */
 export const ShapeEnum = Object.freeze({ square: 1, circle: 2 });
 
+const DROP_CHANCE = 0.2;
+
+const BOMB_CHANCE = 0.3;
+// naturally, the health chance is one minus the bomb chance
+
 // TODO figure out how to put shape enum in the jsdoc
 
 /**
@@ -151,8 +156,6 @@ export class Enemy extends Creature {
       let p = new Particle(this.pos, this.look.color, EffectEnum.spark);
       p.lineWidth = 5;
       addParticle(p);
-      // TODO change this to being only a chance
-      addToWorld(new Pickup(this.pos, PickupEnum.bomb));
     }
 
     if (this.modifiers.size > 0) {
@@ -176,6 +179,17 @@ export class Enemy extends Creature {
         addToWorld(childEnemy);
         randDir += (2 * Math.PI) / spawnNum;
       }
+    }
+
+    // TODO change this to being only a chance
+    if (Math.random() < DROP_CHANCE) {
+      if (Math.random() < BOMB_CHANCE) {
+        addToWorld(new Pickup(this.pos, PickupEnum.bomb));
+      } else {
+        addToWorld(new Pickup(this.pos, PickupEnum.health));
+      }
+    } else {
+      console.log("no drop");
     }
   }
 
