@@ -28,7 +28,13 @@ export class PowerUp extends Entity {
     this.type = "PowerUp";
     this.magnitude = magnitude;
     // set color based on magnitude
-    this.hue = [0, 134, 204, 275, 39][this.magnitude - 1];
+    this.colors = [
+      [168, 157, 157], // gray
+      [21, 189, 79], // green
+      [46, 98, 219], // blue
+      [211, 9, 222], // purple
+      [255, 165, 0] // orange
+    ][this.magnitude - 1];
     this.powerUpClass = powerUpClass;
     this.description = description;
     this.width = 60;
@@ -42,12 +48,12 @@ export class PowerUp extends Entity {
      *        }[]
      * }
      */
-    this.shines = new Array(30);
-    for (let i = 0; i < 30; ++i) {
+    this.shines = new Array(10);
+    for (let i = 0; i < 10; ++i) {
       this.shines[i] = {
         angle: Math.random() * 2 * Math.PI,
-        width: 0.15 + Math.random() * 0.2,
-        length: 50 + Math.floor(Math.random() * 25),
+        width: 0.35 + Math.random() * 0.2,
+        length: 40 + Math.floor(Math.random() * 25),
         speed: 0.01 + Math.random() * 0.03,
         hue: Math.floor(Math.random() * 360)
       };
@@ -75,7 +81,7 @@ export class PowerUp extends Entity {
         textPos,
         120,
         undefined,
-        this.hue
+        ...this.colors
       );
 
       addToWorld(td);
@@ -115,7 +121,7 @@ export class PowerUp extends Entity {
         textPos,
         120,
         undefined,
-        this.hue
+        ...this.colors
       );
 
       addToWorld(td);
@@ -131,14 +137,20 @@ export class PowerUp extends Entity {
     drawShines(this.drawPos, this.shines);
     for (const s of this.shines) {
       s.angle += s.speed;
-      s.hue += 5;
+      s.hue += 1;
       if (s.angle > 2 * Math.PI) s.angle -= 2 * Math.PI;
       if (s.hue >= 360) {
         s.hue = 0;
       }
     }
     // circle
-    circle(this.drawPos, 32, "black", 4, "hsl(" + this.hue + ", 100%, 50%)");
+    circle(
+      this.drawPos,
+      32,
+      "black",
+      4,
+      `rgb(${this.colors[0]}, ${this.colors[1]}, ${this.colors[2]})`
+    );
     // text
     centeredText(
       this.powerUpClass.slice(0, 1),
@@ -146,7 +158,7 @@ export class PowerUp extends Entity {
       "bold 50px sans-serif",
       "center",
       "alphabetic",
-      "hsl(" + this.hue + ", 100%, 50%)"
+      `rgb(${this.colors[0]}, ${this.colors[1]}, ${this.colors[2]})`
     );
   }
 }

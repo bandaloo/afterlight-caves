@@ -38,7 +38,7 @@ export class Hero extends Creature {
     // collect powerups when you collide with them
     this.collideMap.set("PowerUp", entity => {
       /** @type {PowerUp} */ (entity).apply(this);
-      for (let i = 0; i < 60; i++) {
+      for (let i = 0; i < 30; i++) {
         let randColor =
           "hsl(" + Math.floor(Math.random() * 360) + ", 100%, 50%)";
         const spark = new Particle(this.pos, randColor, EffectEnum.spark);
