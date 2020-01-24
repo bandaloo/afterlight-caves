@@ -278,8 +278,8 @@ export class Creature extends Entity {
         b.vel = b.vel.add(additionalVelocity);
         addToWorld(b);
         this.fireCount = 0;
-        return true;
       }
+      return true;
     }
     return false;
   }

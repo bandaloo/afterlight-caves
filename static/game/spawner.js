@@ -26,15 +26,6 @@ export function populateLevel(board, numEnemies) {
   // board containing distances from nearest solid block
   const { board: distBoard, cells: distCells } = distanceBoard(board);
 
-  // randomize the distance cells
-  /*
-  for (let i = 0; i < distCells.length; i++) {
-    if (distCells[i] !== undefined) {
-      distCells[i] = shuffle(distCells[i]);
-    }
-  }
-  */
-
   const creatureClasses = [Chase, Scatter, Shooter];
 
   const enemyLooks = [];
@@ -51,7 +42,6 @@ export function populateLevel(board, numEnemies) {
     // TODO randomly choose this position correctly
     const size = randomInt(3);
     if (distCells[size + 1] === undefined) {
-      console.log("undefined? " + size);
       continue;
     }
     const safetyDistance = 1000;
@@ -82,7 +72,6 @@ export function populateLevel(board, numEnemies) {
         const easyRespawnChance =
           (easyDistance - Math.sqrt(distanceToHero2)) / easyDistance;
         if (Math.random() < easyRespawnChance) {
-          console.log("easy respawning");
           continue;
         }
       }
