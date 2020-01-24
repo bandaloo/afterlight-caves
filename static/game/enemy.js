@@ -7,6 +7,7 @@ import { addParticle, addToWorld } from "../modules/gamemanager.js";
 import { Particle, EffectEnum } from "./particle.js";
 import { Bullet } from "./bullet.js";
 import { playSound } from "../modules/sound.js";
+import { Pickup, PickupEnum } from "./pickup.js";
 
 /**
  * an enum for allowed shapes of enemies
@@ -150,6 +151,8 @@ export class Enemy extends Creature {
       let p = new Particle(this.pos, this.look.color, EffectEnum.spark);
       p.lineWidth = 5;
       addParticle(p);
+      // TODO change this to being only a chance
+      addToWorld(new Pickup(this.pos, PickupEnum.bomb));
     }
 
     if (this.modifiers.size > 0) {
