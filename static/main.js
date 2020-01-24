@@ -26,7 +26,8 @@ import {
   addSound,
   playSound,
   pauseSound,
-  resetSound
+  resetSound,
+  loopSound
 } from "./modules/sound.js";
 
 // load resources
@@ -35,9 +36,8 @@ addSound("laser-shot", "../sounds/laser-shot.wav");
 addSound("spacey-snd", "../sounds/spacey-snd.wav");
 addSound("captive-portal", "../sounds/captive-portal.mp3");
 
-setTimeout(() => {
-  playSound("captive-portal", false);
-}, 2000);
+playSound("captive-portal", false);
+loopSound("captive-portal");
 
 const blockWidth = 60;
 const blockHeight = 60;
@@ -207,6 +207,6 @@ document.addEventListener("keydown", e => {
   }
 });
 
-//resetDemo();
+resetDemo();
 
 startUp();

@@ -27,7 +27,21 @@ export function playSound(str, copy = true) {
     ).cloneNode(true));
     clonedSound.play();
   } else {
-    getSound(str).play();
+    // Due to an autoplay policy, sound can't be played until the DOM is
+    // interacted with. If that happens, the sound will try to play again in one
+    // second. This is the autoplay policy:
+    // https://developers.google.com/web/updates/2017/09/autoplay-policy-changes
+    getSound(str)
+      .play()
+      .catch(err => {
+        console.log(
+          "sound couldn't be played due to user not interacting with DOM yet." +
+            " trying again soon."
+        );
+        setTimeout(() => {
+          playSound(str, copy);
+        }, 1000);
+      });
   }
 }
 
