@@ -38,7 +38,7 @@ export class Hero extends Creature {
 
     // collect powerups when you collide with them
     this.collideMap.set("PowerUp", entity => {
-      playSound("sounds/spacey-snd.wav");
+      playSound("spacey-snd");
       /** @type {PowerUp} */ (entity).apply(this);
       for (let i = 0; i < 30; i++) {
         let randColor =
@@ -106,7 +106,7 @@ export class Hero extends Creature {
     this.acc = buttons.move.vec.mult(this.movementMultiplier);
     // prevents velocity from getting too small and normalization messing up
     if (this.shoot(buttons.shoot.vec, this.vel)) {
-      playSound("sounds/laser-shot.wav");
+      playSound("laser-shot");
     }
     if (!buttons.shoot.vec.isZeroVec()) {
       const normalizedShootVec = buttons.shoot.vec.norm2();

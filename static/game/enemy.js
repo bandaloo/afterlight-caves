@@ -216,7 +216,7 @@ export class Enemy extends Creature {
    * @param {number} amt amount of damage to take
    */
   takeDamage(amt) {
-    playSound("../sounds/enemy-hurt.wav");
+    playSound("enemy-hurt");
     this.redFrames = this.maxRedFrames;
     this.drawColor = "orangered";
     super.takeDamage(amt);
