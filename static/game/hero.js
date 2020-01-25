@@ -41,6 +41,7 @@ export class Hero extends Creature {
       playSound("sounds/spacey-snd.wav");
       /** @type {PowerUp} */ (entity).apply(this);
       for (let i = 0; i < 30; i++) {
+        // TODO move this to the destroy of powerup
         let randColor =
           "hsl(" + Math.floor(Math.random() * 360) + ", 100%, 50%)";
         const spark = new Particle(this.pos, randColor, EffectEnum.spark);

@@ -60,6 +60,7 @@ export function randomLook() {
  * @return {Stats}
  */
 export function randomStats(difficulty) {
+  // TODO get rid of this
   let stats = {
     movementSpeed: 0,
     shotSpeed: 0,
@@ -117,13 +118,13 @@ export class Enemy extends Creature {
     this.height = 50 + 50 * this.modifiers.size;
     this.reflectsOffWalls = true;
     this.drag = 0.005;
-    this.touchDamage = 1;
     this.maxRedFrames = 60;
     this.redFrames = 0;
     this.drawColor = this.look.color;
     this.bulletKnockback = 3;
     this.bulletColor = this.look.color;
-
+    this.bulletDamage = 10;
+    this.touchDamage = 10;
     this.farType = FarEnum.deactivate;
 
     this.collideMap.set(

@@ -42,6 +42,8 @@ export function centeredOctagon(
   if (chamferPercent < 0 || chamferPercent > 1)
     throw new RangeError("chamferPercent must be in the range 0..1 inclusive");
 
+  // TODO rewrite this with a cosine function in a loop, and generalize to N
+  // sides
   /*
    *    8---1
    *   /     \
