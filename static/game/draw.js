@@ -42,6 +42,8 @@ export function centeredOctagon(
   if (chamferPercent < 0 || chamferPercent > 1)
     throw new RangeError("chamferPercent must be in the range 0..1 inclusive");
 
+  // TODO rewrite this with a cosine function in a loop, and generalize to N
+  // sides
   /*
    *    8---1
    *   /     \
@@ -277,20 +279,28 @@ export function roundedRect(
   context.save();
   topLeftVec = topLeftVec.add(getCameraOffset());
 
+  // If it is a rounded rectangle
+  let rounded = true;
+
   /** @type {{tl: number, tr: number, br: number, bl: number}} */
   let corners;
   if (typeof borderRadius === "number") {
-    corners = {
-      tl: borderRadius,
-      tr: borderRadius,
-      br: borderRadius,
-      bl: borderRadius
-    };
+    if (borderRadius !== 0) {
+      corners = {
+        tl: borderRadius,
+        tr: borderRadius,
+        br: borderRadius,
+        bl: borderRadius
+      };
+    } else {
+      rounded = false;
+    }
   } else {
     corners = borderRadius;
   }
 
   if (lineWidth === undefined) lineWidth = 0;
+  // TODO do we really want to be adjusting by the line width?
   const x1 = topLeftVec.x + lineWidth / 2;
   const y1 = topLeftVec.y + lineWidth / 2;
   const x2 = topLeftVec.x + width - lineWidth / 2;
@@ -299,16 +309,21 @@ export function roundedRect(
   // the JavaScript canvas API doesn't have a built-in function for drawing
   // rounded rectangles, so we trace out the path manually
   context.beginPath();
-  context.moveTo(x1 + corners.tl, y1);
-  context.lineTo(x2 - corners.tr, y1);
-  context.quadraticCurveTo(x2, y1, x2, y1 + corners.tr);
-  context.lineTo(x2, y2 - corners.br);
-  context.quadraticCurveTo(x2, y2, x2 - corners.br, y2);
-  context.lineTo(x1 + corners.bl, y2);
-  context.quadraticCurveTo(x1, y2, x1, y2 - corners.bl);
-  context.lineTo(x1, y1 + corners.tl);
-  context.quadraticCurveTo(x1, y1, x1 + corners.tl, y1);
+  if (rounded) {
+    context.moveTo(x1 + corners.tl, y1);
+    context.lineTo(x2 - corners.tr, y1);
+    context.quadraticCurveTo(x2, y1, x2, y1 + corners.tr);
+    context.lineTo(x2, y2 - corners.br);
+    context.quadraticCurveTo(x2, y2, x2 - corners.br, y2);
+    context.lineTo(x1 + corners.bl, y2);
+    context.quadraticCurveTo(x1, y2, x1, y2 - corners.bl);
+    context.lineTo(x1, y1 + corners.tl);
+    context.quadraticCurveTo(x1, y1, x1 + corners.tl, y1);
+  } else {
+    context.rect(topLeftVec.x, topLeftVec.y, width, height);
+  }
   context.closePath();
+
   if (fillStyle !== undefined) {
     context.fillStyle = fillStyle;
     context.fill();

@@ -1,5 +1,5 @@
 import { Vector } from "../modules/vector.js";
-import { Entity } from "../modules/entity.js";
+import { Entity, FarEnum } from "../modules/entity.js";
 import { Creature } from "./creature.js";
 import { centeredText, drawShines, circle } from "./draw.js";
 import { TextDisplay } from "./textdisplay.js";
@@ -26,6 +26,7 @@ export class PowerUp extends Entity {
   ) {
     super(pos);
     this.type = "PowerUp";
+    this.farType = FarEnum.deactivate;
     this.magnitude = magnitude;
     // set color based on magnitude
     this.colors = [

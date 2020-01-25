@@ -7,12 +7,18 @@ import { addParticle, addToWorld } from "../modules/gamemanager.js";
 import { Particle, EffectEnum } from "./particle.js";
 import { Bullet } from "./bullet.js";
 import { playSound } from "../modules/sound.js";
+import { Pickup, PickupEnum } from "./pickup.js";
 
 /**
  * an enum for allowed shapes of enemies
  * @enum {number}
  */
 export const ShapeEnum = Object.freeze({ square: 1, circle: 2 });
+
+const DROP_CHANCE = 0.2;
+
+const BOMB_CHANCE = 0.3;
+// naturally, the health chance is one minus the bomb chance
 
 // TODO figure out how to put shape enum in the jsdoc
 
@@ -54,6 +60,7 @@ export function randomLook() {
  * @return {Stats}
  */
 export function randomStats(difficulty) {
+  // TODO get rid of this
   let stats = {
     movementSpeed: 0,
     shotSpeed: 0,
@@ -111,13 +118,13 @@ export class Enemy extends Creature {
     this.height = 50 + 50 * this.modifiers.size;
     this.reflectsOffWalls = true;
     this.drag = 0.005;
-    this.touchDamage = 1;
     this.maxRedFrames = 60;
     this.redFrames = 0;
     this.drawColor = this.look.color;
     this.bulletKnockback = 3;
     this.bulletColor = this.look.color;
-
+    this.bulletDamage = 10;
+    this.touchDamage = 10;
     this.farType = FarEnum.deactivate;
 
     this.collideMap.set(
@@ -173,6 +180,17 @@ export class Enemy extends Creature {
         addToWorld(childEnemy);
         randDir += (2 * Math.PI) / spawnNum;
       }
+    }
+
+    // TODO change this to being only a chance
+    if (Math.random() < DROP_CHANCE) {
+      if (Math.random() < BOMB_CHANCE) {
+        addToWorld(new Pickup(this.pos, PickupEnum.bomb));
+      } else {
+        addToWorld(new Pickup(this.pos, PickupEnum.health));
+      }
+    } else {
+      console.log("no drop");
     }
   }
 

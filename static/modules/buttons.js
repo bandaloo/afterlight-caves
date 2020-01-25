@@ -105,9 +105,9 @@ export const buttons = {
   ),
 
   /** @type {Button} */
-  primary: new Button(" ", 7),
+  primary: new Button(" ", 4),
   /** @type {Button} */
-  secondary: new Button("e", 6),
+  secondary: new Button("e", 5),
 
   /** @return {Directional[]} */
   getDirectionals() {
