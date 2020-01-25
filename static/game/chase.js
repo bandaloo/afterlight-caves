@@ -32,7 +32,6 @@ export class Chase extends Enemy {
     this.drag = 0.015;
     this.maxHealth = 2;
     this.gainHealth(2);
-    this.touchDamage = 2;
   }
 
   /**
