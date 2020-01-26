@@ -70,7 +70,7 @@ export class Hero extends Creature {
       this.invincibilityFrames > 0
         ? `rgba(255, 255, 255, ${this.invincibilityFrames /
             this.invincibilityFramesMax})`
-        : "black",
+        : "rgba(0, 0, 0, 0)",
       4,
       "white"
     );

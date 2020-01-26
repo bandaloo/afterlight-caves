@@ -372,7 +372,7 @@ export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
   context.save();
 
   // clear the canvas
-  context.fillRect(0, 0, getCanvasWidth(), getCanvasHeight());
+  // context.fillRect(0, 0, getCanvasWidth(), getCanvasHeight());
 
   // get the cells to draw based on position
   const cameraOffset = getCameraOffset();
@@ -419,13 +419,15 @@ export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
 
   // draw squares underneath to create outline
   drawBorder(6, color, cameraOffset);
-  drawBorder(2, "white", cameraOffset);
+  //drawBorder(2, "white", cameraOffset);
 
   // draw black squares on top
   for (let i = topLeftCell.x; i < bottomRightCell.x; i++) {
     for (let j = topLeftCell.y; j < bottomRightCell.y; j++) {
       // TODO could be checking the block field instead of the terrain
+      context.fillStyle = "rgba(255, 255, 255, 0.1)";
       if (board[i][j] >= 1) {
+        /*
         context.fillStyle =
           blockField[i][j].durability === Infinity ? "black" : "#202020";
         context.fillRect(
@@ -434,6 +436,21 @@ export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
           blockWidth + overDraw * 2,
           blockHeight + overDraw * 2
         );
+        */
+        context.clearRect(
+          i * blockWidth - overDraw + cameraOffset.x,
+          j * blockHeight - overDraw + cameraOffset.y,
+          blockWidth + overDraw * 2,
+          blockHeight + overDraw * 2
+        );
+        if (blockField[i][j].durability !== Infinity) {
+          context.fillRect(
+            i * blockWidth + overDraw + cameraOffset.x,
+            j * blockHeight + overDraw + cameraOffset.y,
+            blockWidth - overDraw * 2,
+            blockHeight - overDraw * 2
+          );
+        }
       }
     }
   }

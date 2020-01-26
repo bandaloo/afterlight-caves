@@ -39,7 +39,8 @@ export function playSound(str, copy = true) {
             " trying again soon."
         );
         setTimeout(() => {
-          playSound(str, copy);
+          // TODO uncomment this
+          //playSound(str, copy);
         }, 1000);
       });
   }
