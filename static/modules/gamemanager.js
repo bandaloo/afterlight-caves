@@ -300,6 +300,7 @@ class GameManager {
 
     // save display context
     this.displayContext.save();
+    this.displayContext.globalCompositeOperation = "lighter";
     this.displayContext.scale(
       this.displayCanvas.width / this.canvas.width,
       this.displayCanvas.height / this.canvas.height
