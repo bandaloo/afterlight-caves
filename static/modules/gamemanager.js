@@ -40,6 +40,13 @@ class GameManager {
   /** @type {Entity} */
   cameraEntity;
 
+  /**
+   * @type {number} radius of a circle in the center of the screen in which the
+   * camera entity can move freely without the camera following it
+   * TODO possible tweak the size of this depending on what feels right
+   */
+  cameraDeadzone = 75;
+
   /** @type {number} */
   screenWidth;
 
@@ -212,9 +219,29 @@ class GameManager {
   drawGame() {
     // reposition camera if there is a followed entity
     if (this.cameraEntity !== undefined) {
-      this.cameraOffset = this.cameraEntity.drawPos
-        .mult(-1)
-        .add(new Vector(this.screenWidth / 2, this.screenHeight / 2));
+      // if the camera entity is bigger than the deadzone the camera should
+      // always stick to it
+      if (
+        this.cameraDeadzone < this.cameraEntity.width ||
+        this.cameraDeadzone < this.cameraEntity.height
+      ) {
+        this.cameraOffset = this.cameraEntity.drawPos
+          .mult(-1)
+          .add(new Vector(this.screenWidth / 2, this.screenHeight / 2));
+      } else {
+        const diff = this.cameraEntity.drawPos.add(
+          this.cameraOffset.sub(
+            new Vector(this.screenWidth / 2, this.screenHeight / 2)
+          )
+        );
+        const distToAdjust = diff.mag() - this.cameraDeadzone;
+        if (distToAdjust > 0) {
+          // outside the deadzone
+          this.cameraOffset = this.cameraOffset.add(
+            diff.norm2().mult(-distToAdjust)
+          );
+        }
+      }
     }
 
     // clear the display canvas
