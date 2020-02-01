@@ -251,7 +251,6 @@ class GameManager {
       this.blurCanvas.height
     );
 
-    console.log(this.displayContext.filter);
     // save drawing context
     this.context.save();
     // run draw func specified by game programmer
@@ -301,12 +300,14 @@ class GameManager {
     // save display context
     this.displayContext.save();
     this.displayContext.globalCompositeOperation = "lighter";
-    this.displayContext.scale(
-      this.displayCanvas.width / this.canvas.width,
-      this.displayCanvas.height / this.canvas.height
-    );
     // copy the drawing canvas onto the display canvas
-    this.displayContext.drawImage(this.canvas, 0, 0);
+    this.displayContext.drawImage(
+      this.canvas,
+      0,
+      0,
+      this.displayCanvas.width,
+      this.displayCanvas.height
+    );
     // restore display context
     this.displayContext.restore();
   }
