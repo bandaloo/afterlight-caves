@@ -1,6 +1,6 @@
 import { Entity } from "../modules/entity.js";
 import { Vector } from "../modules/vector.js";
-import { centeredOctagon, circle } from "./draw.js";
+import { circle, polygon } from "./draw.js";
 import { Particle, EffectEnum } from "./particle.js";
 import { addParticle, inbounds, setBlock } from "../modules/gamemanager.js";
 import { getCell } from "../modules/collision.js";
@@ -48,6 +48,7 @@ export class Bomb extends Entity {
     super(pos);
     this.good = good;
     this.fuseTime = fuseTime;
+    this.maxFuseTime = fuseTime;
     this.onDetonate = new Array();
     this.onBlastCreature = new Array();
     this.width = 75;
@@ -114,36 +115,19 @@ export class Bomb extends Entity {
    */
   draw() {
     if (this.fuseTime > 0) {
+      const blink =
+        50 * Math.sin(0.007 * (this.maxFuseTime - this.fuseTime) ** 1.5) + 50;
       // draw bomb
-      centeredOctagon(
+      polygon(
         this.drawPos,
+        6,
         this.width,
-        `hsl(${this.hue}, 100%, 25%)`,
+        this.height,
+        0,
+        `hsl(${this.hue}, ${blink}%, 25%`,
         "white",
-        4,
-        0.5
+        6
       );
-      // blinking effect
-      // TODO see if we can make this look nicer (and get rid of this gross if)
-      if (
-        (this.fuseTime >= 480 && this.fuseTime % 180 < 60) ||
-        (this.fuseTime < 480 &&
-          this.fuseTime >= 240 &&
-          this.fuseTime % 120 < 60) ||
-        (this.fuseTime < 240 &&
-          this.fuseTime >= 90 &&
-          this.fuseTime % 60 < 35) ||
-        (this.fuseTime < 90 && this.fuseTime % 20 < 10)
-      ) {
-        centeredOctagon(
-          this.drawPos,
-          this.width,
-          "rgba(255, 255, 255, 0.5)",
-          undefined,
-          undefined,
-          0.5
-        );
-      }
     } else if (this.fuseTime >= -1 * this.timeToExplode) {
       // draw explosion
       const radius =
