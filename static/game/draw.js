@@ -15,6 +15,56 @@ import { getCell } from "../modules/collision.js";
 const overDraw = 0.5;
 
 /**
+ * draws a polygon with wiggling sides
+ * @param {Vector} centerVec
+ * @param {number} sides
+ * @param {number} width
+ * @param {number} height
+ * @param {number} offset
+ * @param {string|CanvasGradient|CanvasPattern} [fillStyle]
+ * @param {string|CanvasGradient|CanvasPattern} [strokeStyle]
+ * @param {(arg0: number) => number} func offsets vertices based on angle
+ */
+export function polygon(
+  centerVec,
+  sides,
+  width,
+  height,
+  offset,
+  fillStyle = "rgba(0, 0, 0, 0)",
+  strokeStyle = "red",
+  lineWidth = 5,
+  func = () => 1
+) {
+  width /= 2;
+  height /= 2;
+  centerVec = centerVec.add(getCameraOffset());
+  const context = getContext();
+  context.save();
+  context.beginPath();
+  context.fillStyle = fillStyle;
+  context.strokeStyle = strokeStyle;
+  context.lineWidth = lineWidth;
+  let funcOffset = func(offset);
+  context.moveTo(
+    centerVec.x + funcOffset * width * Math.cos(offset),
+    centerVec.y + funcOffset * height * Math.sin(offset)
+  );
+  for (let i = 1; i < sides; i++) {
+    const angle = offset + (i / sides) * Math.PI * 2;
+    funcOffset = func(angle);
+    context.lineTo(
+      centerVec.x + funcOffset * width * Math.cos(angle),
+      centerVec.y + funcOffset * height * Math.sin(angle)
+    );
+  }
+  context.closePath();
+  context.fill();
+  context.stroke();
+  context.restore();
+}
+
+/**
  * Draws an octagon centered at a particular point
  * @param {Vector} centerVec
  * @param {number} sideLength
@@ -73,6 +123,7 @@ export function centeredOctagon(
   context.lineTo(x1, y2); // p7
   context.lineTo(x2, y1); // p8
   context.closePath();
+  // TODO this second closePath is probably redundant
   context.closePath();
 
   if (fillStyle !== undefined) {

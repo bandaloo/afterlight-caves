@@ -1,9 +1,10 @@
 import { Enemy, ShapeEnum } from "./enemy.js";
 import { Vector } from "../modules/vector.js";
-import { line, ellipse, circle } from "./draw.js";
+import { line, ellipse, circle, polygon } from "./draw.js";
 import {
   hasImportantEntity,
-  getImportantEntity
+  getImportantEntity,
+  getTotalTime
 } from "../modules/gamemanager.js";
 
 export class Chase extends Enemy {
@@ -61,6 +62,25 @@ export class Chase extends Enemy {
         this.following = false;
         this.acc = new Vector(0, 0);
       }
+    }
+  }
+
+  drawBody() {
+    const sides = 5;
+    const bgColor =
+      this.redFrames === 0 ? "rgba(0, 0, 0, 0)" : "rgba(255, 69, 0, 0.3)";
+    for (let i = 0; i < 2; i++) {
+      polygon(
+        this.drawPos,
+        sides,
+        this.width,
+        this.height,
+        getTotalTime() / 1000 + (i * sides) / 2 / 5,
+        bgColor,
+        this.drawColor,
+        5,
+        n => 1 + Math.sin(2 * n + getTotalTime() / (200 + 100 * i)) / 5
+      );
     }
   }
 
