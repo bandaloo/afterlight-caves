@@ -63,8 +63,8 @@ export class Chase extends Enemy {
       polygon(
         this.drawPos,
         sides,
-        this.width,
-        this.height,
+        this.width * 1.2,
+        this.height * 1.2,
         getTotalTime() / 1000 + (i * sides) / 2 / 5,
         bgColor,
         this.drawColor,
@@ -76,7 +76,7 @@ export class Chase extends Enemy {
 
   drawFace() {
     const eyeSpacing = 5;
-    const eyeSize = 5;
+    const eyeSize = 7;
     /**
      * draw the eye
      * @param {number} scalar change this to modify what side of face to draw

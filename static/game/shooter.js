@@ -62,8 +62,9 @@ export class Shooter extends Enemy {
   }
 
   drawFace() {
-    const eyeSpacing = 5;
+    const eyeSpacing = 7;
     const eyeSize = 5;
+
     /**
      * draw a single eye
      * @param {number} x change this to modify what side of face to draw

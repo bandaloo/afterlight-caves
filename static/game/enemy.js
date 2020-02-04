@@ -62,6 +62,7 @@ export class Enemy extends Creature {
     // TODO get rid of this
     this.drawColor = hsl(randomInt(360), 100, 70);
     this.originalDrawColor = this.drawColor;
+    this.bulletColor = this.drawColor;
 
     this.collideMap.set(
       "Hero",
