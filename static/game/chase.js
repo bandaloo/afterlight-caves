@@ -67,8 +67,7 @@ export class Chase extends Enemy {
 
   drawBody() {
     const sides = 5;
-    const bgColor =
-      this.redFrames === 0 ? "rgba(0, 0, 0, 0)" : "rgba(255, 69, 0, 0.3)";
+    const bgColor = this.getBackgroundColor();
     for (let i = 0; i < 2; i++) {
       polygon(
         this.drawPos,

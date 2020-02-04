@@ -204,6 +204,10 @@ export class Enemy extends Creature {
   /** @abstract */
   drawFace() {}
 
+  getBackgroundColor() {
+    return this.redFrames === 0 ? "rgba(0, 0, 0, 0)" : "rgba(255, 69, 0, 0.3)";
+  }
+
   draw() {
     this.drawBody();
     this.drawFace();

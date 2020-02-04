@@ -1,8 +1,11 @@
 import { Enemy } from "./enemy.js";
 import { Vector } from "../modules/vector.js";
-import { line, circle } from "./draw.js";
+import { line, circle, polygon } from "./draw.js";
+import { getImportantEntity } from "../modules/gamemanager.js";
+import { Cone } from "../game/powerups/cone.js";
 
 export class Scatter extends Enemy {
+  // TODO get rid of modifiers
   /**
    * constructs a random entity with all the relevant vectors
    * @param {Vector} pos
@@ -20,8 +23,23 @@ export class Scatter extends Enemy {
     modifiers = { size: 0, speed: 0, explode: 0 }
   ) {
     super(pos, look, stats, vel, acc, modifiers);
+    // TODO weird that you have to give a powerup a position, even if just using
+    // it to apply directly
+    new Cone(new Vector(0, 0), 1).apply(this);
     this.maxHealth = 2;
     this.gainHealth(2);
+    this.bulletSpeed = 5;
+    this.bulletLifetime = 300;
+    this.fireDelay = 0;
+  }
+
+  destroy() {
+    console.log(getImportantEntity("hero"));
+    const vecToHero = getImportantEntity("hero")
+      .pos.sub(this.drawPos)
+      .norm2();
+    this.shoot(vecToHero);
+    super.destroy();
   }
 
   action() {
@@ -37,39 +55,36 @@ export class Scatter extends Enemy {
     }
   }
 
+  drawBody() {
+    const sides = 3;
+    const bgColor = this.getBackgroundColor();
+    polygon(
+      this.drawPos,
+      sides,
+      this.width,
+      this.height,
+      Math.atan2(this.vel.y, this.vel.x),
+      bgColor,
+      this.drawColor
+    );
+  }
+
   drawFace() {
-    /**
-     * draw a single eye
-     * @param {number} scalar change this to modify what side of face to draw
-     */
-    const drawEye = scalar => {
+    const drawEye = (scalar, offset) => {
       circle(
-        this.drawPos.add(new Vector(scalar * this.look.eyeSpacing, 0)),
-        this.look.eyeSize,
-        undefined,
+        this.drawPos.add(offset),
+        scalar,
+        "rgba(0, 0, 0, 0)",
         4,
         this.drawColor
       );
     };
 
-    // draw the eyes
-    drawEye(1);
-    drawEye(-1);
+    const vecToHero = getImportantEntity("hero")
+      .pos.sub(this.drawPos)
+      .norm2();
 
-    // draw the mouth
-    const mouthHalf = this.look.mouthWidth / 2;
-
-    line(
-      new Vector(
-        this.drawPos.x + mouthHalf,
-        this.drawPos.y + this.look.mouthOffset
-      ),
-      new Vector(
-        this.drawPos.x - mouthHalf,
-        this.drawPos.y + this.look.mouthOffset
-      ),
-      this.drawColor,
-      4
-    );
+    drawEye(8, vecToHero.mult(10));
+    drawEye(16, new Vector(0, 0));
   }
 }
