@@ -32,7 +32,7 @@ export class Shooter extends Enemy {
     this.fireDelay = 90;
     this.bulletSpeed = 3;
     this.bulletLifetime = 180;
-    this.collideMap.set("Bullet", e => {
+    this.collideMap.set("PlayerBullet", e => {
       this.avoidTimer = this.avoidTimerMax;
     });
   }
@@ -44,6 +44,7 @@ export class Shooter extends Enemy {
       const hero = getImportantEntity("hero");
       /** @type {Vector} */
       let dirVec = hero.pos.sub(this.pos);
+      // TODO do we need avoid timer
       if (this.avoidTimer >= 0 || dirVec.magnitude() < this.avoidDistace) {
         this.avoidTimer--;
         this.avoiding = true;
