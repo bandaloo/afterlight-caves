@@ -2,9 +2,7 @@ import { distanceBoard } from "./generator.js";
 import { Shooter } from "./shooter.js";
 import { Chase } from "./chase.js";
 import { Scatter } from "./scatter.js";
-import { randomLook, randomStats } from "./enemy.js";
 import { Vector } from "../modules/vector.js";
-import { createNumberGrid } from "./life.js";
 import { randomInt, shuffle, randomPop } from "../modules/helpers.js";
 import {
   addToWorld,
@@ -26,15 +24,6 @@ export function populateLevel(board, numEnemies) {
   const { board: distBoard, cells: distCells } = distanceBoard(board);
 
   const creatureClasses = [Chase, Scatter, Shooter];
-
-  const enemyLooks = [];
-  const enemyStats = [];
-
-  for (let i = 0; i < creatureClasses.length; i++) {
-    enemyLooks.push(randomLook());
-    // TODO make these stats do something, or remove them
-    enemyStats.push(randomStats(i * 3 + 3));
-  }
 
   for (let i = 0; i < numEnemies; i++) {
     const randomChoice = randomInt(creatureClasses.length);
@@ -80,8 +69,6 @@ export function populateLevel(board, numEnemies) {
     // TODO catch the situation where enemy is too large to spawn anywhere
     const enemy = new creatureClasses[randomChoice](
       position,
-      enemyLooks[randomChoice],
-      enemyStats[randomChoice],
       undefined,
       undefined,
       size

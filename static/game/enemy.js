@@ -28,81 +28,23 @@ const BOMB_CHANCE = 0.3;
  * @property {number} mouthOffset
  */
 
-/**
- * @returns {Look}
- */
-export function randomLook() {
-  return {
-    shape: randomFromEnum(ShapeEnum),
-    color: hsl(randomInt(360), 100, 70),
-    eyeSpacing: 10 + randomInt(10),
-    eyeSize: 5 + randomInt(3),
-    mouthWidth: 20 + randomInt(25),
-    mouthOffset: 10 + randomInt(6)
-  };
-}
-
-// TODO get rid of stats
-/**
- * @typedef {Object} Stats
- * @property {number} movementSpeed
- * @property {number} shotSpeed
- * @property {number} accuracy
- * @property {number} rateOfFire
- */
-
-/**
- * returns random stats for an enemy of given difficulty
- * @param {number} difficulty
- * @return {Stats}
- */
-export function randomStats(difficulty) {
-  let stats = {
-    movementSpeed: 0,
-    shotSpeed: 0,
-    accuracy: 0,
-    rateOfFire: 0
-  };
-
-  for (let i = 0; i < difficulty; i++) {
-    let num = Math.random();
-    if (num < 0.25) {
-      stats.movementSpeed++;
-    } else if (num < 0.5) {
-      stats.shotSpeed++;
-    } else if (num < 0.75) {
-      stats.accuracy++;
-    } else {
-      stats.rateOfFire++;
-    }
-  }
-
-  return stats;
-}
-
 export class Enemy extends Creature {
   health = 2;
 
   /**
    * constructs a random entity with all the relevant vectors
    * @param {Vector} pos
-   * @param {Look} look
-   * @param {Stats} stats
    * @param {Vector} vel
    * @param {Vector} acc
    * @param {number} matryoshka
    */
   constructor(
     pos,
-    look,
-    stats,
     vel = new Vector(0, 0),
     acc = new Vector(0, 0),
     matryoshka = 0
   ) {
     super(pos, vel, acc);
-    this.look = look;
-    this.stats = stats;
     this.type = "Enemy";
     /** if the enemy is big and will split up */
     this.matryoshka = matryoshka;
@@ -112,12 +54,14 @@ export class Enemy extends Creature {
     this.drag = 0.005;
     this.maxRedFrames = 60;
     this.redFrames = 0;
-    this.drawColor = this.look.color;
     this.bulletKnockback = 3;
-    this.bulletColor = this.look.color;
     this.bulletDamage = 10;
     this.touchDamage = 10;
     this.farType = FarEnum.deactivate;
+
+    // TODO get rid of this
+    this.drawColor = hsl(randomInt(360), 100, 70);
+    this.originalDrawColor = this.drawColor;
 
     this.collideMap.set(
       "Hero",
@@ -146,7 +90,7 @@ export class Enemy extends Creature {
 
   destroy() {
     for (let i = 0; i < 30; i++) {
-      let p = new Particle(this.pos, this.look.color, EffectEnum.spark);
+      let p = new Particle(this.pos, this.drawColor, EffectEnum.spark);
       p.lineWidth = 5;
       addParticle(p);
     }
@@ -158,8 +102,6 @@ export class Enemy extends Creature {
       for (let i = 0; i < spawnNum; i++) {
         const childEnemy = new (Object.getPrototypeOf(this).constructor)(
           this.pos,
-          this.look,
-          this.stats,
           new Vector(
             Math.cos(randDir) * pushSpeed,
             Math.sin(randDir) * pushSpeed
@@ -200,15 +142,6 @@ export class Enemy extends Creature {
     super.draw();
   }
 
-  toString() {
-    return (
-      `movement speed: ${this.stats.movementSpeed} ` +
-      `shot speed: ${this.stats.shotSpeed} ` +
-      `accuracy: ${this.stats.accuracy} ` +
-      `rate of fire: ${this.stats.rateOfFire}`
-    );
-  }
-
   /**
    * @override
    * @param {number} amt amount of damage to take
@@ -225,7 +158,7 @@ export class Enemy extends Creature {
    */
   action() {
     if (this.redFrames > 0) {
-      if (this.redFrames === 1) this.drawColor = this.look.color;
+      if (this.redFrames === 1) this.drawColor = this.originalDrawColor;
       this.redFrames--;
     }
     super.action();

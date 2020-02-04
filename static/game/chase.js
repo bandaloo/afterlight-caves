@@ -16,20 +16,11 @@ export class Chase extends Enemy {
   /**
    * constructs a random entity with all the relevant vectors
    * @param {Vector} pos
-   * @param {import("./enemy.js").Look} look
-   * @param {import("./enemy.js").Stats} stats
    * @param {Vector} vel
    * @param {Vector} acc
    */
-  constructor(
-    pos,
-    look,
-    stats,
-    vel = new Vector(0, 0),
-    acc = new Vector(0, 0),
-    matryoshka
-  ) {
-    super(pos, look, stats, vel, acc, matryoshka);
+  constructor(pos, vel = new Vector(0, 0), acc = new Vector(0, 0), matryoshka) {
+    super(pos, vel, acc, matryoshka);
     this.drag = 0.015;
     this.maxHealth = 2;
     this.gainHealth(2);
@@ -84,15 +75,17 @@ export class Chase extends Enemy {
   }
 
   drawFace() {
+    const eyeSpacing = 5;
+    const eyeSize = 5;
     /**
      * draw the eye
      * @param {number} scalar change this to modify what side of face to draw
      */
     const drawEye = scalar => {
       ellipse(
-        this.drawPos.add(new Vector(scalar * this.look.eyeSpacing, 0)),
-        this.look.eyeSize * 3,
-        this.look.eyeSize * 1.5,
+        this.drawPos.add(new Vector(scalar * eyeSpacing, 0)),
+        eyeSize * 3,
+        eyeSize * 1.5,
         undefined,
         4,
         this.drawColor
@@ -105,8 +98,8 @@ export class Chase extends Enemy {
      */
     const drawPupil = scalar => {
       circle(
-        this.drawPos.add(new Vector(scalar * this.look.eyeSpacing, 0)),
-        this.look.eyeSize,
+        this.drawPos.add(new Vector(scalar * eyeSpacing, 0)),
+        eyeSize,
         undefined,
         4,
         this.drawColor
@@ -118,25 +111,22 @@ export class Chase extends Enemy {
       drawPupil(0);
     } else {
       line(
-        this.drawPos.sub(new Vector(this.look.eyeSize * 3, 0)),
-        this.drawPos.add(new Vector(this.look.eyeSize * 3, 0)),
+        this.drawPos.sub(new Vector(eyeSize * 3, 0)),
+        this.drawPos.add(new Vector(eyeSize * 3, 0)),
         this.drawColor,
         4
       );
     }
 
+    const mouthWidth = 16;
+    const mouthOffset = 10;
+
     // draw the mouth
-    const mouthHalf = this.look.mouthWidth / 2;
+    const mouthHalf = mouthWidth / 2;
 
     line(
-      new Vector(
-        this.drawPos.x + mouthHalf,
-        this.drawPos.y + this.look.mouthOffset
-      ),
-      new Vector(
-        this.drawPos.x - mouthHalf,
-        this.drawPos.y + this.look.mouthOffset
-      ),
+      new Vector(this.drawPos.x + mouthHalf, this.drawPos.y + mouthOffset),
+      new Vector(this.drawPos.x - mouthHalf, this.drawPos.y + mouthOffset),
       this.drawColor,
       4
     );

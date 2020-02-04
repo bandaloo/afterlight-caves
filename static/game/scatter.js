@@ -8,20 +8,16 @@ export class Scatter extends Enemy {
   /**
    * constructs a random entity with all the relevant vectors
    * @param {Vector} pos
-   * @param {import("./enemy.js").Look} look
-   * @param {import("./enemy.js").Stats} stats
    * @param {Vector} vel
    * @param {Vector} acc
    */
   constructor(
     pos,
-    look,
-    stats,
     vel = new Vector(0, 0),
     acc = new Vector(0, 0),
     matryoshka = 0
   ) {
-    super(pos, look, stats, vel, acc, matryoshka);
+    super(pos, vel, acc, matryoshka);
     // TODO weird that you have to give a powerup a position, even if just using
     // it to apply directly
     new Cone(new Vector(0, 0), 1).apply(this);

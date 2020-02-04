@@ -16,20 +16,16 @@ export class Shooter extends Enemy {
   /**
    * constructs a random entity with all the relevant vectors
    * @param {Vector} pos
-   * @param {import("./enemy.js").Look} look
-   * @param {import("./enemy.js").Stats} stats
    * @param {Vector} vel
    * @param {Vector} acc
    */
   constructor(
     pos,
-    look,
-    stats,
     vel = new Vector(0, 0),
     acc = new Vector(0, 0),
     matryoshka = 0
   ) {
-    super(pos, look, stats, vel, acc, matryoshka);
+    super(pos, vel, acc, matryoshka);
     this.maxHealth = 2;
     this.gainHealth(2);
     this.fireDelay = 90;
@@ -66,7 +62,8 @@ export class Shooter extends Enemy {
   }
 
   drawFace() {
-    // TODO make this actually look good
+    const eyeSpacing = 5;
+    const eyeSize = 5;
     /**
      * draw a single eye
      * @param {number} x change this to modify what side of face to draw
@@ -74,10 +71,8 @@ export class Shooter extends Enemy {
      */
     const drawEye = (x, y) => {
       circle(
-        this.drawPos.add(
-          new Vector(x * this.look.eyeSpacing, y * this.look.eyeSpacing)
-        ),
-        this.look.eyeSize,
+        this.drawPos.add(new Vector(x * eyeSpacing, y * eyeSpacing)),
+        eyeSize,
         undefined,
         4,
         this.drawColor
@@ -90,18 +85,15 @@ export class Shooter extends Enemy {
     drawEye(0.8, 0.5);
     drawEye(-0.8, 0.5);
 
+    const mouthWidth = 30;
+    const mouthOffset = 12;
+
     // draw the mouth
-    const mouthHalf = this.look.mouthWidth / 2;
+    const mouthHalf = mouthWidth / 2;
 
     line(
-      new Vector(
-        this.drawPos.x + mouthHalf,
-        this.drawPos.y + this.look.mouthOffset + 5
-      ),
-      new Vector(
-        this.drawPos.x - mouthHalf,
-        this.drawPos.y + this.look.mouthOffset + 5
-      ),
+      new Vector(this.drawPos.x + mouthHalf, this.drawPos.y + mouthOffset),
+      new Vector(this.drawPos.x - mouthHalf, this.drawPos.y + mouthOffset),
       this.drawColor,
       4
     );

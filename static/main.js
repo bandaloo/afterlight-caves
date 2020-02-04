@@ -14,7 +14,6 @@ import {
   getImportantEntity
 } from "./modules/gamemanager.js";
 import { drawBoard, centeredText, rect } from "./game/draw.js";
-import { randomLook, randomStats } from "./game/enemy.js";
 import { Vector } from "./modules/vector.js";
 import { shuffle, randomInt, hsl } from "./modules/helpers.js";
 import { Hero } from "./game/hero.js";
@@ -49,17 +48,9 @@ const blockRows = worldHeight / blockHeight;
 /** @type {string} */
 let color;
 
-/** @type {import("./game/enemy.js").Look[]} */
-let enemyLooks = [];
-
-/** @type {import("./game/enemy.js").Stats[]} */
-let enemyStats = [];
-
 function resetDemo() {
   destroyEverything();
   color = hsl(randomInt(360));
-  enemyLooks = [];
-  enemyStats = [];
 
   let board = getGrid(
     blockColumns * 8,
@@ -114,12 +105,6 @@ function resetDemo() {
   });
 
   let emptySpaces = shuffle(getEmptySpaces(board, 10, blockWidth, blockHeight));
-
-  // create four looks with four difficulties
-  for (let i = 0; i < 4; i++) {
-    enemyLooks.push(randomLook());
-    enemyStats.push(randomStats(i * 3 + 3));
-  }
 
   // Get the segregated board
   const {
