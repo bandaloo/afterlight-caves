@@ -10,6 +10,9 @@ import { playSound } from "../modules/sound.js";
 
 const DEFAULT_SIZE = 50;
 
+// circles have to overlap by this many units for hero to be hit
+export const CHEAT_RADIUS = 16;
+
 export class Hero extends Creature {
   drag = 0.1; // movement deceleration
   eyeDirection = new Vector(0, 1);

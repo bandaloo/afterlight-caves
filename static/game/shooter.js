@@ -32,7 +32,7 @@ export class Shooter extends Enemy {
     this.fireDelay = 90;
     this.bulletSpeed = 3;
     this.bulletLifetime = 180;
-    this.collideMap.set("Hero", e => {
+    this.collideMap.set("Bullet", e => {
       this.avoidTimer = this.avoidTimerMax;
     });
   }

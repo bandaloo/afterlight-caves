@@ -110,6 +110,19 @@ export function isColliding(entityA, entityB) {
 }
 
 /**
+ * Determines if two entities are colliding and if damage should take place
+ * @param {Entity} entityA
+ * @param {Entity} entityB
+ * @param {number} cheatRadius
+ */
+export function isCollidingCheat(entityA, entityB, cheatRadius) {
+  return (
+    entityA.pos.sub(entityB.pos).mag() <
+    entityA.width / 2 + entityB.width / 2 - cheatRadius
+  );
+}
+
+/**
  * Given two entities A and B, calculates the smallest vector needed to apply
  * to entity A to prevent collision. Returns empty vector if A and B are not
  * colliding. Assumes rectangle A does not surround rectangle B
@@ -192,7 +205,7 @@ export function adjustEntity(entity) {
       entity,
       collidingEntities[i]
     );
-    if (!(collisionVector.isZeroVec())) {
+    if (!collisionVector.isZeroVec()) {
       collisionVectors.push(collisionVector);
       hitEntities.push(collidingEntities[i]);
     }

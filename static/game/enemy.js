@@ -6,6 +6,8 @@ import { addParticle, addToWorld } from "../modules/gamemanager.js";
 import { Particle, EffectEnum } from "./particle.js";
 import { playSound } from "../modules/sound.js";
 import { Pickup, PickupEnum } from "./pickup.js";
+import { isCollidingCheat } from "../modules/collision.js";
+import { CHEAT_RADIUS } from "./hero.js";
 
 /**
  * an enum for allowed shapes of enemies
@@ -74,19 +76,21 @@ export class Enemy extends Creature {
    * @param {import("./hero.js").Hero} hero
    */
   touchHero(hero) {
-    // impart momentum
-    if (hero.invincibilityFrames <= 0) {
-      const sizeDiff =
-        (0.5 * this.width * this.height) / (hero.width * hero.height);
-      hero.vel = hero.vel.add(this.vel.mult(sizeDiff));
-    }
+    if (isCollidingCheat(hero, this, CHEAT_RADIUS)) {
+      // impart momentum
+      if (hero.invincibilityFrames <= 0) {
+        const sizeDiff =
+          (0.5 * this.width * this.height) / (hero.width * hero.height);
+        hero.vel = hero.vel.add(this.vel.mult(sizeDiff));
+      }
 
-    // execute onTouchEnemy functions
-    for (const ote of this.onTouchEnemy) {
-      if (ote.func) ote.func(ote.data, /** @type{Creature} */ (hero));
+      // execute onTouchEnemy functions
+      for (const ote of this.onTouchEnemy) {
+        if (ote.func) ote.func(ote.data, /** @type{Creature} */ (hero));
+      }
+      // deal basic touch damage
+      hero.takeDamage(this.touchDamage);
     }
-    // deal basic touch damage
-    hero.takeDamage(this.touchDamage);
   }
 
   destroy() {

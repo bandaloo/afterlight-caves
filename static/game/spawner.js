@@ -3,7 +3,7 @@ import { Shooter } from "./shooter.js";
 import { Chase } from "./chase.js";
 import { Scatter } from "./scatter.js";
 import { Vector } from "../modules/vector.js";
-import { randomInt, shuffle, randomPop } from "../modules/helpers.js";
+import { randomInt, randomPop } from "../modules/helpers.js";
 import {
   addToWorld,
   cellToWorldPosition,
