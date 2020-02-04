@@ -5,7 +5,6 @@ import { getImportantEntity } from "../modules/gamemanager.js";
 import { Cone } from "../game/powerups/cone.js";
 
 export class Scatter extends Enemy {
-  // TODO get rid of modifiers
   /**
    * constructs a random entity with all the relevant vectors
    * @param {Vector} pos
@@ -20,9 +19,9 @@ export class Scatter extends Enemy {
     stats,
     vel = new Vector(0, 0),
     acc = new Vector(0, 0),
-    modifiers = { size: 0, speed: 0, explode: 0 }
+    matryoshka = 0
   ) {
-    super(pos, look, stats, vel, acc, modifiers);
+    super(pos, look, stats, vel, acc, matryoshka);
     // TODO weird that you have to give a powerup a position, even if just using
     // it to apply directly
     new Cone(new Vector(0, 0), 1).apply(this);

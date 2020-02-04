@@ -11,7 +11,6 @@ import {
   cellToWorldPosition,
   getImportantEntity
 } from "../modules/gamemanager.js";
-import { Boss } from "./boss.js";
 import { Elastic } from "./powerups/elastic.js";
 import { DamageUp } from "./powerups/damageup.js";
 import { MachineGun } from "./powerups/machinegun.js";
@@ -76,6 +75,7 @@ export function populateLevel(board, numEnemies) {
         }
       }
       positionOkay = true;
+      console.log("okay");
     }
     // TODO catch the situation where enemy is too large to spawn anywhere
     const enemy = new creatureClasses[randomChoice](
@@ -84,7 +84,7 @@ export function populateLevel(board, numEnemies) {
       enemyStats[randomChoice],
       undefined,
       undefined,
-      { size: size, speed: 0, explode: 0 }
+      size
     );
 
     //Apply random effects
@@ -101,16 +101,4 @@ export function populateLevel(board, numEnemies) {
 
     addToWorld(enemy);
   }
-
-  /*
-  const boss = new Boss(
-    cellToWorldPosition(distCells[2].pop()),
-    enemyLooks[randomInt(4)],
-    enemyStats[randomInt(4)],
-    undefined,
-    undefined,
-    { size: randomInt(3), speed: 0, explode: 0 }
-  );
-  addToWorld(boss);
-  */
 }

@@ -27,9 +27,9 @@ export class Shooter extends Enemy {
     stats,
     vel = new Vector(0, 0),
     acc = new Vector(0, 0),
-    modifiers = { size: 0, speed: 0, explode: 0 }
+    matryoshka = 0
   ) {
-    super(pos, look, stats, vel, acc, modifiers);
+    super(pos, look, stats, vel, acc, matryoshka);
     this.maxHealth = 2;
     this.gainHealth(2);
     this.fireDelay = 90;

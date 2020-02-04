@@ -1,15 +1,9 @@
-import { Entity, FarEnum } from "../modules/entity.js";
+import { FarEnum } from "../modules/entity.js";
 import { Vector } from "../modules/vector.js";
 import { randomFromEnum, randomInt, hsl } from "../modules/helpers.js";
 import { Creature } from "./creature.js";
-import { centeredRect, circle, polygon } from "./draw.js";
-import {
-  addParticle,
-  addToWorld,
-  getTotalTime
-} from "../modules/gamemanager.js";
+import { addParticle, addToWorld } from "../modules/gamemanager.js";
 import { Particle, EffectEnum } from "./particle.js";
-import { Bullet } from "./bullet.js";
 import { playSound } from "../modules/sound.js";
 import { Pickup, PickupEnum } from "./pickup.js";
 
@@ -22,10 +16,8 @@ export const ShapeEnum = Object.freeze({ square: 1, circle: 2 });
 const DROP_CHANCE = 0.2;
 
 const BOMB_CHANCE = 0.3;
-// naturally, the health chance is one minus the bomb chance
 
-// TODO figure out how to put shape enum in the jsdoc
-
+// TODO get rid of look
 /**
  * @typedef {Object} Look
  * @property {number} shape
@@ -50,6 +42,7 @@ export function randomLook() {
   };
 }
 
+// TODO get rid of stats
 /**
  * @typedef {Object} Stats
  * @property {number} movementSpeed
@@ -64,7 +57,6 @@ export function randomLook() {
  * @return {Stats}
  */
 export function randomStats(difficulty) {
-  // TODO get rid of this
   let stats = {
     movementSpeed: 0,
     shotSpeed: 0,
@@ -90,11 +82,6 @@ export function randomStats(difficulty) {
 
 export class Enemy extends Creature {
   health = 2;
-  modifiers = {
-    size: 0,
-    speed: 0,
-    explode: 0
-  };
 
   /**
    * constructs a random entity with all the relevant vectors
@@ -103,7 +90,7 @@ export class Enemy extends Creature {
    * @param {Stats} stats
    * @param {Vector} vel
    * @param {Vector} acc
-   * @param {{size: number, speed: number, explode: number}} modifiers
+   * @param {number} matryoshka
    */
   constructor(
     pos,
@@ -111,15 +98,16 @@ export class Enemy extends Creature {
     stats,
     vel = new Vector(0, 0),
     acc = new Vector(0, 0),
-    modifiers = { size: 0, speed: 0, explode: 0 }
+    matryoshka = 0
   ) {
     super(pos, vel, acc);
     this.look = look;
     this.stats = stats;
     this.type = "Enemy";
-    this.modifiers = modifiers;
-    this.width = 50 + 50 * this.modifiers.size;
-    this.height = 50 + 50 * this.modifiers.size;
+    /** if the enemy is big and will split up */
+    this.matryoshka = matryoshka;
+    this.width = 50 + 50 * this.matryoshka;
+    this.height = 50 + 50 * this.matryoshka;
     this.reflectsOffWalls = true;
     this.drag = 0.005;
     this.maxRedFrames = 60;
@@ -163,9 +151,7 @@ export class Enemy extends Creature {
       addParticle(p);
     }
 
-    if (this.modifiers.size > 0) {
-      const newModifiers = Object.assign({}, this.modifiers);
-      newModifiers.size--;
+    if (this.matryoshka > 0) {
       let randDir = Math.random() * 2 * Math.PI;
       const spawnNum = 3;
       const pushSpeed = 5;
@@ -179,7 +165,7 @@ export class Enemy extends Creature {
             Math.sin(randDir) * pushSpeed
           ),
           new Vector(0, 0),
-          newModifiers
+          this.matryoshka - 1
         );
         addToWorld(childEnemy);
         randDir += (2 * Math.PI) / spawnNum;
