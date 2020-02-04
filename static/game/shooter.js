@@ -3,12 +3,11 @@ import { Vector } from "../modules/vector.js";
 import { line, circle, polygon } from "./draw.js";
 import {
   hasImportantEntity,
-  getImportantEntity,
-  getTotalTime
+  getImportantEntity
 } from "../modules/gamemanager.js";
 
 export class Shooter extends Enemy {
-  avoidDistace = 500;
+  avoidDistance = 500;
   avoiding = false;
   avoidTimer = 0;
   avoidTimerMax = 200;
@@ -27,8 +26,12 @@ export class Shooter extends Enemy {
     matryoshka = 0
   ) {
     super(pos, vel, acc, matryoshka);
+    // TODO check this maxhealth
     this.maxHealth = 2;
-    this.gainHealth(2);
+    // TODO @Joe is it okay to do this before setting current health? I think
+    // this is only working because undefined is being coerced into a zero,
+    // which is pretty sketchy.
+    this.gainHealth(this.maxHealth);
     this.fireDelay = 90;
     this.bulletSpeed = 3;
     this.bulletLifetime = 180;
@@ -45,7 +48,7 @@ export class Shooter extends Enemy {
       /** @type {Vector} */
       let dirVec = hero.pos.sub(this.pos);
       // TODO do we need avoid timer
-      if (this.avoidTimer >= 0 || dirVec.magnitude() < this.avoidDistace) {
+      if (this.avoidTimer >= 0 || dirVec.magnitude() < this.avoidDistance) {
         this.avoidTimer--;
         this.avoiding = true;
         this.acc = dirVec

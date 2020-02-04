@@ -14,6 +14,7 @@ import { DamageUp } from "./powerups/damageup.js";
 import { MachineGun } from "./powerups/machinegun.js";
 import { Xplode } from "./powerups/xplode.js";
 import { Zoom } from "./powerups/zoom.js";
+import { Crosser } from "./crosser.js";
 
 /**
  * @param {number[][]} board
@@ -23,7 +24,7 @@ export function populateLevel(board, numEnemies) {
   // board containing distances from nearest solid block
   const { board: distBoard, cells: distCells } = distanceBoard(board);
 
-  const creatureClasses = [Chase, Scatter, Shooter];
+  const creatureClasses = [Chase, Scatter, Shooter, Crosser];
 
   for (let i = 0; i < numEnemies; i++) {
     const randomChoice = randomInt(creatureClasses.length);
