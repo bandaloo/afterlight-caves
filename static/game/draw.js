@@ -275,11 +275,10 @@ export function roundedRect(
   }
 
   if (lineWidth === undefined) lineWidth = 0;
-  // TODO do we really want to be adjusting by the line width?
   const x1 = topLeftVec.x + lineWidth / 2;
   const y1 = topLeftVec.y + lineWidth / 2;
   const x2 = topLeftVec.x + width - lineWidth / 2;
-  const y2 = topLeftVec.y + height + lineWidth / 2;
+  const y2 = topLeftVec.y + height - lineWidth / 2;
 
   // the JavaScript canvas API doesn't have a built-in function for drawing
   // rounded rectangles, so we trace out the path manually
