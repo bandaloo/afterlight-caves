@@ -1,9 +1,10 @@
 import { Enemy } from "./enemy.js";
 import { Vector } from "../modules/vector.js";
-import { line, circle } from "./draw.js";
+import { line, circle, polygon } from "./draw.js";
 import {
   hasImportantEntity,
-  getImportantEntity
+  getImportantEntity,
+  getTotalTime
 } from "../modules/gamemanager.js";
 
 export class Shooter extends Enemy {
@@ -61,9 +62,26 @@ export class Shooter extends Enemy {
     }
   }
 
+  drawBody() {
+    const sides = 6;
+    const bgColor = this.getBackgroundColor();
+    for (let i = 0; i < 2; i++) {
+      polygon(
+        this.drawPos,
+        sides,
+        this.width * 1.2,
+        this.height * 1.2,
+        ((i + 0.5) * this.vel.x) / 20,
+        bgColor,
+        this.drawColor,
+        5
+      );
+    }
+  }
+
   drawFace() {
-    const eyeSpacing = 7;
-    const eyeSize = 5;
+    const eyeSpacing = 10;
+    const eyeSize = 6;
 
     /**
      * draw a single eye
