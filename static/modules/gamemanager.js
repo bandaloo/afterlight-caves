@@ -116,10 +116,15 @@ class GameManager {
       const key = String.fromCharCode(code);
       // press F for fullscreen
       if (key == "F") {
-        // TODO get rid of these magic numbers for resolution
-        this.displayCanvas.width = width;
-        this.displayCanvas.height = height;
-        this.enterFullscreen();
+        if (document.fullscreenElement === null) {
+          // enter fullscreen
+          this.displayCanvas.width = width;
+          this.displayCanvas.height = height;
+          this.enterFullscreen();
+        } else {
+          // exit fullscreen
+          document.exitFullscreen();
+        }
       }
     });
 
