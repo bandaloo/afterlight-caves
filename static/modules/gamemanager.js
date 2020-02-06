@@ -230,6 +230,7 @@ class GameManager {
         this.entities[i].adjust();
       }
     }
+
     // resolve collisions between entities
     this.collideWithEntities();
     // destroy entities that have an expired lifetime or are flagged
@@ -346,6 +347,8 @@ class GameManager {
     // generate the type map for faster access
     const map = new Map();
     for (let i = 0; i < this.entities.length; i++) {
+      if(this.entities[i].pausable && this.gamePause)
+        continue;
       const entity = this.entities[i];
       // exclude inactive entities
       if (entity.active) {
@@ -357,6 +360,8 @@ class GameManager {
     }
 
     for (let i = 0; i < this.entities.length; i++) {
+      if(this.entities[i].pausable && this.gamePause)
+        continue;
       const targetEntity = this.entities[i];
       // exclude inactive entities
       if (targetEntity.active) {
