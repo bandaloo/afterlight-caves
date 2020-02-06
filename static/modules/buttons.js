@@ -108,6 +108,8 @@ export const buttons = {
   primary: new Button(" ", 4),
   /** @type {Button} */
   secondary: new Button("e", 5),
+  /** @type {Button} */
+  pause: new Button("p", 5),
 
   /** @return {Directional[]} */
   getDirectionals() {
@@ -116,7 +118,7 @@ export const buttons = {
 
   /** @return {Button[]} */
   getButtons() {
-    return [this.primary, this.secondary];
+    return [this.primary, this.secondary, this.pause];
   },
 
   *[Symbol.iterator]() {

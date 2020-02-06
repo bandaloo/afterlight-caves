@@ -187,7 +187,6 @@ function resetDemo() {
 document.addEventListener("keydown", e => {
   const code = e.keyCode;
   const key = String.fromCharCode(code);
-  // press F for fullscreen
   if (key == "R") {
     resetDemo();
   }

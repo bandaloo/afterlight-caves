@@ -17,8 +17,11 @@ class GameManager {
   updateTime = 10;
   overTime = 0;
 
+  /** @type {number} */
   totalTime = 0;
-
+  /** @type {number} */
+  gameTime = 0;
+  /** @type {number} */
   previousTime = 0;
 
   /** @type {Entity[]} */
@@ -50,7 +53,10 @@ class GameManager {
 
   /** @type {number} */
   farDistance = 3000;
-
+  
+  /** @type {boolean} */
+  gamePause = false;
+  
   /**
    * map for entities that game programmer might want to access frequently, like player
    * @type {Map<string, Entity>}
@@ -123,6 +129,15 @@ class GameManager {
       }
     });
 
+    document.addEventListener("keydown", e => {
+      const code = e.keyCode;
+      const key = String.fromCharCode(code);
+      // press P to pause
+      if (key == "P") {
+          this.gamePause = !this.gamePause;
+      }
+    });
+
     // add event listeners for hero controls
     document.addEventListener("keydown", controlKeydownListener);
     document.addEventListener("keyup", controlKeyupListener);
@@ -175,6 +190,9 @@ class GameManager {
 
     // let all entities take their actions
     for (let i = 0; i < this.entities.length; i++) {
+      if(this.entities[i].pausable && this.gamePause)
+        continue;
+
       // exclude inactive entities
       if (this.entities[i].active) {
         this.entities[i].action();
@@ -185,7 +203,12 @@ class GameManager {
     /** @type {Entity[][]} */
     const entityLists = [this.entities, this.particles];
     for (let i = 0; i < entityLists.length; i++) {
+      if(entityLists[i].pausable && this.gamePause)
+        continue;
+
       for (let j = 0; j < entityLists[i].length; j++) {
+        if(entityLists[i][j].pausable && this.gamePause)
+          continue;
         // exclude inactive entities
         if (entityLists[i][j].active) {
           entityLists[i][j].lifetime--;
@@ -199,6 +222,9 @@ class GameManager {
 
     // push all entities out of walls
     for (let i = 0; i < this.entities.length; i++) {
+      if(this.entities[i].pausable && this.gamePause)
+        continue;
+      
       // exclude inactive entities
       if (this.entities[i].active) {
         this.entities[i].adjust();
@@ -209,6 +235,7 @@ class GameManager {
     // destroy entities that have an expired lifetime or are flagged
     this.destroyEntities(this.entities);
     this.destroyEntities(this.particles);
+    
     // tell buttons that a step has passed
     ageButtons();
   }
@@ -406,6 +433,11 @@ class GameManager {
       deltaTime = 200;
     }
     this.totalTime += deltaTime;
+
+    // Game time doesn't incrememnt when the game is paused.
+    if(!this.gamePause)
+      this.gameTime += deltaTime;
+
     let gameSteps = 0;
     let timeLeft = deltaTime - this.overTime;
     while (timeLeft > 0) {
@@ -513,6 +545,10 @@ export function setBlock(i, j, val) {
 
 export function getTotalTime() {
   return gameManager.totalTime;
+}
+
+export function getGameTime() {
+  return gameManager.gameTime;
 }
 
 /**

@@ -101,6 +101,9 @@ export class Entity {
    */
   active = true;
 
+  /** @type {boolean} **/
+  pausable = true;
+
   /**
    * constructs an entity with all the relevant vectors
    * @param {Vector} pos
