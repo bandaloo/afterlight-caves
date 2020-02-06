@@ -10,10 +10,10 @@ const BURNING_LENGTH_FACTOR = 1;
 export class Jalapeno extends PowerUp {
   /**
    * Your bombs set enemies on fire
-   * @param {Vector} pos
    * @param {number} magnitude how long the enemies burn for
+   * @param {Vector} [pos]
    */
-  constructor(pos, magnitude = 1) {
+  constructor(magnitude = 1, pos) {
     super(pos, magnitude, "Jalapeño", "Your bombs light enemies on fire");
   }
 

@@ -8,10 +8,10 @@ const BOMB_SPEED_FACTOR = 1;
 export class RovingBombs extends PowerUp {
   /**
    * Makes your bombs move after being placed
-   * @param {Vector} pos
    * @param {number} magnitude how fast the bombs will move you become, 1-5
+   * @param {Vector} [pos]
    */
-  constructor(pos, magnitude = 1) {
+  constructor(magnitude = 1, pos) {
     super(pos, magnitude, "Roving Bombs", "Your bombs move");
   }
 

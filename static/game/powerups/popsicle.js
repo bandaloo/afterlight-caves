@@ -9,10 +9,10 @@ const FROZEN_LENGTH_FACTOR = 1;
 export class Popsicle extends PowerUp {
   /**
    * Your bombs freeze enemies
-   * @param {Vector} pos
    * @param {number} magnitude how long the enemies are frozen for
+   * @param {Vector} [pos]
    */
-  constructor(pos, magnitude = 1) {
+  constructor(magnitude = 1, pos) {
     super(pos, magnitude, "Popsicle", "Your bombs freeze enemies");
   }
 

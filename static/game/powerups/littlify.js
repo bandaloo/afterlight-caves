@@ -8,10 +8,10 @@ const SIZE_FACTOR = 5;
 export class Littlify extends PowerUp {
   /**
    * Makes you smaller
-   * @param {Vector} pos
    * @param {number} magnitude how much smaller this makes you, 1-5
+   * @param {Vector} [pos]
    */
-  constructor(pos, magnitude = 1) {
+  constructor(magnitude = 1, pos) {
     super(pos, magnitude, "Littlify", "Makes you smaller");
   }
 

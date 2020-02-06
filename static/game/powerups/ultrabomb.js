@@ -8,10 +8,10 @@ const EXPLOSION_TIME_FACTOR = 15;
 export class UltraBomb extends PowerUp {
   /**
    * Increases your bomb explosion time
-   * @param {Vector} pos
    * @param {number} magnitude how much to increase bomb explosion time, 1-5
+   * @param {Vector} [pos]
    */
-  constructor(pos, magnitude = 1) {
+  constructor(magnitude = 1, pos) {
     super(pos, magnitude, "Ultra Bomb", "Makes your bombs explode longer");
   }
 

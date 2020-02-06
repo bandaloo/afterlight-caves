@@ -81,7 +81,7 @@ export function populateLevel(board, numEnemies) {
       if (Math.random() > 0.75) {
         const p = new enemyPowerUpTypes[
           Math.floor(Math.random() * enemyPowerUpTypes.length)
-        ](new Vector(0, 0), Math.floor(Math.random() * 5));
+        ](Math.floor(Math.random() * 5));
         p.apply(enemy);
       }
     }

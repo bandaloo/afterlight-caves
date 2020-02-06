@@ -10,10 +10,10 @@ const FIRE_DELAY_ADDEND = 10;
 export class Xplode extends PowerUp {
   /**
    * Makes your bullets explode
-   * @param {Vector} pos
    * @param {number} magnitude number of new bullets to spawn
+   * @param {Vector} [pos]
    */
-  constructor(pos, magnitude = 1) {
+  constructor(magnitude = 1, pos) {
     super(pos, magnitude, "Xplode", "Your bullets explode into more bullets");
     /** 
      * @type {{

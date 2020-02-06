@@ -9,10 +9,10 @@ const MAX_SUB_BOMBS = 10;
 export class GroupBomb extends PowerUp {
   /**
    * Your bombs spawn sub-bombs when they explode
-   * @param {Vector} pos
    * @param {number} magnitude how many extra bombs to spawn
+   * @param {Vector} [pos]
    */
-  constructor(pos, magnitude = 1) {
+  constructor(magnitude = 1, pos) {
     super(pos, magnitude, "Group Bomb", "Your bombs explode into sub-bombs");
     /**
      * @type {{name: string, data: number, func: (b: Bomb, n: number) => void}} */

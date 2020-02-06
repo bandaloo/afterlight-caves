@@ -9,10 +9,10 @@ const MAX_DRAG = 0.5;
 export class Wall extends PowerUp {
   /**
    * Increases your defense, but makes you slightly slower
-   * @param {Vector} pos
    * @param {number} magnitude how much this increases your defense by, 1-5
+   * @param {Vector} [pos]
    */
-  constructor(pos, magnitude = 1) {
+  constructor(magnitude = 1, pos) {
     super(pos, magnitude, "Wall", "Increases your defense");
   }
 

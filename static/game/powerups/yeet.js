@@ -8,10 +8,10 @@ const BULLET_KNOCKBACK_FACTOR = 4;
 export class Yeet extends PowerUp {
   /**
    * Increases bullet knockback
-   * @param {Vector} pos
    * @param {number} magnitude how much to increase bullet knockback by, 1-5
+   * @param {Vector} [pos]
    */
-  constructor(pos, magnitude = 1) {
+  constructor(magnitude = 1, pos) {
     super(pos, magnitude, "Yeet", "Your bullets deal more knock-back");
   }
 

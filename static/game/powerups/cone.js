@@ -8,10 +8,10 @@ const BULLET_DAMAGE_FACTOR = 1.2;
 export class Cone extends PowerUp {
   /**
    * Instead of firing one bullet you fire a cone of bullets
-   * @param {Vector} pos
    * @param {number} magnitude number of new bullets to add to the cone
+   * @param {Vector} [pos]
    */
-  constructor(pos, magnitude = 1) {
+  constructor(magnitude = 1, pos) {
     super(pos, magnitude, "Cone", "Fire a cone of bullets when you shoot");
   }
 

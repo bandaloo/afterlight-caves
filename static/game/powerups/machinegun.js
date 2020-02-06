@@ -8,10 +8,10 @@ const FIRE_DELAY_FACTOR = 1;
 export class MachineGun extends PowerUp {
   /**
    * Increases your fire rate
-   * @param {Vector} pos
    * @param {number} magnitude how much to increase fire rate, 1-5
+   * @param {Vector} [pos]
    */
-  constructor(pos, magnitude = 1) {
+  constructor(magnitude = 1, pos) {
     super(
       pos,
       magnitude,
