@@ -73,31 +73,32 @@ function resetDemo() {
     // TODO get rid of magic numbers for drawing the gui
     const sizeScalar = 6;
     const borderVec = new Vector(8, 8);
+    const healthHeight = 64;
     const hero = getImportantEntity("hero");
     const health = /** @type {Creature} */ (hero).getCurrentHealth();
     const maxHealth = /** @type {Creature} */ (hero).maxHealth;
     const currentBombs = /** @type {Creature} */ (hero).currentBombs;
     const maxBombs = /** @type {Creature} */ (hero).maxBombs;
     const maxHealthWidth = maxHealth * sizeScalar;
-    const healthWidth = health * sizeScalar;
-    const healthColor = "rgba(255, 50, 122, 50%)";
-    rect(new Vector(0, 0), healthWidth, 64, healthColor, healthColor, 4);
-    rect(new Vector(0, 0), maxHealthWidth, 64, undefined, "white", 4);
+    const healthWidth = Math.max(health * sizeScalar, 0);
+    const healthColor = "rgba(255, 50, 122, 90%)";
+    rect(borderVec, healthWidth, healthHeight, healthColor, healthColor, 4);
+    rect(borderVec, maxHealthWidth, healthHeight, undefined, "white", 4);
     // round health to nearest tenth if it's not a whole number
     let healthString = "" + health;
     if (Math.floor(health) !== health) healthString = health.toFixed(1);
     centeredText(
       healthString,
-      new Vector(20, 36),
-      "bold 50px sans-serif",
+      new Vector(16, 0).add(borderVec).add(new Vector(0, healthHeight / 2)),
+      "bold 60px sans-serif",
       "left",
       "middle",
       "white"
     );
     centeredText(
       `${currentBombs} / ${maxBombs}`,
-      new Vector(20, 100),
-      "bold 50px sans-serif",
+      new Vector(0, 100).add(borderVec),
+      "bold 60px sans-serif",
       "left",
       "middle",
       "white"

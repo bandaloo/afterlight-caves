@@ -278,12 +278,6 @@ class GameManager {
     // restore drawing context
     this.context.restore();
 
-    // align camera, draw the gui, reset camera
-    const originalOffset = this.cameraOffset;
-    this.cameraOffset = new Vector(0, 0);
-    this.guiFunc();
-    this.cameraOffset = originalOffset;
-
     // copy the drawing canvas onto the blur canvas
     this.blurContext.drawImage(
       this.canvas,
@@ -292,6 +286,14 @@ class GameManager {
       this.canvas.width / BLUR_SCALAR,
       this.canvas.height / BLUR_SCALAR
     );
+
+    // align camera, draw the gui, reset camera
+    // this is after the draw canvas is copied to the blur canvas
+    // move this to before if you want the gui blurred
+    const originalOffset = this.cameraOffset;
+    this.cameraOffset = new Vector(0, 0);
+    this.guiFunc();
+    this.cameraOffset = originalOffset;
 
     // copy the blur canvas onto the display canvas
     this.displayContext.drawImage(

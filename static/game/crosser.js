@@ -1,8 +1,12 @@
 import { Enemy } from "./enemy.js";
 import { Vector } from "../modules/vector.js";
 import { polygon } from "./draw.js";
-import { getTotalTime } from "../modules/gamemanager.js";
 
+/**
+ * alternately shoots bullets at 45 degrees and in cardinal directions. has no
+ * movement AI but can be knocked around, which creates interesting scenarios.
+ * more of a turret, so it doesn't have a face
+ */
 export class Crosser extends Enemy {
   /**
    * constructs a crosser entity

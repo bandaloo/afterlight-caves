@@ -1,6 +1,6 @@
 import { FarEnum } from "../modules/entity.js";
 import { Vector } from "../modules/vector.js";
-import { randomFromEnum, randomInt, hsl } from "../modules/helpers.js";
+import { randomInt, hsl } from "../modules/helpers.js";
 import { Creature } from "./creature.js";
 import { addParticle, addToWorld } from "../modules/gamemanager.js";
 import { Particle, EffectEnum } from "./particle.js";

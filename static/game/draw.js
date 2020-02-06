@@ -368,6 +368,16 @@ export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
   bottomRightCell.x = clamp(bottomRightCell.x + 1, 0, boardWidth);
   bottomRightCell.y = clamp(bottomRightCell.y + 1, 0, boardHeight);
 
+  const worldBorderWidth = 6;
+  rect(
+    new Vector(-worldBorderWidth / 2, -worldBorderWidth / 2),
+    blockWidth * boardWidth + worldBorderWidth,
+    blockHeight * boardHeight + worldBorderWidth,
+    undefined,
+    color,
+    worldBorderWidth
+  );
+
   /**
    * draw underneath square of tile
    * @param {number} thickness extra width of underneath tile
@@ -392,7 +402,7 @@ export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
   };
 
   // draw squares underneath to create outline
-  drawBorder(6, color, cameraOffset);
+  drawBorder(worldBorderWidth, color, cameraOffset);
   //drawBorder(2, "white", cameraOffset);
 
   // draw black squares on top
@@ -401,16 +411,6 @@ export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
       // TODO could be checking the block field instead of the terrain
       context.fillStyle = "rgba(255, 255, 255, 0.1)";
       if (board[i][j] >= 1) {
-        /*
-        context.fillStyle =
-          blockField[i][j].durability === Infinity ? "black" : "#202020";
-        context.fillRect(
-          i * blockWidth - overDraw + cameraOffset.x,
-          j * blockHeight - overDraw + cameraOffset.y,
-          blockWidth + overDraw * 2,
-          blockHeight + overDraw * 2
-        );
-        */
         context.clearRect(
           i * blockWidth - overDraw + cameraOffset.x,
           j * blockHeight - overDraw + cameraOffset.y,
