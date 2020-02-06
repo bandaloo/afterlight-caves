@@ -11,6 +11,8 @@ import { inPlaceFilter } from "./helpers.js";
 import { isColliding } from "./collision.js";
 import { Vector } from "./vector.js";
 
+const BLUR_SCALAR = 2;
+
 class GameManager {
   updateTime = 10;
   overTime = 0;
@@ -62,22 +64,37 @@ class GameManager {
     displayWidth = 960,
     displayHeight = 540
   ) {
+    // the canvas for drawing
     this.canvas = document.createElement("canvas");
     this.context = this.canvas.getContext("2d");
-    this.context.imageSmoothingEnabled = false;
+    //this.context.imageSmoothingEnabled = false;
     this.canvas.width = width;
     this.canvas.height = height;
 
+    // the canvas for displaying
     this.displayCanvas = document.createElement("canvas");
     this.displayContext = this.displayCanvas.getContext("2d");
-    this.displayContext.imageSmoothingEnabled = false;
+    //this.displayContext.imageSmoothingEnabled = false;
     this.displayWidth = displayWidth;
     this.displayHeight = displayHeight;
     this.displayCanvas.width = displayWidth;
     this.displayCanvas.height = displayHeight;
 
+    // the untouched canvas for blurring before copying
+    this.blurCanvas = document.createElement("canvas");
+    this.blurContext = this.blurCanvas.getContext("2d");
+    // TODO reconsider usage of image smoothing
+    //this.blurContext.imageSmoothingEnabled = false;
+    this.blurCanvas.width = width / BLUR_SCALAR;
+    this.blurCanvas.height = height / BLUR_SCALAR;
+
+    console.log("test");
+
     this.screenWidth = width;
     this.screenHeight = height;
+
+    // TODO get rid of this
+    this.blurContext.filter = "blur(3px) brightness(200%)";
 
     // drawing func defaults to a no-op
     this.drawFunc = () => {};
@@ -217,10 +234,22 @@ class GameManager {
         .add(new Vector(this.screenWidth / 2, this.screenHeight / 2));
     }
 
-    // clear the display canvas
-    this.displayCanvas.width = this.displayCanvas.width;
-    // clear the drawing canvas
-    this.canvas.width = this.canvas.width;
+    // clear the display canvas with black rectangle
+    this.displayContext.fillRect(
+      0,
+      0,
+      this.displayCanvas.width,
+      this.displayCanvas.height
+    );
+    // clear the drawing canvas with alpha 0
+    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    // clear the blur canvas with alpha 0
+    this.blurContext.clearRect(
+      0,
+      0,
+      this.blurCanvas.width,
+      this.blurCanvas.height
+    );
 
     // save drawing context
     this.context.save();
@@ -244,20 +273,43 @@ class GameManager {
     // restore drawing context
     this.context.restore();
 
+    // copy the drawing canvas onto the blur canvas
+    this.blurContext.drawImage(
+      this.canvas,
+      0,
+      0,
+      this.canvas.width / BLUR_SCALAR,
+      this.canvas.height / BLUR_SCALAR
+    );
+
     // align camera, draw the gui, reset camera
+    // this is after the draw canvas is copied to the blur canvas
+    // move this to before if you want the gui blurred
     const originalOffset = this.cameraOffset;
     this.cameraOffset = new Vector(0, 0);
     this.guiFunc();
     this.cameraOffset = originalOffset;
 
+    // copy the blur canvas onto the display canvas
+    this.displayContext.drawImage(
+      this.blurCanvas,
+      0,
+      0,
+      this.displayCanvas.width,
+      this.displayCanvas.height
+    );
+
     // save display context
     this.displayContext.save();
-    this.displayContext.scale(
-      this.displayCanvas.width / this.canvas.width,
-      this.displayCanvas.height / this.canvas.height
-    );
+    this.displayContext.globalCompositeOperation = "lighter";
     // copy the drawing canvas onto the display canvas
-    this.displayContext.drawImage(this.canvas, 0, 0);
+    this.displayContext.drawImage(
+      this.canvas,
+      0,
+      0,
+      this.displayCanvas.width,
+      this.displayCanvas.height
+    );
     // restore display context
     this.displayContext.restore();
   }

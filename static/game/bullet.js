@@ -1,10 +1,11 @@
 import { Vector } from "../modules/vector.js";
 import { Entity, FarEnum } from "../modules/entity.js";
 import { circle } from "./draw.js";
-import { getCell } from "../modules/collision.js";
+import { getCell, isCollidingCheat } from "../modules/collision.js";
 import { setBlock, addParticle, inbounds } from "../modules/gamemanager.js";
 import { Particle, EffectEnum } from "./particle.js";
 import { blockField } from "./generator.js";
+import { CHEAT_RADIUS } from "./hero.js";
 
 export class Bullet extends Entity {
   /**
@@ -56,19 +57,22 @@ export class Bullet extends Entity {
     this.farType = FarEnum.delete;
     this.type = good ? "PlayerBullet" : "EnemyBullet";
     // set function for when we hit enemies
+    const entityType = this.good ? "Enemy" : "Hero";
     this.collideMap.set(
-      this.good ? "Enemy" : "Hero",
+      entityType,
       /** @param {import ("./creature.js").Creature} c */ c => {
-        // deal basic damage
-        c.takeDamage(this.damage);
-        // impart momentum
-        const size = (c.width * c.height) / 300;
-        c.vel = c.vel.add(this.vel.mult(this.knockback / size));
-        // call onHitEnemy functions
-        for (const ohe of this.onHitEnemy) {
-          if (ohe.func) ohe.func(this, ohe.data, c);
+        if (entityType === "Enemy" || isCollidingCheat(c, this, CHEAT_RADIUS)) {
+          // deal basic damage
+          c.takeDamage(this.damage);
+          // impart momentum
+          const size = (c.width * c.height) / 300;
+          c.vel = c.vel.add(this.vel.mult(this.knockback / size));
+          // call onHitEnemy functions
+          for (const ohe of this.onHitEnemy) {
+            if (ohe.func) ohe.func(this, ohe.data, c);
+          }
+          this.deleteMe = true;
         }
-        this.deleteMe = true;
       }
     );
   }

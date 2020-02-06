@@ -15,77 +15,52 @@ import { getCell } from "../modules/collision.js";
 const overDraw = 0.5;
 
 /**
- * Draws an octagon centered at a particular point
+ * draws a polygon with wiggling sides
  * @param {Vector} centerVec
- * @param {number} sideLength
- * @param {string|CanvasGradient|CanvasPattern} [fillStyle] leave undefined for
- * no fill
- * @param {string|CanvasGradient|CanvasPattern} [strokeStyle] leave undefined
- * for no border
- * @param {number} [lineWidth] leave undefined for no border
- * @param {number} [chamferPercent = 0.5] 0-1, what proportion of the side
- * length is included in the chamfer (diagonal edge). 0 creates a square, 1
- * creates a diamond
+ * @param {number} sides
+ * @param {number} width
+ * @param {number} height
+ * @param {number} offset
+ * @param {string|CanvasGradient|CanvasPattern} [fillStyle]
+ * @param {string|CanvasGradient|CanvasPattern} [strokeStyle]
+ * @param {(arg0: number) => number} func offsets vertices based on angle
  */
-export function centeredOctagon(
+export function polygon(
   centerVec,
-  sideLength,
-  fillStyle,
-  strokeStyle,
-  lineWidth,
-  chamferPercent = 0.5
+  sides,
+  width,
+  height,
+  offset,
+  fillStyle = "rgba(0, 0, 0, 0)",
+  strokeStyle = "red",
+  lineWidth = 5,
+  func = () => 1
 ) {
+  width /= 2;
+  height /= 2;
+  centerVec = centerVec.add(getCameraOffset());
   const context = getContext();
   context.save();
-  centerVec = centerVec.add(getCameraOffset());
-
-  if (chamferPercent < 0 || chamferPercent > 1)
-    throw new RangeError("chamferPercent must be in the range 0..1 inclusive");
-
-  // TODO rewrite this with a cosine function in a loop, and generalize to N
-  // sides
-  /*
-   *    8---1
-   *   /     \
-   *  7       2
-   *  |   c   |
-   *  6       3
-   *   \     /
-   *    5---4
-   */
-  const flatSideLength = sideLength * (1 - chamferPercent);
-  const x1 = centerVec.x - sideLength / 2;
-  const x2 = centerVec.x - flatSideLength / 2;
-  const x3 = centerVec.x + flatSideLength / 2;
-  const x4 = centerVec.x + sideLength / 2;
-  const y1 = centerVec.y - sideLength / 2;
-  const y2 = centerVec.y - flatSideLength / 2;
-  const y3 = centerVec.y + flatSideLength / 2;
-  const y4 = centerVec.y + sideLength / 2;
-
   context.beginPath();
-  context.moveTo(x3, y1); // p1
-  context.lineTo(x4, y2); // p2
-  context.lineTo(x4, y3); // p3
-  context.lineTo(x3, y4); // p4
-  context.lineTo(x2, y4); // p5
-  context.lineTo(x1, y3); // p6
-  context.lineTo(x1, y2); // p7
-  context.lineTo(x2, y1); // p8
-  context.closePath();
-  context.closePath();
-
-  if (fillStyle !== undefined) {
-    context.fillStyle = fillStyle;
-    context.fill();
+  context.fillStyle = fillStyle;
+  context.strokeStyle = strokeStyle;
+  context.lineWidth = lineWidth;
+  let funcOffset = func(offset);
+  context.moveTo(
+    centerVec.x + funcOffset * width * Math.cos(offset),
+    centerVec.y + funcOffset * height * Math.sin(offset)
+  );
+  for (let i = 1; i < sides; i++) {
+    const angle = offset + (i / sides) * Math.PI * 2;
+    funcOffset = func(angle);
+    context.lineTo(
+      centerVec.x + funcOffset * width * Math.cos(angle),
+      centerVec.y + funcOffset * height * Math.sin(angle)
+    );
   }
-  if (strokeStyle !== undefined && lineWidth !== undefined && lineWidth !== 0) {
-    context.strokeStyle = strokeStyle;
-    context.lineWidth = lineWidth;
-    context.stroke();
-  }
-
-  // reset to original values
+  context.closePath();
+  context.fill();
+  context.stroke();
   context.restore();
 }
 
@@ -371,7 +346,7 @@ export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
   context.save();
 
   // clear the canvas
-  context.fillRect(0, 0, getCanvasWidth(), getCanvasHeight());
+  // context.fillRect(0, 0, getCanvasWidth(), getCanvasHeight());
 
   // get the cells to draw based on position
   const cameraOffset = getCameraOffset();
@@ -392,6 +367,16 @@ export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
   topLeftCell.y = clamp(topLeftCell.y, 0, boardHeight);
   bottomRightCell.x = clamp(bottomRightCell.x + 1, 0, boardWidth);
   bottomRightCell.y = clamp(bottomRightCell.y + 1, 0, boardHeight);
+
+  const worldBorderWidth = 6;
+  rect(
+    new Vector(-worldBorderWidth / 2, -worldBorderWidth / 2),
+    blockWidth * boardWidth + worldBorderWidth,
+    blockHeight * boardHeight + worldBorderWidth,
+    undefined,
+    color,
+    worldBorderWidth
+  );
 
   /**
    * draw underneath square of tile
@@ -417,22 +402,29 @@ export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
   };
 
   // draw squares underneath to create outline
-  drawBorder(6, color, cameraOffset);
-  drawBorder(2, "white", cameraOffset);
+  drawBorder(worldBorderWidth, color, cameraOffset);
+  //drawBorder(2, "white", cameraOffset);
 
   // draw black squares on top
   for (let i = topLeftCell.x; i < bottomRightCell.x; i++) {
     for (let j = topLeftCell.y; j < bottomRightCell.y; j++) {
       // TODO could be checking the block field instead of the terrain
+      context.fillStyle = "rgba(255, 255, 255, 0.1)";
       if (board[i][j] >= 1) {
-        context.fillStyle =
-          blockField[i][j].durability === Infinity ? "black" : "#202020";
-        context.fillRect(
+        context.clearRect(
           i * blockWidth - overDraw + cameraOffset.x,
           j * blockHeight - overDraw + cameraOffset.y,
           blockWidth + overDraw * 2,
           blockHeight + overDraw * 2
         );
+        if (blockField[i][j].durability !== Infinity) {
+          context.fillRect(
+            i * blockWidth + overDraw + cameraOffset.x,
+            j * blockHeight + overDraw + cameraOffset.y,
+            blockWidth - overDraw * 2,
+            blockHeight - overDraw * 2
+          );
+        }
       }
     }
   }

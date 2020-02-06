@@ -251,7 +251,7 @@ export class Creature extends Entity {
    * @param {Vector} [additionalVelocity]
    * @returns {boolean}
    */
-  shoot(dir, additionalVelocity = new Vector(0, 0)) {
+  shoot(dir, additionalVelocity = new Vector(0, 0), angle = 30, offset = 0) {
     dir = dir.norm2();
     // Conditional is so fire count doesn't roll over before shooting
     if (this.fireCount < this.fireDelay) {
@@ -270,7 +270,8 @@ export class Creature extends Entity {
         if (this.bulletsPerShot > 1) {
           let theta = Math.atan2(dir.y, dir.x);
           const r = dir.mag();
-          const degreesToAdd = (i / (this.bulletsPerShot - 1)) * 30 - 15;
+          const degreesToAdd =
+            (i / (this.bulletsPerShot - 1)) * angle - angle / 2 + offset;
           theta += degreesToAdd * (Math.PI / 180);
           newDir = new Vector(r * Math.cos(theta), r * Math.sin(theta));
         }

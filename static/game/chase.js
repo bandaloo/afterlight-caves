@@ -1,9 +1,10 @@
 import { Enemy, ShapeEnum } from "./enemy.js";
 import { Vector } from "../modules/vector.js";
-import { line, ellipse, circle } from "./draw.js";
+import { line, ellipse, circle, polygon } from "./draw.js";
 import {
   hasImportantEntity,
-  getImportantEntity
+  getImportantEntity,
+  getTotalTime
 } from "../modules/gamemanager.js";
 
 export class Chase extends Enemy {
@@ -15,23 +16,19 @@ export class Chase extends Enemy {
   /**
    * constructs a random entity with all the relevant vectors
    * @param {Vector} pos
-   * @param {import("./enemy.js").Look} look
-   * @param {import("./enemy.js").Stats} stats
    * @param {Vector} vel
    * @param {Vector} acc
+   * @param {number} matryoshka
    */
-  constructor(
-    pos,
-    look,
-    stats,
-    vel = new Vector(0, 0),
-    acc = new Vector(0, 0),
-    modifiers = { size: 0, speed: 0, explode: 0 }
-  ) {
-    super(pos, look, stats, vel, acc, modifiers);
+  constructor(pos, vel = new Vector(0, 0), acc = new Vector(0, 0), matryoshka) {
+    super(pos, vel, acc, matryoshka);
     this.drag = 0.015;
     this.maxHealth = 2;
     this.gainHealth(2);
+    this.collideMap.set("PlayerBullet", e => {
+      console.log("follow timer set");
+      this.followTimer = this.followTimerMax;
+    });
   }
 
   /**
@@ -39,7 +36,6 @@ export class Chase extends Enemy {
    * @param {import("./hero.js").Hero} hero
    */
   touchHero(hero) {
-    this.followTimer = this.followTimerMax;
     super.touchHero(hero);
   }
 
@@ -64,16 +60,36 @@ export class Chase extends Enemy {
     }
   }
 
+  drawBody() {
+    const sides = 5;
+    const bgColor = this.getBackgroundColor();
+    for (let i = 0; i < 2; i++) {
+      polygon(
+        this.drawPos,
+        sides,
+        this.width * 1.2,
+        this.height * 1.2,
+        getTotalTime() / 1000 + (i * sides) / 2 / 5,
+        bgColor,
+        this.drawColor,
+        5,
+        n => 1 + Math.sin(2 * n + getTotalTime() / (200 + 100 * i)) / 5
+      );
+    }
+  }
+
   drawFace() {
+    const eyeSpacing = 5;
+    const eyeSize = 7;
     /**
      * draw the eye
      * @param {number} scalar change this to modify what side of face to draw
      */
     const drawEye = scalar => {
       ellipse(
-        this.drawPos.add(new Vector(scalar * this.look.eyeSpacing, 0)),
-        this.look.eyeSize * 3,
-        this.look.eyeSize * 1.5,
+        this.drawPos.add(new Vector(scalar * eyeSpacing, 0)),
+        eyeSize * 3,
+        eyeSize * 1.5,
         undefined,
         4,
         this.drawColor
@@ -86,8 +102,8 @@ export class Chase extends Enemy {
      */
     const drawPupil = scalar => {
       circle(
-        this.drawPos.add(new Vector(scalar * this.look.eyeSpacing, 0)),
-        this.look.eyeSize,
+        this.drawPos.add(new Vector(scalar * eyeSpacing, 0)),
+        eyeSize,
         undefined,
         4,
         this.drawColor
@@ -99,25 +115,22 @@ export class Chase extends Enemy {
       drawPupil(0);
     } else {
       line(
-        this.drawPos.sub(new Vector(this.look.eyeSize * 3, 0)),
-        this.drawPos.add(new Vector(this.look.eyeSize * 3, 0)),
+        this.drawPos.sub(new Vector(eyeSize * 3, 0)),
+        this.drawPos.add(new Vector(eyeSize * 3, 0)),
         this.drawColor,
         4
       );
     }
 
+    const mouthWidth = 16;
+    const mouthOffset = 10;
+
     // draw the mouth
-    const mouthHalf = this.look.mouthWidth / 2;
+    const mouthHalf = mouthWidth / 2;
 
     line(
-      new Vector(
-        this.drawPos.x + mouthHalf,
-        this.drawPos.y + this.look.mouthOffset
-      ),
-      new Vector(
-        this.drawPos.x - mouthHalf,
-        this.drawPos.y + this.look.mouthOffset
-      ),
+      new Vector(this.drawPos.x + mouthHalf, this.drawPos.y + mouthOffset),
+      new Vector(this.drawPos.x - mouthHalf, this.drawPos.y + mouthOffset),
       this.drawColor,
       4
     );

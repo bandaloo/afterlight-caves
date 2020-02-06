@@ -14,7 +14,6 @@ import {
   getImportantEntity
 } from "./modules/gamemanager.js";
 import { drawBoard, centeredText, rect } from "./game/draw.js";
-import { randomLook, randomStats } from "./game/enemy.js";
 import { Vector } from "./modules/vector.js";
 import { shuffle, randomInt, hsl } from "./modules/helpers.js";
 import { Hero } from "./game/hero.js";
@@ -49,17 +48,9 @@ const blockRows = worldHeight / blockHeight;
 /** @type {string} */
 let color;
 
-/** @type {import("./game/enemy.js").Look[]} */
-let enemyLooks = [];
-
-/** @type {import("./game/enemy.js").Stats[]} */
-let enemyStats = [];
-
 function resetDemo() {
   destroyEverything();
   color = hsl(randomInt(360));
-  enemyLooks = [];
-  enemyStats = [];
 
   let board = getGrid(
     blockColumns * 8,
@@ -82,31 +73,32 @@ function resetDemo() {
     // TODO get rid of magic numbers for drawing the gui
     const sizeScalar = 6;
     const borderVec = new Vector(8, 8);
+    const healthHeight = 64;
     const hero = getImportantEntity("hero");
     const health = /** @type {Creature} */ (hero).getCurrentHealth();
     const maxHealth = /** @type {Creature} */ (hero).maxHealth;
     const currentBombs = /** @type {Creature} */ (hero).currentBombs;
     const maxBombs = /** @type {Creature} */ (hero).maxBombs;
     const maxHealthWidth = maxHealth * sizeScalar;
-    const healthWidth = health * sizeScalar;
-    const healthColor = "rgba(255, 50, 122, 50%)";
-    rect(new Vector(0, 0), healthWidth, 64, healthColor, healthColor, 4);
-    rect(new Vector(0, 0), maxHealthWidth, 64, undefined, "white", 4);
+    const healthWidth = Math.max(health * sizeScalar, 0);
+    const healthColor = "rgba(255, 50, 122, 90%)";
+    rect(borderVec, healthWidth, healthHeight, healthColor, healthColor, 4);
+    rect(borderVec, maxHealthWidth, healthHeight, undefined, "white", 4);
     // round health to nearest tenth if it's not a whole number
     let healthString = "" + health;
     if (Math.floor(health) !== health) healthString = health.toFixed(1);
     centeredText(
       healthString,
-      new Vector(20, 36),
-      "bold 50px sans-serif",
+      new Vector(16, 0).add(borderVec).add(new Vector(0, healthHeight / 2)),
+      "bold 60px sans-serif",
       "left",
       "middle",
       "white"
     );
     centeredText(
       `${currentBombs} / ${maxBombs}`,
-      new Vector(20, 100),
-      "bold 50px sans-serif",
+      new Vector(0, 100).add(borderVec),
+      "bold 60px sans-serif",
       "left",
       "middle",
       "white"
@@ -114,12 +106,6 @@ function resetDemo() {
   });
 
   let emptySpaces = shuffle(getEmptySpaces(board, 10, blockWidth, blockHeight));
-
-  // create four looks with four difficulties
-  for (let i = 0; i < 4; i++) {
-    enemyLooks.push(randomLook());
-    enemyStats.push(randomStats(i * 3 + 3));
-  }
 
   // Get the segregated board
   const {

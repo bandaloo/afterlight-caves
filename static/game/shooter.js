@@ -1,13 +1,13 @@
 import { Enemy } from "./enemy.js";
 import { Vector } from "../modules/vector.js";
-import { line, circle } from "./draw.js";
+import { line, circle, polygon } from "./draw.js";
 import {
   hasImportantEntity,
   getImportantEntity
 } from "../modules/gamemanager.js";
 
 export class Shooter extends Enemy {
-  avoidDistace = 500;
+  avoidDistance = 500;
   avoiding = false;
   avoidTimer = 0;
   avoidTimerMax = 200;
@@ -16,26 +16,26 @@ export class Shooter extends Enemy {
   /**
    * constructs a random entity with all the relevant vectors
    * @param {Vector} pos
-   * @param {import("./enemy.js").Look} look
-   * @param {import("./enemy.js").Stats} stats
    * @param {Vector} vel
    * @param {Vector} acc
    */
   constructor(
     pos,
-    look,
-    stats,
     vel = new Vector(0, 0),
     acc = new Vector(0, 0),
-    modifiers = { size: 0, speed: 0, explode: 0 }
+    matryoshka = 0
   ) {
-    super(pos, look, stats, vel, acc, modifiers);
+    super(pos, vel, acc, matryoshka);
+    // TODO check this maxhealth
     this.maxHealth = 2;
-    this.gainHealth(2);
+    // TODO @Joe is it okay to do this before setting current health? I think
+    // this is only working because undefined is being coerced into a zero,
+    // which is pretty sketchy.
+    this.gainHealth(this.maxHealth);
     this.fireDelay = 90;
     this.bulletSpeed = 3;
     this.bulletLifetime = 180;
-    this.collideMap.set("Hero", e => {
+    this.collideMap.set("PlayerBullet", e => {
       this.avoidTimer = this.avoidTimerMax;
     });
   }
@@ -47,7 +47,8 @@ export class Shooter extends Enemy {
       const hero = getImportantEntity("hero");
       /** @type {Vector} */
       let dirVec = hero.pos.sub(this.pos);
-      if (this.avoidTimer >= 0 || dirVec.magnitude() < this.avoidDistace) {
+      // TODO do we need avoid timer
+      if (this.avoidTimer >= 0 || dirVec.magnitude() < this.avoidDistance) {
         this.avoidTimer--;
         this.avoiding = true;
         this.acc = dirVec
@@ -65,8 +66,27 @@ export class Shooter extends Enemy {
     }
   }
 
+  drawBody() {
+    const sides = 6;
+    const bgColor = this.getBackgroundColor();
+    for (let i = 0; i < 2; i++) {
+      polygon(
+        this.drawPos,
+        sides,
+        this.width * 1.2,
+        this.height * 1.2,
+        ((i + 0.5) * this.vel.x) / 20,
+        bgColor,
+        this.drawColor,
+        5
+      );
+    }
+  }
+
   drawFace() {
-    // TODO make this actually look good
+    const eyeSpacing = 10;
+    const eyeSize = 6;
+
     /**
      * draw a single eye
      * @param {number} x change this to modify what side of face to draw
@@ -74,10 +94,8 @@ export class Shooter extends Enemy {
      */
     const drawEye = (x, y) => {
       circle(
-        this.drawPos.add(
-          new Vector(x * this.look.eyeSpacing, y * this.look.eyeSpacing)
-        ),
-        this.look.eyeSize,
+        this.drawPos.add(new Vector(x * eyeSpacing, y * eyeSpacing)),
+        eyeSize,
         undefined,
         4,
         this.drawColor
@@ -90,18 +108,15 @@ export class Shooter extends Enemy {
     drawEye(0.8, 0.5);
     drawEye(-0.8, 0.5);
 
+    const mouthWidth = 30;
+    const mouthOffset = 12;
+
     // draw the mouth
-    const mouthHalf = this.look.mouthWidth / 2;
+    const mouthHalf = mouthWidth / 2;
 
     line(
-      new Vector(
-        this.drawPos.x + mouthHalf,
-        this.drawPos.y + this.look.mouthOffset + 5
-      ),
-      new Vector(
-        this.drawPos.x - mouthHalf,
-        this.drawPos.y + this.look.mouthOffset + 5
-      ),
+      new Vector(this.drawPos.x + mouthHalf, this.drawPos.y + mouthOffset),
+      new Vector(this.drawPos.x - mouthHalf, this.drawPos.y + mouthOffset),
       this.drawColor,
       4
     );
