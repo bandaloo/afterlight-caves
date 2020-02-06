@@ -5,7 +5,8 @@ import {
   ageButtons,
   gamepadConnectListener,
   gamepadDisconnectListener,
-  getGamepadInput
+  getGamepadInput,
+  buttons
 } from "./buttons.js";
 import { inPlaceFilter } from "./helpers.js";
 import { isColliding } from "./collision.js";
@@ -111,23 +112,6 @@ class GameManager {
 
     this.displayCanvas.addEventListener("fullscreenchange", exitHandler, false);
 
-    document.addEventListener("keydown", e => {
-      const code = e.keyCode;
-      const key = String.fromCharCode(code);
-      // press F for fullscreen
-      if (key == "F") {
-        if (document.fullscreenElement === null) {
-          // enter fullscreen
-          this.displayCanvas.width = width;
-          this.displayCanvas.height = height;
-          this.enterFullscreen();
-        } else {
-          // exit fullscreen
-          document.exitFullscreen();
-        }
-      }
-    });
-
     // add event listeners for hero controls
     document.addEventListener("keydown", controlKeydownListener);
     document.addEventListener("keyup", controlKeyupListener);
@@ -137,6 +121,18 @@ class GameManager {
     window.addEventListener("gamepaddisconnected", gamepadDisconnectListener);
 
     this.addDisplayToDiv("gamediv");
+  }
+
+  toggleFullscreen() {
+    if (document.fullscreenElement === null) {
+      // enter fullscreen
+      this.displayCanvas.width = this.screenWidth;
+      this.displayCanvas.height = this.screenHeight;
+      this.enterFullscreen();
+    } else {
+      // exit fullscreen
+      document.exitFullscreen();
+    }
   }
 
   enterFullscreen() {
@@ -214,6 +210,10 @@ class GameManager {
     // destroy entities that have an expired lifetime or are flagged
     this.destroyEntities(this.entities);
     this.destroyEntities(this.particles);
+    // toggle fullscreen if neccessary
+    if (buttons.fullscreen.status.isPressed) {
+      this.toggleFullscreen();
+    }
     // tell buttons that a step has passed
     ageButtons();
   }
