@@ -65,7 +65,6 @@ export function populateLevel(board, numEnemies) {
         }
       }
       positionOkay = true;
-      console.log("okay");
     }
     // TODO catch the situation where enemy is too large to spawn anywhere
     const enemy = new creatureClasses[randomChoice](

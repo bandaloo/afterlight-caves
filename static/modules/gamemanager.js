@@ -89,8 +89,6 @@ class GameManager {
     this.blurCanvas.width = width / BLUR_SCALAR;
     this.blurCanvas.height = height / BLUR_SCALAR;
 
-    console.log("test");
-
     this.screenWidth = width;
     this.screenHeight = height;
 
@@ -423,7 +421,6 @@ class GameManager {
       timeLeft -= this.updateTime;
       gameSteps++;
     }
-    //console.log(gameSteps);
     // set all the tweened vectors to the draw positions
     this.performTween(this.entities, timeLeft);
     this.performTween(this.particles, timeLeft);

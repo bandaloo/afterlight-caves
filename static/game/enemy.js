@@ -126,8 +126,6 @@ export class Enemy extends Creature {
       } else {
         addToWorld(new Pickup(this.pos, PickupEnum.health));
       }
-    } else {
-      console.log("no drop");
     }
   }
 

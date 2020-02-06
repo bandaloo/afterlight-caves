@@ -29,7 +29,6 @@ export class Scatter extends Enemy {
   }
 
   destroy() {
-    console.log(getImportantEntity("hero"));
     const vecToHero = getImportantEntity("hero")
       .pos.sub(this.drawPos)
       .norm2();

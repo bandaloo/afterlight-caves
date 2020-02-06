@@ -26,7 +26,6 @@ export class Chase extends Enemy {
     this.maxHealth = 2;
     this.gainHealth(2);
     this.collideMap.set("PlayerBullet", e => {
-      console.log("follow timer set");
       this.followTimer = this.followTimerMax;
     });
   }
