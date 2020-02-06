@@ -18,6 +18,7 @@ export class Hero extends Creature {
   eyeDirection = new Vector(0, 1);
   invincibilityFrames = 0;
   invincibilityFramesMax = 100;
+  score = 0;
 
   /**
    * @param startingPos {Vector} the starting position of this Hero
@@ -139,5 +140,13 @@ export class Hero extends Creature {
       super.takeDamage(amt);
       this.invincibilityFrames = this.invincibilityFramesMax;
     }
+  }
+
+  /**
+   *
+   * @param {number} amt number of points to add
+   */
+  addPoints(amt) {
+    this.score += amt;
   }
 }
