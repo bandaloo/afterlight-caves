@@ -544,12 +544,23 @@ export function centeredText(
  *  width: number,
  *  length: number,
  *  speed: number,
- *  hue: number
  * }[]} data shine data
  */
-export function drawShines(centerVec, data) {
+export function drawShines(centerVec, data, gradColor) {
   centerVec = centerVec.add(getCameraOffset());
   const context = getContext();
+  const grad = context.createRadialGradient(
+    centerVec.x,
+    centerVec.y,
+    10,
+    centerVec.x,
+    centerVec.y,
+    10
+  );
+
+  grad.addColorStop(0, gradColor);
+  grad.addColorStop(1, "hsla(0, 0%, 0%, 0)");
+  context.fillStyle = grad;
   context.save();
   for (const d of data) {
     const left = new Vector(
@@ -560,17 +571,6 @@ export function drawShines(centerVec, data) {
       centerVec.x + d.length * Math.cos(d.angle + d.width),
       centerVec.y + d.length * Math.sin(d.angle + d.width)
     );
-    const grad = context.createRadialGradient(
-      centerVec.x,
-      centerVec.y,
-      d.length / 2,
-      centerVec.x,
-      centerVec.y,
-      d.length
-    );
-    grad.addColorStop(0, "hsla(" + d.hue + ", 100%, 50%, 1)");
-    grad.addColorStop(1, "hsla(0, 0%, 0%, 0)");
-    context.fillStyle = grad;
     context.beginPath();
     context.moveTo(centerVec.x, centerVec.y);
     context.lineTo(left.x, left.y);

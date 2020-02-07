@@ -45,7 +45,6 @@ export class PowerUp extends Entity {
      *        , width: number
      *        , length: number
      *        , speed: number
-     *        , hue: number
      *        }[]
      * }
      */
@@ -55,8 +54,7 @@ export class PowerUp extends Entity {
         angle: Math.random() * 2 * Math.PI,
         width: 0.35 + Math.random() * 0.2,
         length: 40 + Math.floor(Math.random() * 25),
-        speed: 0.01 + Math.random() * 0.03,
-        hue: Math.floor(Math.random() * 360)
+        speed: 0.01 + Math.random() * 0.03
       };
     }
   }
@@ -135,23 +133,14 @@ export class PowerUp extends Entity {
    */
   draw() {
     // shines
-    drawShines(this.drawPos, this.shines);
+    const drawColor = `rgb(${this.colors[0]}, ${this.colors[1]}, ${this.colors[2]})`;
+    drawShines(this.drawPos, this.shines, drawColor);
     for (const s of this.shines) {
       s.angle += s.speed;
-      s.hue += 1;
       if (s.angle > 2 * Math.PI) s.angle -= 2 * Math.PI;
-      if (s.hue >= 360) {
-        s.hue = 0;
-      }
     }
     // circle
-    circle(
-      this.drawPos,
-      32,
-      "black",
-      4,
-      `rgb(${this.colors[0]}, ${this.colors[1]}, ${this.colors[2]})`
-    );
+    circle(this.drawPos, 32, "black", 4, drawColor);
     // text
     centeredText(
       this.powerUpClass.slice(0, 1),
@@ -159,7 +148,7 @@ export class PowerUp extends Entity {
       "bold 50px sans-serif",
       "center",
       "alphabetic",
-      `rgb(${this.colors[0]}, ${this.colors[1]}, ${this.colors[2]})`
+      drawColor
     );
   }
 }

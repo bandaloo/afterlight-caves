@@ -1,11 +1,11 @@
+import { Vector } from "../modules/vector.js";
+import { circle } from "./draw.js";
 import { buttons } from "../modules/buttons.js";
 import { addParticle } from "../modules/gamemanager.js";
-import { playSound } from "../modules/sound.js";
-import { Vector } from "../modules/vector.js";
-import { Creature } from "./creature.js";
-import { circle } from "./draw.js";
-import { EffectEnum, Particle } from "./particle.js";
+import { Particle, EffectEnum } from "./particle.js";
 import { PowerUp } from "./powerup.js";
+import { Creature } from "./creature.js";
+import { playSound } from "../modules/sound.js";
 
 const DEFAULT_SIZE = 50;
 
