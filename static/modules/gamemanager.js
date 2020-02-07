@@ -117,16 +117,6 @@ class GameManager {
 
     this.displayCanvas.addEventListener("fullscreenchange", exitHandler, false);
 
-    document.addEventListener("keydown", e => {
-      const code = e.keyCode;
-      const key = String.fromCharCode(code);
-      // press P to pause
-      if (key == "P") {
-        toggleGuiElement("pausescreen");
-        this.gamePause = !this.gamePause;
-      }
-    });
-
     // add event listeners for hero controls
     document.addEventListener("keydown", controlKeydownListener);
     document.addEventListener("keyup", controlKeyupListener);
@@ -148,6 +138,11 @@ class GameManager {
       // exit fullscreen
       document.exitFullscreen();
     }
+  }
+
+  togglePause() {
+    toggleGuiElement("pausescreen");
+    this.gamePause = !this.gamePause;
   }
 
   enterFullscreen() {
@@ -240,10 +235,14 @@ class GameManager {
     // destroy entities that have an expired lifetime or are flagged
     this.destroyEntities(this.entities);
     this.destroyEntities(this.particles);
-    // toggle fullscreen if neccessary
+    // check pause and fullscreen buttons
     if (buttons.fullscreen.status.isPressed) {
       this.toggleFullscreen();
     }
+    if (buttons.pause.status.isPressed) {
+      this.togglePause();
+    }
+
     // tell buttons that a step has passed
     ageButtons();
   }
