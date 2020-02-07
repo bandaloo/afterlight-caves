@@ -157,7 +157,7 @@ export class Hero extends Creature {
   }
 
   /**
-   *
+   * adds points to the hero's score and updates the score display
    * @param {number} amt number of points to add
    */
   addPoints(amt) {

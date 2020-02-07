@@ -8,9 +8,7 @@ import { centeredText } from "./draw.js";
  */
 const toScoreString = num => {
   let str = Math.floor(num).toString();
-  while (str.length < 6) {
-    str = "0" + str;
-  }
+  str.padStart(6, "0");
   return str;
 };
 
