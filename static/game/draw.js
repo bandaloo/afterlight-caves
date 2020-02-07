@@ -383,15 +383,24 @@ export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
   bottomRightCell.x = clamp(bottomRightCell.x + 1, 0, boardWidth);
   bottomRightCell.y = clamp(bottomRightCell.y + 1, 0, boardHeight);
 
+  // draw the world border
   const worldBorderWidth = 6;
-  rect(
-    new Vector(-worldBorderWidth / 2, -worldBorderWidth / 2),
-    blockWidth * boardWidth + worldBorderWidth,
-    blockHeight * boardHeight + worldBorderWidth,
-    undefined,
-    color,
-    worldBorderWidth
-  );
+  // this conditional is a pretty minor optimization
+  if (
+    topLeftCell.x === 0 ||
+    topLeftCell.y == 0 ||
+    bottomRightCell.x === boardWidth ||
+    bottomRightCell.y === boardHeight
+  ) {
+    rect(
+      new Vector(-worldBorderWidth / 2, -worldBorderWidth / 2),
+      blockWidth * boardWidth + worldBorderWidth,
+      blockHeight * boardHeight + worldBorderWidth,
+      undefined,
+      color,
+      worldBorderWidth
+    );
+  }
 
   /**
    * draw underneath square of tile
