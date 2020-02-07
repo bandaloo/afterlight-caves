@@ -9,10 +9,10 @@ const BURNING_CHANCE_FACTOR = 0.03;
 export class Hot extends PowerUp {
   /**
    * You set enemies on fire
-   * @param {Vector} pos
    * @param {number} magnitude how long the enemies burn for
+   * @param {Vector} [pos]
    */
-  constructor(pos, magnitude = 1) {
+  constructor(magnitude = 1, pos) {
     super(pos, magnitude, "Hot", "You light enemies on fire");
     /**
      * @type {{ name: string

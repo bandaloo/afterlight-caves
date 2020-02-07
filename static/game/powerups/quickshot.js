@@ -8,10 +8,10 @@ const BULLET_SPEED_FACTOR = 1;
 export class QuickShot extends PowerUp {
   /**
    * Increases the speed of your bullets
-   * @param {Vector} pos
    * @param {number} magnitude how much this increases your bullet speed by, 1-5
+   * @param {Vector} [pos]
    */
-  constructor(pos, magnitude = 1) {
+  constructor(magnitude = 1, pos) {
     super(pos, magnitude, "Quick Shot", "Makes your bullets faster");
   }
 

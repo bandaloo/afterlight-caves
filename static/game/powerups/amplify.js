@@ -8,10 +8,10 @@ const BULLET_SIZE_FACTOR = 1;
 export class Amplify extends PowerUp {
   /**
    * Increases the size of your bullets
-   * @param {Vector} pos
    * @param {number} magnitude how much to increase bullet size, 1-5
+   * @param {Vector} [pos]
    */
-  constructor(pos, magnitude = 1) {
+  constructor(magnitude = 1, pos) {
     super(pos, magnitude, "Amplify", "Makes your bullets bigger");
   }
 

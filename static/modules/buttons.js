@@ -104,11 +104,9 @@ export const buttons = {
     2
   ),
 
-  /** @type {Button} */
   primary: new Button(" ", 4),
-  /** @type {Button} */
   secondary: new Button("e", 5),
-  /** @type {Button} */
+  fullscreen: new Button("f", 8),
   pause: new Button("p", 8),
 
   /** @return {Directional[]} */
@@ -118,6 +116,7 @@ export const buttons = {
 
   /** @return {Button[]} */
   getButtons() {
+    return [this.primary, this.secondary, this.fullscreen, this.pause];
     return [this.primary, this.secondary, this.pause];
   },
 

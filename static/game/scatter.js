@@ -20,16 +20,16 @@ export class Scatter extends Enemy {
     super(pos, vel, acc, matryoshka);
     // TODO weird that you have to give a powerup a position, even if just using
     // it to apply directly
-    new Cone(new Vector(0, 0), 1).apply(this);
+    new Cone(1).apply(this);
     this.maxHealth = 2;
     this.gainHealth(2);
     this.bulletSpeed = 5;
     this.bulletLifetime = 300;
     this.fireDelay = 0;
+    this.basePoints = 50;
   }
 
   destroy() {
-    console.log(getImportantEntity("hero"));
     const vecToHero = getImportantEntity("hero")
       .pos.sub(this.drawPos)
       .norm2();

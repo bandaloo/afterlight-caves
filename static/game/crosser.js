@@ -23,6 +23,7 @@ export class Crosser extends Enemy {
     super(pos, vel, acc, matryoshka);
     this.currentHealth = 1;
     this.currentHealth = this.maxHealth;
+    this.basePoints = 60;
 
     // stuff for shooting
     this.fireDelay = 90;

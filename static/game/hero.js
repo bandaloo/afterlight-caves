@@ -6,6 +6,7 @@ import { Particle, EffectEnum } from "./particle.js";
 import { PowerUp } from "./powerup.js";
 import { Creature } from "./creature.js";
 import { playSound } from "../modules/sound.js";
+import { ScoreDisplay } from "./scoredisplay.js";
 
 const DEFAULT_SIZE = 50;
 
@@ -13,6 +14,8 @@ const DEFAULT_SIZE = 50;
 export const CHEAT_RADIUS = 16;
 
 export class Hero extends Creature {
+  /** @type {ScoreDisplay | undefined} */
+  scoreDisplay;
   drag = 0.1; // movement deceleration
   eyeDirection = new Vector(0, 1);
   invincibilityFrames = 0;
@@ -151,5 +154,13 @@ export class Hero extends Creature {
       else
         this.invincibilityFrames = this.invincibilityFramesMax;
     }
+  }
+
+  /**
+   * adds points to the hero's score and updates the score display
+   * @param {number} amt number of points to add
+   */
+  addPoints(amt) {
+    if (this.scoreDisplay !== undefined) this.scoreDisplay.addPoints(amt);
   }
 }

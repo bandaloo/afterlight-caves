@@ -5,7 +5,8 @@ import {
   ageButtons,
   gamepadConnectListener,
   gamepadDisconnectListener,
-  getGamepadInput
+  getGamepadInput,
+  buttons
 } from "./buttons.js";
 import { inPlaceFilter } from "./helpers.js";
 import { isColliding } from "./collision.js";
@@ -98,8 +99,6 @@ class GameManager {
     this.blurCanvas.width = width / BLUR_SCALAR;
     this.blurCanvas.height = height / BLUR_SCALAR;
 
-    console.log("test");
-
     this.screenWidth = width;
     this.screenHeight = height;
 
@@ -118,28 +117,6 @@ class GameManager {
 
     this.displayCanvas.addEventListener("fullscreenchange", exitHandler, false);
 
-    document.addEventListener("keydown", e => {
-      const code = e.keyCode;
-      const key = String.fromCharCode(code);
-      // press F for fullscreen
-      if (key == "F") {
-        // TODO get rid of these magic numbers for resolution
-        this.displayCanvas.width = width;
-        this.displayCanvas.height = height;
-        this.enterFullscreen();
-      }
-    });
-
-    document.addEventListener("keydown", e => {
-      const code = e.keyCode;
-      const key = String.fromCharCode(code);
-      // press P to pause
-      if (key == "P") {
-        toggleGuiElement("pausescreen");
-        this.gamePause = !this.gamePause;
-      }
-    });
-
     // add event listeners for hero controls
     document.addEventListener("keydown", controlKeydownListener);
     document.addEventListener("keyup", controlKeyupListener);
@@ -149,6 +126,23 @@ class GameManager {
     window.addEventListener("gamepaddisconnected", gamepadDisconnectListener);
 
     this.addDisplayToDiv("gamediv");
+  }
+
+  toggleFullscreen() {
+    if (document.fullscreenElement === null) {
+      // enter fullscreen
+      this.displayCanvas.width = this.screenWidth;
+      this.displayCanvas.height = this.screenHeight;
+      this.enterFullscreen();
+    } else {
+      // exit fullscreen
+      document.exitFullscreen();
+    }
+  }
+
+  togglePause() {
+    toggleGuiElement("pausescreen");
+    this.gamePause = !this.gamePause;
   }
 
   enterFullscreen() {
@@ -241,6 +235,13 @@ class GameManager {
     // destroy entities that have an expired lifetime or are flagged
     this.destroyEntities(this.entities);
     this.destroyEntities(this.particles);
+    // check pause and fullscreen buttons
+    if (buttons.fullscreen.status.isPressed) {
+      this.toggleFullscreen();
+    }
+    if (buttons.pause.status.isPressed) {
+      this.togglePause();
+    }
 
     // tell buttons that a step has passed
     ageButtons();
@@ -462,7 +463,6 @@ class GameManager {
       timeLeft -= this.updateTime;
       gameSteps++;
     }
-    //console.log(gameSteps);
     // set all the tweened vectors to the draw positions
     this.performTween(this.entities, timeLeft);
     this.performTween(this.particles, timeLeft);
@@ -713,4 +713,8 @@ export function getFarDistance() {
  */
 export function setFarDistance(farDistance) {
   gameManager.farDistance = farDistance;
+}
+
+export function setPause(arg = true) {
+  gameManager.gamePause = arg;
 }
