@@ -1,30 +1,28 @@
-import { getGrid, getEmptySpaces } from "./game/life.js";
-import { caveRules, EdgesEnum } from "./game/rules.js";
-import {
-  startUp,
-  setGameDrawFunc,
-  addToWorld,
-  addToGui,
-  setTerrain,
-  setDimensions,
-  destroyEverything,
-  setCameraEntity,
-  setImportantEntity,
-  getTerrain,
-  getImportantEntity
-} from "./modules/gamemanager.js";
-import { drawBoard, centeredText, rect } from "./game/draw.js";
-import { Vector } from "./modules/vector.js";
-import { shuffle, randomInt, hsl } from "./modules/helpers.js";
-import { Hero } from "./game/hero.js";
-import { initBlockField, segregateTerrain } from "./game/generator.js";
-import { populateLevel } from "./game/spawner.js";
-import { Creature } from "./game/creature.js";
-import { powerUpTypes } from "./game/powerups/poweruptypes.js";
-import { addSound, playSound, loopSound } from "./modules/sound.js";
-import { Healthbar } from "./game/healthbar.js";
 import { BombDisplay } from "./game/bombdisplay.js";
+import { drawBoard } from "./game/draw.js";
+import { initBlockField, segregateTerrain } from "./game/generator.js";
+import { Healthbar } from "./game/healthbar.js";
+import { Hero } from "./game/hero.js";
+import { getEmptySpaces, getGrid } from "./game/life.js";
 import { PauseScreen } from "./game/pausescreen.js";
+import { powerUpTypes } from "./game/powerups/poweruptypes.js";
+import { caveRules, EdgesEnum } from "./game/rules.js";
+import { populateLevel } from "./game/spawner.js";
+import {
+  addToGui,
+  addToWorld,
+  destroyEverything,
+  getTerrain,
+  setCameraEntity,
+  setDimensions,
+  setGameDrawFunc,
+  setImportantEntity,
+  setTerrain,
+  startUp
+} from "./modules/gamemanager.js";
+import { hsl, randomInt, shuffle } from "./modules/helpers.js";
+import { addSound, loopSound, playSound } from "./modules/sound.js";
+import { Vector } from "./modules/vector.js";
 
 // load resources
 addSound("enemy-hurt", "../sounds/enemy-hurt.wav");
