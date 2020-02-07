@@ -1,10 +1,10 @@
 import { Entity } from "../modules/entity.js";
-import { Vector } from "../modules/vector.js";
-import { Bullet } from "./bullet.js";
-import { addToWorld, getDimensions } from "../modules/gamemanager.js";
-import { StatusEffect } from "./statuseffect.js";
-import { Bomb } from "./bomb.js";
+import { addToWorld } from "../modules/gamemanager.js";
 import { clamp } from "../modules/helpers.js";
+import { Vector } from "../modules/vector.js";
+import { Bomb } from "./bomb.js";
+import { Bullet } from "./bullet.js";
+import { StatusEffect } from "./statuseffect.js";
 
 /**
  * Reduces damage according to defense

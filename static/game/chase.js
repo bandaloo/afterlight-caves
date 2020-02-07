@@ -1,11 +1,11 @@
-import { Enemy, ShapeEnum } from "./enemy.js";
-import { Vector } from "../modules/vector.js";
-import { line, ellipse, circle, polygon } from "./draw.js";
 import {
-  hasImportantEntity,
+  getGameTime,
   getImportantEntity,
-  getGameTime
+  hasImportantEntity
 } from "../modules/gamemanager.js";
+import { Vector } from "../modules/vector.js";
+import { circle, ellipse, line, polygon } from "./draw.js";
+import { Enemy } from "./enemy.js";
 
 export class Chase extends Enemy {
   followDistace = 500;

@@ -1,16 +1,16 @@
-import { Entity, FarEnum } from "./entity.js";
+import { GuiElement } from "../modules/guielement.js";
 import {
+  ageButtons,
   controlKeydownListener,
   controlKeyupListener,
-  ageButtons,
   gamepadConnectListener,
   gamepadDisconnectListener,
   getGamepadInput
 } from "./buttons.js";
-import { inPlaceFilter } from "./helpers.js";
 import { isColliding } from "./collision.js";
+import { Entity, FarEnum } from "./entity.js";
+import { inPlaceFilter } from "./helpers.js";
 import { Vector } from "./vector.js";
-import { GuiElement } from "../modules/guielement.js";
 
 const BLUR_SCALAR = 2;
 

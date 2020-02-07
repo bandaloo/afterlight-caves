@@ -1,11 +1,11 @@
-import { Vector } from "../modules/vector.js";
-import { Entity, FarEnum } from "../modules/entity.js";
-import { circle } from "./draw.js";
 import { getCell, isCollidingCheat } from "../modules/collision.js";
-import { setBlock, addParticle, inbounds } from "../modules/gamemanager.js";
-import { Particle, EffectEnum } from "./particle.js";
+import { Entity, FarEnum } from "../modules/entity.js";
+import { addParticle, inbounds, setBlock } from "../modules/gamemanager.js";
+import { Vector } from "../modules/vector.js";
+import { circle } from "./draw.js";
 import { blockField } from "./generator.js";
 import { CHEAT_RADIUS } from "./hero.js";
+import { EffectEnum, Particle } from "./particle.js";
 
 export class Bullet extends Entity {
   /**

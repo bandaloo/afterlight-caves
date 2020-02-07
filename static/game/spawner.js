@@ -1,20 +1,20 @@
-import { distanceBoard } from "./generator.js";
-import { Shooter } from "./shooter.js";
-import { Chase } from "./chase.js";
-import { Scatter } from "./scatter.js";
-import { Vector } from "../modules/vector.js";
-import { randomInt, randomPop } from "../modules/helpers.js";
 import {
   addToWorld,
   cellToWorldPosition,
   getImportantEntity
 } from "../modules/gamemanager.js";
-import { Elastic } from "./powerups/elastic.js";
+import { randomInt, randomPop } from "../modules/helpers.js";
+import { Vector } from "../modules/vector.js";
+import { Chase } from "./chase.js";
+import { Crosser } from "./crosser.js";
+import { distanceBoard } from "./generator.js";
 import { DamageUp } from "./powerups/damageup.js";
+import { Elastic } from "./powerups/elastic.js";
 import { MachineGun } from "./powerups/machinegun.js";
 import { Xplode } from "./powerups/xplode.js";
 import { Zoom } from "./powerups/zoom.js";
-import { Crosser } from "./crosser.js";
+import { Scatter } from "./scatter.js";
+import { Shooter } from "./shooter.js";
 
 /**
  * @param {number[][]} board

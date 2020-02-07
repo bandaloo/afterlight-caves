@@ -1,13 +1,13 @@
-import { FarEnum } from "../modules/entity.js";
-import { Vector } from "../modules/vector.js";
-import { randomInt, hsl } from "../modules/helpers.js";
-import { Creature } from "./creature.js";
-import { addParticle, addToWorld } from "../modules/gamemanager.js";
-import { Particle, EffectEnum } from "./particle.js";
-import { playSound } from "../modules/sound.js";
-import { Pickup, PickupEnum } from "./pickup.js";
 import { isCollidingCheat } from "../modules/collision.js";
+import { FarEnum } from "../modules/entity.js";
+import { addParticle, addToWorld } from "../modules/gamemanager.js";
+import { hsl, randomInt } from "../modules/helpers.js";
+import { playSound } from "../modules/sound.js";
+import { Vector } from "../modules/vector.js";
+import { Creature } from "./creature.js";
 import { CHEAT_RADIUS } from "./hero.js";
+import { EffectEnum, Particle } from "./particle.js";
+import { Pickup, PickupEnum } from "./pickup.js";
 
 /**
  * an enum for allowed shapes of enemies

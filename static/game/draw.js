@@ -1,15 +1,13 @@
-import {
-  getContext,
-  getCanvasWidth,
-  getCanvasHeight,
-  getTotalTime,
-  getCameraOffset,
-  getScreenDimensions
-} from "../modules/gamemanager.js";
-import { griderate, clamp } from "../modules/helpers.js";
-import { Vector } from "../modules/vector.js";
-import { blockField, GemEnum } from "./generator.js";
 import { getCell } from "../modules/collision.js";
+import {
+  getCameraOffset,
+  getContext,
+  getScreenDimensions,
+  getTotalTime
+} from "../modules/gamemanager.js";
+import { clamp } from "../modules/helpers.js";
+import { Vector } from "../modules/vector.js";
+import { blockField } from "./generator.js";
 
 // this is to get rid of weird lines when moving the camera
 const overDraw = 0.5;

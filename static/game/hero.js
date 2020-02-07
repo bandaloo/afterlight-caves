@@ -1,11 +1,11 @@
-import { Vector } from "../modules/vector.js";
-import { circle } from "./draw.js";
 import { buttons } from "../modules/buttons.js";
 import { addParticle } from "../modules/gamemanager.js";
-import { Particle, EffectEnum } from "./particle.js";
-import { PowerUp } from "./powerup.js";
-import { Creature } from "./creature.js";
 import { playSound } from "../modules/sound.js";
+import { Vector } from "../modules/vector.js";
+import { Creature } from "./creature.js";
+import { circle } from "./draw.js";
+import { EffectEnum, Particle } from "./particle.js";
+import { PowerUp } from "./powerup.js";
 
 const DEFAULT_SIZE = 50;
 
@@ -129,14 +129,22 @@ export class Hero extends Creature {
     super.action();
   }
 
-  destroy(){
+  destroy() {
     for (let i = 0; i < 40; i++) {
-      let p = new Particle(this.pos, "white", EffectEnum.spark, 10, 3, 0.08, 50);
+      let p = new Particle(
+        this.pos,
+        "white",
+        EffectEnum.spark,
+        10,
+        3,
+        0.08,
+        50
+      );
       p.lineWidth = 5;
-      
+
       addParticle(p);
     }
-    super.destroy()
+    super.destroy();
   }
 
   /**
@@ -146,10 +154,8 @@ export class Hero extends Creature {
   takeDamage(amt) {
     if (this.invincibilityFrames <= 0) {
       super.takeDamage(amt);
-      if(this.currentHealth <= 0)
-        this.destroy()
-      else
-        this.invincibilityFrames = this.invincibilityFramesMax;
+      if (this.currentHealth <= 0) this.destroy();
+      else this.invincibilityFrames = this.invincibilityFramesMax;
     }
   }
 }

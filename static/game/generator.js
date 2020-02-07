@@ -1,7 +1,7 @@
-import { randomInt, griderate } from "../modules/helpers.js";
+import { griderate, randomInt } from "../modules/helpers.js";
+import { Vector } from "../modules/vector.js";
 import { Block } from "./block.js";
 import { createNumberGrid, dirs } from "./life.js";
-import { Vector } from "../modules/vector.js";
 
 const noisy = false;
 

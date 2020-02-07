@@ -1,10 +1,9 @@
 import { Entity } from "../modules/entity.js";
 import { Vector } from "../modules/vector.js";
-import { circle, polygon, centeredRect } from "./draw.js";
+import { polygon, centeredRect } from "./draw.js";
 import { Particle, EffectEnum } from "./particle.js";
-import { addParticle, inbounds, setBlock } from "../modules/gamemanager.js";
+import { addParticle, setBlock } from "../modules/gamemanager.js";
 import { getCell } from "../modules/collision.js";
-import { blockField } from "./generator.js";
 
 /**
  * This class represents a bomb that creatures can place in the game world,

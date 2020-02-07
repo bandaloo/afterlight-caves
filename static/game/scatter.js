@@ -1,8 +1,8 @@
-import { Enemy } from "./enemy.js";
+import { Cone } from "../game/powerups/cone.js";
+import { getImportantEntity } from "../modules/gamemanager.js";
 import { Vector } from "../modules/vector.js";
 import { circle, polygon } from "./draw.js";
-import { getImportantEntity } from "../modules/gamemanager.js";
-import { Cone } from "../game/powerups/cone.js";
+import { Enemy } from "./enemy.js";
 
 export class Scatter extends Enemy {
   /**

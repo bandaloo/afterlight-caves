@@ -1,3 +1,5 @@
+import { Vector } from "./vector.js";
+
 export class GuiElement {
   /** @type {Vector} */
   pos;
