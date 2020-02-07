@@ -10,6 +10,7 @@ import {
 import { inPlaceFilter } from "./helpers.js";
 import { isColliding } from "./collision.js";
 import { Vector } from "./vector.js";
+import { GuiElement } from "../modules/guielement.js";
 
 const BLUR_SCALAR = 2;
 
@@ -17,12 +18,18 @@ class GameManager {
   updateTime = 10;
   overTime = 0;
 
+  /** @type {number} */
   totalTime = 0;
-
+  /** @type {number} */
+  gameTime = 0;
+  /** @type {number} */
   previousTime = 0;
 
   /** @type {Entity[]} */
   entities = [];
+
+  /** @type {Map<GuiElement>} */
+  guiElements = new Map();
 
   /** @type {Entity[]} */
   particles = [];
@@ -50,6 +57,9 @@ class GameManager {
 
   /** @type {number} */
   farDistance = 3000;
+
+  /** @type {boolean} */
+  gamePause = false;
 
   /**
    * map for entities that game programmer might want to access frequently, like player
@@ -99,9 +109,6 @@ class GameManager {
     // drawing func defaults to a no-op
     this.drawFunc = () => {};
 
-    // gui func defaults to a no-op
-    this.guiFunc = () => {};
-
     const exitHandler = () => {
       if (document.fullscreenElement === null) {
         this.displayCanvas.width = this.displayWidth;
@@ -120,6 +127,16 @@ class GameManager {
         this.displayCanvas.width = width;
         this.displayCanvas.height = height;
         this.enterFullscreen();
+      }
+    });
+
+    document.addEventListener("keydown", e => {
+      const code = e.keyCode;
+      const key = String.fromCharCode(code);
+      // press P to pause
+      if (key == "P") {
+        toggleGuiElement("pausescreen");
+        this.gamePause = !this.gamePause;
       }
     });
 
@@ -175,9 +192,18 @@ class GameManager {
 
     // let all entities take their actions
     for (let i = 0; i < this.entities.length; i++) {
+      if (this.entities[i].pausable && this.gamePause) continue;
+
       // exclude inactive entities
       if (this.entities[i].active) {
         this.entities[i].action();
+      }
+    }
+
+    // let all Gui elements take their actions
+    for (const guiKey of this.guiElements.keys()) {
+      if (this.guiElements.get(guiKey).active) {
+        this.guiElements.get(guiKey).action();
       }
     }
 
@@ -185,7 +211,10 @@ class GameManager {
     /** @type {Entity[][]} */
     const entityLists = [this.entities, this.particles];
     for (let i = 0; i < entityLists.length; i++) {
+      if (entityLists[i].pausable && this.gamePause) continue;
+
       for (let j = 0; j < entityLists[i].length; j++) {
+        if (entityLists[i][j].pausable && this.gamePause) continue;
         // exclude inactive entities
         if (entityLists[i][j].active) {
           entityLists[i][j].lifetime--;
@@ -199,16 +228,20 @@ class GameManager {
 
     // push all entities out of walls
     for (let i = 0; i < this.entities.length; i++) {
+      if (this.entities[i].pausable && this.gamePause) continue;
+
       // exclude inactive entities
       if (this.entities[i].active) {
         this.entities[i].adjust();
       }
     }
+
     // resolve collisions between entities
     this.collideWithEntities();
     // destroy entities that have an expired lifetime or are flagged
     this.destroyEntities(this.entities);
     this.destroyEntities(this.particles);
+
     // tell buttons that a step has passed
     ageButtons();
   }
@@ -287,7 +320,12 @@ class GameManager {
     // move this to before if you want the gui blurred
     const originalOffset = this.cameraOffset;
     this.cameraOffset = new Vector(0, 0);
-    this.guiFunc();
+    for (const guiKey of this.guiElements.keys()) {
+      if (this.guiElements.get(guiKey).active) {
+        this.guiElements.get(guiKey).draw();
+      }
+    }
+
     this.cameraOffset = originalOffset;
 
     // copy the blur canvas onto the display canvas
@@ -319,6 +357,7 @@ class GameManager {
     // generate the type map for faster access
     const map = new Map();
     for (let i = 0; i < this.entities.length; i++) {
+      if (this.entities[i].pausable && this.gamePause) continue;
       const entity = this.entities[i];
       // exclude inactive entities
       if (entity.active) {
@@ -330,6 +369,7 @@ class GameManager {
     }
 
     for (let i = 0; i < this.entities.length; i++) {
+      if (this.entities[i].pausable && this.gamePause) continue;
       const targetEntity = this.entities[i];
       // exclude inactive entities
       if (targetEntity.active) {
@@ -406,6 +446,10 @@ class GameManager {
       deltaTime = 200;
     }
     this.totalTime += deltaTime;
+
+    // Game time doesn't incrememnt when the game is paused.
+    if (!this.gamePause) this.gameTime += deltaTime;
+
     let gameSteps = 0;
     let timeLeft = deltaTime - this.overTime;
     while (timeLeft > 0) {
@@ -463,10 +507,6 @@ export function setGameDrawFunc(drawFunc) {
   gameManager.drawFunc = drawFunc;
 }
 
-export function setGameGuiFunc(guiFunc) {
-  gameManager.guiFunc = guiFunc;
-}
-
 /**
  * set the grid of numbers to determine solid parts of world
  * @param {number[][]} board
@@ -515,6 +555,10 @@ export function getTotalTime() {
   return gameManager.totalTime;
 }
 
+export function getGameTime() {
+  return gameManager.gameTime;
+}
+
 /**
  * set dimensions that the terrain is supposed to represent
  * @param {number} blockWidth
@@ -541,6 +585,24 @@ export function addToWorld(entity) {
   entity.drawPos = entity.pos;
   entity.lastPos = entity.pos;
   gameManager.entities.push(entity);
+}
+
+/**
+ * add a GUI element to the GUI of the game
+ * @param {string} key
+ * @param {GuiElement} guiElement
+ */
+export function addToGui(key, guiElement) {
+  gameManager.guiElements.set(key, guiElement);
+}
+
+/**
+ * toggle a gui elements to be active or not active
+ * @param {string} key
+ */
+export function toggleGuiElement(key) {
+  gameManager.guiElements.get(key).active = !gameManager.guiElements.get(key)
+    .active;
 }
 
 /**
