@@ -107,7 +107,7 @@ export const buttons = {
   primary: new Button(" ", 4),
   secondary: new Button("e", 5),
   fullscreen: new Button("f", 8),
-  pause: new Button("p", 8),
+  pause: new Button("p", 9),
 
   /** @return {Directional[]} */
   getDirectionals() {
@@ -117,7 +117,6 @@ export const buttons = {
   /** @return {Button[]} */
   getButtons() {
     return [this.primary, this.secondary, this.fullscreen, this.pause];
-    return [this.primary, this.secondary, this.pause];
   },
 
   *[Symbol.iterator]() {
