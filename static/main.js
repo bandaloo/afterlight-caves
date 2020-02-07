@@ -28,6 +28,7 @@ import { Healthbar } from "./game/healthbar.js";
 import { BombDisplay } from "./game/bombdisplay.js";
 import { PauseScreen } from "./game/pausescreen.js";
 import { ScoreDisplay } from "./game/scoredisplay.js";
+import { DeathScreen } from "./game/deathscreen.js";
 
 // load resources
 addSound("enemy-hurt", "../sounds/enemy-hurt.wav");
@@ -75,12 +76,17 @@ function resetDemo() {
   addToGui("healthbar", healthbar);
   const bombdisplay = new BombDisplay(new Vector(0, 100));
   addToGui("bombdisplay", bombdisplay);
-  const pausescreen = new PauseScreen();
-  pausescreen.active = false;
-  addToGui("pausescreen", pausescreen);
   const scoredisplay = new ScoreDisplay(new Vector(getCanvasWidth() - 5, 5));
   addToGui("scoredisplay", scoredisplay);
 
+  // Add the deathcreen and pausescreen to the GUI last
+  // as they should draw over everything else.
+  const deathscreen = new DeathScreen();
+  deathscreen.active = false;
+  addToGui("deathscreen", deathscreen);
+  const pausescreen = new PauseScreen();
+  pausescreen.active = false;
+  addToGui("pausescreen", pausescreen);
 
   let emptySpaces = shuffle(getEmptySpaces(board, 10, blockWidth, blockHeight));
 
@@ -119,8 +125,6 @@ function resetDemo() {
       new Vector(blockWidth / 2, blockHeight / 2).add(emptySpaces[11])
     )
   );
-
-  hero.scoreDisplay = scoredisplay;
 
   setImportantEntity("hero", hero);
   setCameraEntity(hero);

@@ -1,4 +1,5 @@
 import { Vector } from "../modules/vector.js";
+import { getImportantEntity } from "../modules/gamemanager.js";
 import { GuiElement } from "../modules/guielement.js";
 import { centeredText } from "./draw.js";
 
@@ -6,7 +7,7 @@ import { centeredText } from "./draw.js";
  * @param {number} num
  * @return {string}
  */
-const toScoreString = num => {
+export const toScoreString = num => {
   let str = Math.floor(num).toString();
   str = str.padStart(6, "0");
   return str;
@@ -20,7 +21,8 @@ export class ScoreDisplay extends GuiElement {
   /** @type {number} */
   visibleScore;
   /** @type {number} */
-  scoreToAdd;
+  score;
+
   /**
    * @type {number} number of game steps to display scoreToAdd before adding it
    * to visibleScore
@@ -33,7 +35,7 @@ export class ScoreDisplay extends GuiElement {
   constructor(pos) {
     super(pos);
     this.visibleScore = 0;
-    this.scoreToAdd = 0;
+    this.score = 0;
   }
 
   /**
@@ -48,41 +50,34 @@ export class ScoreDisplay extends GuiElement {
       "bold 60px monospace",
       "right",
       "center",
-      "white",
+      "white"
     );
     // draw points being added
-    if (this.scoreToAdd > 0) {
-    centeredText(
-      "+" + Math.floor(this.scoreToAdd),
-      this.pos.add(new Vector(0, 100)),
-      "bold 60px monospace",
-      "right",
-      "center",
-      "white",
-    );
+    if (this.score != this.visibleScore) {
+      centeredText(
+        "+" + Math.floor(this.score - this.visibleScore),
+        this.pos.add(new Vector(0, 100)),
+        "bold 60px monospace",
+        "right",
+        "center",
+        "white"
+      );
     }
-  }
-
-  /**
-   * @param {number} amt 
-   */
-  addPoints(amt) {
-    this.scoreToAdd += Math.floor(amt);
-    this.staticCounter = 60;
   }
 
   /**
    * @override
    */
   action() {
-    if (this.staticCounter > 0) {
-      this.staticCounter--;
-    } else {
-      if (this.scoreToAdd > 0) {
-        const diff = Math.min(this.scoreToAdd, 5);
-        this.scoreToAdd -= diff;
-        this.visibleScore += diff;
-      }
+    this.hero = getImportantEntity("hero");
+    const heroScore = /** @type {Creature} */ (this.hero).score;
+    if (heroScore != this.score) {
+      this.score = heroScore;
+      this.staticCounter = 60;
     }
+    if (this.staticCounter <= 0 && this.score != this.visibleScore) {
+      this.visibleScore += 1;
+    }
+    if (this.staticCounter > 0) this.staticCounter--;
   }
 }
