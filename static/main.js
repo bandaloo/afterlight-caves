@@ -173,10 +173,6 @@ document.addEventListener("keydown", e => {
   if (key == "R") {
     resetDemo();
   }
-  if (key == "X") {
-    const hero = getImportantEntity("hero");
-    hero.takeDamage(100);
-  }
 });
 
 resetDemo();
