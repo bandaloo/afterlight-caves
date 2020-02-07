@@ -12,7 +12,8 @@ import {
   setImportantEntity,
   getTerrain,
   getImportantEntity,
-  setPause
+  setPause,
+  getCanvasWidth
 } from "./modules/gamemanager.js";
 import { drawBoard, centeredText, rect } from "./game/draw.js";
 import { Vector } from "./modules/vector.js";
@@ -26,6 +27,7 @@ import { addSound, playSound, loopSound } from "./modules/sound.js";
 import { Healthbar } from "./game/healthbar.js";
 import { BombDisplay } from "./game/bombdisplay.js";
 import { PauseScreen } from "./game/pausescreen.js";
+import { ScoreDisplay } from "./game/scoredisplay.js";
 
 // load resources
 addSound("enemy-hurt", "../sounds/enemy-hurt.wav");
@@ -76,6 +78,9 @@ function resetDemo() {
   const pausescreen = new PauseScreen();
   pausescreen.active = false;
   addToGui("pausescreen", pausescreen);
+  const scoredisplay = new ScoreDisplay(new Vector(getCanvasWidth() - 5, 5));
+  addToGui("scoredisplay", scoredisplay);
+
 
   let emptySpaces = shuffle(getEmptySpaces(board, 10, blockWidth, blockHeight));
 
@@ -114,6 +119,8 @@ function resetDemo() {
       new Vector(blockWidth / 2, blockHeight / 2).add(emptySpaces[11])
     )
   );
+
+  hero.scoreDisplay = scoredisplay;
 
   setImportantEntity("hero", hero);
   setCameraEntity(hero);
