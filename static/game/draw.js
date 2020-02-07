@@ -540,11 +540,12 @@ export function centeredText(
 /**
  * @param {Vector} centerVec center position
  * @param {{
- *  angle: number,
- *  width: number,
- *  length: number,
- *  speed: number,
- * }[]} data shine data
+    angle: number;
+    width: number;
+    length: number;
+    speed: number;
+}[]} data shine data
+ * @param {string} gradColor
  */
 export function drawShines(centerVec, data, gradColor) {
   centerVec = centerVec.add(getCameraOffset());
@@ -552,16 +553,16 @@ export function drawShines(centerVec, data, gradColor) {
   const grad = context.createRadialGradient(
     centerVec.x,
     centerVec.y,
-    10,
+    0,
     centerVec.x,
     centerVec.y,
-    10
+    60
   );
 
   grad.addColorStop(0, gradColor);
-  grad.addColorStop(1, "hsla(0, 0%, 0%, 0)");
-  context.fillStyle = grad;
+  grad.addColorStop(1, "#00000000");
   context.save();
+  context.fillStyle = grad;
   for (const d of data) {
     const left = new Vector(
       centerVec.x + d.length * Math.cos(d.angle - d.width),
