@@ -28,7 +28,7 @@ class GameManager {
   /** @type {Entity[]} */
   entities = [];
 
-  /** @type {GuiElement} */
+  /** @type {Map<GuiElement>} */
   guiElements = new Map();
 
   /** @type {Entity[]} */

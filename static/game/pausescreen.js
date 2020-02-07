@@ -10,7 +10,6 @@ export class PauseScreen extends GuiElement {
   constructor() {
     const screenDimensions = getScreenDimensions();
     super(new Vector(screenDimensions.width / 2, screenDimensions.height / 2));
-    console.log(this.pos);
   }
 
   action() {}

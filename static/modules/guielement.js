@@ -13,7 +13,7 @@ export class GuiElement {
   }
 
   /**
-   * draws this GuiElement
+   * updates this GuiElement
    * @override
    */
   action() {}

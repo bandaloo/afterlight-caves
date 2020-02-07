@@ -109,7 +109,7 @@ export const buttons = {
   /** @type {Button} */
   secondary: new Button("e", 5),
   /** @type {Button} */
-  pause: new Button("p", 5),
+  pause: new Button("p", 8),
 
   /** @return {Directional[]} */
   getDirectionals() {
