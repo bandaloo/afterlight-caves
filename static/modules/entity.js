@@ -101,7 +101,9 @@ export class Entity {
    */
   active = true;
 
-  /** @type {boolean} **/
+  /**
+   * @type {boolean}
+   */
   pausable = true;
 
   /**

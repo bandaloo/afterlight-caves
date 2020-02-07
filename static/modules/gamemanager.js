@@ -28,7 +28,7 @@ class GameManager {
   /** @type {Entity[]} */
   entities = [];
 
-  /** @type {Map<GuiElement>} */
+  /** @type {Map<string, GuiElement>} */
   guiElements = new Map();
 
   /** @type {Entity[]} */
@@ -211,8 +211,6 @@ class GameManager {
     /** @type {Entity[][]} */
     const entityLists = [this.entities, this.particles];
     for (let i = 0; i < entityLists.length; i++) {
-      if (entityLists[i].pausable && this.gamePause) continue;
-
       for (let j = 0; j < entityLists[i].length; j++) {
         if (entityLists[i][j].pausable && this.gamePause) continue;
         // exclude inactive entities

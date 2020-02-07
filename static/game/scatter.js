@@ -1,6 +1,6 @@
 import { Enemy } from "./enemy.js";
 import { Vector } from "../modules/vector.js";
-import { line, circle, polygon } from "./draw.js";
+import { circle, polygon } from "./draw.js";
 import { getImportantEntity } from "../modules/gamemanager.js";
 import { Cone } from "../game/powerups/cone.js";
 
@@ -31,7 +31,7 @@ export class Scatter extends Enemy {
   destroy() {
     console.log(getImportantEntity("hero"));
     const vecToHero = getImportantEntity("hero")
-      .pos.sub(this.drawPos)
+      .pos.sub(this.pos)
       .norm2();
     this.shoot(vecToHero);
     super.destroy();
