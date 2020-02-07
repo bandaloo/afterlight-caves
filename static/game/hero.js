@@ -1,12 +1,11 @@
 import { Vector } from "../modules/vector.js";
 import { circle } from "./draw.js";
 import { buttons } from "../modules/buttons.js";
-import { addParticle } from "../modules/gamemanager.js";
+import { addParticle, toggleGuiElement } from "../modules/gamemanager.js";
 import { Particle, EffectEnum } from "./particle.js";
 import { PowerUp } from "./powerup.js";
 import { Creature } from "./creature.js";
 import { playSound } from "../modules/sound.js";
-import { ScoreDisplay } from "./scoredisplay.js";
 
 const DEFAULT_SIZE = 50;
 
@@ -14,8 +13,8 @@ const DEFAULT_SIZE = 50;
 export const CHEAT_RADIUS = 16;
 
 export class Hero extends Creature {
-  /** @type {ScoreDisplay | undefined} */
-  scoreDisplay;
+  /** @type {number} */
+  score;
   drag = 0.1; // movement deceleration
   eyeDirection = new Vector(0, 1);
   invincibilityFrames = 0;
@@ -40,6 +39,7 @@ export class Hero extends Creature {
     this.bombFuseTime = 300;
     this.bombHue = 126;
     this.bulletColor = "white";
+    this.score = 0;
 
     // collect powerups when you collide with them
     this.collideMap.set("PowerUp", entity => {
@@ -132,14 +132,22 @@ export class Hero extends Creature {
     super.action();
   }
 
-  destroy(){
+  destroy() {
     for (let i = 0; i < 40; i++) {
-      let p = new Particle(this.pos, "white", EffectEnum.spark, 10, 3, 0.08, 50);
+      let p = new Particle(
+        this.pos,
+        "white",
+        EffectEnum.spark,
+        10,
+        3,
+        0.08,
+        50
+      );
       p.lineWidth = 5;
-      
       addParticle(p);
     }
-    super.destroy()
+    super.destroy();
+    toggleGuiElement("deathscreen");
   }
 
   /**
@@ -149,10 +157,7 @@ export class Hero extends Creature {
   takeDamage(amt) {
     if (this.invincibilityFrames <= 0) {
       super.takeDamage(amt);
-      if(this.currentHealth <= 0)
-        this.destroy()
-      else
-        this.invincibilityFrames = this.invincibilityFramesMax;
+      this.invincibilityFrames = this.invincibilityFramesMax;
     }
   }
 
@@ -161,6 +166,6 @@ export class Hero extends Creature {
    * @param {number} amt number of points to add
    */
   addPoints(amt) {
-    if (this.scoreDisplay !== undefined) this.scoreDisplay.addPoints(amt);
+    this.score += amt;
   }
 }

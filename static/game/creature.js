@@ -341,10 +341,9 @@ export class Creature extends Entity {
   takeDamage(amt) {
     const damageToTake = defenseFunc(amt, this.defense);
     this.currentHealth -= damageToTake;
-    if (this.currentHealth <= 0) {
-      if (this.type !== "Hero")
-        // TODO remove this so the hero can die
-        this.deleteMe = true;
+    if (this.currentHealth < 0.01) {
+      this.deleteMe = true;
+      this.currentHealth = 0;
     }
   }
 
