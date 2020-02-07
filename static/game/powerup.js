@@ -5,6 +5,9 @@ import { centeredText, drawShines, circle } from "./draw.js";
 import { TextDisplay } from "./textdisplay.js";
 import { addToWorld } from "../modules/gamemanager.js";
 
+// number of points a powerup is worth per magnitude
+const POINTS_FACTOR = 50;
+
 /**
  * @abstract
  */
@@ -71,6 +74,10 @@ export class PowerUp extends Entity {
     // Set the creature's powerup magnitude for this type of powerup
     const newMag = this.magnitude + creature.powerUps.get(this.powerUpClass);
     creature.powerUps.set(this.powerUpClass, newMag);
+
+    if (creature.addPoints) {
+      creature.addPoints(this.magnitude * POINTS_FACTOR);
+    }
 
     // display the name on the screen if the hero picked it up
     // this needs to be last in case something changes before we get here
