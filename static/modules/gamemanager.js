@@ -714,3 +714,7 @@ export function getFarDistance() {
 export function setFarDistance(farDistance) {
   gameManager.farDistance = farDistance;
 }
+
+export function setPause(arg = true) {
+  gameManager.gamePause = arg;
+}

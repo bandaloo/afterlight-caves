@@ -11,7 +11,8 @@ import {
   setCameraEntity,
   setImportantEntity,
   getTerrain,
-  getImportantEntity
+  getImportantEntity,
+  setPause
 } from "./modules/gamemanager.js";
 import { drawBoard, centeredText, rect } from "./game/draw.js";
 import { Vector } from "./modules/vector.js";
@@ -48,6 +49,7 @@ let color;
 function resetDemo() {
   destroyEverything();
   color = hsl(randomInt(360));
+  setPause(false);
 
   let board = getGrid(
     blockColumns * 8,
