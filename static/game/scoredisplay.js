@@ -23,6 +23,11 @@ export class ScoreDisplay extends GuiElement {
   visibleScore;
   /** @type {number} */
   scoreToAdd;
+  /**
+   * @type {number} number of game steps to display scoreToAdd before adding it
+   * to visibleScore
+   */
+  staticCounter;
 
   /**
    * @param {Vector} pos top-right position
@@ -65,16 +70,21 @@ export class ScoreDisplay extends GuiElement {
    */
   addPoints(amt) {
     this.scoreToAdd += Math.floor(amt);
+    this.staticCounter = 60;
   }
 
   /**
    * @override
    */
   action() {
-    if (this.scoreToAdd > 0) {
-      const diff = Math.min(this.scoreToAdd, 5);
-      this.scoreToAdd -= diff;
-      this.visibleScore += diff;
+    if (this.staticCounter > 0) {
+      this.staticCounter--;
+    } else {
+      if (this.scoreToAdd > 0) {
+        const diff = Math.min(this.scoreToAdd, 5);
+        this.scoreToAdd -= diff;
+        this.visibleScore += diff;
+      }
     }
   }
 }
