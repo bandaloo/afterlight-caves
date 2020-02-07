@@ -70,7 +70,8 @@ export function populateLevel(board, numEnemies) {
     );
 
     //Apply random effects
-    for (let k = 0; k < powerUpTypes.length; k++) {
+    const numPowerUps = Math.random() * 6
+    for (let k = 0; k < numPowerUps; k++) {
       if (Math.random() > 0.75) {
         const p = new powerUpTypes[
           Math.floor(Math.random() * powerUpTypes.length)
