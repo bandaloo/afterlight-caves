@@ -2,7 +2,11 @@ import { FarEnum } from "../modules/entity.js";
 import { Vector } from "../modules/vector.js";
 import { randomInt, hsl } from "../modules/helpers.js";
 import { Creature } from "./creature.js";
-import { addParticle, addToWorld } from "../modules/gamemanager.js";
+import {
+  addParticle,
+  addToWorld,
+  getImportantEntity
+} from "../modules/gamemanager.js";
 import { Particle, EffectEnum } from "./particle.js";
 import { playSound } from "../modules/sound.js";
 import { Pickup, PickupEnum } from "./pickup.js";
@@ -32,6 +36,7 @@ const BOMB_CHANCE = 0.3;
 
 export class Enemy extends Creature {
   health = 2;
+  basePoints = 50;
 
   /**
    * constructs a random entity with all the relevant vectors
@@ -60,6 +65,7 @@ export class Enemy extends Creature {
     this.bulletDamage = 10;
     this.touchDamage = 10;
     this.farType = FarEnum.deactivate;
+    this.basePoints = 50;
 
     // TODO get rid of this
     this.drawColor = hsl(randomInt(360), 100, 70);
@@ -98,6 +104,11 @@ export class Enemy extends Creature {
       let p = new Particle(this.pos, this.originalDrawColor, EffectEnum.spark);
       p.lineWidth = 5;
       addParticle(p);
+    }
+
+    const hero = getImportantEntity("hero");
+    if (hero !== undefined) {
+      hero.addPoints(this.getPointValue());
     }
 
     if (this.matryoshka > 0) {
@@ -165,5 +176,21 @@ export class Enemy extends Creature {
       this.redFrames--;
     }
     super.action();
+  }
+
+  /**
+   * @return {number} the amount of points killing this enemy is worth,
+   * based on its power ups, size, etc.
+   */
+  getPointValue() {
+    let out = this.basePoints;
+    out += 75 * this.matryoshka;
+
+    // add 10 points for each magnitude of each power up
+    for (const key in this.powerUps) {
+      out += this.powerUps.get(key) * 10;
+    }
+
+    return out;
   }
 }

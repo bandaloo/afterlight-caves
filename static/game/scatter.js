@@ -26,6 +26,7 @@ export class Scatter extends Enemy {
     this.bulletSpeed = 5;
     this.bulletLifetime = 300;
     this.fireDelay = 0;
+    this.basePoints = 50;
   }
 
   destroy() {
