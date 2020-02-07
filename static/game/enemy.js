@@ -106,6 +106,7 @@ export class Enemy extends Creature {
       addParticle(p);
     }
 
+    // TODO this assumes that enemies can only be killed by the hero
     const hero = getImportantEntity("hero");
     if (hero !== undefined) {
       hero.addPoints(this.getPointValue());
