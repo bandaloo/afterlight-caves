@@ -345,6 +345,23 @@ export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
   let context = getContext();
   context.save();
 
+  /**
+   * draws a centered rectangle without changing style or saving and resetting
+   * the context (used to optimize drawing the gems)
+   * @param {Vector} centerVec
+   * @param {number} width
+   * @param {number} height
+   */
+  const simpleCenteredRect = (centerVec, width, height) => {
+    const cornerVec = centerVec.add(getCameraOffset());
+    context.fillRect(
+      cornerVec.x - width / 2,
+      cornerVec.y - height / 2,
+      width,
+      height
+    );
+  };
+
   // clear the canvas
   // context.fillRect(0, 0, getCanvasWidth(), getCanvasHeight());
 
@@ -403,7 +420,6 @@ export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
 
   // draw squares underneath to create outline
   drawBorder(worldBorderWidth, color, cameraOffset);
-  //drawBorder(2, "white", cameraOffset);
 
   // draw black squares on top
   for (let i = topLeftCell.x; i < bottomRightCell.x; i++) {
@@ -432,6 +448,7 @@ export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
   for (let i = topLeftCell.x; i < bottomRightCell.x; i++) {
     for (let j = topLeftCell.y; j < bottomRightCell.y; j++) {
       // draw gems
+      const gemMod = 1 + Math.cos(getTotalTime() / 300);
       if (board[i][j] !== 0 && blockField[i][j].gemType !== undefined) {
         const diagonals = [
           [1, 1],
@@ -442,22 +459,31 @@ export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
         const gemSpacing = 10;
         const gemSize = 10;
         const shineSize = 3;
-        const gemMod = 1 + Math.cos(getTotalTime() / 300);
         let gemInfo = blockField[i][j].gemType;
-        for (let k = 0; k < diagonals.length; k++) {
-          const gemPosition = new Vector(
+
+        /**
+         * @param {number} k
+         */
+        const calcGemPosition = k =>
+          new Vector(
             (i + 0.5) * blockWidth + diagonals[k][0] * gemSpacing,
             (j + 0.5) * blockHeight + diagonals[k][1] * gemSpacing
           );
+        for (let k = 0; k < diagonals.length; k++) {
+          const gemPosition = calcGemPosition(k);
+          context.fillStyle = gemInfo.color;
+          simpleCenteredRect(gemPosition, gemSize, gemSize);
+        }
+        context.fillStyle = "white";
+        for (let k = 0; k < diagonals.length; k++) {
+          const gemPosition = calcGemPosition(k);
           const shinePosition = gemPosition.add(
             new Vector(-2 + 2 * gemMod, -2 + 2 * gemMod)
           );
-          centeredRect(gemPosition, gemSize, gemSize, gemInfo.color);
-          centeredRect(
+          simpleCenteredRect(
             shinePosition,
             shineSize + gemMod * 0.7,
-            shineSize + gemMod * 0.7,
-            "white"
+            shineSize + gemMod * 0.7
           );
         }
       }
