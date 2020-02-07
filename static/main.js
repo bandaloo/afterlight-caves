@@ -4,13 +4,13 @@ import {
   startUp,
   setGameDrawFunc,
   addToWorld,
+  addToGui,
   setTerrain,
   setDimensions,
   destroyEverything,
   setCameraEntity,
   setImportantEntity,
   getTerrain,
-  setGameGuiFunc,
   getImportantEntity
 } from "./modules/gamemanager.js";
 import { drawBoard, centeredText, rect } from "./game/draw.js";
@@ -21,13 +21,10 @@ import { initBlockField, segregateTerrain } from "./game/generator.js";
 import { populateLevel } from "./game/spawner.js";
 import { Creature } from "./game/creature.js";
 import { powerUpTypes } from "./game/powerups/poweruptypes.js";
-import {
-  addSound,
-  playSound,
-  pauseSound,
-  resetSound,
-  loopSound
-} from "./modules/sound.js";
+import { addSound, playSound, loopSound } from "./modules/sound.js";
+import { Healthbar } from "./game/healthbar.js";
+import { BombDisplay } from "./game/bombdisplay.js";
+import { PauseScreen } from "./game/pausescreen.js";
 
 // load resources
 addSound("enemy-hurt", "../sounds/enemy-hurt.wav");
@@ -69,41 +66,14 @@ function resetDemo() {
     drawBoard(board, blockWidth, blockHeight, color);
   });
 
-  setGameGuiFunc(() => {
-    // TODO get rid of magic numbers for drawing the gui
-    const sizeScalar = 6;
-    const borderVec = new Vector(8, 8);
-    const healthHeight = 64;
-    const hero = getImportantEntity("hero");
-    const health = /** @type {Creature} */ (hero).getCurrentHealth();
-    const maxHealth = /** @type {Creature} */ (hero).maxHealth;
-    const currentBombs = /** @type {Creature} */ (hero).currentBombs;
-    const maxBombs = /** @type {Creature} */ (hero).maxBombs;
-    const maxHealthWidth = maxHealth * sizeScalar;
-    const healthWidth = Math.max(health * sizeScalar, 0);
-    const healthColor = "rgba(255, 50, 122, 90%)";
-    rect(borderVec, healthWidth, healthHeight, healthColor, healthColor, 4);
-    rect(borderVec, maxHealthWidth, healthHeight, undefined, "white", 4);
-    // round health to nearest tenth if it's not a whole number
-    let healthString = "" + health;
-    if (Math.floor(health) !== health) healthString = health.toFixed(1);
-    centeredText(
-      healthString,
-      new Vector(16, 0).add(borderVec).add(new Vector(0, healthHeight / 2)),
-      "bold 60px sans-serif",
-      "left",
-      "middle",
-      "white"
-    );
-    centeredText(
-      `${currentBombs} / ${maxBombs}`,
-      new Vector(0, 100).add(borderVec),
-      "bold 60px sans-serif",
-      "left",
-      "middle",
-      "white"
-    );
-  });
+  // Add GUI elements
+  const healthbar = new Healthbar(new Vector(16, 0));
+  addToGui("healthbar", healthbar);
+  const bombdisplay = new BombDisplay(new Vector(0, 100));
+  addToGui("bombdisplay", bombdisplay);
+  const pausescreen = new PauseScreen();
+  pausescreen.active = false;
+  addToGui("pausescreen", pausescreen);
 
   let emptySpaces = shuffle(getEmptySpaces(board, 10, blockWidth, blockHeight));
 
@@ -187,7 +157,6 @@ function resetDemo() {
 document.addEventListener("keydown", e => {
   const code = e.keyCode;
   const key = String.fromCharCode(code);
-  // press F for fullscreen
   if (key == "R") {
     resetDemo();
   }

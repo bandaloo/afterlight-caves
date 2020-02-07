@@ -4,7 +4,7 @@ import { line, ellipse, circle, polygon } from "./draw.js";
 import {
   hasImportantEntity,
   getImportantEntity,
-  getTotalTime
+  getGameTime
 } from "../modules/gamemanager.js";
 
 export class Chase extends Enemy {
@@ -68,11 +68,11 @@ export class Chase extends Enemy {
         sides,
         this.width * 1.2,
         this.height * 1.2,
-        getTotalTime() / 1000 + (i * sides) / 2 / 5,
+        getGameTime() / 1000 + (i * sides) / 2 / 5,
         bgColor,
         this.drawColor,
         5,
-        n => 1 + Math.sin(2 * n + getTotalTime() / (200 + 100 * i)) / 5
+        n => 1 + Math.sin(2 * n + getGameTime() / (200 + 100 * i)) / 5
       );
     }
   }

@@ -5,7 +5,6 @@ import { addParticle } from "../modules/gamemanager.js";
 import { Particle, EffectEnum } from "./particle.js";
 import { PowerUp } from "./powerup.js";
 import { Creature } from "./creature.js";
-import { Bullet } from "./bullet.js";
 import { playSound } from "../modules/sound.js";
 
 const DEFAULT_SIZE = 50;
@@ -131,6 +130,16 @@ export class Hero extends Creature {
     super.action();
   }
 
+  destroy(){
+    for (let i = 0; i < 40; i++) {
+      let p = new Particle(this.pos, "white", EffectEnum.spark, 10, 3, 0.08, 50);
+      p.lineWidth = 5;
+      
+      addParticle(p);
+    }
+    super.destroy()
+  }
+
   /**
    * @param {number} amt of damage to take
    * @override
@@ -138,7 +147,10 @@ export class Hero extends Creature {
   takeDamage(amt) {
     if (this.invincibilityFrames <= 0) {
       super.takeDamage(amt);
-      this.invincibilityFrames = this.invincibilityFramesMax;
+      if(this.currentHealth <= 0)
+        this.destroy()
+      else
+        this.invincibilityFrames = this.invincibilityFramesMax;
     }
   }
 
