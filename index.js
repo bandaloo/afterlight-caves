@@ -29,6 +29,15 @@ app.use(express.json());
 // get port from environment variable, or use 3000 as the default
 const port = process.env.NODE_PORT || 4000;
 
+/**
+ * gets the current list of scores from the server and returns it like this:
+ * {
+ *     scores: [
+ *         { username: "jojonium", score: 9999},
+ *         ...
+ *     ]
+ * }
+ */
 app.get("/scores", (req, res) => {
   fs.readFile("./scores.json", (err, data) => {
     if (err && err.code !== "ENONET") {
@@ -53,6 +62,7 @@ app.get("/scores", (req, res) => {
 
   })
 })
+
 /**
  * accepts new scores
  * Request body should in JSON format and include a username and score, e.g.
