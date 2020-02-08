@@ -33,8 +33,8 @@ export class Shooter extends Enemy {
     // which is pretty sketchy.
     this.gainHealth(this.maxHealth);
     this.fireDelay = 90;
-    this.bulletSpeed = 3;
-    this.bulletLifetime = 180;
+    this.bulletSpeed = 5;
+    this.bulletLifetime = 500;
     this.basePoints = 80;
     this.collideMap.set("PlayerBullet", e => {
       this.avoidTimer = this.avoidTimerMax;
@@ -62,7 +62,7 @@ export class Shooter extends Enemy {
       }
 
       if (dirVec.magnitude() < this.shootDistance) {
-        this.shoot(dirVec, this.vel);
+        this.shoot(dirVec, this.vel.mult(0.2));
       }
     }
   }
