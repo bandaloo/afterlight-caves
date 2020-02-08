@@ -1,7 +1,7 @@
 import { Vector } from "../modules/vector.js";
 import { circle } from "./draw.js";
 import { buttons } from "../modules/buttons.js";
-import { addParticle } from "../modules/gamemanager.js";
+import { addParticle, toggleGuiElement } from "../modules/gamemanager.js";
 import { Particle, EffectEnum } from "./particle.js";
 import { PowerUp } from "./powerup.js";
 import { Creature } from "./creature.js";
@@ -13,6 +13,8 @@ const DEFAULT_SIZE = 50;
 export const CHEAT_RADIUS = 16;
 
 export class Hero extends Creature {
+  /** @type {number} */
+  score;
   drag = 0.1; // movement deceleration
   eyeDirection = new Vector(0, 1);
   invincibilityFrames = 0;
@@ -37,6 +39,7 @@ export class Hero extends Creature {
     this.bombFuseTime = 300;
     this.bombHue = 126;
     this.bulletColor = "white";
+    this.score = 0;
 
     // collect powerups when you collide with them
     this.collideMap.set("PowerUp", entity => {
@@ -141,10 +144,10 @@ export class Hero extends Creature {
         50
       );
       p.lineWidth = 5;
-
       addParticle(p);
     }
     super.destroy();
+    toggleGuiElement("deathscreen");
   }
 
   /**
@@ -154,8 +157,18 @@ export class Hero extends Creature {
   takeDamage(amt) {
     if (this.invincibilityFrames <= 0) {
       super.takeDamage(amt);
-      if (this.currentHealth <= 0) this.destroy();
-      else this.invincibilityFrames = this.invincibilityFramesMax;
+      // TODO check this
+      //if (this.currentHealth <= 0) this.destroy();
+      //else this.invincibilityFrames = this.invincibilityFramesMax;
+      this.invincibilityFrames = this.invincibilityFramesMax;
     }
+  }
+
+  /**
+   * adds points to the hero's score and updates the score display
+   * @param {number} amt number of points to add
+   */
+  addPoints(amt) {
+    this.score += amt;
   }
 }

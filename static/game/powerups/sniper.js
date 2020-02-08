@@ -8,11 +8,11 @@ const RANGE_FACTOR = 5;
 export class Sniper extends PowerUp {
   /**
    * Increases your range (by increasing bullet lifetime)
-   * @param {Vector} pos
    * @param {number} magnitude how much this increases your range by, 1-5
+   * @param {Vector} [pos]
    */
-  constructor(pos, magnitude = 1) {
-    super(pos, magnitude, "Sniper", "You can shoot farther");
+  constructor(magnitude = 1, pos) {
+    super(magnitude, pos, "Sniper", "You can shoot farther");
   }
 
   /**

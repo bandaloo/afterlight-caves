@@ -8,11 +8,11 @@ const HEALTH_FACTOR = 10;
 export class Vitality extends PowerUp {
   /**
    * Increases your max health
-   * @param {Vector} pos
    * @param {number} magnitude how much this increases you max health by, 1-5
+   * @param {Vector} [pos]
    */
-  constructor(pos, magnitude = 1) {
-    super(pos, magnitude, "Vitality", "Increases your health");
+  constructor(magnitude = 1, pos) {
+    super(magnitude, pos, "Vitality", "Increases your health");
   }
 
   /**

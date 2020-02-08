@@ -10,11 +10,11 @@ const ORB_FACTOR = 2;
 export class Orb extends PowerUp {
   /**
    * Your bombs spawn a ring of bullets when they explode
-   * @param {Vector} pos
    * @param {number} magnitude how many bombs to spawn
+   * @param {Vector} [pos]
    */
-  constructor(pos, magnitude = 1) {
-    super(pos, magnitude, "Orb", "Bombs create into bullets when they explode");
+  constructor(magnitude = 1, pos) {
+    super(magnitude, pos, "Orb", "Bombs create into bullets when they explode");
     /**
      * @type {{name: string, data: number, func: (b: Bomb, n: number) => void}} */
     this.existingOrb = undefined;

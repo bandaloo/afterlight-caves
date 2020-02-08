@@ -11,11 +11,11 @@ const MIN_DRAG = 0.008;
 export class Zoom extends PowerUp {
   /**
    * Makes you faster
-   * @param {Vector} pos
    * @param {number} magnitude how much faster this makes you, 1-5
+   * @param {Vector} [pos]
    */
-  constructor(pos, magnitude = 1) {
-    super(pos, magnitude, "Zoom", "Makes your faster");
+  constructor(magnitude = 1, pos) {
+    super(magnitude, pos, "Zoom", "Makes your faster");
   }
 
   /**

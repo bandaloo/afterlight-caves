@@ -10,7 +10,7 @@ function getSound(str) {
   if (soundMap.has(str)) {
     return soundMap.get(str);
   } else {
-    console.log(`the sound "${str}" could not be found`);
+    console.error(`the sound "${str}" could not be found`);
   }
 }
 
@@ -80,5 +80,4 @@ export function loopSound(str, doLoop = true) {
  */
 export function addSound(key, filename) {
   soundMap.set(key, new Audio(filename));
-  console.log(soundMap);
 }

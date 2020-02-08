@@ -8,11 +8,11 @@ const DAMAGE_FACTOR = 1;
 export class Nitroglycerin extends PowerUp {
   /**
    * Increases your bomb damage
-   * @param {Vector} pos
    * @param {number} magnitude how much to increase bomb damage, 1-5
+   * @param {Vector} [pos]
    */
-  constructor(pos, magnitude = 1) {
-    super(pos, magnitude, "Nitroglycerin", "Increases your bomb damage");
+  constructor(magnitude = 1, pos) {
+    super(magnitude, pos, "Nitroglycerin", "Increases your bomb damage");
   }
 
   /**

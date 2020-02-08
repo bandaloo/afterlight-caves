@@ -10,7 +10,9 @@ import {
   destroyEverything,
   setCameraEntity,
   setImportantEntity,
-  getTerrain
+  getTerrain,
+  setPause,
+  getCanvasWidth
 } from "./modules/gamemanager.js";
 import { drawBoard, centeredText, rect } from "./game/draw.js";
 import { Vector } from "./modules/vector.js";
@@ -23,6 +25,8 @@ import { addSound, playSound, loopSound } from "./modules/sound.js";
 import { Healthbar } from "./game/healthbar.js";
 import { BombDisplay } from "./game/bombdisplay.js";
 import { PauseScreen } from "./game/pausescreen.js";
+import { ScoreDisplay } from "./game/scoredisplay.js";
+import { DeathScreen } from "./game/deathscreen.js";
 
 // load resources
 addSound("enemy-hurt", "../sounds/enemy-hurt.wav");
@@ -46,6 +50,7 @@ let color;
 function resetDemo() {
   destroyEverything();
   color = hsl(randomInt(360));
+  setPause(false);
 
   let board = getGrid(
     blockColumns * 8,
@@ -69,6 +74,14 @@ function resetDemo() {
   addToGui("healthbar", healthbar);
   const bombdisplay = new BombDisplay(new Vector(0, 100));
   addToGui("bombdisplay", bombdisplay);
+  const scoredisplay = new ScoreDisplay(new Vector(getCanvasWidth() - 5, 5));
+  addToGui("scoredisplay", scoredisplay);
+
+  // Add the deathcreen and pausescreen to the GUI last
+  // as they should draw over everything else.
+  const deathscreen = new DeathScreen();
+  deathscreen.active = false;
+  addToGui("deathscreen", deathscreen);
   const pausescreen = new PauseScreen();
   pausescreen.active = false;
   addToGui("pausescreen", pausescreen);
@@ -143,7 +156,7 @@ function resetDemo() {
       const magnitude = Math.floor(Math.random() * 5) + 1;
       for (let j = 1; j <= powerUpTypes.length; ++j) {
         if (r < j / powerUpTypes.length) {
-          const powerUp = new powerUpTypes[j - 1](location, magnitude);
+          const powerUp = new powerUpTypes[j - 1](magnitude, location);
           addToWorld(powerUp);
           break;
         }

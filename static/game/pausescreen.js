@@ -1,7 +1,7 @@
 import { getScreenDimensions } from "../modules/gamemanager.js";
 import { GuiElement } from "../modules/guielement.js";
 import { Vector } from "../modules/vector.js";
-import { centeredText } from "./draw.js";
+import { centeredText, rect } from "./draw.js";
 
 export class PauseScreen extends GuiElement {
   constructor() {
@@ -12,6 +12,12 @@ export class PauseScreen extends GuiElement {
   action() {}
 
   draw() {
+    rect(
+      new Vector(0, 0),
+      getScreenDimensions().width,
+      getScreenDimensions().height,
+      "rgba(0,0,0,.9)"
+    );
     centeredText(
       "Paused!",
       this.pos,

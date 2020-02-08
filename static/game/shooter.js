@@ -35,6 +35,7 @@ export class Shooter extends Enemy {
     this.fireDelay = 90;
     this.bulletSpeed = 3;
     this.bulletLifetime = 180;
+    this.basePoints = 80;
     this.collideMap.set("PlayerBullet", e => {
       this.avoidTimer = this.avoidTimerMax;
     });

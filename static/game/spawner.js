@@ -4,15 +4,10 @@ import {
   getImportantEntity
 } from "../modules/gamemanager.js";
 import { randomInt, randomPop } from "../modules/helpers.js";
-import { Vector } from "../modules/vector.js";
 import { Chase } from "./chase.js";
 import { Crosser } from "./crosser.js";
 import { distanceBoard } from "./generator.js";
-import { DamageUp } from "./powerups/damageup.js";
-import { Elastic } from "./powerups/elastic.js";
-import { MachineGun } from "./powerups/machinegun.js";
-import { Xplode } from "./powerups/xplode.js";
-import { Zoom } from "./powerups/zoom.js";
+import { powerUpTypes } from "./powerups/poweruptypes.js";
 import { Scatter } from "./scatter.js";
 import { Shooter } from "./shooter.js";
 
@@ -65,7 +60,6 @@ export function populateLevel(board, numEnemies) {
         }
       }
       positionOkay = true;
-      console.log("okay");
     }
     // TODO catch the situation where enemy is too large to spawn anywhere
     const enemy = new creatureClasses[randomChoice](
@@ -76,13 +70,12 @@ export function populateLevel(board, numEnemies) {
     );
 
     //Apply random effects
-    // TODO update this with the newly added powerups
-    const enemyPowerUpTypes = [DamageUp, Elastic, MachineGun, Xplode, Zoom];
-    for (let k = 0; k < enemyPowerUpTypes.length; k++) {
+    const numPowerUps = Math.random() * 6;
+    for (let k = 0; k < numPowerUps; k++) {
       if (Math.random() > 0.75) {
-        const p = new enemyPowerUpTypes[
-          Math.floor(Math.random() * enemyPowerUpTypes.length)
-        ](new Vector(0, 0), Math.floor(Math.random() * 5));
+        const p = new powerUpTypes[
+          Math.floor(Math.random() * powerUpTypes.length)
+        ](Math.floor(Math.random() * 5));
         p.apply(enemy);
       }
     }

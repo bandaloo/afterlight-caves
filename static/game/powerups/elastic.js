@@ -8,11 +8,11 @@ const ELASTICITY_FACTOR = 0.75;
 export class Elastic extends PowerUp {
   /**
    * Makes your bullets bounce off walls
-   * @param {Vector} pos
    * @param {number} magnitude how bouncy your bullets are, 1-5
+   * @param {Vector} [pos]
    */
-  constructor(pos, magnitude = 1) {
-    super(pos, magnitude, "Elastic", "Makes your bullets bouncy");
+  constructor(magnitude = 1, pos) {
+    super(magnitude, pos, "Elastic", "Makes your bullets bouncy");
   }
 
   /**

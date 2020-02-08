@@ -9,11 +9,11 @@ const MAX_DRAG = 0.5;
 export class Wall extends PowerUp {
   /**
    * Increases your defense, but makes you slightly slower
-   * @param {Vector} pos
    * @param {number} magnitude how much this increases your defense by, 1-5
+   * @param {Vector} [pos]
    */
-  constructor(pos, magnitude = 1) {
-    super(pos, magnitude, "Wall", "Increases your defense");
+  constructor(magnitude = 1, pos) {
+    super(magnitude, pos, "Wall", "Increases your defense");
   }
 
   /**
@@ -26,7 +26,7 @@ export class Wall extends PowerUp {
       super.apply(creature);
       creature.defense += this.magnitude * DEFENSE_FACTOR;
       creature.drag = Math.min(
-        creature.drag + (this.magnitude * DRAG_FACTOR),
+        creature.drag + this.magnitude * DRAG_FACTOR,
         MAX_DRAG
       );
     } else {

@@ -24,6 +24,7 @@ import { Wall } from "./wall.js";
 import { Xplode } from "./xplode.js";
 import { Yeet } from "./yeet.js";
 import { Zoom } from "./zoom.js";
+import { PowerUp } from "../powerup.js";
 
 export {
   Amplify,
@@ -54,6 +55,7 @@ export {
   Zoom
 };
 
+/** @type {typeof PowerUp[]} */
 export const powerUpTypes = [
   Amplify,
   BiggerBombs,

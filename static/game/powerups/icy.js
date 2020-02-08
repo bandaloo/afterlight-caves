@@ -10,11 +10,11 @@ const CHANCE_TO_FREEZE_CONST = 9;
 export class Icy extends PowerUp {
   /**
    * Your bullets freeze enemies
-   * @param {Vector} pos
    * @param {number} magnitude how long the enemies are frozen for
+   * @param {Vector} [pos]
    */
-  constructor(pos, magnitude = 1) {
-    super(pos, magnitude, "Icy", "Your bullets have a chance to freeze");
+  constructor(magnitude = 1, pos) {
+    super(magnitude, pos, "Icy", "Your bullets have a chance to freeze");
   }
 
   /**

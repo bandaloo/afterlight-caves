@@ -8,11 +8,11 @@ const BLAST_RADIUS_FACTOR = 30;
 export class BiggerBombs extends PowerUp {
   /**
    * Makes your bombs bigger
-   * @param {Vector} pos
    * @param {number} magnitude how much bigger your bombs get, 1-5
+   * @param {Vector} [pos]
    */
-  constructor(pos, magnitude = 1) {
-    super(pos, magnitude, "Bigger Bombs", "Makes your bombs bigger");
+  constructor(magnitude = 1, pos) {
+    super(magnitude, pos, "Bigger Bombs", "Makes your bombs bigger");
   }
 
   /**

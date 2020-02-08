@@ -4,6 +4,10 @@ import { Creature } from "./creature.js";
 import { centeredText, drawShines, circle } from "./draw.js";
 import { TextDisplay } from "./textdisplay.js";
 import { addToWorld } from "../modules/gamemanager.js";
+import { Hero } from "./hero.js";
+
+// number of points a powerup is worth per magnitude
+const POINTS_FACTOR = 50;
 
 /**
  * @abstract
@@ -11,16 +15,16 @@ import { addToWorld } from "../modules/gamemanager.js";
 export class PowerUp extends Entity {
   /**
    * constructs a new powerup
-   * @param {Vector} [pos = new Vector(0, 0)]
    * @param {number} [magnitude = 1] each powerup has a magnitude 1-5, e.g. how
+   * @param {Vector} [pos = new Vector(0, 0)]
    * much more damage you deal. 1 by default.
    * @param {string} [powerUpClass] the class of powerup, e.g. "Damage Up" or
    * "Zoom"
    * @param {string} [description] short description of what this powerup does
    */
   constructor(
-    pos = new Vector(0, 0),
     magnitude = 1,
+    pos = new Vector(0, 0),
     powerUpClass = "Null Power Up",
     description = "This Power Up is a mystery"
   ) {
@@ -70,6 +74,10 @@ export class PowerUp extends Entity {
     const newMag = this.magnitude + creature.powerUps.get(this.powerUpClass);
     creature.powerUps.set(this.powerUpClass, newMag);
 
+    if (creature instanceof Hero) {
+      creature.addPoints(this.magnitude * POINTS_FACTOR);
+    }
+
     // display the name on the screen if the hero picked it up
     // this needs to be last in case something changes before we get here
     if (creature.type === "Hero") {
@@ -112,6 +120,9 @@ export class PowerUp extends Entity {
    */
   overflowAction(creature) {
     creature.gainHealth(creature.maxHealth * 0.5 * this.magnitude);
+    if (creature instanceof Hero) {
+      creature.addPoints(this.magnitude * POINTS_FACTOR * 5);
+    }
     if (creature.type === "Hero") {
       const textPos = this.drawPos.add(new Vector(0, -100));
       console.log("Hero at max");

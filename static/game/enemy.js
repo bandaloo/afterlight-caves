@@ -1,11 +1,15 @@
 import { isCollidingCheat } from "../modules/collision.js";
 import { FarEnum } from "../modules/entity.js";
-import { addParticle, addToWorld } from "../modules/gamemanager.js";
+import {
+  addParticle,
+  addToWorld,
+  getImportantEntity
+} from "../modules/gamemanager.js";
 import { hsl, randomInt } from "../modules/helpers.js";
 import { playSound } from "../modules/sound.js";
 import { Vector } from "../modules/vector.js";
 import { Creature } from "./creature.js";
-import { CHEAT_RADIUS } from "./hero.js";
+import { CHEAT_RADIUS, Hero } from "./hero.js";
 import { EffectEnum, Particle } from "./particle.js";
 import { Pickup, PickupEnum } from "./pickup.js";
 
@@ -32,6 +36,7 @@ const BOMB_CHANCE = 0.3;
 
 export class Enemy extends Creature {
   health = 2;
+  basePoints = 50;
 
   /**
    * constructs a random entity with all the relevant vectors
@@ -60,6 +65,7 @@ export class Enemy extends Creature {
     this.bulletDamage = 10;
     this.touchDamage = 10;
     this.farType = FarEnum.deactivate;
+    this.basePoints = 50;
 
     // TODO get rid of this
     this.drawColor = hsl(randomInt(360), 100, 70);
@@ -100,6 +106,12 @@ export class Enemy extends Creature {
       addParticle(p);
     }
 
+    // TODO this assumes that enemies can only be killed by the hero
+    const hero = getImportantEntity("hero");
+    if (hero !== undefined) {
+      /** @type {Hero} */ (hero).addPoints(this.getPointValue());
+    }
+
     if (this.matryoshka > 0) {
       let randDir = Math.random() * 2 * Math.PI;
       const spawnNum = 3;
@@ -126,8 +138,6 @@ export class Enemy extends Creature {
       } else {
         addToWorld(new Pickup(this.pos, PickupEnum.health));
       }
-    } else {
-      console.log("no drop");
     }
   }
 
@@ -167,5 +177,21 @@ export class Enemy extends Creature {
       this.redFrames--;
     }
     super.action();
+  }
+
+  /**
+   * @return {number} the amount of points killing this enemy is worth,
+   * based on its power ups, size, etc.
+   */
+  getPointValue() {
+    let out = this.basePoints;
+    out += 75 * this.matryoshka;
+
+    // add 10 points for each magnitude of each power up
+    for (const key in this.powerUps) {
+      out += this.powerUps.get(key) * 10;
+    }
+
+    return out;
   }
 }

@@ -7,11 +7,11 @@ const KNAPSACK_FACTOR = 1;
 export class Knapsack extends PowerUp {
   /**
    * Increases your max bombs
-   * @param {Vector} pos
    * @param {number} magnitude how much this increases you max bombs by, 1-5
+   * @param {Vector} [pos]
    */
-  constructor(pos, magnitude = 1) {
-    super(pos, magnitude, "Knapsack", "You can carry more bombs");
+  constructor(magnitude = 1, pos) {
+    super(magnitude, pos, "Knapsack", "You can carry more bombs");
   }
 
   /**

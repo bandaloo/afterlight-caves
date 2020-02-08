@@ -8,11 +8,11 @@ const DAMAGE_FACTOR = 1;
 export class DamageUp extends PowerUp {
   /**
    * Increases your damage
-   * @param {Vector} pos
    * @param {number} magnitude how much to increase damage, 1-5
+   * @param {Vector} [pos]
    */
-  constructor(pos, magnitude = 1) {
-    super(pos, magnitude, "Damage Up", "Increases your bullet damage");
+  constructor(magnitude = 1, pos) {
+    super(magnitude, pos, "Damage Up", "Increases your bullet damage");
   }
 
   /**

@@ -8,11 +8,11 @@ const FUSE_TIME_FACTOR = 20;
 export class Thermalite extends PowerUp {
   /**
    * Decreases the fuse time of your bombs
-   * @param {Vector} pos
    * @param {number} magnitude how much to decrease fuse time by, 1-5
+   * @param {Vector} [pos]
    */
-  constructor(pos, magnitude = 1) {
-    super(pos, magnitude, "Thermalite", "Makes your bombs explode sooner");
+  constructor(magnitude = 1, pos) {
+    super(magnitude, pos, "Thermalite", "Makes your bombs explode sooner");
   }
 
   /**

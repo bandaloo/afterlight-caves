@@ -85,6 +85,8 @@ export class Frozen extends StatusEffect {
       creature.maxSpeed = this.previousMaxSpeed;
     if (this.previousReflectsOffWalls !== undefined)
       creature.reflectsOffWalls = this.previousReflectsOffWalls;
+    if (this.previousMaxAccMag !== undefined)
+      creature.maxAccMag = this.previousMaxAccMag;
     if (this.previousDrag !== undefined) creature.drag = this.previousDrag;
   }
 

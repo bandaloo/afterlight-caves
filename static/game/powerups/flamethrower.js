@@ -9,11 +9,11 @@ const BURNING_LENGTH_FACTOR = 1;
 export class FlameThrower extends PowerUp {
   /**
    * Your bullets set enemies on fire
-   * @param {Vector} pos
    * @param {number} magnitude how long the enemies burn for
+   * @param {Vector} [pos]
    */
-  constructor(pos, magnitude = 1) {
-    super(pos, magnitude, "Flamethrower", "Your bullets light enemies on fire");
+  constructor(magnitude = 1, pos) {
+    super(magnitude, pos, "Flamethrower", "Your bullets light enemies on fire");
   }
 
   /**

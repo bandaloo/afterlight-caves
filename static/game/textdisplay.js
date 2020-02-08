@@ -15,7 +15,8 @@ export class TextDisplay extends Entity {
    * @param {number} [blue] blue value, 0-255
    * @param {string|CanvasGradient|CanvasPattern} [strokeStyle] leave undefined
    * for no outline
-   * @param {number} [lineWidth]
+   * @param {number} [lineWidth],
+   * @param {CanvasTextAlign} [align]
    */
   constructor(
     text,
@@ -26,7 +27,8 @@ export class TextDisplay extends Entity {
     green = 255,
     blue = 255,
     strokeStyle,
-    lineWidth
+    lineWidth,
+    align = "center"
   ) {
     super(pos);
     this.type = "TextDisplay";
@@ -38,8 +40,7 @@ export class TextDisplay extends Entity {
     this.lineWidth = lineWidth,
     this.font = font;
     this.duration = duration;
-    this.align =
-      /** @type {CanvasTextAlign} */ ("center");
+    this.align = align;
     this.baseline = 
       /** @type {CanvasTextBaseline} */ ("alphabetic");
     this.opacity = 1; // for fadeout
