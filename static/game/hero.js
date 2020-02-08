@@ -133,6 +133,7 @@ export class Hero extends Creature {
   }
 
   destroy() {
+    this.submitScore();
     for (let i = 0; i < 40; i++) {
       let p = new Particle(
         this.pos,
@@ -170,5 +171,20 @@ export class Hero extends Creature {
    */
   addPoints(amt) {
     this.score += amt;
+  }
+
+  /**
+   * Submits this user's score to the leaderboard
+   */
+  submitScore() {
+    fetch("/score", {
+      method: "POST",
+      body: JSON.stringify({ username: "Test user", score: this.score }),
+      headers: new Headers({
+        "Content-Type": "application/json"
+      })
+    })
+      .then(response => response.json())
+      .then(console.log);
   }
 }
