@@ -476,9 +476,10 @@ export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
             (i + 0.5) * blockWidth + diagonals[k][0] * gemSpacing,
             (j + 0.5) * blockHeight + diagonals[k][1] * gemSpacing
           );
+
+        context.fillStyle = gemInfo.color;
         for (let k = 0; k < diagonals.length; k++) {
           const gemPosition = calcGemPosition(k);
-          context.fillStyle = gemInfo.color;
           simpleCenteredRect(gemPosition, gemSize, gemSize);
         }
         context.fillStyle = "white";
