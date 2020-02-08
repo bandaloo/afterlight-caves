@@ -12,7 +12,7 @@ export class Sniper extends PowerUp {
    * @param {Vector} [pos]
    */
   constructor(magnitude = 1, pos) {
-    super(pos, magnitude, "Sniper", "You can shoot farther");
+    super(magnitude, pos, "Sniper", "You can shoot farther");
   }
 
   /**

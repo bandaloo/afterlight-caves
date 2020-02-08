@@ -12,7 +12,7 @@ export class Nitroglycerin extends PowerUp {
    * @param {Vector} [pos]
    */
   constructor(magnitude = 1, pos) {
-    super(pos, magnitude, "Nitroglycerin", "Increases your bomb damage");
+    super(magnitude, pos, "Nitroglycerin", "Increases your bomb damage");
   }
 
   /**

@@ -1,8 +1,8 @@
-import { Enemy } from "./enemy.js";
-import { Vector } from "../modules/vector.js";
-import { line, circle, polygon } from "./draw.js";
-import { getImportantEntity } from "../modules/gamemanager.js";
 import { Cone } from "../game/powerups/cone.js";
+import { getImportantEntity } from "../modules/gamemanager.js";
+import { Vector } from "../modules/vector.js";
+import { circle, polygon } from "./draw.js";
+import { Enemy } from "./enemy.js";
 
 export class Scatter extends Enemy {
   /**
@@ -20,7 +20,7 @@ export class Scatter extends Enemy {
     super(pos, vel, acc, matryoshka);
     // TODO weird that you have to give a powerup a position, even if just using
     // it to apply directly
-    new Cone(1).apply(this);
+    new Cone(2).apply(this);
     this.maxHealth = 2;
     this.gainHealth(2);
     this.bulletSpeed = 5;
@@ -31,9 +31,9 @@ export class Scatter extends Enemy {
 
   destroy() {
     const vecToHero = getImportantEntity("hero")
-      .pos.sub(this.drawPos)
+      .pos.sub(this.pos)
       .norm2();
-    this.shoot(vecToHero);
+    this.shoot(vecToHero, undefined, 50);
     super.destroy();
   }
 

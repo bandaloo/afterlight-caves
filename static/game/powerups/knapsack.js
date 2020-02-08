@@ -11,7 +11,7 @@ export class Knapsack extends PowerUp {
    * @param {Vector} [pos]
    */
   constructor(magnitude = 1, pos) {
-    super(pos, magnitude, "Knapsack", "You can carry more bombs");
+    super(magnitude, pos, "Knapsack", "You can carry more bombs");
   }
 
   /**

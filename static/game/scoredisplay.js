@@ -7,7 +7,7 @@ import { centeredText } from "./draw.js";
  * @param {number} num
  * @return {string}
  */
-const toScoreString = num => {
+export const toScoreString = num => {
   let str = Math.floor(num).toString();
   str = str.padStart(6, "0");
   return str;

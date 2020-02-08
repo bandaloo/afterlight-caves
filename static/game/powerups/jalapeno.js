@@ -1,7 +1,6 @@
 import { PowerUp } from "../powerup.js";
 import { Vector } from "../../modules/vector.js";
 import { Creature } from "../creature.js";
-import { Bullet } from "../bullet.js";
 import { Burning } from "../statuseffects/burning.js";
 import { Bomb } from "../bomb.js";
 
@@ -14,7 +13,7 @@ export class Jalapeno extends PowerUp {
    * @param {Vector} [pos]
    */
   constructor(magnitude = 1, pos) {
-    super(pos, magnitude, "Jalapeño", "Your bombs light enemies on fire");
+    super(magnitude, pos, "Jalapeño", "Your bombs light enemies on fire");
   }
 
   /**

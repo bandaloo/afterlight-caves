@@ -144,6 +144,15 @@ class Vector {
     return this.dist(this.closestVecToSeg(a, b));
   }
 
+  /**
+   * @param {number} radians
+   */
+  rotate(radians) {
+    const angle = Math.atan2(this.y, this.x) + radians;
+    const mag = this.magnitude();
+    return new Vector(Math.cos(angle), Math.sin(angle)).mult(mag);
+  }
+
   isZeroVec() {
     return this.x === 0 && this.y === 0;
   }

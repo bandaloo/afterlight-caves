@@ -1,7 +1,7 @@
-import { GuiElement } from "../modules/guielement.js";
-import { Creature } from "./creature.js";
 import { getImportantEntity } from "../modules/gamemanager.js";
+import { GuiElement } from "../modules/guielement.js";
 import { Vector } from "../modules/vector.js";
+import { Creature } from "./creature.js";
 import { centeredText, rect } from "./draw.js";
 export class Healthbar extends GuiElement {
   /** @type {number} */
@@ -24,7 +24,7 @@ export class Healthbar extends GuiElement {
   healthColor;
 
   /**
-   * @param {Vector} position on screen
+   * @param {Vector} pos on screen
    */
   constructor(pos) {
     super(pos);
@@ -35,7 +35,7 @@ export class Healthbar extends GuiElement {
   }
 
   action() {
-    this.hero = getImportantEntity("hero");
+    this.hero = /** @type {Creature} */ (getImportantEntity("hero"));
     this.health = /** @type {Creature} */ (this.hero).getCurrentHealth();
     this.maxHealth = /** @type {Creature} */ (this.hero).maxHealth;
     this.maxHealthWidth = this.maxHealth * this.sizeScalar;

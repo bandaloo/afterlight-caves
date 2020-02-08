@@ -14,7 +14,7 @@ export class Icy extends PowerUp {
    * @param {Vector} [pos]
    */
   constructor(magnitude = 1, pos) {
-    super(pos, magnitude, "Icy", "Your bullets have a chance to freeze");
+    super(magnitude, pos, "Icy", "Your bullets have a chance to freeze");
   }
 
   /**

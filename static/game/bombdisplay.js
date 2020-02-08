@@ -14,7 +14,7 @@ export class BombDisplay extends GuiElement {
   maxBombs;
 
   /**
-   * @param {Vector} position on screen
+   * @param {Vector} pos on screen
    */
   constructor(pos) {
     super(pos);
@@ -22,7 +22,7 @@ export class BombDisplay extends GuiElement {
   }
 
   action() {
-    this.hero = getImportantEntity("hero");
+    this.hero = /** @type {Creature} */ (getImportantEntity("hero"));
     this.currentBombs = /** @type {Creature} */ (this.hero).currentBombs;
     this.maxBombs = /** @type {Creature} */ (this.hero).maxBombs;
   }

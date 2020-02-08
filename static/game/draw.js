@@ -1,15 +1,13 @@
-import {
-  getContext,
-  getCanvasWidth,
-  getCanvasHeight,
-  getTotalTime,
-  getCameraOffset,
-  getScreenDimensions
-} from "../modules/gamemanager.js";
-import { griderate, clamp } from "../modules/helpers.js";
-import { Vector } from "../modules/vector.js";
-import { blockField, GemEnum } from "./generator.js";
 import { getCell } from "../modules/collision.js";
+import {
+  getCameraOffset,
+  getContext,
+  getScreenDimensions,
+  getTotalTime
+} from "../modules/gamemanager.js";
+import { clamp } from "../modules/helpers.js";
+import { Vector } from "../modules/vector.js";
+import { blockField } from "./generator.js";
 
 // this is to get rid of weird lines when moving the camera
 const overDraw = 0.5;
@@ -345,6 +343,23 @@ export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
   let context = getContext();
   context.save();
 
+  /**
+   * draws a centered rectangle without changing style or saving and resetting
+   * the context (used to optimize drawing the gems)
+   * @param {Vector} centerVec
+   * @param {number} width
+   * @param {number} height
+   */
+  const simpleCenteredRect = (centerVec, width, height) => {
+    const cornerVec = centerVec.add(getCameraOffset());
+    context.fillRect(
+      cornerVec.x - width / 2,
+      cornerVec.y - height / 2,
+      width,
+      height
+    );
+  };
+
   // clear the canvas
   // context.fillRect(0, 0, getCanvasWidth(), getCanvasHeight());
 
@@ -368,15 +383,24 @@ export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
   bottomRightCell.x = clamp(bottomRightCell.x + 1, 0, boardWidth);
   bottomRightCell.y = clamp(bottomRightCell.y + 1, 0, boardHeight);
 
+  // draw the world border
   const worldBorderWidth = 6;
-  rect(
-    new Vector(-worldBorderWidth / 2, -worldBorderWidth / 2),
-    blockWidth * boardWidth + worldBorderWidth,
-    blockHeight * boardHeight + worldBorderWidth,
-    undefined,
-    color,
-    worldBorderWidth
-  );
+  // this conditional is a pretty minor optimization
+  if (
+    topLeftCell.x === 0 ||
+    topLeftCell.y == 0 ||
+    bottomRightCell.x === boardWidth ||
+    bottomRightCell.y === boardHeight
+  ) {
+    rect(
+      new Vector(-worldBorderWidth / 2, -worldBorderWidth / 2),
+      blockWidth * boardWidth + worldBorderWidth,
+      blockHeight * boardHeight + worldBorderWidth,
+      undefined,
+      color,
+      worldBorderWidth
+    );
+  }
 
   /**
    * draw underneath square of tile
@@ -403,7 +427,6 @@ export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
 
   // draw squares underneath to create outline
   drawBorder(worldBorderWidth, color, cameraOffset);
-  //drawBorder(2, "white", cameraOffset);
 
   // draw black squares on top
   for (let i = topLeftCell.x; i < bottomRightCell.x; i++) {
@@ -432,6 +455,7 @@ export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
   for (let i = topLeftCell.x; i < bottomRightCell.x; i++) {
     for (let j = topLeftCell.y; j < bottomRightCell.y; j++) {
       // draw gems
+      const gemMod = 1 + Math.cos(getTotalTime() / 300);
       if (board[i][j] !== 0 && blockField[i][j].gemType !== undefined) {
         const diagonals = [
           [1, 1],
@@ -442,22 +466,32 @@ export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
         const gemSpacing = 10;
         const gemSize = 10;
         const shineSize = 3;
-        const gemMod = 1 + Math.cos(getTotalTime() / 300);
         let gemInfo = blockField[i][j].gemType;
-        for (let k = 0; k < diagonals.length; k++) {
-          const gemPosition = new Vector(
+
+        /**
+         * @param {number} k
+         */
+        const calcGemPosition = k =>
+          new Vector(
             (i + 0.5) * blockWidth + diagonals[k][0] * gemSpacing,
             (j + 0.5) * blockHeight + diagonals[k][1] * gemSpacing
           );
+
+        context.fillStyle = gemInfo.color;
+        for (let k = 0; k < diagonals.length; k++) {
+          const gemPosition = calcGemPosition(k);
+          simpleCenteredRect(gemPosition, gemSize, gemSize);
+        }
+        context.fillStyle = "white";
+        for (let k = 0; k < diagonals.length; k++) {
+          const gemPosition = calcGemPosition(k);
           const shinePosition = gemPosition.add(
             new Vector(-2 + 2 * gemMod, -2 + 2 * gemMod)
           );
-          centeredRect(gemPosition, gemSize, gemSize, gemInfo.color);
-          centeredRect(
+          simpleCenteredRect(
             shinePosition,
             shineSize + gemMod * 0.7,
-            shineSize + gemMod * 0.7,
-            "white"
+            shineSize + gemMod * 0.7
           );
         }
       }
@@ -507,17 +541,29 @@ export function centeredText(
 /**
  * @param {Vector} centerVec center position
  * @param {{
- *  angle: number,
- *  width: number,
- *  length: number,
- *  speed: number,
- *  hue: number
- * }[]} data shine data
+    angle: number;
+    width: number;
+    length: number;
+    speed: number;
+}[]} data shine data
+ * @param {string} gradColor
  */
-export function drawShines(centerVec, data) {
+export function drawShines(centerVec, data, gradColor) {
   centerVec = centerVec.add(getCameraOffset());
   const context = getContext();
+  const grad = context.createRadialGradient(
+    centerVec.x,
+    centerVec.y,
+    0,
+    centerVec.x,
+    centerVec.y,
+    60
+  );
+
+  grad.addColorStop(0, gradColor);
+  grad.addColorStop(1, "#00000000");
   context.save();
+  context.fillStyle = grad;
   for (const d of data) {
     const left = new Vector(
       centerVec.x + d.length * Math.cos(d.angle - d.width),
@@ -527,17 +573,6 @@ export function drawShines(centerVec, data) {
       centerVec.x + d.length * Math.cos(d.angle + d.width),
       centerVec.y + d.length * Math.sin(d.angle + d.width)
     );
-    const grad = context.createRadialGradient(
-      centerVec.x,
-      centerVec.y,
-      d.length / 2,
-      centerVec.x,
-      centerVec.y,
-      d.length
-    );
-    grad.addColorStop(0, "hsla(" + d.hue + ", 100%, 50%, 1)");
-    grad.addColorStop(1, "hsla(0, 0%, 0%, 0)");
-    context.fillStyle = grad;
     context.beginPath();
     context.moveTo(centerVec.x, centerVec.y);
     context.lineTo(left.x, left.y);

@@ -1,7 +1,6 @@
 import { mod } from "../modules/helpers.js";
-import { RulesEnum } from "./rules.js";
-import { EdgesEnum } from "./rules.js";
 import { Vector } from "../modules/vector.js";
+import { EdgesEnum, RulesEnum } from "./rules.js";
 
 export const dirs = [
   [1, 0],

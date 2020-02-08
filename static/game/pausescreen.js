@@ -1,12 +1,9 @@
+import { getScreenDimensions } from "../modules/gamemanager.js";
 import { GuiElement } from "../modules/guielement.js";
 import { Vector } from "../modules/vector.js";
-import { rect, centeredText } from "./draw.js";
-import { getScreenDimensions } from "../modules/gamemanager.js";
+import { centeredText, rect } from "./draw.js";
 
 export class PauseScreen extends GuiElement {
-  /**
-   * @param {Vector} position on screen
-   */
   constructor() {
     const screenDimensions = getScreenDimensions();
     super(new Vector(screenDimensions.width / 2, screenDimensions.height / 2));

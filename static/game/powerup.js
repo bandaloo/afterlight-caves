@@ -4,6 +4,7 @@ import { Creature } from "./creature.js";
 import { centeredText, drawShines, circle } from "./draw.js";
 import { TextDisplay } from "./textdisplay.js";
 import { addToWorld } from "../modules/gamemanager.js";
+import { Hero } from "./hero.js";
 
 // number of points a powerup is worth per magnitude
 const POINTS_FACTOR = 50;
@@ -14,16 +15,16 @@ const POINTS_FACTOR = 50;
 export class PowerUp extends Entity {
   /**
    * constructs a new powerup
-   * @param {Vector} [pos = new Vector(0, 0)]
    * @param {number} [magnitude = 1] each powerup has a magnitude 1-5, e.g. how
+   * @param {Vector} [pos = new Vector(0, 0)]
    * much more damage you deal. 1 by default.
    * @param {string} [powerUpClass] the class of powerup, e.g. "Damage Up" or
    * "Zoom"
    * @param {string} [description] short description of what this powerup does
    */
   constructor(
-    pos = new Vector(0, 0),
     magnitude = 1,
+    pos = new Vector(0, 0),
     powerUpClass = "Null Power Up",
     description = "This Power Up is a mystery"
   ) {
@@ -48,7 +49,6 @@ export class PowerUp extends Entity {
      *        , width: number
      *        , length: number
      *        , speed: number
-     *        , hue: number
      *        }[]
      * }
      */
@@ -58,8 +58,7 @@ export class PowerUp extends Entity {
         angle: Math.random() * 2 * Math.PI,
         width: 0.35 + Math.random() * 0.2,
         length: 40 + Math.floor(Math.random() * 25),
-        speed: 0.01 + Math.random() * 0.03,
-        hue: Math.floor(Math.random() * 360)
+        speed: 0.01 + Math.random() * 0.03
       };
     }
   }
@@ -75,7 +74,7 @@ export class PowerUp extends Entity {
     const newMag = this.magnitude + creature.powerUps.get(this.powerUpClass);
     creature.powerUps.set(this.powerUpClass, newMag);
 
-    if (creature.addPoints) {
+    if (creature instanceof Hero) {
       creature.addPoints(this.magnitude * POINTS_FACTOR);
     }
 
@@ -121,7 +120,7 @@ export class PowerUp extends Entity {
    */
   overflowAction(creature) {
     creature.gainHealth(creature.maxHealth * 0.5 * this.magnitude);
-    if (creature.addPoints) {
+    if (creature instanceof Hero) {
       creature.addPoints(this.magnitude * POINTS_FACTOR * 5);
     }
     if (creature.type === "Hero") {
@@ -145,23 +144,14 @@ export class PowerUp extends Entity {
    */
   draw() {
     // shines
-    drawShines(this.drawPos, this.shines);
+    const drawColor = `rgb(${this.colors[0]}, ${this.colors[1]}, ${this.colors[2]})`;
+    drawShines(this.drawPos, this.shines, drawColor);
     for (const s of this.shines) {
       s.angle += s.speed;
-      s.hue += 1;
       if (s.angle > 2 * Math.PI) s.angle -= 2 * Math.PI;
-      if (s.hue >= 360) {
-        s.hue = 0;
-      }
     }
     // circle
-    circle(
-      this.drawPos,
-      32,
-      "black",
-      4,
-      `rgb(${this.colors[0]}, ${this.colors[1]}, ${this.colors[2]})`
-    );
+    circle(this.drawPos, 32, "black", 4, drawColor);
     // text
     centeredText(
       this.powerUpClass.slice(0, 1),
@@ -169,7 +159,7 @@ export class PowerUp extends Entity {
       "bold 50px sans-serif",
       "center",
       "alphabetic",
-      `rgb(${this.colors[0]}, ${this.colors[1]}, ${this.colors[2]})`
+      drawColor
     );
   }
 }

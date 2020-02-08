@@ -15,7 +15,7 @@ export class Zoom extends PowerUp {
    * @param {Vector} [pos]
    */
   constructor(magnitude = 1, pos) {
-    super(pos, magnitude, "Zoom", "Makes your faster");
+    super(magnitude, pos, "Zoom", "Makes your faster");
   }
 
   /**

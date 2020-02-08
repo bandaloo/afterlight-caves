@@ -12,7 +12,7 @@ export class Yeet extends PowerUp {
    * @param {Vector} [pos]
    */
   constructor(magnitude = 1, pos) {
-    super(pos, magnitude, "Yeet", "Your bullets deal more knock-back");
+    super(magnitude, pos, "Yeet", "Your bullets deal more knock-back");
   }
 
   /**

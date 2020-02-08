@@ -12,7 +12,7 @@ export class Cone extends PowerUp {
    * @param {Vector} [pos]
    */
   constructor(magnitude = 1, pos) {
-    super(pos, magnitude, "Cone", "Fire a cone of bullets when you shoot");
+    super(magnitude, pos, "Cone", "Fire a cone of bullets when you shoot");
   }
 
   /**
