@@ -7,31 +7,20 @@ const noisy = false;
 
 /**
  * @typedef {Object} GemInfo
- * @property {string} name
  * @property {string} color
  * @property {number} normality
+ * @property {number} points
  */
-
-/**
- * maps gem number to gem info
- * @enum {Object<number, GemInfo>}
- */
-export const GemNumberEnum = Object.freeze({
-  2: { name: "gold", color: "#ffea00", normality: 10 },
-  3: { name: "emerald", color: "#11e00d", normality: 5 },
-  4: { name: "ruby", color: "#ff2600", normality: 3 },
-  5: { name: "diamond", color: "#60f7fc", normality: 1 }
-});
 
 /**
  * maps gem string to gem info
  * @enum {Object<string, GemInfo>}
  */
 export const GemEnum = Object.freeze({
-  gold: { color: "#ffea00", normality: 10 },
-  emerald: { color: "#11e00d", normality: 5 },
-  ruby: { color: "#ff2600", normality: 3 },
-  diamond: { color: "#60f7fc", normality: 1 }
+  gold: { color: "#ffea00", normality: 10, points: 10 },
+  emerald: { color: "#11e00d", normality: 5, points: 20 },
+  ruby: { color: "#ff2600", normality: 3, points: 50 },
+  diamond: { color: "#60f7fc", normality: 1, points: 100 }
 });
 
 /**
