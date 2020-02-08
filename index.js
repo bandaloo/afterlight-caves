@@ -29,6 +29,30 @@ app.use(express.json());
 // get port from environment variable, or use 3000 as the default
 const port = process.env.NODE_PORT || 4000;
 
+app.get("/scores", (req, res) => {
+  fs.readFile("./scores.json", (err, data) => {
+    if (err && err.code !== "ENONET") {
+      sendRes(res, 500, "Couldn't read scores file");
+      return;
+    }
+    /** @type {{ scores: { username: string, score: number }[]}} */
+    let currentScores = undefined;
+    try {
+      currentScores = JSON.parse(data.toString("utf-8"));
+      if (!(currentScores.scores instanceof Array)) {
+        throw new Error();
+      }
+      // send scores
+      sendRes(res, 200, JSON.stringify({ scores: currentScores.scores }));
+      return;
+    } catch (e) {
+      // no scores, send empty array
+      sendRes(res, 200, JSON.stringify({ scores: [] }))
+      return;
+    }
+
+  })
+})
 /**
  * accepts new scores
  * Request body should in JSON format and include a username and score, e.g.
@@ -56,7 +80,7 @@ app.post("/score", (req, res) => {
         let currentScores = undefined;
         try {
           currentScores = JSON.parse(data.toString("utf-8"));
-          if (!currentScores.scores.push) {
+          if (!(currentScores.scores instanceof Array)) {
             throw new Error();
           }
         } catch (e) {

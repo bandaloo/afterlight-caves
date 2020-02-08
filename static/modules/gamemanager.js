@@ -716,3 +716,23 @@ export function setFarDistance(farDistance) {
 export function setPause(arg = true) {
   gameManager.gamePause = arg;
 }
+
+/**
+ * asynchronously get list of all scores from the server
+ * @return {Promise<{ username: string, score: number }[]>}
+ */
+export function getScores() {
+  return new Promise((resolve, reject) => {
+    fetch("/scores", { method: "GET" }).then(response =>
+      response
+        .json()
+        .then((/** @type {{ status: number, message: string }} */ obj) => {
+          if (obj.status === 200) {
+            resolve(JSON.parse(obj.message).scores);
+          } else {
+            throw new Error(obj.message);
+          }
+        })
+    );
+  });
+}
