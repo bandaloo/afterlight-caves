@@ -5,10 +5,11 @@ import {
   hasImportantEntity,
   getImportantEntity
 } from "../modules/gamemanager.js";
+import { randomInt } from "../modules/helpers.js";
 
 export class Shooter extends Enemy {
-  avoidDistance = 500;
-  chaseDistance = 300;
+  avoidDistance = 600;
+  chaseDistance = 400;
   avoiding = false;
   avoidTimer = 0;
   avoidTimerMax = 200;
@@ -37,9 +38,12 @@ export class Shooter extends Enemy {
     this.bulletSpeed = 5;
     this.bulletLifetime = 500;
     this.basePoints = 80;
+    this.drag = 0.007;
     this.collideMap.set("PlayerBullet", e => {
       this.avoidTimer = this.avoidTimerMax;
     });
+    // scalar to switch strafing directions (-1 or 1)
+    this.strafeScalar = randomInt(2);
   }
 
   action() {
@@ -47,16 +51,21 @@ export class Shooter extends Enemy {
     // TODO make this AI better
     if (hasImportantEntity("hero")) {
       const hero = getImportantEntity("hero");
+      if (Math.random() < 0.01) {
+        this.strafeScalar *= -1;
+      }
       /** @type {Vector} */
       let dirVec = hero.pos.sub(this.pos);
+      const strafeVec = dirVec.norm2().rotate(Math.PI / 2);
       // TODO do we need avoid timer
       if (this.avoidTimer >= 0 || dirVec.magnitude() < this.avoidDistance) {
         this.avoidTimer--;
         this.avoiding = true;
         this.acc = dirVec
           .norm2()
-          .mult(0.15 * (this.chaseDistance > dirVec.magnitude() ? -1 : 1))
-          .mult(this.movementMultiplier);
+          .mult(0.15 * (this.chaseDistance > dirVec.magnitude() ? -1.5 : 1))
+          .mult(this.movementMultiplier)
+          .add(strafeVec.mult(0.05 * this.strafeScalar));
       } else {
         this.avoiding = false;
         this.acc = new Vector(0, 0);
