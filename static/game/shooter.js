@@ -8,6 +8,7 @@ import {
 
 export class Shooter extends Enemy {
   avoidDistance = 500;
+  chaseDistance = 300;
   avoiding = false;
   avoidTimer = 0;
   avoidTimerMax = 200;
@@ -54,7 +55,7 @@ export class Shooter extends Enemy {
         this.avoiding = true;
         this.acc = dirVec
           .norm2()
-          .mult(-0.15)
+          .mult(0.15 * (this.chaseDistance > dirVec.magnitude() ? -1 : 1))
           .mult(this.movementMultiplier);
       } else {
         this.avoiding = false;
