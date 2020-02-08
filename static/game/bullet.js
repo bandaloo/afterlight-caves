@@ -116,7 +116,7 @@ export class Bullet extends Entity {
       blockField[cellVec.x][cellVec.y].durability !== Infinity
     ) {
       if (setBlock(cellVec.x, cellVec.y, 0)) {
-        destroyBlock(cellVec);
+        destroyBlock(cellVec, this.type === "PlayerBullet");
       }
     }
     // remove the bullet if it's not supposed to bounce

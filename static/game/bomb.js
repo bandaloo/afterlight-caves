@@ -4,6 +4,7 @@ import { polygon, centeredRect } from "./draw.js";
 import { Particle, EffectEnum } from "./particle.js";
 import { addParticle, setBlock } from "../modules/gamemanager.js";
 import { getCell } from "../modules/collision.js";
+import { destroyBlock } from "./block.js";
 
 /**
  * This class represents a bomb that creatures can place in the game world,
@@ -176,12 +177,7 @@ export class Bomb extends Entity {
     const cellVec = getCell(entity.pos);
     if (this.fuseTime <= 0) {
       if (setBlock(cellVec.x, cellVec.y, 0)) {
-        for (let i = 0; i < 3; i++) {
-          const p = new Particle(entity.pos, "black", EffectEnum.square, 5, 3);
-          p.lineWidth = 1;
-          p.strokeStyle = "white";
-          addParticle(p);
-        }
+        destroyBlock(cellVec, this.owner.type === "Hero");
       }
     }
   }

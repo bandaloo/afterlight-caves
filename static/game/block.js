@@ -23,8 +23,9 @@ export class Block {
 
 /**
  * @param {Vector} cellVec
+ * @param {boolean} grantPoints
  */
-export function destroyBlock(cellVec) {
+export function destroyBlock(cellVec, grantPoints = true) {
   const worldVec = cellToWorldPosition(cellVec);
   if (setBlock(cellVec.x, cellVec.y, 0)) {
     for (let i = 0; i < 3; i++) {
@@ -33,10 +34,12 @@ export function destroyBlock(cellVec) {
       p.strokeStyle = "white";
       addParticle(p);
     }
-    const gemType = blockField[cellVec.x][cellVec.y].gemType;
-    if (gemType !== undefined) {
-      const hero = /** @type {Hero} */ (getImportantEntity("hero"));
-      hero.addPoints(gemType.points);
+    if (grantPoints) {
+      const gemType = blockField[cellVec.x][cellVec.y].gemType;
+      if (gemType !== undefined) {
+        const hero = /** @type {Hero} */ (getImportantEntity("hero"));
+        hero.addPoints(gemType.points);
+      }
     }
   }
 }
