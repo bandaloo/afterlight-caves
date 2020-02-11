@@ -92,21 +92,21 @@ export class Menu extends GuiElement {
    * @override
    */
   action() {
+    const navDir = buttons.move.vec;
     // key repeat logic
-    if (this.keyCounter <= 0) {
+    if (navDir.isZeroVec()) {
+      // not being pressed, reset counter
+      this.keyCounter = 0;
+      this.keyRepeated = false;
+    } else if (this.keyCounter <= 0) {
       // move up/down based on direction of move directional
-      const navDir = buttons.move.vec;
-      if (!navDir.isZeroVec()) {
-        this.keyCounter = this.keyRepeated ? this.keyRate : this.keyDelay;
-        if (navDir.y < -0.25) {
-          this.move(-1);
-          this.keyRepeated = true;
-        } else if (navDir.y > 0.25) {
-          this.move(1);
-          this.keyRepeated = true;
-        }
-      } else {
-        this.keyRepeated = false;
+      this.keyCounter = this.keyRepeated ? this.keyRate : this.keyDelay;
+      if (navDir.y < -0.25) {
+        this.move(-1);
+        this.keyRepeated = true;
+      } else if (navDir.y > 0.25) {
+        this.move(1);
+        this.keyRepeated = true;
       }
     }
     this.keyCounter--;
