@@ -13,8 +13,6 @@ export class Menu extends GuiElement {
   width;
   /** @type {number} */
   height;
-  /** @type {string} explanatory text on the bottom of the screen */
-  description;
   /** @type {{text: string, func: () => void | undefined}[]} */
   items;
   /** @type {number} index of currently selected item */
@@ -23,6 +21,11 @@ export class Menu extends GuiElement {
   itemFillStyle;
   /** @type {string | CanvasPattern | CanvasGradient} */
   selectedFillStyle;
+  /** 
+   * @type {string | CanvasPattern | CanvasGradient} when you're holding down
+   * the select button
+   */
+  downFillStyle;
   /** @type {string | CanvasPattern | CanvasGradient} */
   itemStrokeStyle;
   /** @type {number} */
@@ -51,8 +54,8 @@ export class Menu extends GuiElement {
   keyCounter;
   /** @type {boolean} */
   keyRepeated;
-
-
+  /** @type boolean primary button being held */
+  down;
 
   /**
    * @param {Vector} pos top-left position
@@ -71,7 +74,8 @@ export class Menu extends GuiElement {
     this.height = height;
     this.items = items;
     this.itemFillStyle = "green";
-    this.selectedFillStyle = "blue";
+    this.selectedFillStyle = "#0000ff";
+    this.downFillStyle = "#4444cc";
     this.itemStrokeStyle = "black";
     this.itemStrokeWidth = 4;
     this.itemBorderRadius = 0;
@@ -85,6 +89,7 @@ export class Menu extends GuiElement {
     this.keyRate = 8;
     this.keyCounter = 0;
     this.keyRepeated = false;
+    this.down = false;
   }
 
   /**
@@ -92,13 +97,22 @@ export class Menu extends GuiElement {
    * @override
    */
   action() {
+    // close if pressed back
+    if (buttons.back.status.isReleased) {
+      this.closeMe = true;
+    }
+    this.down = buttons.select.status.isDown;
+    if (buttons.select.status.isReleased) {
+      if (this.items[this.index].func !== undefined)
+        this.items[this.index].func();
+    }
     const navDir = buttons.move.vec;
     // key repeat logic
-    if (navDir.isZeroVec()) {
+    if (Math.abs(navDir.y) < 0.25) {
       // not being pressed, reset counter
       this.keyCounter = 0;
       this.keyRepeated = false;
-    } else if (this.keyCounter <= 0) {
+    } else if (!this.down && this.keyCounter <= 0) {
       // move up/down based on direction of move directional
       this.keyCounter = this.keyRepeated ? this.keyRate : this.keyDelay;
       if (navDir.y < -0.25) {
@@ -117,24 +131,39 @@ export class Menu extends GuiElement {
    * @param {number} num number of items to move (positive or negative)
    */
   move(num) {
-    this.index += num
+    this.index += num;
     if (this.index >= this.items.length) this.index = this.items.length - 1;
     if (this.index < 0) this.index = 0;
   }
 
   /**
    * draws this menu
+   * TODO some animations here would be nice
    * @override
    */
   draw() {
     const x = this.pos.x + this.itemMargin;
-    let y = this.pos.y + this.itemMargin;
+    // adjust so that selected element is always centered
+    let y =
+      this.pos.y +
+      this.height / 2 -
+      this.index * (this.itemMargin + this.itemHeight);
+    // adjust y if the selected element is off the screen
     for (let i = 0; i < this.items.length; ++i) {
+      let downOffset = 0;
+      let style = this.itemFillStyle;
+      if (i === this.index) {
+        style = this.selectedFillStyle;
+        if (this.down) {
+          style = this.downFillStyle;
+          downOffset += 3;
+        }
+      }
       roundedRect(
-        new Vector(x, y),
+        new Vector(x, y + downOffset),
         this.width - this.itemMargin * 2,
         this.itemHeight,
-        i === this.index ? this.selectedFillStyle : this.itemFillStyle,
+        style,
         this.itemStrokeStyle,
         this.itemStrokeWidth,
         this.itemBorderRadius
@@ -143,7 +172,7 @@ export class Menu extends GuiElement {
         this.items[i].text,
         new Vector(
           x + this.width / 2 + this.itemMargin,
-          y + (this.itemHeight / 2)
+          y + this.itemHeight / 2 + downOffset
         ),
         this.textStyle,
         this.textAlign,

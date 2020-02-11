@@ -199,6 +199,11 @@ class GameManager {
       if (this.guiElements.get(guiKey).active) {
         this.guiElements.get(guiKey).action();
       }
+      // close any GuiElements that want to be closed
+      if (this.guiElements.get(guiKey).closeMe) {
+        this.guiElements.get(guiKey).onClose();
+        this.guiElements.delete(guiKey);
+      }
     }
 
     // run a physics step on all entities including particles

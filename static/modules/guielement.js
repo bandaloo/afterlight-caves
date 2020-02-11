@@ -7,6 +7,9 @@ export class GuiElement {
   /** @type {boolean} */
   active = true;
 
+  /** @type {boolean} */
+  closeMe = false;
+
   /**
    * @param {Vector} pos
    */
@@ -25,4 +28,9 @@ export class GuiElement {
    * @override
    */
   draw() {}
+
+  /**
+   * called when the GuiElement is closed
+   */
+  onClose() {}
 }
