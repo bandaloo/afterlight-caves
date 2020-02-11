@@ -12,9 +12,9 @@ import {
   setImportantEntity,
   getTerrain,
   setPause,
-  getCanvasWidth
+  getCanvasWidth,
 } from "./modules/gamemanager.js";
-import { drawBoard, centeredText, rect } from "./game/draw.js";
+import { drawBoard } from "./game/draw.js";
 import { Vector } from "./modules/vector.js";
 import { shuffle, randomInt, hsl } from "./modules/helpers.js";
 import { Hero } from "./game/hero.js";
@@ -47,7 +47,7 @@ const blockRows = worldHeight / blockHeight;
 /** @type {string} */
 let color;
 
-function resetDemo() {
+export function resetDemo() {
   destroyEverything();
   color = hsl(randomInt(360));
   setPause(false);

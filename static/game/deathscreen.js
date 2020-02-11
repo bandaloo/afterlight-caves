@@ -1,15 +1,16 @@
 import { Vector } from "../modules/vector.js";
-import { GuiElement } from "../modules/guielement.js";
+import { Menu } from "./menu.js";
 import { centeredText } from "./draw.js";
-import { getScreenDimensions } from "../modules/gamemanager.js";
+import { getScreenDimensions, getContext } from "../modules/gamemanager.js";
 import { getImportantEntity } from "../modules/gamemanager.js";
 import { toScoreString } from "./scoredisplay.js";
+import { resetDemo } from "../main.js";
 
 /**
  * The screen that appears when a player dies, including a nice fade-in and
  * score display.
  */
-export class DeathScreen extends GuiElement {
+export class DeathScreen extends Menu {
   /** @type {number} */
   score;
   /** @type {number} */
@@ -17,9 +18,15 @@ export class DeathScreen extends GuiElement {
 
   constructor() {
     const screenDimensions = getScreenDimensions();
-    super(new Vector(screenDimensions.width / 2, screenDimensions.height / 2));
+    super(
+      new Vector(screenDimensions.width * 0.2, 0),
+      screenDimensions.width * 0.6,
+      screenDimensions.height,
+      [{ text: "Restart", func: resetDemo}]
+    );
     this.score = 0;
     this.opacity = 0;
+    this.itemWidth = 400;
   }
 
   /**
@@ -28,15 +35,17 @@ export class DeathScreen extends GuiElement {
   draw() {
     centeredText(
       "You have died",
-      this.pos,
+      this.pos.add(new Vector(this.width / 2, this.height / 2)),
       "bold 250px sans-serif",
       undefined,
       undefined,
-      "rgba(255, 255, 255, " + this.opacity + ")"
+      "rgba(255, 255, 255, " + this.opacity + ")",
+      "rgba(0, 0, 0, " + this.opacity + ")",
+      8
     );
     centeredText(
       "your score was:",
-      this.pos.add(new Vector(0, 100)),
+      this.pos.add(new Vector(this.width / 2, this.height / 2 + 100)),
       "bold 60px monospace",
       undefined,
       undefined,
@@ -44,20 +53,16 @@ export class DeathScreen extends GuiElement {
     );
     centeredText(
       toScoreString(this.score),
-      this.pos.add(new Vector(0, 160)),
+      this.pos.add(new Vector(this.width / 2, this.height / 2 + 160)),
       "bold 60px monospace",
       undefined,
       undefined,
       "rgba(255, 255, 255, " + this.opacity + ")"
     );
-    centeredText(
-      'press "R" to restart the game',
-      this.pos.add(new Vector(0, 250)),
-      "bold 40px sans-serif",
-      undefined,
-      undefined,
-      "rgba(255, 255, 255, " + this.opacity + ")"
-    );
+    // TODO this is kind of a hack to push the normal menu elements down
+    getContext().translate(0, 240);
+    super.draw();
+    getContext().translate(0, -240);
   }
 
   /**
@@ -67,5 +72,8 @@ export class DeathScreen extends GuiElement {
     this.hero = getImportantEntity("hero");
     this.score = /** @type {Creature} */ (this.hero).score;
     if (this.active) this.opacity += 0.01;
+    this.selectedFillStyle = `rgba(0, 0, 255, ${this.opacity})`;
+    this.downFillStyle = `rgba(68, 68, 204, ${this.opacity})`;
+    super.action();
   }
 }

@@ -40,6 +40,8 @@ export class Menu extends GuiElement {
   textFillStyle;
   /** @type {number} in pixels */
   itemHeight;
+  /** @type {number} items are centered in overall width */
+  itemWidth;
   /** @type {number in pixels */
   itemMargin;
   /**
@@ -80,6 +82,7 @@ export class Menu extends GuiElement {
     this.itemStrokeWidth = 4;
     this.itemBorderRadius = 0;
     this.itemHeight = 70;
+    this.itemWidth = this.width;
     this.textStyle = "bold 50px sans-serif";
     this.textAlign = "center";
     this.textFillStyle = "white";
@@ -97,9 +100,8 @@ export class Menu extends GuiElement {
    * @override
    */
   action() {
-    // close if pressed back
     if (buttons.back.status.isReleased) {
-      this.closeMe = true;
+      this.onBack();
     }
     this.down = buttons.select.status.isDown;
     if (buttons.select.status.isReleased) {
@@ -160,8 +162,8 @@ export class Menu extends GuiElement {
         }
       }
       roundedRect(
-        new Vector(x, y + downOffset),
-        this.width - this.itemMargin * 2,
+        new Vector(x + (this.width - this.itemWidth) / 2, y + downOffset),
+        this.itemWidth,
         this.itemHeight,
         style,
         this.itemStrokeStyle,
@@ -183,5 +185,12 @@ export class Menu extends GuiElement {
       );
       y += this.itemHeight + this.itemMargin;
     }
+  }
+
+  /**
+   * By default pressing 'back' closes the menu, but can be overriden
+   */
+  onBack() {
+    this.closeMe = true;
   }
 }
