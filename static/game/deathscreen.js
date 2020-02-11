@@ -3,20 +3,11 @@ import { GuiElement } from "../modules/guielement.js";
 import { centeredText } from "./draw.js";
 import { getScreenDimensions } from "../modules/gamemanager.js";
 import { getImportantEntity } from "../modules/gamemanager.js";
+import { toScoreString } from "./scoredisplay.js";
 
 /**
- * @param {number} num
- * @return {string}
- */
-const toScoreString = num => {
-  let str = Math.floor(num).toString();
-  str = str.padStart(6, "0");
-  return str;
-};
-
-/**
- * A class that handles displaying the score, and can show it increasing with
- * nice animations
+ * The screen that appears when a player dies, including a nice fade-in and
+ * score display.
  */
 export class DeathScreen extends GuiElement {
   /** @type {number} */
@@ -24,9 +15,6 @@ export class DeathScreen extends GuiElement {
   /** @type {number} */
   opacity;
 
-  /**
-   * @param {Vector} pos position on screen
-   */
   constructor() {
     const screenDimensions = getScreenDimensions();
     super(new Vector(screenDimensions.width / 2, screenDimensions.height / 2));
@@ -56,7 +44,7 @@ export class DeathScreen extends GuiElement {
     );
     centeredText(
       toScoreString(this.score),
-      this.pos.add(new Vector(0, 150)),
+      this.pos.add(new Vector(0, 160)),
       "bold 60px monospace",
       undefined,
       undefined,
