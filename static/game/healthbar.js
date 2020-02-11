@@ -3,6 +3,7 @@ import { Creature } from "./creature.js";
 import { getImportantEntity } from "../modules/gamemanager.js";
 import { Vector } from "../modules/vector.js";
 import { centeredText, rect } from "./draw.js";
+
 export class Healthbar extends GuiElement {
   /** @type {number} */
   sizeScalar;

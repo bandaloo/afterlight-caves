@@ -51,6 +51,7 @@ class Directional {
     this.left = new Button(leftKey);
     this.vAxisIndex = vAxisIndex;
     this.hAxisIndex = hAxisIndex;
+    /** @type {Vector} */
     this.vec = new Vector(0, 0);
   }
 
