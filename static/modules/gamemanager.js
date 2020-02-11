@@ -1,17 +1,17 @@
-import { Entity, FarEnum } from "./entity.js";
+import { GuiElement } from "../modules/guielement.js";
 import {
+  ageButtons,
   controlKeydownListener,
   controlKeyupListener,
-  ageButtons,
   gamepadConnectListener,
   gamepadDisconnectListener,
   getGamepadInput,
   buttons
 } from "./buttons.js";
-import { inPlaceFilter } from "./helpers.js";
 import { isColliding } from "./collision.js";
+import { Entity, FarEnum } from "./entity.js";
+import { inPlaceFilter } from "./helpers.js";
 import { Vector } from "./vector.js";
-import { GuiElement } from "../modules/guielement.js";
 
 const BLUR_SCALAR = 2;
 
@@ -29,7 +29,7 @@ class GameManager {
   /** @type {Entity[]} */
   entities = [];
 
-  /** @type {Map<GuiElement>} */
+  /** @type {Map<string, GuiElement>} */
   guiElements = new Map();
 
   /** @type {Entity[]} */
@@ -205,8 +205,6 @@ class GameManager {
     /** @type {Entity[][]} */
     const entityLists = [this.entities, this.particles];
     for (let i = 0; i < entityLists.length; i++) {
-      if (entityLists[i].pausable && this.gamePause) continue;
-
       for (let j = 0; j < entityLists[i].length; j++) {
         if (entityLists[i][j].pausable && this.gamePause) continue;
         // exclude inactive entities
@@ -717,4 +715,24 @@ export function setFarDistance(farDistance) {
 
 export function setPause(arg = true) {
   gameManager.gamePause = arg;
+}
+
+/**
+ * asynchronously get list of all scores from the server
+ * @return {Promise<{ username: string, score: number }[]>}
+ */
+export function getScores() {
+  return new Promise((resolve, reject) => {
+    fetch("/scores", { method: "GET" }).then(response =>
+      response
+        .json()
+        .then((/** @type {{ status: number, message: string }} */ obj) => {
+          if (obj.status === 200) {
+            resolve(JSON.parse(obj.message).scores);
+          } else {
+            throw new Error(obj.message);
+          }
+        })
+    );
+  });
 }

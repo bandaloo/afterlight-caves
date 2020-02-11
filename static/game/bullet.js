@@ -1,11 +1,12 @@
-import { Vector } from "../modules/vector.js";
-import { Entity, FarEnum } from "../modules/entity.js";
-import { circle } from "./draw.js";
 import { getCell, isCollidingCheat } from "../modules/collision.js";
-import { setBlock, addParticle, inbounds } from "../modules/gamemanager.js";
-import { Particle, EffectEnum } from "./particle.js";
+import { Entity, FarEnum } from "../modules/entity.js";
+import { addParticle, inbounds, setBlock } from "../modules/gamemanager.js";
+import { Vector } from "../modules/vector.js";
+import { circle } from "./draw.js";
 import { blockField } from "./generator.js";
 import { CHEAT_RADIUS } from "./hero.js";
+import { EffectEnum, Particle } from "./particle.js";
+import { destroyBlock } from "./block.js";
 
 export class Bullet extends Entity {
   /**
@@ -115,12 +116,7 @@ export class Bullet extends Entity {
       blockField[cellVec.x][cellVec.y].durability !== Infinity
     ) {
       if (setBlock(cellVec.x, cellVec.y, 0)) {
-        for (let i = 0; i < 15; i++) {
-          const p = new Particle(entity.pos, "black", EffectEnum.square, 5, 3);
-          p.lineWidth = 1;
-          p.strokeStyle = "white";
-          addParticle(p);
-        }
+        destroyBlock(cellVec, this.type === "PlayerBullet");
       }
     }
     // remove the bullet if it's not supposed to bounce

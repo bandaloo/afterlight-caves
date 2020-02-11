@@ -34,8 +34,8 @@ export class Hero extends Creature {
     this.fireDelay = 20;
     this.maxHealth = 100;
     this.gainHealth(this.maxHealth);
-    this.bulletSpeed = 6;
-    this.bulletLifetime = 80;
+    this.bulletSpeed = 8;
+    this.bulletLifetime = 60;
     this.bombFuseTime = 300;
     this.bombHue = 126;
     this.bulletColor = "white";
@@ -111,7 +111,7 @@ export class Hero extends Creature {
     }
     this.acc = buttons.move.vec.mult(this.movementMultiplier);
     // prevents velocity from getting too small and normalization messing up
-    if (this.shoot(buttons.shoot.vec, this.vel)) {
+    if (this.shoot(buttons.shoot.vec, this.vel.mult(0.5))) {
       playSound("laser-shot");
     }
     if (!buttons.shoot.vec.isZeroVec()) {
@@ -133,6 +133,7 @@ export class Hero extends Creature {
   }
 
   destroy() {
+    this.submitScore();
     for (let i = 0; i < 40; i++) {
       let p = new Particle(
         this.pos,
@@ -157,6 +158,9 @@ export class Hero extends Creature {
   takeDamage(amt) {
     if (this.invincibilityFrames <= 0) {
       super.takeDamage(amt);
+      // TODO check this
+      //if (this.currentHealth <= 0) this.destroy();
+      //else this.invincibilityFrames = this.invincibilityFramesMax;
       this.invincibilityFrames = this.invincibilityFramesMax;
     }
   }
@@ -167,5 +171,20 @@ export class Hero extends Creature {
    */
   addPoints(amt) {
     this.score += amt;
+  }
+
+  /**
+   * Submits this user's score to the leaderboard
+   */
+  submitScore() {
+    fetch("/score", {
+      method: "POST",
+      body: JSON.stringify({ username: "Test user", score: this.score }),
+      headers: new Headers({
+        "Content-Type": "application/json"
+      })
+    })
+      .then(response => response.json())
+      .then(console.log);
   }
 }

@@ -12,7 +12,7 @@ export class Vitality extends PowerUp {
    * @param {Vector} [pos]
    */
   constructor(magnitude = 1, pos) {
-    super(pos, magnitude, "Vitality", "Increases your health");
+    super(magnitude, pos, "Vitality", "Increases your health");
   }
 
   /**

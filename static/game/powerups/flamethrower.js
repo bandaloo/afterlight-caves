@@ -13,7 +13,7 @@ export class FlameThrower extends PowerUp {
    * @param {Vector} [pos]
    */
   constructor(magnitude = 1, pos) {
-    super(pos, magnitude, "Flamethrower", "Your bullets light enemies on fire");
+    super(magnitude, pos, "Flamethrower", "Your bullets light enemies on fire");
   }
 
   /**

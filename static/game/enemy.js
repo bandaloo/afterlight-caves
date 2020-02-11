@@ -1,17 +1,17 @@
+import { isCollidingCheat } from "../modules/collision.js";
 import { FarEnum } from "../modules/entity.js";
-import { Vector } from "../modules/vector.js";
-import { randomInt, hsl } from "../modules/helpers.js";
-import { Creature } from "./creature.js";
 import {
   addParticle,
   addToWorld,
   getImportantEntity
 } from "../modules/gamemanager.js";
-import { Particle, EffectEnum } from "./particle.js";
+import { hsl, randomInt } from "../modules/helpers.js";
 import { playSound } from "../modules/sound.js";
+import { Vector } from "../modules/vector.js";
+import { Creature } from "./creature.js";
+import { CHEAT_RADIUS, Hero } from "./hero.js";
+import { EffectEnum, Particle } from "./particle.js";
 import { Pickup, PickupEnum } from "./pickup.js";
-import { isCollidingCheat } from "../modules/collision.js";
-import { CHEAT_RADIUS } from "./hero.js";
 
 /**
  * an enum for allowed shapes of enemies
@@ -100,7 +100,7 @@ export class Enemy extends Creature {
   }
 
   destroy() {
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < 25; i++) {
       let p = new Particle(this.pos, this.originalDrawColor, EffectEnum.spark);
       p.lineWidth = 5;
       addParticle(p);
@@ -109,7 +109,7 @@ export class Enemy extends Creature {
     // TODO this assumes that enemies can only be killed by the hero
     const hero = getImportantEntity("hero");
     if (hero !== undefined) {
-      hero.addPoints(this.getPointValue());
+      /** @type {Hero} */ (hero).addPoints(this.getPointValue());
     }
 
     if (this.matryoshka > 0) {

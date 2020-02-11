@@ -12,7 +12,7 @@ export class DamageUp extends PowerUp {
    * @param {Vector} [pos]
    */
   constructor(magnitude = 1, pos) {
-    super(pos, magnitude, "Damage Up", "Increases your bullet damage");
+    super(magnitude, pos, "Damage Up", "Increases your bullet damage");
   }
 
   /**

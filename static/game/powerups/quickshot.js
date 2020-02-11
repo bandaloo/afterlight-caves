@@ -12,7 +12,7 @@ export class QuickShot extends PowerUp {
    * @param {Vector} [pos]
    */
   constructor(magnitude = 1, pos) {
-    super(pos, magnitude, "Quick Shot", "Makes your bullets faster");
+    super(magnitude, pos, "Quick Shot", "Makes your bullets faster");
   }
 
   /**

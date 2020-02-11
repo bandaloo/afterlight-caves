@@ -1,9 +1,9 @@
-import { Vector } from "../modules/vector.js";
 import { Entity } from "../modules/entity.js";
+import { addParticle, getTotalTime } from "../modules/gamemanager.js";
+import { Vector } from "../modules/vector.js";
 import { centeredRect, circle } from "./draw.js";
-import { getTotalTime, addParticle } from "../modules/gamemanager.js";
 import { Hero } from "./hero.js";
-import { Particle, EffectEnum } from "./particle.js";
+import { EffectEnum, Particle } from "./particle.js";
 
 /**
  * @enum {number}

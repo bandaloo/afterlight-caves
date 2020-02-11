@@ -13,7 +13,7 @@ export class Hot extends PowerUp {
    * @param {Vector} [pos]
    */
   constructor(magnitude = 1, pos) {
-    super(pos, magnitude, "Hot", "You light enemies on fire");
+    super(magnitude, pos, "Hot", "You light enemies on fire");
     /**
      * @type {{ name: string
      *        , data: number

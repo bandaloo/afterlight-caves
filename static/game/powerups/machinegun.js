@@ -13,8 +13,8 @@ export class MachineGun extends PowerUp {
    */
   constructor(magnitude = 1, pos) {
     super(
-      pos,
       magnitude,
+      pos,
       "Machine Gun",
       "You can fire more bullets per second"
     );
