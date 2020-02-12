@@ -27,6 +27,8 @@ export class DeathScreen extends Menu {
     this.score = 0;
     this.opacity = 0;
     this.itemWidth = 400;
+    this.selectedFillStyle = `rgba(0, 0, 255, ${this.opacity})`;
+    this.downFillStyle = `rgba(68, 68, 204, ${this.opacity})`;
   }
 
   /**

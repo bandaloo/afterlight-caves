@@ -1,4 +1,8 @@
-import { getScreenDimensions, setPause } from "../modules/gamemanager.js";
+import {
+  getScreenDimensions,
+  setPause,
+  toggleGuiElement
+} from "../modules/gamemanager.js";
 import { Menu } from "./menu.js";
 import { Vector } from "../modules/vector.js";
 import { centeredText, rect } from "./draw.js";
@@ -9,9 +13,16 @@ export class PauseScreen extends Menu {
     const screenDimensions = getScreenDimensions();
     super(new Vector(0, 0), screenDimensions.width, screenDimensions.height);
     this.items = [
-    { text: "Resume", func: this.onBack.bind(this) },
-    { text: "Start over", func: resetDemo },
-  ];
+      { text: "Resume", func: this.onBack.bind(this) },
+      {
+        text: "Codex",
+        func: () => {
+          this.active = false;
+          toggleGuiElement("codex");
+        }
+      },
+      { text: "Start over", func: resetDemo }
+    ];
     this.itemWidth = 400;
   }
 

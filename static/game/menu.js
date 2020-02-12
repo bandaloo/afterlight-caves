@@ -21,7 +21,7 @@ export class Menu extends GuiElement {
   itemFillStyle;
   /** @type {string | CanvasPattern | CanvasGradient} */
   selectedFillStyle;
-  /** 
+  /**
    * @type {string | CanvasPattern | CanvasGradient} when you're holding down
    * the select button
    */
@@ -170,21 +170,37 @@ export class Menu extends GuiElement {
         this.itemStrokeWidth,
         this.itemBorderRadius
       );
-      centeredText(
-        this.items[i].text,
-        new Vector(
-          x + this.width / 2 + this.itemMargin,
-          y + this.itemHeight / 2 + downOffset
-        ),
-        this.textStyle,
-        this.textAlign,
-        "middle",
-        this.textFillStyle,
-        undefined,
-        undefined
-      );
+      this.drawText(x, y + downOffset, this.items[i].text);
       y += this.itemHeight + this.itemMargin;
     }
+  }
+
+  /**
+   * draws text at the right location
+   */
+  drawText(x, y, text) {
+    let textOffset = 0;
+    switch (this.textAlign) {
+      case "left":
+        textOffset = -0.5 * this.itemWidth;
+        break;
+      case "right":
+        textOffset = 0.5 * this.itemWidth;
+        break;
+    }
+    centeredText(
+      text,
+      new Vector(
+        x + this.width / 2 + this.itemMargin + textOffset,
+        y + this.itemHeight / 2
+      ),
+      this.textStyle,
+      this.textAlign,
+      "middle",
+      this.textFillStyle,
+      undefined,
+      undefined
+    );
   }
 
   /**

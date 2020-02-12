@@ -13,6 +13,11 @@ const POINTS_FACTOR = 50;
  * @abstract
  */
 export class PowerUp extends Entity {
+  /** @type {string} */
+  static powerUpClass;
+  /** @type {string} */
+  static description;
+
   /**
    * constructs a new powerup
    * @param {number} [magnitude = 1] each powerup has a magnitude 1-5, e.g. how

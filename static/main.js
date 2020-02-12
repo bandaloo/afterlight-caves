@@ -27,6 +27,7 @@ import { BombDisplay } from "./game/bombdisplay.js";
 import { PauseScreen } from "./game/pausescreen.js";
 import { ScoreDisplay } from "./game/scoredisplay.js";
 import { DeathScreen } from "./game/deathscreen.js";
+import { Codex } from "./game/codex.js";
 
 // load resources
 addSound("enemy-hurt", "../sounds/enemy-hurt.wav");
@@ -77,14 +78,16 @@ export function resetDemo() {
   const scoredisplay = new ScoreDisplay(new Vector(getCanvasWidth() - 5, 5));
   addToGui("scoredisplay", scoredisplay);
 
-  // Add the deathcreen and pausescreen to the GUI last
-  // as they should draw over everything else.
+  // add menus to the GUI last as they should draw over everything else
   const deathscreen = new DeathScreen();
   deathscreen.active = false;
   addToGui("deathscreen", deathscreen);
   const pausescreen = new PauseScreen();
   pausescreen.active = false;
   addToGui("pausescreen", pausescreen);
+  const codex = new Codex();
+  codex.active = false;
+  addToGui("codex", codex);
 
   let emptySpaces = shuffle(getEmptySpaces(board, 10, blockWidth, blockHeight));
 
