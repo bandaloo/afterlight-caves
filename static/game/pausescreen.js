@@ -3,7 +3,8 @@ import {
   setPause,
   addToGui,
   toggleGuiElement,
-  toggleFullscreen
+  toggleFullscreen,
+  getImportantEntity
 } from "../modules/gamemanager.js";
 import { Menu } from "./menu.js";
 import { Vector } from "../modules/vector.js";
@@ -11,6 +12,7 @@ import { centeredText, rect } from "./draw.js";
 import { resetDemo } from "../main.js";
 import { Codex } from "./codex.js";
 import { Stats } from "./stats.js";
+import { Hero } from "./hero.js";
 
 export class PauseScreen extends Menu {
   /** @type {Menu[]} */
@@ -48,6 +50,14 @@ export class PauseScreen extends Menu {
       {
         text: "Enter fullscreen",
         func: toggleFullscreen
+      },
+      {
+        text: "Give up",
+        func: () => {
+          const hero = /** @type {Hero} */ (getImportantEntity("hero"));
+          hero.takeDamage(hero.maxHealth);
+          this.onBack();
+        }
       },
       { text: "Start over", func: resetDemo }
     ];
