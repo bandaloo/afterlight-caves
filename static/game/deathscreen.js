@@ -1,10 +1,16 @@
 import { Vector } from "../modules/vector.js";
 import { Menu } from "./menu.js";
 import { centeredText } from "./draw.js";
-import { getScreenDimensions, getContext } from "../modules/gamemanager.js";
+import {
+  getScreenDimensions,
+  getContext,
+  toggleGuiElement,
+  addToGui
+} from "../modules/gamemanager.js";
 import { getImportantEntity } from "../modules/gamemanager.js";
 import { toScoreString } from "./scoredisplay.js";
 import { resetDemo } from "../main.js";
+import { ScoresMenu } from "./scoresmenu.js";
 
 /**
  * The screen that appears when a player dies, including a nice fade-in and
@@ -25,8 +31,19 @@ export class DeathScreen extends Menu {
       screenDimensions.width * 0.6,
       screenDimensions.height
     );
+    const scoresmenu = new ScoresMenu();
+    scoresmenu.active = false;
+    addToGui("scoresmenu", scoresmenu)
+
     this.items = [
       { text: "Submit score", func: this.submitScore.bind(this) },
+      {
+        text: "View scores",
+        func: () => {
+          this.active = false;
+          toggleGuiElement("scoresmenu");
+        }
+      },
       { text: "Restart", func: resetDemo }
     ];
     this.score = 0;
@@ -94,7 +111,10 @@ export class DeathScreen extends Menu {
       const username = input.value;
       if (username === undefined || username === "") {
         if (this.items[0]) {
-          this.items[0] = { text: "Enter name", func: this.enterName.bind(this) };
+          this.items[0] = {
+            text: "Enter name",
+            func: this.enterName.bind(this)
+          };
         }
       } else {
         if (this.items[0]) {
