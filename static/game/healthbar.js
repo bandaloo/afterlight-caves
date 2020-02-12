@@ -38,8 +38,6 @@ export class Healthbar extends GuiElement {
   action() {
     this.hero = /** @type {Creature} */ (getImportantEntity("hero"));
     this.health = /** @type {Creature} */ (this.hero).getCurrentHealth();
-    // deals with an error where the healthbar loads before the hero
-    if (this.health === undefined) this.health = 0;
     this.maxHealth = /** @type {Creature} */ (this.hero).maxHealth;
     this.maxHealthWidth = this.maxHealth * this.sizeScalar;
     this.healthWidth = Math.max(this.health * this.sizeScalar, 0);
@@ -62,6 +60,8 @@ export class Healthbar extends GuiElement {
       "white",
       4
     );
+    // deals with an error where the healthbar loads before the hero
+    if (this.health === undefined) this.health = 0;
     // round health to nearest tenth if it's not a whole number
     let healthString = "" + this.health;
     if (Math.floor(this.health) !== this.health)

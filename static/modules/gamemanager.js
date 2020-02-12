@@ -12,6 +12,7 @@ import { isColliding } from "./collision.js";
 import { Entity, FarEnum } from "./entity.js";
 import { inPlaceFilter } from "./helpers.js";
 import { Vector } from "./vector.js";
+import { resetDemo } from "../main.js";
 
 const BLUR_SCALAR = 2;
 
@@ -43,6 +44,9 @@ class GameManager {
 
   /** @type {number} */
   blockHeight;
+
+  /** @type {number} */
+  resetCounter;
 
   /** @type {Vector} */
   cameraOffset = new Vector(0, 0);
@@ -101,6 +105,8 @@ class GameManager {
 
     this.screenWidth = width;
     this.screenHeight = height;
+
+    this.resetCounter = 0;
 
     // TODO get rid of this
     this.blurContext.filter = "blur(3px) brightness(200%)";
@@ -239,6 +245,15 @@ class GameManager {
     }
     if (buttons.pause.status.isPressed) {
       this.togglePause();
+    }
+    if (buttons.reset.status.isDown) {
+      this.resetCounter++;
+      if (this.resetCounter >= 60) {
+        this.resetCounter = 0;
+        resetDemo();
+      }
+    } else {
+      this.resetCounter = 0;
     }
 
     // tell buttons that a step has passed

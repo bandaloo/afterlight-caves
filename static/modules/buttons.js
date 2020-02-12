@@ -111,6 +111,7 @@ export const buttons = {
   back: new Button("Tab", 1),
   fullscreen: new Button("f", 8),
   pause: new Button("p", 9),
+  reset: new Button("r", 3),
 
   /** @return {Directional[]} */
   getDirectionals() {
@@ -125,7 +126,8 @@ export const buttons = {
       this.select,
       this.back,
       this.fullscreen,
-      this.pause
+      this.pause,
+      this.reset
     ];
   },
 

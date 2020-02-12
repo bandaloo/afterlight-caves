@@ -165,14 +165,6 @@ export function resetDemo() {
   }
 }
 
-document.addEventListener("keydown", e => {
-  const code = e.keyCode;
-  const key = String.fromCharCode(code);
-  if (key == "R") {
-    resetDemo();
-  }
-});
-
 resetDemo();
 
 startUp();
