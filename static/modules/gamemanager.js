@@ -13,7 +13,7 @@ import { Entity, FarEnum } from "./entity.js";
 import { inPlaceFilter } from "./helpers.js";
 import { Vector } from "./vector.js";
 import { resetDemo } from "../main.js";
-import {PauseScreen} from "../game/pausescreen.js";
+import { PauseScreen } from "../game/pausescreen.js";
 
 const BLUR_SCALAR = 2;
 
@@ -255,8 +255,7 @@ class GameManager {
     }
     if (buttons.pause.status.isPressed) {
       // you can't pause while dead
-      if (!this.importantEntities.get("hero").deleteMe)
-        this.togglePause();
+      if (!this.importantEntities.get("hero").deleteMe) this.togglePause();
     }
     if (buttons.reset.status.isDown) {
       this.resetCounter++;
@@ -768,25 +767,5 @@ export function collectInput(arg = true) {
     window.addEventListener("gamepadconnected", gamepadConnectListener);
     window.addEventListener("gamepaddisconnected", gamepadDisconnectListener);
   }
-}
-
-/**
- * asynchronously get list of all scores from the server
- * @return {Promise<{ username: string, score: number }[]>}
- */
-export function getScores() {
-  return new Promise((resolve, reject) => {
-    fetch("/scores", { method: "GET" }).then(response =>
-      response
-        .json()
-        .then((/** @type {{ status: number, message: string }} */ obj) => {
-          if (obj.status === 200) {
-            resolve(JSON.parse(obj.message).scores);
-          } else {
-            throw new Error(obj.message);
-          }
-        })
-    );
-  });
 }
 

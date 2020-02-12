@@ -41,6 +41,7 @@ export class DeathScreen extends Menu {
         text: "View scores",
         func: () => {
           this.active = false;
+          scoresmenu.scoresStatus = undefined;
           toggleGuiElement("scoresmenu");
         }
       },

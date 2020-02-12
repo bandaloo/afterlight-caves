@@ -1,7 +1,6 @@
 import {
   getCanvasWidth,
   getCanvasHeight,
-  getScores,
   getScreenDimensions,
   toggleGuiElement
 } from "../modules/gamemanager.js";
@@ -28,18 +27,6 @@ export class ScoresMenu extends Menu {
     this.itemStrokeStyle = "rgba(0, 0, 0, 0)";
     this.textAlign = "left";
     this.textStyle = "50px sans-serif";
-    getScores().then(
-      /** @type {{username: string, score: number}[]} */ scores => {
-        this.scoresStatus = 200;
-        this.items = scores.sort((a, b) => b.score - a.score).map(val => {
-          return { text: val.score + "\t" + val.username, func: undefined };
-        });
-      }
-    ).catch(reason => {
-      this.scoresStatus = 500;
-      console.error(reason);
-      this.items = [{ text: "Failed to get scores", func: undefined }];
-    });
   }
 
   /**
@@ -49,6 +36,35 @@ export class ScoresMenu extends Menu {
     const tabs = text.split("\t");
     super.drawText(x, y, tabs[0]);
     if (tabs[1] !== undefined) super.drawText(x + 250, y, tabs[1]);
+  }
+
+  action() {
+    if (this.scoresStatus === undefined) {
+      fetch("/scores", { method: "GET" })
+        .then(response => response.json())
+        .then((/** @type {{ status: number, message: string }} */ obj) => {
+          this.scoresStatus = obj.status;
+          if (this.scoresStatus !== 200) {
+            throw new Error();
+          }
+          this.items = JSON.parse(obj.message)
+            .scores.sort((a, b) => b.score - a.score)
+            .map(val => {
+              return { text: val.score + "\t" + val.username, func: undefined };
+            });
+        })
+        .catch(reason => {
+          this.scoresStatus = 500;
+          console.error(reason);
+        });
+    }
+
+    if (this.scoresStatus === 0) {
+      this.items = [{ text: "Fetching scores...", func: undefined }];
+    } else if (this.scoresStatus !== 200) {
+      this.items = [{ text: "Failed to get scores", func: undefined }];
+    }
+    super.action();
   }
 
   /**
