@@ -11,7 +11,6 @@ import {
   setCameraEntity,
   setImportantEntity,
   getTerrain,
-  getImportantEntity,
   setPause,
   getCanvasWidth
 } from "./modules/gamemanager.js";
@@ -21,7 +20,6 @@ import { shuffle, randomInt, hsl } from "./modules/helpers.js";
 import { Hero } from "./game/hero.js";
 import { initBlockField, segregateTerrain } from "./game/generator.js";
 import { populateLevel } from "./game/spawner.js";
-import { Creature } from "./game/creature.js";
 import { powerUpTypes } from "./game/powerups/poweruptypes.js";
 import { addSound, playSound, loopSound } from "./modules/sound.js";
 import { Healthbar } from "./game/healthbar.js";

@@ -1,6 +1,6 @@
-import { Vector } from "./vector.js";
 import { Entity } from "./entity.js";
-import { getTerrain, getDimensions } from "./gamemanager.js";
+import { getDimensions, getTerrain } from "./gamemanager.js";
+import { Vector } from "./vector.js";
 
 /**
  * @param {Vector} pos

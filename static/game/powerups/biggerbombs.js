@@ -12,7 +12,7 @@ export class BiggerBombs extends PowerUp {
    * @param {Vector} [pos]
    */
   constructor(magnitude = 1, pos) {
-    super(pos, magnitude, "Bigger Bombs", "Makes your bombs bigger");
+    super(magnitude, pos, "Bigger Bombs", "Makes your bombs bigger");
   }
 
   /**

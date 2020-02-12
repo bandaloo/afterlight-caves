@@ -1,7 +1,7 @@
 import { Entity } from "../modules/entity.js";
 import { randomInt, randomNormalVec } from "../modules/helpers.js";
-import { line, centeredRoundedRect } from "./draw.js";
 import { Vector } from "../modules/vector.js";
+import { centeredRoundedRect, line } from "./draw.js";
 
 /**
  * an enum for allowed shapes of enemies

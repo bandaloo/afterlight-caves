@@ -14,8 +14,8 @@ export class Xplode extends PowerUp {
    * @param {Vector} [pos]
    */
   constructor(magnitude = 1, pos) {
-    super(pos, magnitude, "Xplode", "Your bullets explode into more bullets");
-    /** 
+    super(magnitude, pos, "Xplode", "Your bullets explode into more bullets");
+    /**
      * @type {{
      *  name: string, data: number, func: (b: Bullet, n: number) => void
      * }}
@@ -93,8 +93,7 @@ export class Xplode extends PowerUp {
       if (obj.name && obj.name === this.powerUpClass) {
         this.existingXplode = obj;
         // is the number of explodes already too high?
-        if (obj.data >= MAX_EXPLODES)
-          return true;
+        if (obj.data >= MAX_EXPLODES) return true;
 
         // see if we need to trim magnitude
         const availMag = Math.floor(Math.abs(MAX_EXPLODES - obj.data));

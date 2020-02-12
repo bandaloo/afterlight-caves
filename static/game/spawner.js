@@ -1,15 +1,15 @@
-import { distanceBoard } from "./generator.js";
-import { Shooter } from "./shooter.js";
-import { Chase } from "./chase.js";
-import { Scatter } from "./scatter.js";
-import { Crosser } from "./crosser.js";
-import { randomInt, randomPop } from "../modules/helpers.js";
 import {
   addToWorld,
   cellToWorldPosition,
   getImportantEntity
 } from "../modules/gamemanager.js";
+import { randomInt, randomPop } from "../modules/helpers.js";
+import { Chase } from "./chase.js";
+import { Crosser } from "./crosser.js";
+import { distanceBoard } from "./generator.js";
 import { powerUpTypes } from "./powerups/poweruptypes.js";
+import { Scatter } from "./scatter.js";
+import { Shooter } from "./shooter.js";
 
 /**
  * @param {number[][]} board
@@ -70,7 +70,7 @@ export function populateLevel(board, numEnemies) {
     );
 
     //Apply random effects
-    const numPowerUps = Math.random() * 6
+    const numPowerUps = Math.random() * 6;
     for (let k = 0; k < numPowerUps; k++) {
       if (Math.random() > 0.75) {
         const p = new powerUpTypes[

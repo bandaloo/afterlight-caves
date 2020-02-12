@@ -12,7 +12,7 @@ export class Elastic extends PowerUp {
    * @param {Vector} [pos]
    */
   constructor(magnitude = 1, pos) {
-    super(pos, magnitude, "Elastic", "Makes your bullets bouncy");
+    super(magnitude, pos, "Elastic", "Makes your bullets bouncy");
   }
 
   /**

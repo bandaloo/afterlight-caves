@@ -13,7 +13,7 @@ export class Popsicle extends PowerUp {
    * @param {Vector} [pos]
    */
   constructor(magnitude = 1, pos) {
-    super(pos, magnitude, "Popsicle", "Your bombs freeze enemies");
+    super(magnitude, pos, "Popsicle", "Your bombs freeze enemies");
   }
 
   /**

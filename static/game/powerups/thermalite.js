@@ -12,7 +12,7 @@ export class Thermalite extends PowerUp {
    * @param {Vector} [pos]
    */
   constructor(magnitude = 1, pos) {
-    super(pos, magnitude, "Thermalite", "Makes your bombs explode sooner");
+    super(magnitude, pos, "Thermalite", "Makes your bombs explode sooner");
   }
 
   /**

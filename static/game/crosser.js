@@ -28,7 +28,7 @@ export class Crosser extends Enemy {
     // stuff for shooting
     this.fireDelay = 90;
     this.bulletSpeed = 3;
-    this.bulletLifetime = 180;
+    this.bulletLifetime = 300;
     this.wiggleCount = 0;
     this.diagonalMod = 0;
     this.bulletsPerShot = 4;

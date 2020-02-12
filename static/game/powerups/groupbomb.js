@@ -13,7 +13,7 @@ export class GroupBomb extends PowerUp {
    * @param {Vector} [pos]
    */
   constructor(magnitude = 1, pos) {
-    super(pos, magnitude, "Group Bomb", "Your bombs explode into sub-bombs");
+    super(magnitude, pos, "Group Bomb", "Your bombs explode into sub-bombs");
     /**
      * @type {{name: string, data: number, func: (b: Bomb, n: number) => void}} */
     this.existingGroupBomb = undefined;

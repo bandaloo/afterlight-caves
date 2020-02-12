@@ -1,10 +1,10 @@
 import { Entity } from "../modules/entity.js";
 import { Vector } from "../modules/vector.js";
-import { circle, polygon } from "./draw.js";
+import { polygon, circle } from "./draw.js";
 import { Particle, EffectEnum } from "./particle.js";
-import { addParticle, inbounds, setBlock } from "../modules/gamemanager.js";
+import { addParticle, setBlock } from "../modules/gamemanager.js";
 import { getCell } from "../modules/collision.js";
-import { blockField } from "./generator.js";
+import { destroyBlock } from "./block.js";
 
 /**
  * This class represents a bomb that creatures can place in the game world,
@@ -77,7 +77,8 @@ export class Bomb extends Entity {
       this.width = radius * 2;
       this.height = radius * 2;
       // create some particles
-      const numParticles = Math.floor(Math.random() * 20) + 6;
+      //const numParticles = Math.floor(Math.random() * 20) + 6;
+      const numParticles = 5;
       for (let i = 0; i < numParticles; ++i) {
         let particleHue = (this.hue - 30 + Math.random() * 30) % 360;
         let color = `hsl(${particleHue}, 100%, 50%)`;
@@ -175,12 +176,7 @@ export class Bomb extends Entity {
     const cellVec = getCell(entity.pos);
     if (this.fuseTime <= 0) {
       if (setBlock(cellVec.x, cellVec.y, 0)) {
-        for (let i = 0; i < 15; i++) {
-          const p = new Particle(entity.pos, "black", EffectEnum.square, 5, 3);
-          p.lineWidth = 1;
-          p.strokeStyle = "white";
-          addParticle(p);
-        }
+        destroyBlock(cellVec, this.owner.type === "Hero");
       }
     }
   }
