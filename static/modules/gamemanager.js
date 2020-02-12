@@ -147,8 +147,15 @@ class GameManager {
   }
 
   togglePause() {
-    toggleGuiElement("pausescreen");
-    this.gamePause = !this.gamePause;
+    if (!this.gamePause) {
+      gameManager.guiElements.get("pausescreen").active = true;
+      this.gamePause = true;
+    } else {
+      // close all pause menus
+      gameManager.guiElements.get("codex").active = false;
+      gameManager.guiElements.get("pausescreen").active = false;
+      this.gamePause = false;
+    }
   }
 
   enterFullscreen() {
