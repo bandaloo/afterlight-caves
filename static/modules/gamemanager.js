@@ -124,13 +124,15 @@ class GameManager {
 
     this.displayCanvas.addEventListener("fullscreenchange", exitHandler, false);
 
-    // add event listeners for hero controls
-    document.addEventListener("keydown", controlKeydownListener);
-    document.addEventListener("keyup", controlKeyupListener);
+    document.getElementById("name-input").addEventListener("focus", () => {
+      collectInput(false);
+    });
 
-    // deal with controllers
-    window.addEventListener("gamepadconnected", gamepadConnectListener);
-    window.addEventListener("gamepaddisconnected", gamepadDisconnectListener);
+    document.getElementById("name-input").addEventListener("blur", () => {
+      collectInput(true);
+    });
+
+    collectInput(true);
 
     this.addDisplayToDiv("gamediv");
   }
@@ -744,6 +746,28 @@ export function setPause(arg = true) {
 
 export function toggleFullscreen() {
   gameManager.toggleFullscreen();
+}
+
+/**
+ * Set whether or not to collect input from keyboard
+ */
+export function collectInput(arg = true) {
+  document.removeEventListener("keydown", controlKeydownListener);
+  document.removeEventListener("keyup", controlKeyupListener);
+
+  // deal with controllers
+  window.removeEventListener("gamepadconnected", gamepadConnectListener);
+  window.removeEventListener("gamepaddisconnected", gamepadDisconnectListener);
+
+  if (arg) {
+    // add event listeners for hero controls
+    document.addEventListener("keydown", controlKeydownListener);
+    document.addEventListener("keyup", controlKeyupListener);
+
+    // deal with controllers
+    window.addEventListener("gamepadconnected", gamepadConnectListener);
+    window.addEventListener("gamepaddisconnected", gamepadDisconnectListener);
+  }
 }
 
 /**

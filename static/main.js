@@ -12,7 +12,7 @@ import {
   setImportantEntity,
   getTerrain,
   setPause,
-  getCanvasWidth,
+  getCanvasWidth
 } from "./modules/gamemanager.js";
 import { drawBoard } from "./game/draw.js";
 import { Vector } from "./modules/vector.js";
@@ -51,6 +51,10 @@ export function resetDemo() {
   destroyEverything();
   color = hsl(randomInt(360));
   setPause(false);
+  const input = /** @type {HTMLInputElement} */ document.getElementById(
+    "name-input"
+  );
+  input.value = "";
 
   let board = getGrid(
     blockColumns * 8,

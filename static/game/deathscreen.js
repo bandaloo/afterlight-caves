@@ -15,20 +15,26 @@ export class DeathScreen extends Menu {
   score;
   /** @type {number} */
   opacity;
+  /** @type {boolean} */
+  submitted;
 
   constructor() {
     const screenDimensions = getScreenDimensions();
     super(
       new Vector(screenDimensions.width * 0.2, 0),
       screenDimensions.width * 0.6,
-      screenDimensions.height,
-      [{ text: "Restart", func: resetDemo}]
+      screenDimensions.height
     );
+    this.items = [
+      { text: "Submit score", func: this.submitScore.bind(this) },
+      { text: "Restart", func: resetDemo }
+    ];
     this.score = 0;
     this.opacity = 0;
-    this.itemWidth = 400;
+    this.itemWidth = 500;
     this.selectedFillStyle = `rgba(0, 0, 255, ${this.opacity})`;
     this.downFillStyle = `rgba(68, 68, 204, ${this.opacity})`;
+    this.submitted = false;
   }
 
   /**
@@ -71,11 +77,34 @@ export class DeathScreen extends Menu {
    * @override
    */
   action() {
-    this.hero = getImportantEntity("hero");
-    this.score = /** @type {Creature} */ (this.hero).score;
-    if (this.active) this.opacity += 0.01;
-    this.selectedFillStyle = `rgba(0, 0, 255, ${this.opacity})`;
-    this.downFillStyle = `rgba(68, 68, 204, ${this.opacity})`;
+    if (this.submitted) {
+      if (this.items[0]) {
+        this.items[0] = { text: "Submitted!", func: undefined };
+      }
+    } else {
+      this.hero = getImportantEntity("hero");
+      this.score = /** @type {Creature} */ (this.hero).score;
+      if (this.active) this.opacity += 0.01;
+      this.selectedFillStyle = `rgba(0, 0, 255, ${this.opacity})`;
+      this.downFillStyle = `rgba(68, 68, 204, ${this.opacity})`;
+      // get score from input box
+      const input = /** @type {HTMLInputElement} */ (document.getElementById(
+        "name-input"
+      ));
+      const username = input.value;
+      if (username === undefined || username === "") {
+        if (this.items[0]) {
+          this.items[0] = { text: "Enter name", func: this.enterName.bind(this) };
+        }
+      } else {
+        if (this.items[0]) {
+          this.items[0] = {
+            text: "Submit score",
+            func: this.submitScore.bind(this)
+          };
+        }
+      }
+    }
     super.action();
   }
 
@@ -84,4 +113,51 @@ export class DeathScreen extends Menu {
    * @override
    */
   onBack() {}
+
+  /**
+   * focuses on the name input
+   */
+  enterName() {
+    document.getElementById("name-input").focus();
+  }
+
+  /**
+   * Submits the user's score to the leaderboard
+   */
+  submitScore() {
+    const input = /** @type {HTMLInputElement} */ (document.getElementById(
+      "name-input"
+    ));
+    const username = input.value;
+    fetch("/score", {
+      method: "POST",
+      body: JSON.stringify({ username: username, score: this.score }),
+      headers: new Headers({
+        "Content-Type": "application/json"
+      })
+    })
+      .then(response => response.json())
+      .then(obj => {
+        if (
+          obj === undefined ||
+          obj.status === undefined ||
+          obj.message === undefined
+        ) {
+          throw new Error();
+        }
+        if (obj.status === 200) {
+          console.log(obj);
+          // only let them submit once
+          this.submitted = true;
+        } else {
+          throw new Error(obj);
+        }
+      })
+      .catch(error => {
+        console.error(error);
+        if (this.items[0]) {
+          this.items[0].text = "Error. Try again?";
+        }
+      });
+  }
 }
