@@ -7,9 +7,6 @@ export class GuiElement {
   /** @type {boolean} */
   active = true;
 
-  /** @type {boolean} */
-  closeMe = false;
-
   /**
    * @param {Vector} pos
    */

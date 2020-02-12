@@ -105,7 +105,7 @@ export class Menu extends GuiElement {
     }
     this.down = buttons.select.status.isDown;
     if (buttons.select.status.isReleased) {
-      if (this.items[this.index].func !== undefined)
+      if (this.items[this.index] && this.items[this.index].func !== undefined)
         this.items[this.index].func();
     }
     const navDir = buttons.move.vec;
@@ -191,6 +191,6 @@ export class Menu extends GuiElement {
    * By default pressing 'back' closes the menu, but can be overriden
    */
   onBack() {
-    this.closeMe = true;
+    this.active = false;
   }
 }

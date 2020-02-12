@@ -1,38 +1,45 @@
-import { getScreenDimensions } from "../modules/gamemanager.js";
-import { GuiElement } from "../modules/guielement.js";
+import { getScreenDimensions, setPause } from "../modules/gamemanager.js";
+import { Menu } from "./menu.js";
 import { Vector } from "../modules/vector.js";
 import { centeredText, rect } from "./draw.js";
+import { resetDemo } from "../main.js";
 
-export class PauseScreen extends GuiElement {
+export class PauseScreen extends Menu {
   constructor() {
     const screenDimensions = getScreenDimensions();
-    super(new Vector(screenDimensions.width / 2, screenDimensions.height / 2));
+    super(new Vector(0, 0), screenDimensions.width, screenDimensions.height);
+    this.items = [
+    { text: "Resume", func: this.onBack.bind(this) },
+    { text: "Start over", func: resetDemo },
+  ];
+    this.itemWidth = 400;
   }
 
-  action() {}
-
   draw() {
+    const screenDimensions = getScreenDimensions();
     rect(
       new Vector(0, 0),
-      getScreenDimensions().width,
-      getScreenDimensions().height,
+      screenDimensions.width,
+      screenDimensions.height,
       "rgba(0,0,0,.9)"
     );
+    super.draw();
     centeredText(
       "Paused!",
-      this.pos,
-      "bold 200px sans-serif",
+      this.pos.add(new Vector(screenDimensions.width / 2, 100)),
+      "bold 100px sans-serif",
       undefined,
       undefined,
       "red"
     );
-    centeredText(
-      "Press P to unpause",
-      this.pos.add(new Vector(0, 75)),
-      "bold 75px sans-serif",
-      undefined,
-      undefined,
-      "red"
-    );
+  }
+
+  /**
+   * unpause when we press 'back'
+   * @override
+   */
+  onBack() {
+    setPause(false);
+    super.onBack();
   }
 }

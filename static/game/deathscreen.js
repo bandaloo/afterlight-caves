@@ -76,4 +76,10 @@ export class DeathScreen extends Menu {
     this.downFillStyle = `rgba(68, 68, 204, ${this.opacity})`;
     super.action();
   }
+
+  /**
+   * does nothing, preventing the menu from being closed
+   * @override
+   */
+  onBack() {}
 }
