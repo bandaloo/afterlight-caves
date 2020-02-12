@@ -91,19 +91,13 @@ export class Entity {
    */
   deleteMe = false;
 
-  /**
-   * @type {number}
-   */
+  /** @type {number} */
   farType = FarEnum.nothing;
 
-  /**
-   * @type {boolean}
-   */
+  /** @type {boolean} */
   active = true;
 
-  /**
-   * @type {boolean}
-   */
+  /** @type {boolean} */
   pausable = true;
 
   /**

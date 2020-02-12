@@ -1,6 +1,6 @@
 import { Entity } from "../modules/entity.js";
 import { Vector } from "../modules/vector.js";
-import { polygon, centeredRect } from "./draw.js";
+import { polygon, circle } from "./draw.js";
 import { Particle, EffectEnum } from "./particle.js";
 import { addParticle, setBlock } from "../modules/gamemanager.js";
 import { getCell } from "../modules/collision.js";
@@ -134,13 +134,12 @@ export class Bomb extends Entity {
       const radius =
         (Math.abs(this.fuseTime) / this.timeToExplode) * this.blastRadius;
       const thickness = (radius / this.blastRadius) * 60;
-      centeredRect(
+      circle(
         this.drawPos,
-        radius * 2,
-        radius * 2,
+        radius,
         undefined,
-        `hsl(${this.hue}, 100%, 50%)`,
-        thickness
+        thickness,
+        `hsl(${this.hue}, 100%, 50%)`
       );
     }
   }
