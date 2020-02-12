@@ -1,7 +1,8 @@
 import {
   getScreenDimensions,
   setPause,
-  toggleGuiElement
+  toggleGuiElement,
+  toggleFullscreen
 } from "../modules/gamemanager.js";
 import { Menu } from "./menu.js";
 import { Vector } from "../modules/vector.js";
@@ -21,9 +22,22 @@ export class PauseScreen extends Menu {
           toggleGuiElement("codex");
         }
       },
+      {
+        text: "Enter fullscreen",
+        func: toggleFullscreen
+      },
       { text: "Start over", func: resetDemo }
     ];
-    this.itemWidth = 400;
+    this.itemWidth = 600;
+  }
+
+  action() {
+    if (document.fullscreenElement === null) {
+      this.items[2].text = "Enter fullscreen";
+    } else {
+      this.items[2].text = "Exit fullscreen";
+    }
+    super.action();
   }
 
   draw() {

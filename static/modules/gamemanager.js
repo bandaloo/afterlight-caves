@@ -739,6 +739,10 @@ export function setPause(arg = true) {
   gameManager.gamePause = arg;
 }
 
+export function toggleFullscreen() {
+  gameManager.toggleFullscreen();
+}
+
 /**
  * asynchronously get list of all scores from the server
  * @return {Promise<{ username: string, score: number }[]>}
