@@ -23,6 +23,13 @@ export class PauseScreen extends Menu {
         }
       },
       {
+        text: "Stats",
+        func: () => {
+          this.active = false;
+          toggleGuiElement("stats");
+        }
+      },
+      {
         text: "Enter fullscreen",
         func: toggleFullscreen
       },
@@ -33,9 +40,9 @@ export class PauseScreen extends Menu {
 
   action() {
     if (document.fullscreenElement === null) {
-      this.items[2].text = "Enter fullscreen";
+      this.items[3].text = "Enter fullscreen";
     } else {
-      this.items[2].text = "Exit fullscreen";
+      this.items[3].text = "Exit fullscreen";
     }
     super.action();
   }

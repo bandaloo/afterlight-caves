@@ -28,6 +28,7 @@ import { PauseScreen } from "./game/pausescreen.js";
 import { ScoreDisplay } from "./game/scoredisplay.js";
 import { DeathScreen } from "./game/deathscreen.js";
 import { Codex } from "./game/codex.js";
+import { Stats } from "./game/stats.js";
 
 // load resources
 addSound("enemy-hurt", "../sounds/enemy-hurt.wav");
@@ -88,6 +89,9 @@ export function resetDemo() {
   const codex = new Codex();
   codex.active = false;
   addToGui("codex", codex);
+  const stats = new Stats();
+  stats.active = false;
+  addToGui("stats", stats);
 
   let emptySpaces = shuffle(getEmptySpaces(board, 10, blockWidth, blockHeight));
 

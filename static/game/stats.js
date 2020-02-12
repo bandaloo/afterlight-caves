@@ -3,23 +3,21 @@ import { Vector } from "../modules/vector.js";
 import {
   getCanvasWidth,
   getCanvasHeight,
+  getImportantEntity,
   toggleGuiElement,
   getScreenDimensions
 } from "../modules/gamemanager.js";
-import { powerUpTypes } from "./powerups/poweruptypes.js";
 import { rect } from "./draw.js";
+import { Hero } from "./hero.js";
 
-export class Codex extends Menu {
+export class Stats extends Menu {
   constructor() {
     super(new Vector(0, 0), getCanvasWidth(), getCanvasHeight());
-    this.items = powerUpTypes.map(powerUpType => {
-      const pu = new powerUpType();
-      return { text: pu.powerUpClass + "\t" + pu.description, func: undefined };
-    });
-    this.itemWidth = 1500;
+    this.itemWidth = 500;
     this.itemFillStyle = "rgba(0, 0, 0, 0)";
     this.selectedFillStyle = "rgba(20, 20, 255, 1)";
     this.itemStrokeStyle = "rgba(0, 0, 0, 0)";
+    /** @type {CanvasTextAlign} */
     this.textAlign = "left";
     this.textStyle = "50px sans-serif";
   }
@@ -36,6 +34,22 @@ export class Codex extends Menu {
       "rgba(0,0,0,.9)"
     );
     super.draw();
+  }
+
+  /**
+   * @override
+   */
+  action() {
+    this.items = [];
+    const hero = /** @type {Hero} */ (getImportantEntity("hero"));
+    if (hero === undefined || hero === null) return;
+    hero.powerUps.forEach((mag, name) => {
+      this.items.push({ text: name + "\t" + mag, func: undefined });
+    });
+    if (this.items.length === 0) {
+      this.items = [{ text: "No power ups yet", func: undefined }];
+    }
+    super.action();
   }
 
   /**

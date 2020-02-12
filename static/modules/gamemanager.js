@@ -153,6 +153,7 @@ class GameManager {
     } else {
       // close all pause menus
       gameManager.guiElements.get("codex").active = false;
+      gameManager.guiElements.get("stats").active = false;
       gameManager.guiElements.get("pausescreen").active = false;
       this.gamePause = false;
     }
