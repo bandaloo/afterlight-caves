@@ -155,7 +155,9 @@ class GameManager {
 
   addDisplayToDiv(id) {
     const displayDiv = document.getElementById(id);
-    displayDiv.appendChild(this.displayCanvas);
+    if (displayDiv != undefined) {
+      displayDiv.appendChild(this.displayCanvas);
+    }
   }
 
   stepGame() {
