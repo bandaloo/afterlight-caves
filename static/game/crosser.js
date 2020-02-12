@@ -36,14 +36,22 @@ export class Crosser extends Enemy {
 
   action() {
     super.action();
-    if (this.shoot(new Vector(1, 0), this.vel, 270, 45 * this.diagonalMod)) {
+    const section = 360 / this.bulletsPerShot;
+    if (
+      this.shoot(
+        new Vector(1, 0),
+        this.vel,
+        360 - section,
+        (section / 2) * this.diagonalMod
+      )
+    ) {
       this.diagonalMod ^= 1; // flip 0 -> 1 and 1 -> 0
     }
     this.wiggleCount++;
   }
 
   drawBody() {
-    const sides = 8;
+    const sides = this.bulletsPerShot * 2;
     for (let i = 0; i < 2; i++) {
       polygon(
         this.drawPos,
@@ -61,7 +69,7 @@ export class Crosser extends Enemy {
           );
           return (
             (1 - 0.2 * i) *
-            (1 + (0.3 + i * 0.2) * a * Math.sin(4 * n + Math.PI / 2))
+            (1 + (0.3 + i * 0.2) * a * Math.sin((sides / 2) * n + Math.PI / 2))
           );
         }
       );
