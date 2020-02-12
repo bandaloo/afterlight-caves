@@ -111,7 +111,7 @@ export class Menu extends GuiElement {
       if (this.items[this.index] && this.items[this.index].func !== undefined)
         this.items[this.index].func();
     }
-    const navDir = buttons.move.vec;
+    const navDir = buttons.move.vec.add(buttons.shoot.vec);
     // key repeat logic
     if (Math.abs(navDir.y) < 0.25) {
       // not being pressed, reset counter
