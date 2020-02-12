@@ -1,5 +1,11 @@
 import { Vector } from "./vector.js";
-import { adjustEntity, isColliding } from "./collision.js";
+import {
+  adjustEntity,
+  isColliding,
+  CollisionShape,
+  CollisionBox,
+  CollisionCircle
+} from "./collision.js";
 import { getScreenDimensions, getCameraOffset } from "./gamemanager.js";
 
 /**
@@ -100,6 +106,9 @@ export class Entity {
   /** @type {boolean} */
   pausable = true;
 
+  /** @type {"Box"|"Circle"|"undefined"} */
+  colllisionType;
+
   /**
    * constructs an entity with all the relevant vectors
    * @param {Vector} pos
@@ -114,19 +123,29 @@ export class Entity {
     this.vel = vel;
     /** @type {Vector} */
     this.acc = acc;
+    this.colllisionType = "Box";
+  }
+
+  getCollisionShape() {
+    if (this.colllisionType == "Box") {
+      return new CollisionBox(this.width, this.height, this.pos);
+    }
+    if (this.colllisionType == "Circle") {
+      return new CollisionCircle(Math.min(this.width, this.height), this.pos);
+    }
+    return new CollisionShape("undefined", this.pos);
   }
 
   onScreen() {
     const { width: screenWidth, height: screenHeight } = getScreenDimensions();
-    const screenEntity = new Entity(
+    const screenBox = new CollisionBox(
+      screenWidth,
+      screenHeight,
       new Vector(screenWidth / 2, screenHeight / 2).add(
         getCameraOffset().mult(-1)
       )
     );
-    //console.log(screenEntity.pos);
-    screenEntity.width = screenWidth;
-    screenEntity.height = screenHeight;
-    return isColliding(this, screenEntity);
+    return isColliding(this.getCollisionShape(), screenBox);
   }
 
   /**

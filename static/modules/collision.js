@@ -91,7 +91,7 @@ export function collideWithWorld(entity) {
  * @param {Entity} entityA
  * @param {Entity} entityB
  * @returns {boolean}
- */
+ 
 export function isColliding(entityA, entityB) {
   const aLeft = entityA.pos.x - entityA.width / 2;
   const aTop = entityA.pos.y - entityA.height / 2;
@@ -107,6 +107,75 @@ export function isColliding(entityA, entityB) {
     return true;
   }
   return false;
+}
+*/
+/**
+ * Determines if two shapes are colliding if there is defined behavior
+ * @param {CollisionShape} shapeA
+ * @param {CollisionShape} shapeB
+ * @returns {boolean}
+ */
+export function isColliding(shapeA, shapeB) {
+  const typeA = shapeA.type;
+  const typeB = shapeB.type;
+  if (typeA == "Box" && typeB == "Box") {
+    return isColliding_BoxBox(
+      /* @type {CollisionBox} */ (shapeA),
+      /* @type {CollisionBox} */ (shapeB)
+    );
+  } else if (typeA == "Circle" && typeB == "Box") {
+    return isColliding_BoxCircle(
+      /* @type {CollisionCircle} */ (shapeB),
+      /* @type {CollisionBox} */ (shapeA)
+    );
+  } else if (typeA == "Box" && typeB == "Circle") {
+    return isColliding_BoxCircle(
+      /* @type {CollisionBox} */ (shapeA),
+      /* @type {CollisionCircle} */ (shapeB)
+    );
+  } else if (typeA == "Circle" && typeB == "Circle") {
+    return isColliding_CircleCircle(
+      /* @type {CollisionCircle} */ (shapeA),
+      /* @type {CollisionCircle} */ (shapeB)
+    );
+  } else {
+    return false;
+  }
+}
+
+/**
+ * Determines if two Boxes are colliding
+ * @param {CollisionBox} boxA
+ * @param {CollisionBox} boxB
+ * @returns {boolean}
+ */
+export function isColliding_BoxBox(boxA, boxB) {
+  const aLeft = boxA.pos.x - boxA.width / 2;
+  const aTop = boxA.pos.y - boxA.height / 2;
+  const bLeft = boxB.pos.x - boxB.width / 2;
+  const bTop = boxB.pos.y - boxB.height / 2;
+
+  if (
+    aLeft + boxA.width > bLeft &&
+    aLeft < bLeft + boxB.width &&
+    aTop + boxA.height > bTop &&
+    aTop < bTop + boxB.height
+  ) {
+    return true;
+  }
+  return false;
+}
+
+/**
+ * Determines if two Circles are colliding
+ * @param {CollisionCircle} circleA
+ * @param {CollisionCircle} circleB
+ * @returns {boolean}
+ */
+export function isColliding_CircleCircle(circleA, circleB) {
+  const dist2 = circleA.pos.dist2(circleB.pos);
+  const radius2 = Math.pow(circleA.radius + circleB.radius, 2);
+  return dist2 < radius2;
 }
 
 /**
@@ -133,7 +202,12 @@ export function isCollidingCheat(entityA, entityB, cheatRadius) {
 export function calculateCollisionVector(entityA, entityB) {
   // If they aren't colliding, the vector is (0,0)
   // TODO: determine if this is needed. Removing it would be slightly faster.
-  if (!(isColliding(entityA, entityB) || isColliding(entityB, entityA)))
+  if (
+    !(
+      isColliding(entityA.getCollisionShape(), entityB.getCollisionShape()) ||
+      isColliding(entityB.getCollisionShape(), entityA.getCollisionShape())
+    )
+  )
     return new Vector(0, 0);
 
   // Define the 4 corners of each bounding rectangle
@@ -252,5 +326,58 @@ export function adjustEntity(entity) {
   // fire block collision method
   for (let i = 0; i < hitEntities.length; i++) {
     entity.collideWithBlock(hitEntities[i]);
+  }
+}
+
+export class CollisionShape {
+  /** @type {Vector} */
+  pos;
+
+  /** @type {"Box"|"Circle"|"undefined"} */
+  type;
+
+  /**
+   * Class used to store collision information
+   * @param {String} type
+   * @param {Vector} pos
+   */
+  constructor(type = "undefined", pos = new Vector(0, 0)) {
+    this.type = type;
+    this.pos = pos;
+  }
+}
+
+export class CollisionBox extends CollisionShape {
+  /** @type {number} */
+  width;
+
+  /** @type {number} */
+  height;
+
+  /**
+   * Class used for axis-aligned box collision
+   * @param {number} width
+   * @param {number} height
+   * @param {Vector} pos
+   */
+  constructor(width, height, pos) {
+    super("Box", pos);
+    this.width = width;
+    this.height = height;
+  }
+}
+
+export class CollisionCircle extends CollisionShape {
+  /** @type {number} */
+  radius;
+
+  /**
+   * Class used for axis-aligned box collision
+   * @param {number} radius
+   * @param {Vector} pos
+   */
+  constructor(radius) {
+    super("Circle", pos);
+    this.radius = radius;
   }
 }

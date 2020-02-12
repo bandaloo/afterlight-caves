@@ -390,7 +390,12 @@ class GameManager {
           const collideEntities = map.get(collideTypes[j]);
           if (collideEntities !== undefined) {
             for (let k = 0; k < collideEntities.length; k++) {
-              if (isColliding(targetEntity, collideEntities[k])) {
+              if (
+                isColliding(
+                  targetEntity.getCollisionShape(),
+                  collideEntities[k].getCollisionShape()
+                )
+              ) {
                 targetEntity.collideWithEntity(collideEntities[k]);
               }
             }
