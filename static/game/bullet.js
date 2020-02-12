@@ -87,7 +87,7 @@ export class Bullet extends Entity {
       this.drawPos,
       this.width / 2,
       "black",
-      Math.min(4 + (this.damage / 10 - 1) * 2, this.width / 2),
+      Math.max(1, Math.min(4 + (this.damage / 10 - 1) * 2, this.width / 2)),
       this.color
     );
   }
