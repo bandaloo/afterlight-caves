@@ -252,7 +252,9 @@ class GameManager {
       this.toggleFullscreen();
     }
     if (buttons.pause.status.isPressed) {
-      this.togglePause();
+      // you can't pause while dead
+      if (!this.importantEntities.get("hero").deleteMe)
+        this.togglePause();
     }
     if (buttons.reset.status.isDown) {
       this.resetCounter++;
