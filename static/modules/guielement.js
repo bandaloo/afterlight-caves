@@ -25,9 +25,4 @@ export class GuiElement {
    * @override
    */
   draw() {}
-
-  /**
-   * called when the GuiElement is closed
-   */
-  onClose() {}
 }

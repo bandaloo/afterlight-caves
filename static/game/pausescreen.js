@@ -1,6 +1,7 @@
 import {
   getScreenDimensions,
   setPause,
+  addToGui,
   toggleGuiElement,
   toggleFullscreen
 } from "../modules/gamemanager.js";
@@ -8,11 +9,26 @@ import { Menu } from "./menu.js";
 import { Vector } from "../modules/vector.js";
 import { centeredText, rect } from "./draw.js";
 import { resetDemo } from "../main.js";
+import { Codex } from "./codex.js";
+import { Stats } from "./stats.js";
 
 export class PauseScreen extends Menu {
+  /** @type {Menu[]} */
+  childMenus;
+
   constructor() {
     const screenDimensions = getScreenDimensions();
     super(new Vector(0, 0), screenDimensions.width, screenDimensions.height);
+
+    // create sub-menus
+    const codex = new Codex();
+    codex.active = false;
+    addToGui("codex", codex);
+    const stats = new Stats();
+    stats.active = false;
+    addToGui("stats", stats);
+    this.childMenus = [codex, stats];
+
     this.items = [
       { text: "Resume", func: this.onBack.bind(this) },
       {
@@ -67,10 +83,15 @@ export class PauseScreen extends Menu {
   }
 
   /**
-   * unpause when we press 'back'
+   * unpause when we press 'back'. This will also be called when we press the
+   * pause button from this menu or any submenu
    * @override
    */
   onBack() {
+    // close all sub-menus
+    this.childMenus.forEach(menu => {
+      menu.active = false;
+    });
     setPause(false);
     super.onBack();
   }

@@ -101,6 +101,9 @@ export class Menu extends GuiElement {
    */
   action() {
     if (buttons.back.status.isReleased) {
+      // Fixes a bug where the button being released was seen by multiple menus
+      // at once. You should press it multiple times to close multiple menus
+      buttons.back.status.isReleased = false;
       this.onBack();
     }
     this.down = buttons.select.status.isDown;

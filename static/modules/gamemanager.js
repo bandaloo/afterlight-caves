@@ -13,6 +13,7 @@ import { Entity, FarEnum } from "./entity.js";
 import { inPlaceFilter } from "./helpers.js";
 import { Vector } from "./vector.js";
 import { resetDemo } from "../main.js";
+import {PauseScreen} from "../game/pausescreen.js";
 
 const BLUR_SCALAR = 2;
 
@@ -151,10 +152,9 @@ class GameManager {
       gameManager.guiElements.get("pausescreen").active = true;
       this.gamePause = true;
     } else {
-      // close all pause menus
-      gameManager.guiElements.get("codex").active = false;
-      gameManager.guiElements.get("stats").active = false;
-      gameManager.guiElements.get("pausescreen").active = false;
+      /** @type { PauseScreen } */
+      const pauseScreen = this.guiElements.get("pausescreen");
+      pauseScreen.onBack();
       this.gamePause = false;
     }
   }
