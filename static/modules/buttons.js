@@ -107,11 +107,11 @@ export const buttons = {
 
   primary: new Button(" ", 4),
   secondary: new Button("e", 5),
-  select: new Button("Enter", 0),
+  select: new Button(" ", 0),
   back: new Button("Tab", 1),
-  fullscreen: new Button("f", 8),
+  fullscreen: new Button("f", 3),
   pause: new Button("p", 9),
-  reset: new Button("r", 3),
+  reset: new Button("r", 8),
 
   /** @return {Directional[]} */
   getDirectionals() {
