@@ -21,8 +21,8 @@ export class Scatter extends Enemy {
     // TODO weird that you have to give a powerup a position, even if just using
     // it to apply directly
     new Cone(2).apply(this);
-    this.maxHealth = 2;
-    this.gainHealth(2);
+    this.maxHealth = 10;
+    this.gainHealth(10);
     this.bulletSpeed = 5;
     this.bulletLifetime = 300;
     this.fireDelay = 0;

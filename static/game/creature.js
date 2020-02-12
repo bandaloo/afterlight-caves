@@ -127,7 +127,7 @@ export class Creature extends Entity {
   currentBombs = 3;
 
   /** @type {number} the amount of damage each bullet deals */
-  bulletDamage = 1;
+  bulletDamage = 10;
 
   /** @type {number} size of bullets spawned by this */
   bulletSize = 24;

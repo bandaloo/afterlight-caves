@@ -81,7 +81,15 @@ export class Bullet extends Entity {
   action() {}
 
   draw() {
-    circle(this.drawPos, this.width / 2, "black", 4, this.color);
+    // the min here is so you don't get an error for drawing circle with width
+    // too big
+    circle(
+      this.drawPos,
+      this.width / 2,
+      "black",
+      Math.min(4 + (this.damage / 10 - 1) * 2, this.width / 2),
+      this.color
+    );
   }
 
   destroy() {

@@ -29,7 +29,7 @@ export class Shooter extends Enemy {
   ) {
     super(pos, vel, acc, matryoshka);
     // TODO check this maxhealth
-    this.maxHealth = 2;
+    this.maxHealth = 20;
     // TODO @Joe is it okay to do this before setting current health? I think
     // this is only working because undefined is being coerced into a zero,
     // which is pretty sketchy.
