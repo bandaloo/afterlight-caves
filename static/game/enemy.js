@@ -20,22 +20,14 @@ import { Pickup, PickupEnum } from "./pickup.js";
 export const ShapeEnum = Object.freeze({ square: 1, circle: 2 });
 
 const DROP_CHANCE = 0.2;
-
 const BOMB_CHANCE = 0.3;
-
-// TODO get rid of look
-/**
- * @typedef {Object} Look
- * @property {number} shape
- * @property {string} color
- * @property {number} eyeSpacing
- * @property {number} eyeSize
- * @property {number} mouthWidth
- * @property {number} mouthOffset
- */
+const BASE_SIZE = 50;
+const MATRYOSHKA_HEALTH = 10;
+const MATRYOSHKA_SIZE = 50;
 
 export class Enemy extends Creature {
-  health = 2;
+  baseHealth = 10;
+  currentHealth = this.baseHealth;
   basePoints = 50;
 
   /**
@@ -52,11 +44,12 @@ export class Enemy extends Creature {
     matryoshka = 0
   ) {
     super(pos, vel, acc);
+    const size = BASE_SIZE + MATRYOSHKA_SIZE * matryoshka;
     this.type = "Enemy";
     /** if the enemy is big and will split up */
     this.matryoshka = matryoshka;
-    this.width = 50 + 50 * this.matryoshka;
-    this.height = 50 + 50 * this.matryoshka;
+    this.width = size;
+    this.height = size;
     this.reflectsOffWalls = true;
     this.drag = 0.005;
     this.maxRedFrames = 60;
@@ -76,6 +69,11 @@ export class Enemy extends Creature {
       "Hero",
       /** @param {import("./hero.js").Hero} h */ h => this.touchHero(h)
     );
+  }
+
+  initHealth() {
+    this.maxHealth = this.baseHealth + this.matryoshka * MATRYOSHKA_HEALTH;
+    this.currentHealth = this.maxHealth;
   }
 
   /**

@@ -18,11 +18,9 @@ export class Scatter extends Enemy {
     matryoshka = 0
   ) {
     super(pos, vel, acc, matryoshka);
-    // TODO weird that you have to give a powerup a position, even if just using
-    // it to apply directly
+    this.baseHealth = 10;
+    this.initHealth();
     new Cone(2).apply(this);
-    this.maxHealth = 10;
-    this.gainHealth(10);
     this.bulletSpeed = 5;
     this.bulletLifetime = 300;
     this.fireDelay = 0;
