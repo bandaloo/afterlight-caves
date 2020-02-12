@@ -86,9 +86,8 @@ export class ScoreDisplay extends GuiElement {
       this.score = heroScore;
       this.staticCounter = 60;
     }
-    const chunk = this.scoreChunk();
     if (this.staticCounter <= 0 && this.score !== this.visibleScore) {
-      this.visibleScore += chunk;
+      this.visibleScore += this.scoreChunk();
     }
     if (this.staticCounter > 0) this.staticCounter--;
   }
