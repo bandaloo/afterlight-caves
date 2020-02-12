@@ -12,6 +12,7 @@ import { isColliding } from "./collision.js";
 import { Entity, FarEnum } from "./entity.js";
 import { inPlaceFilter } from "./helpers.js";
 import { Vector } from "./vector.js";
+import { ageSounds } from "./sound.js";
 
 const BLUR_SCALAR = 2;
 
@@ -159,6 +160,7 @@ class GameManager {
   }
 
   stepGame() {
+    ageSounds();
     // do changes on far away entities
     for (let i = 0; i < this.entities.length; i++) {
       const {
@@ -178,7 +180,7 @@ class GameManager {
         }
       } else {
         if (this.entities[i].farType === FarEnum.deactivate) {
-          // reactivate close enemies
+          // reactivate close entities
           this.entities[i].active = true;
         }
       }

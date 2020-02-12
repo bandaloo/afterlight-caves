@@ -34,8 +34,11 @@ addSound("laser-shot", "../sounds/laser-shot.wav");
 addSound("spacey-snd", "../sounds/spacey-snd.wav");
 addSound("captive-portal", "../sounds/captive-portal.mp3");
 
+// TODO uncomment this when we get better music
+/*
 playSound("captive-portal", false);
 loopSound("captive-portal");
+*/
 
 const blockWidth = 60;
 const blockHeight = 60;
