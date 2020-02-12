@@ -5,7 +5,8 @@ import {
   getScreenDimensions,
   getContext,
   toggleGuiElement,
-  addToGui
+  addToGui,
+  toggleFullscreen
 } from "../modules/gamemanager.js";
 import { getImportantEntity } from "../modules/gamemanager.js";
 import { toScoreString } from "./scoredisplay.js";
@@ -139,7 +140,13 @@ export class DeathScreen extends Menu {
    * focuses on the name input
    */
   enterName() {
-    document.getElementById("name-input").focus();
+    if (document.fullscreenElement !== null) {
+      toggleFullscreen().then(() => {
+        document.getElementById("name-input").focus();
+      });
+    } else {
+      document.getElementById("name-input").focus();
+    }
   }
 
   /**

@@ -137,15 +137,18 @@ class GameManager {
     this.addDisplayToDiv("gamediv");
   }
 
+  /**
+   * return {Promise<void>}
+   */
   toggleFullscreen() {
     if (document.fullscreenElement === null) {
       // enter fullscreen
       this.displayCanvas.width = this.screenWidth;
       this.displayCanvas.height = this.screenHeight;
-      this.enterFullscreen();
+      return this.enterFullscreen();
     } else {
       // exit fullscreen
-      document.exitFullscreen();
+      return document.exitFullscreen();
     }
   }
 
@@ -161,9 +164,12 @@ class GameManager {
     }
   }
 
+  /**
+   * return {Promise<void>}
+   */
   enterFullscreen() {
     if (this.displayCanvas.requestFullscreen) {
-      this.displayCanvas.requestFullscreen();
+      return this.displayCanvas.requestFullscreen();
     } else {
       throw new Error("no request fullscreen function");
     }
@@ -743,8 +749,11 @@ export function setPause(arg = true) {
   gameManager.gamePause = arg;
 }
 
+/**
+ * return {Promise<void>}
+ */
 export function toggleFullscreen() {
-  gameManager.toggleFullscreen();
+  return gameManager.toggleFullscreen();
 }
 
 /**
