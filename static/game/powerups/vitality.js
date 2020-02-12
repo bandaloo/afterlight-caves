@@ -23,7 +23,6 @@ export class Vitality extends PowerUp {
   apply(creature) {
     if (!this.isAtMax(creature)) {
       super.apply(creature);
-      // TODO call initHealth to account for matryoshka
       creature.maxHealth += this.magnitude * HEALTH_FACTOR;
       creature.gainHealth(this.magnitude * HEALTH_FACTOR);
     } else {

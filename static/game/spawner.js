@@ -17,7 +17,7 @@ import { Shooter } from "./shooter.js";
  */
 export function populateLevel(board, numEnemies) {
   // board containing distances from nearest solid block
-  const { board: distBoard, cells: distCells } = distanceBoard(board);
+  const { cells: distCells } = distanceBoard(board);
 
   const creatureClasses = [Chase, Scatter, Shooter, Crosser];
 
@@ -73,9 +73,9 @@ export function populateLevel(board, numEnemies) {
     const numPowerUps = Math.random() * 6;
     for (let k = 0; k < numPowerUps; k++) {
       if (Math.random() > 0.75) {
-        const p = new powerUpTypes[
-          Math.floor(Math.random() * powerUpTypes.length)
-        ](Math.floor(Math.random() * 5));
+        const p = new powerUpTypes[randomInt(powerUpTypes.length)](
+          randomInt(6)
+        );
         p.apply(enemy);
       }
     }
