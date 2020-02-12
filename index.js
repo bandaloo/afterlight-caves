@@ -33,7 +33,7 @@ const port = process.env.NODE_PORT || 4000;
  * gets the current list of scores from the server and returns it like this:
  * {
  *     scores: [
- *         { username: "jojonium", score: 9999},
+ *         { username: "jojonium", score: 9999 },
  *         ...
  *     ]
  * }
