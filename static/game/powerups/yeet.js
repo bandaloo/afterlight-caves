@@ -2,17 +2,17 @@ import { PowerUp } from "../powerup.js";
 import { Vector } from "../../modules/vector.js";
 import { Creature } from "../creature.js";
 
-const MAX_BULLET_KNOCKBACK = 40;
-const BULLET_KNOCKBACK_FACTOR = 4;
+const MAX_BULLET_LIFETIME = 500;
+const RANGE_FACTOR = 5;
 
 export class Yeet extends PowerUp {
   /**
-   * Increases bullet knockback
-   * @param {number} magnitude how much to increase bullet knockback by, 1-5
+   * Increases your range (by increasing bullet lifetime)
+   * @param {number} magnitude how much to increase bullet lifetime by, 1-5
    * @param {Vector} [pos]
    */
   constructor(magnitude = 1, pos) {
-    super(magnitude, pos, "Yeet", "Your bullets deal more knock-back");
+    super(magnitude, pos, "Yeet", "You can shoot farther");
   }
 
   /**
@@ -23,7 +23,7 @@ export class Yeet extends PowerUp {
   apply(creature) {
     if (!this.isAtMax(creature)) {
       super.apply(creature);
-      creature.bulletKnockback += this.magnitude * BULLET_KNOCKBACK_FACTOR;
+      creature.bulletLifetime += this.magnitude * RANGE_FACTOR;
     } else {
       this.overflowAction(creature);
     }
@@ -37,14 +37,13 @@ export class Yeet extends PowerUp {
    */
   isAtMax(creature) {
     // check if bullet knockback is already too high
-    if (creature.bulletKnockback >= MAX_BULLET_KNOCKBACK) {
+    if (creature.bulletKnockback >= MAX_BULLET_LIFETIME) {
       return true;
     }
 
     // see if we need to trim magnitude
     const availMag = Math.floor(
-      (MAX_BULLET_KNOCKBACK - creature.bulletKnockback) /
-        BULLET_KNOCKBACK_FACTOR
+      Math.abs(MAX_BULLET_LIFETIME - creature.bulletLifetime) / RANGE_FACTOR
     );
     if (availMag < 1) return true;
 

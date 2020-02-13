@@ -24,9 +24,9 @@ export class Chase extends Enemy {
     super(pos, vel, acc, matryoshka);
     this.basePoints = 40;
     this.drag = 0.015;
-    this.maxHealth = 2;
-    this.gainHealth(2);
-    this.collideMap.set("PlayerBullet", e => {
+    this.maxHealth = 24 * (matryoshka + 1);
+    this.gainHealth(this.maxHealth);
+    this.collideMap.set("PlayerBullet", () => {
       this.followTimer = this.followTimerMax;
     });
   }

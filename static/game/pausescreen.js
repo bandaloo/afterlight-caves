@@ -55,7 +55,7 @@ export class PauseScreen extends Menu {
         text: "Give up",
         func: () => {
           const hero = /** @type {Hero} */ (getImportantEntity("hero"));
-          hero.takeDamage(hero.maxHealth);
+          hero.takeDamage(Infinity);
           this.onBack();
         }
       },

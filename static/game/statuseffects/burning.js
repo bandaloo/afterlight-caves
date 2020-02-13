@@ -4,8 +4,8 @@ import { Particle, EffectEnum } from "../particle.js";
 import { Vector } from "../../modules/vector.js";
 import { addParticle } from "../../modules/gamemanager.js";
 
-const CHANCE_TO_BURN = 1 / 60; // chance to take damage each step
-const BURNING_DAMAGE = 5;
+const CHANCE_TO_BURN = 1 / 10; // chance to take damage each step
+const BURNING_DAMAGE = 3;
 
 export class Burning extends StatusEffect {
   /**
