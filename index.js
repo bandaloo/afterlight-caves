@@ -40,7 +40,7 @@ const port = process.env.NODE_PORT || 4000;
  */
 app.get("/scores", (req, res) => {
   fs.readFile("./scores.json", (err, data) => {
-    if (err && err.code !== "ENONET") {
+    if (err && err.code !== "ENOENT") {
       console.error(err);
       sendRes(res, 500, "Couldn't read scores file");
       return;
