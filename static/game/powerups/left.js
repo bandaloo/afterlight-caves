@@ -3,7 +3,7 @@ import { Vector } from "../../modules/vector.js";
 import { Creature } from "../creature.js";
 
 const MAX_LEFT_DAMAGE = 1000;
-const DAMAGE_FACTOR = 1;
+const DAMAGE_FACTOR = 5;
 const SIZE_FACTOR = 2;
 
 export class Left extends PowerUp {

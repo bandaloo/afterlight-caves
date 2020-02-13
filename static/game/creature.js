@@ -108,14 +108,14 @@ export class Creature extends Entity {
   bombSpeed = 0;
 
   /** @type {number} the amount of damage this can take before dying */
-  maxHealth = 10;
+  maxHealth = 20;
 
   /**
    * @type {number} this creature's current health. Don't directly get or set
    * this! Instead use `takeDamage()` or `gainHealth()`
    * @private
    */
-  currentHealth = 10;
+  currentHealth = 20;
 
   /** @type {number} maximum number of bombs this creature can hold */
   maxBombs = 3;
@@ -127,7 +127,7 @@ export class Creature extends Entity {
   currentBombs = 3;
 
   /** @type {number} the amount of damage each bullet deals */
-  bulletDamage = 1;
+  bulletDamage = 8;
 
   /** @type {number} size of bullets spawned by this */
   bulletSize = 24;
@@ -203,7 +203,7 @@ export class Creature extends Entity {
     // bombs deal basic damage
     this.bombOnBlastCreature.push({
       name: "Basic Damage",
-      data: 1,
+      data: 12,
       func: (bomb, num, creature) => {
         creature.takeDamage(num);
       }

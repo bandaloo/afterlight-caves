@@ -3,7 +3,7 @@ import { Vector } from "../../modules/vector.js";
 import { Creature } from "../creature.js";
 
 const MAX_DAMAGE = 1000;
-const DAMAGE_FACTOR = 1;
+const DAMAGE_FACTOR = 5;
 
 export class DamageUp extends PowerUp {
   /**
