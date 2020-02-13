@@ -156,8 +156,9 @@ class GameManager {
       gameManager.guiElements.get("pausescreen").active = true;
       this.gamePause = true;
     } else {
-      /** @type { PauseScreen } */
-      const pauseScreen = this.guiElements.get("pausescreen");
+      const pauseScreen = /** @type { PauseScreen } */ (this.guiElements.get(
+        "pausescreen"
+      ));
       pauseScreen.onBack();
       this.gamePause = false;
     }
@@ -777,4 +778,3 @@ export function collectInput(arg = true) {
     window.addEventListener("gamepaddisconnected", gamepadDisconnectListener);
   }
 }
-

@@ -18,6 +18,7 @@ function getSound(str) {
  * play a sound or copy the sound and play it (useful for overlapping sounds)
  * @param {string} str
  * @param {boolean} copy whether to play a copy of the sound
+ * @return {HTMLAudioElement}
  */
 export function playSound(str, copy = true) {
   // clone the sound before playing to avoid network requests
@@ -26,6 +27,7 @@ export function playSound(str, copy = true) {
       str
     ).cloneNode(true));
     clonedSound.play();
+    return clonedSound;
   } else {
     getSound(str)
       .play()
@@ -38,6 +40,7 @@ export function playSound(str, copy = true) {
           playSound(str, copy);
         }, 1000);
       });
+      return getSound(str);
   }
 }
 

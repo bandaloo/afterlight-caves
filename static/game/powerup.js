@@ -4,15 +4,14 @@ import { Creature } from "./creature.js";
 import { centeredText, drawShines, circle } from "./draw.js";
 import { TextDisplay } from "./textdisplay.js";
 import { addToWorld } from "../modules/gamemanager.js";
-import { Hero } from "./hero.js";
-
-// number of points a powerup is worth per magnitude
-const POINTS_FACTOR = 50;
 
 /**
  * @abstract
  */
 export class PowerUp extends Entity {
+  // number of points a powerup is worth per magnitude
+  static POINTS_FACTOR = 50;
+
   /**
    * constructs a new powerup
    * @param {number} [magnitude = 1] each powerup has a magnitude 1-5, e.g. how
@@ -77,10 +76,6 @@ export class PowerUp extends Entity {
 
     creature.powerUps.set(this.powerUpClass, newMag);
 
-    if (creature instanceof Hero) {
-      creature.addPoints(this.magnitude * POINTS_FACTOR);
-    }
-
     // display the name on the screen if the hero picked it up
     // this needs to be last in case something changes before we get here
     if (creature.type === "Hero") {
@@ -123,9 +118,6 @@ export class PowerUp extends Entity {
    */
   overflowAction(creature) {
     creature.gainHealth(creature.maxHealth * 0.5 * this.magnitude);
-    if (creature instanceof Hero) {
-      creature.addPoints(this.magnitude * POINTS_FACTOR * 5);
-    }
     if (creature.type === "Hero") {
       const textPos = this.drawPos.add(new Vector(0, -100));
       console.log("Hero at max");

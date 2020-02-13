@@ -27,6 +27,7 @@ import { BombDisplay } from "./game/bombdisplay.js";
 import { PauseScreen } from "./game/pausescreen.js";
 import { ScoreDisplay } from "./game/scoredisplay.js";
 import { DeathScreen } from "./game/deathscreen.js";
+import { resources } from "./game/resources.js";
 
 const blockWidth = 60;
 const blockHeight = 60;
@@ -42,9 +43,9 @@ export function resetDemo() {
   destroyEverything();
   color = hsl(randomInt(360));
   setPause(false);
-  const input = /** @type {HTMLInputElement} */ document.getElementById(
+  const input = /** @type {HTMLInputElement} */ (document.getElementById(
     "name-input"
-  );
+  ));
   input.value = "";
 
   let board = getGrid(
@@ -159,13 +160,6 @@ export function resetDemo() {
   }
 }
 
-const resources = [
-  { name: "enemy-hurt", file: "../sounds/enemy-hurt.wav" },
-  { name: "laser-shot", file: "../sounds/laser-shot.wav" },
-  { name: "spacey-snd", file: "../sounds/spacey-snd.wav" },
-  { name: "captive-portal", file: "../sounds/captive-portal.mp3" }
-];
-
 let loaded = 0;
 
 // load all resources
@@ -192,15 +186,15 @@ startButton.innerText = "Start";
 startForm.appendChild(startButton);
 
 /**
- * @param {Event}
+ * @param {Event} ev
  */
-const start = (ev) => {
+const start = ev => {
   ev.preventDefault();
   startForm.remove();
   // set timeout so that button disappears immediately
   setTimeout(() => {
-    playSound("captive-portal", false);
-    loopSound("captive-portal");
+    //playSound("captive-portal", false);
+    //loopSound("captive-portal");
     resetDemo();
     startUp();
   }, 1);
@@ -210,7 +204,8 @@ startForm.onsubmit = start;
 
 // spin doing nothing while we wait for everything load
 const checkLoading = () => {
-  if (loaded < 1) {
+  if (1 - loaded > 0.001) {
+    console.log(loaded)
     barFill.style.width = loaded * 100 + "%";
     requestAnimationFrame(checkLoading);
   } else {

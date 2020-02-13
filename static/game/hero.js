@@ -43,11 +43,9 @@ export class Hero extends Creature {
     this.score = 0;
 
     // collect powerups when you collide with them
-    this.collideMap.set("PowerUp", entity => {
-      playSound("spacey-snd");
-      /** @type {PowerUp} */ (entity).apply(this);
+    this.collideMap.set("PowerUp", (/** @type {PowerUp} */ entity) => {
+      entity.apply(this);
       for (let i = 0; i < 30; i++) {
-        // TODO move this to the destroy of powerup
         let randColor =
           "hsl(" + Math.floor(Math.random() * 360) + ", 100%, 50%)";
         const spark = new Particle(this.pos, randColor, EffectEnum.spark);
@@ -55,6 +53,32 @@ export class Hero extends Creature {
         spark.multiplier = 8;
         addParticle(spark);
       }
+      this.addPoints(entity.magnitude * PowerUp.POINTS_FACTOR);
+      // play sound
+      let magSound;
+      switch (entity.magnitude) {
+        case 1:
+          magSound = "one";
+          break;
+        case 2:
+          magSound = "two";
+          break;
+        case 3:
+          magSound = "three";
+          break;
+        case 4:
+          magSound = "four";
+          break;
+        case 5:
+          magSound = "five";
+          break;
+      }
+      playSound("power-up");
+      setTimeout(() => {
+        playSound(
+          entity.powerUpClass.toLowerCase().replace(" ", "-")
+        ).onended = () => playSound(magSound);
+      }, 300)
       entity.deleteMe = true;
     });
 
@@ -113,7 +137,7 @@ export class Hero extends Creature {
     this.acc = buttons.move.vec.mult(this.movementMultiplier);
     // prevents velocity from getting too small and normalization messing up
     if (this.shoot(buttons.shoot.vec, this.vel.mult(0.5))) {
-      playSound("laser-shot");
+      playSound("shoot");
     }
     if (!buttons.shoot.vec.isZeroVec()) {
       const normalizedShootVec = buttons.shoot.vec.norm2();
@@ -134,6 +158,7 @@ export class Hero extends Creature {
   }
 
   destroy() {
+    playSound("death");
     for (let i = 0; i < 40; i++) {
       let p = new Particle(
         this.pos,
