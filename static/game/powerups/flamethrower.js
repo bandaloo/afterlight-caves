@@ -5,6 +5,7 @@ import { Bullet } from "../bullet.js";
 import { Burning } from "../statuseffects/burning.js";
 
 const BURNING_LENGTH_FACTOR = 1;
+const BURNING_CHANCE_FACTOR = 0.05;
 
 export class FlameThrower extends PowerUp {
   /**
@@ -30,7 +31,9 @@ export class FlameThrower extends PowerUp {
        * @param {Creature} other the creature we hit
        */
       const f = (b, duration = 1, other) => {
-        new Burning(duration * BURNING_LENGTH_FACTOR * 60).apply(other);
+        if (this.magnitude * BURNING_CHANCE_FACTOR < Math.random()) {
+          new Burning(duration * BURNING_LENGTH_FACTOR * 60).apply(other);
+        }
       };
 
       creature.bulletOnHitEnemy.push({
