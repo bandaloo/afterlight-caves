@@ -9,13 +9,13 @@ import { Hot } from "./hot.js";
 import { Icy } from "./icy.js";
 import { Jalapeno } from "./jalapeno.js";
 import { Knapsack } from "./knapsack.js";
-import { Littlify } from "./littlify.js";
+import { Left } from "./left.js";
 import { MachineGun } from "./machinegun.js";
 import { Nitroglycerin } from "./nitroglycerin.js";
 import { Orb } from "./orb.js";
 import { Popsicle } from "./popsicle.js";
 import { QuickShot } from "./quickshot.js";
-import { RovingBombs } from "./rovingbombs.js";
+import { Right } from "./right.js";
 import { SlipperyBombs } from "./slipperybombs.js";
 import { Thermalite } from "./thermalite.js";
 import { UltraBomb } from "./ultrabomb.js";
@@ -38,13 +38,13 @@ export {
   Icy,
   Jalapeno,
   Knapsack,
-  Littlify,
+  Left,
   MachineGun,
   Nitroglycerin,
   Orb,
   Popsicle,
   QuickShot,
-  RovingBombs,
+  Right,
   SlipperyBombs,
   Thermalite,
   UltraBomb,
@@ -68,13 +68,13 @@ export const powerUpTypes = [
   Icy,
   Jalapeno,
   Knapsack,
-  Littlify,
+  Left,
   MachineGun,
   Nitroglycerin,
   Orb,
   Popsicle,
   QuickShot,
-  RovingBombs,
+  Right,
   SlipperyBombs,
   Thermalite,
   UltraBomb,

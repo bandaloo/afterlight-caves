@@ -132,6 +132,18 @@ export class Creature extends Entity {
   /** @type {number} size of bullets spawned by this */
   bulletSize = 24;
 
+  /** @type {number} added to damage each left-facing bullet deals */
+  leftBulletDamage = 0;
+
+  /** @type {number} added to size of each left-facing bullet */
+  leftBulletSize = 0;
+
+  /** @type {number} added to damage each right-facing bullet deals */
+  rightBulletDamage = 0;
+
+  /** @type {number} added to size of each right-facing bullet */
+  rightBulletSize = 0;
+
   /** @type {number} A multiplier for how fast the creature moves */
   movementMultiplier = 1;
 
@@ -227,6 +239,19 @@ export class Creature extends Entity {
    * @return {Bullet}
    */
   getBullet(dir) {
+    /** @type {number} */
+    let dmg = this.bulletDamage;
+    /** @type {number} */
+    let size = this.bulletSize;
+    if (dir.x < 0.01 && Math.abs(dir.x) >= Math.abs(dir.y)) {
+      // left-facing
+      dmg += this.leftBulletDamage;
+      size += this.leftBulletSize;
+    } else if (dir.x > 0.01 && Math.abs(dir.x) >= Math.abs(dir.y)) {
+      // right-facing
+      dmg += this.rightBulletDamage;
+      size += this.rightBulletSize;
+    }
     const b = new Bullet(
       this.pos.add(dir.mult(this.width / 2)),
       dir.norm2().mult(this.bulletSpeed),
@@ -234,13 +259,13 @@ export class Creature extends Entity {
       this.type === "Hero",
       this.bulletColor,
       this.bulletLifetime,
-      this.bulletDamage
+      dmg
     );
     b.reflectsOffWalls = this.bulletReflectsOffWalls;
     b.wallReflectSpeed = this.bulletWallReflectSpeed;
     b.onDestroy = this.bulletOnDestroy;
     b.onHitEnemy = this.bulletOnHitEnemy;
-    b.width = this.bulletSize;
+    b.width = size;
     b.knockback = this.bulletKnockback;
     return b;
   }
