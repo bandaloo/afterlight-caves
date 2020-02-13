@@ -84,6 +84,7 @@ class GameManager {
     this.canvas = document.createElement("canvas");
     this.context = this.canvas.getContext("2d");
     //this.context.imageSmoothingEnabled = false;
+    this.canvas.tabIndex = 1;
     this.canvas.width = width;
     this.canvas.height = height;
 

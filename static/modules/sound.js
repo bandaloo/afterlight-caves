@@ -73,7 +73,6 @@ export function loopSound(str, doLoop = true) {
  * @returns {Promise<HTMLAudioElement>} a promise returning the audio
  */
 export function addSound(key, filename) {
-  console.log("loading " + filename);
   return new Promise(resolve => {
     const audio = new Audio(filename);
     audio.addEventListener("canplaythrough", () => {

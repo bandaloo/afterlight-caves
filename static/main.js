@@ -183,21 +183,41 @@ barFill.id = "loading-bar-fill";
 document.getElementById("gamediv").appendChild(bar);
 bar.appendChild(barFill);
 
+// create start button
+const startForm = document.createElement("form");
+const startButton = document.createElement("button");
+startButton.id = "start";
+startButton.type = "submit";
+startButton.innerText = "Start";
+startForm.appendChild(startButton);
+
+/**
+ * @param {Event}
+ */
+const start = (ev) => {
+  ev.preventDefault();
+  startForm.remove();
+  // set timeout so that button disappears immediately
+  setTimeout(() => {
+    playSound("captive-portal", false);
+    loopSound("captive-portal");
+    resetDemo();
+    startUp();
+  }, 1);
+};
+
+startForm.onsubmit = start;
+
+// spin doing nothing while we wait for everything load
 const checkLoading = () => {
-  // spin doing nothing while we wait for everything load
   if (loaded < 1) {
     barFill.style.width = loaded * 100 + "%";
     requestAnimationFrame(checkLoading);
   } else {
     // done loading
     bar.remove();
-
-    playSound("captive-portal", false);
-    loopSound("captive-portal");
-
-    resetDemo();
-
-    startUp();
+    document.getElementById("gamediv").appendChild(startForm);
+    startButton.focus();
   }
 };
 
