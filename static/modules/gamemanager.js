@@ -133,8 +133,6 @@ class GameManager {
     });
 
     collectInput(true);
-
-    this.addDisplayToDiv("gamediv");
   }
 
   /**
@@ -510,6 +508,7 @@ class GameManager {
 const gameManager = new GameManager();
 
 export function startUp() {
+  gameManager.addDisplayToDiv("gamediv");
   gameManager.update();
 }
 
