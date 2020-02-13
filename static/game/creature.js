@@ -320,13 +320,8 @@ export class Creature extends Entity {
     b.speed = this.bombSpeed;
     b.timeToExplode = this.bombTimeToExplode;
     b.owner = this;
-    if (!this.vel.isZeroVec()) {
+    if (this.vel.mag() > 1) {
       b.vel = this.vel.norm2().mult(b.speed);
-    } else {
-      // pick a random direction
-      const theta = Math.random() * Math.PI * 2;
-      const r = b.speed;
-      b.vel = new Vector(Math.cos(theta) * r, Math.sin(theta) * r);
     }
     b.reflectsOffWalls = true;
     b.wallReflectSpeed = this.bombSpeed;

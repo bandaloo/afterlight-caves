@@ -2,17 +2,17 @@ import { PowerUp } from "../powerup.js";
 import { Vector } from "../../modules/vector.js";
 import { Creature } from "../creature.js";
 
-const MAX_BULLET_LIFETIME = 500;
-const RANGE_FACTOR = 5;
+const MAX_BOMB_SPEED = 20;
+const BOMB_SPEED_FACTOR = 1;
 
-export class Sniper extends PowerUp {
+export class SlipperyBombs extends PowerUp {
   /**
-   * Increases your range (by increasing bullet lifetime)
-   * @param {number} magnitude how much this increases your range by, 1-5
+   * Makes your bombs move after being placed
+   * @param {number} magnitude how fast your bombs will move, 1-5
    * @param {Vector} [pos]
    */
   constructor(magnitude = 1, pos) {
-    super(magnitude, pos, "Sniper", "You can shoot farther");
+    super(magnitude, pos, "Slippery Bombs", "Your bombs move");
   }
 
   /**
@@ -23,7 +23,7 @@ export class Sniper extends PowerUp {
   apply(creature) {
     if (!this.isAtMax(creature)) {
       super.apply(creature);
-      creature.bulletLifetime += this.magnitude * RANGE_FACTOR;
+      creature.bombSpeed += this.magnitude * BOMB_SPEED_FACTOR;
     } else {
       this.overflowAction(creature);
     }
@@ -36,14 +36,14 @@ export class Sniper extends PowerUp {
    * @override
    */
   isAtMax(creature) {
-    // creature is just too big
-    if (creature.bulletLifetime >= MAX_BULLET_LIFETIME) {
+    // check if bombSpeed is already too high
+    if (creature.bombSpeed >= MAX_BOMB_SPEED) {
       return true;
     }
 
     // see if we need to trim magnitude
     const availMag = Math.floor(
-      Math.abs(MAX_BULLET_LIFETIME - creature.bulletLifetime) / RANGE_FACTOR
+      Math.abs(MAX_BOMB_SPEED - creature.bombSpeed) / BOMB_SPEED_FACTOR
     );
     if (availMag < 1) return true;
 

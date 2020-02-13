@@ -16,7 +16,7 @@ import { Orb } from "./orb.js";
 import { Popsicle } from "./popsicle.js";
 import { QuickShot } from "./quickshot.js";
 import { RovingBombs } from "./rovingbombs.js";
-import { Sniper } from "./sniper.js";
+import { SlipperyBombs } from "./slipperybombs.js";
 import { Thermalite } from "./thermalite.js";
 import { UltraBomb } from "./ultrabomb.js";
 import { Vitality } from "./vitality.js";
@@ -45,7 +45,7 @@ export {
   Popsicle,
   QuickShot,
   RovingBombs,
-  Sniper,
+  SlipperyBombs,
   Thermalite,
   UltraBomb,
   Vitality,
@@ -75,7 +75,7 @@ export const powerUpTypes = [
   Popsicle,
   QuickShot,
   RovingBombs,
-  Sniper,
+  SlipperyBombs,
   Thermalite,
   UltraBomb,
   Vitality,
