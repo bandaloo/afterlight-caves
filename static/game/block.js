@@ -8,6 +8,7 @@ import {
 } from "../modules/gamemanager.js";
 import { blockField } from "./generator.js";
 import { Hero } from "./hero.js";
+import { playSound } from "../modules/sound.js";
 
 export class Block {
   /**
@@ -37,6 +38,7 @@ export function destroyBlock(cellVec, grantPoints = true) {
     if (grantPoints) {
       const gemType = blockField[cellVec.x][cellVec.y].gemType;
       if (gemType !== undefined) {
+        playSound("gem");
         const hero = /** @type {Hero} */ (getImportantEntity("hero"));
         hero.addPoints(gemType.points);
       }

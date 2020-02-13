@@ -205,7 +205,6 @@ startForm.onsubmit = start;
 // spin doing nothing while we wait for everything load
 const checkLoading = () => {
   if (1 - loaded > 0.001) {
-    console.log(loaded)
     barFill.style.width = loaded * 100 + "%";
     requestAnimationFrame(checkLoading);
   } else {

@@ -7,6 +7,7 @@ export const resources = [
   { name: "power-up", file: "../sounds/power-up.wav"},
   { name: "shoot", file: "../sounds/shoot.wav"},
   { name: "death", file: "../sounds/death.wav"},
+  { name: "gem", file: "../sounds/gem.wav"},
 
   { name: "amplify", file: "../sounds/powerups/amplify.wav" },
   { name: "icy", file: "../sounds/powerups/icy.wav" },
