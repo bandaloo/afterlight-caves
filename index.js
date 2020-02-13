@@ -41,6 +41,7 @@ const port = process.env.NODE_PORT || 4000;
 app.get("/scores", (req, res) => {
   fs.readFile("./scores.json", (err, data) => {
     if (err && err.code !== "ENONET") {
+      console.error(err);
       sendRes(res, 500, "Couldn't read scores file");
       return;
     }
@@ -55,13 +56,13 @@ app.get("/scores", (req, res) => {
       sendRes(res, 200, JSON.stringify({ scores: currentScores.scores }));
       return;
     } catch (e) {
+      console.error(e);
       // no scores, send empty array
-      sendRes(res, 200, JSON.stringify({ scores: [] }))
+      sendRes(res, 200, JSON.stringify({ scores: [] }));
       return;
     }
-
-  })
-})
+  });
+});
 
 /**
  * accepts new scores
@@ -94,6 +95,7 @@ app.post("/score", (req, res) => {
             throw new Error();
           }
         } catch (e) {
+          console.error(e);
           // make new file
           currentScores = { scores: [] };
         }
@@ -120,6 +122,5 @@ app.post("/score", (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log("listening on port 4000...");
+  console.log(`listening on port ${port}...`);
 });
-
