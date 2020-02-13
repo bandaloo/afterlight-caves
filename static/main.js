@@ -14,7 +14,7 @@ import {
   setPause,
   getCanvasWidth
 } from "./modules/gamemanager.js";
-import { drawBoard, centeredText, rect } from "./game/draw.js";
+import { drawBoard } from "./game/draw.js";
 import { Vector } from "./modules/vector.js";
 import { shuffle, randomInt, hsl } from "./modules/helpers.js";
 import { Hero } from "./game/hero.js";
@@ -47,10 +47,14 @@ const blockRows = worldHeight / blockHeight;
 /** @type {string} */
 let color;
 
-function resetDemo() {
+export function resetDemo() {
   destroyEverything();
   color = hsl(randomInt(360));
   setPause(false);
+  const input = /** @type {HTMLInputElement} */ document.getElementById(
+    "name-input"
+  );
+  input.value = "";
 
   let board = getGrid(
     blockColumns * 8,
@@ -77,8 +81,7 @@ function resetDemo() {
   const scoredisplay = new ScoreDisplay(new Vector(getCanvasWidth() - 5, 5));
   addToGui("scoredisplay", scoredisplay);
 
-  // Add the deathcreen and pausescreen to the GUI last
-  // as they should draw over everything else.
+  // add menus to the GUI last as they should draw over everything else
   const deathscreen = new DeathScreen();
   deathscreen.active = false;
   addToGui("deathscreen", deathscreen);
@@ -164,14 +167,6 @@ function resetDemo() {
     }
   }
 }
-
-document.addEventListener("keydown", e => {
-  const code = e.keyCode;
-  const key = String.fromCharCode(code);
-  if (key == "R") {
-    resetDemo();
-  }
-});
 
 resetDemo();
 
