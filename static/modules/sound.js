@@ -18,6 +18,7 @@ function getSound(str) {
  * play a sound or copy the sound and play it (useful for overlapping sounds)
  * @param {string} str
  * @param {boolean} copy whether to play a copy of the sound
+ * @return {HTMLAudioElement}
  */
 export function playSound(str, copy = true) {
   // clone the sound before playing to avoid network requests
@@ -26,25 +27,20 @@ export function playSound(str, copy = true) {
       str
     ).cloneNode(true));
     clonedSound.play();
+    return clonedSound;
   } else {
-    // TODO uncomment this (I just can't stand the music)
-    // Due to an autoplay policy, sound can't be played until the DOM is
-    // interacted with. If that happens, the sound will try to play again in one
-    // second. This is the autoplay policy:
-    // https://developers.google.com/web/updates/2017/09/autoplay-policy-changes
-    /*
     getSound(str)
       .play()
-      .catch(err => {
-        console.log(
-          "sound couldn't be played due to user not interacting with DOM yet." +
-            " trying again soon."
+      .catch(() => {
+        console.error(
+          "Sound couldn't be played due to user not interacting with DOM yet." +
+            " Trying again soon."
         );
         setTimeout(() => {
           playSound(str, copy);
         }, 1000);
       });
-      */
+      return getSound(str);
   }
 }
 
@@ -74,10 +70,20 @@ export function loopSound(str, doLoop = true) {
 }
 
 /**
- * adds a sound to the sound map
+ * adds a sound to the sound map asynchronously
  * @param {string} key
  * @param {string} filename
+ * @returns {Promise<HTMLAudioElement>} a promise returning the audio
  */
 export function addSound(key, filename) {
-  soundMap.set(key, new Audio(filename));
+  return new Promise(resolve => {
+    const audio = new Audio(filename);
+    audio.addEventListener("canplaythrough", () => {
+      soundMap.set(key, audio);
+      resolve(audio);
+    });
+    audio.onerror = () => {
+      throw new Error("Failed to get audio " + filename);
+    };
+  });
 }

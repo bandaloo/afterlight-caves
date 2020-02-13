@@ -84,6 +84,7 @@ class GameManager {
     this.canvas = document.createElement("canvas");
     this.context = this.canvas.getContext("2d");
     //this.context.imageSmoothingEnabled = false;
+    this.canvas.tabIndex = 1;
     this.canvas.width = width;
     this.canvas.height = height;
 
@@ -133,8 +134,6 @@ class GameManager {
     });
 
     collectInput(true);
-
-    this.addDisplayToDiv("gamediv");
   }
 
   /**
@@ -157,8 +156,9 @@ class GameManager {
       gameManager.guiElements.get("pausescreen").active = true;
       this.gamePause = true;
     } else {
-      /** @type { PauseScreen } */
-      const pauseScreen = this.guiElements.get("pausescreen");
+      const pauseScreen = /** @type { PauseScreen } */ (this.guiElements.get(
+        "pausescreen"
+      ));
       pauseScreen.onBack();
       this.gamePause = false;
     }
@@ -510,6 +510,7 @@ class GameManager {
 const gameManager = new GameManager();
 
 export function startUp() {
+  gameManager.addDisplayToDiv("gamediv");
   gameManager.update();
 }
 
@@ -777,4 +778,3 @@ export function collectInput(arg = true) {
     window.addEventListener("gamepaddisconnected", gamepadDisconnectListener);
   }
 }
-
