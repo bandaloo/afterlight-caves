@@ -151,6 +151,19 @@ export class Menu extends GuiElement {
     if (moved) {
       this.lerpVal = (this.itemMargin + this.itemHeight) * -num;
     }
+
+    const topPos =
+      this.pos.y +
+      this.height / 2 -
+      this.index * (this.itemMargin + this.itemHeight);
+    console.log("top pos " + topPos);
+
+    const bottomPos =
+      this.pos.y +
+      this.height / 2 +
+      (this.items.length - this.index) * (this.itemMargin + this.itemHeight) -
+      this.itemMargin;
+    console.log("bottom pos " + bottomPos);
   }
 
   /**
