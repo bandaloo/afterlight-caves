@@ -303,12 +303,16 @@ class GameManager {
     );
   }
 
+  // TODO move to DisplayManager
   drawGame() {
     // reposition camera if there is a followed entity
+    const { width: screenWidth, height: screenHeight } = getScreenDimensions();
     if (this.cameraEntity !== undefined) {
-      this.cameraOffset = this.cameraEntity.drawPos
-        .mult(-1)
-        .add(new Vector(this.screenWidth / 2, this.screenHeight / 2));
+      setCameraOffset(
+        this.cameraEntity.drawPos
+          .mult(-1)
+          .add(new Vector(screenWidth / 2, screenHeight / 2))
+      );
     }
 
     // clear the display canvas with black rectangle
