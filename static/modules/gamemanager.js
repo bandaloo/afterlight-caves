@@ -141,6 +141,7 @@ class GameManager {
     collectInput(true);
   }
 
+  // TODO move this to DisplayManager
   /**
    * @returns {Promise<void>}
    */
@@ -386,7 +387,6 @@ class GameManager {
         this.guiElements.get(guiKey).draw();
       }
     }
-
     this.cameraOffset = originalOffset;
 
     // copy the blur canvas onto the display canvas
@@ -680,6 +680,7 @@ export function getCameraOffset() {
   return gameManager.cameraOffset;
 }
 
+// TODO move this to DisplayManager
 /**
  * set the camera offset
  * @param {Vector} cameraOffset
@@ -704,6 +705,7 @@ export function setCameraEntity(cameraEntity) {
   gameManager.cameraEntity = cameraEntity;
 }
 
+// TODO move this to DisplayManager
 /**
  * return an object with info about screen dimensions
  * @returns {{width: number, height: number}}
