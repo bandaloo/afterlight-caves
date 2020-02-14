@@ -103,7 +103,7 @@ export class Enemy extends Creature {
       let p = new Particle(this.pos, this.originalDrawColor, EffectEnum.spark);
       p.lineWidth = 5;
       addParticle(p);
-      splatter(this.pos, this.drawColor, 100);
+      splatter(this.pos, this.originalDrawColor, 100);
     }
 
     // TODO this assumes that enemies can only be killed by the hero

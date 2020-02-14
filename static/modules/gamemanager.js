@@ -125,6 +125,7 @@ class GameManager {
     this.resetCounter = 0;
 
     this.blurContext.filter = "blur(3px) brightness(200%)";
+    this.splatterContext.filter = "brightness(50%)";
 
     // drawing func defaults to a no-op
     this.drawFunc = () => {};
@@ -331,16 +332,17 @@ class GameManager {
 
     // copy the splatter canvas onto the drawing canvas
     const splatterVec = this.cameraOffset.mult(-1 / SPLATTER_SCALAR);
-    this.context.drawImage(
+    const displayRatio = this.canvas.width / this.displayCanvas.width;
+    this.displayContext.drawImage(
       this.splatterCanvas,
       splatterVec.x,
       splatterVec.y,
-      this.canvas.width / SPLATTER_SCALAR,
-      this.canvas.height / SPLATTER_SCALAR,
+      (this.displayCanvas.width / SPLATTER_SCALAR) * displayRatio,
+      (this.displayCanvas.height / SPLATTER_SCALAR) * displayRatio,
       0,
       0,
-      this.canvas.width,
-      this.canvas.height
+      this.displayCanvas.width,
+      this.displayCanvas.height
     );
 
     // clear the blur canvas with alpha 0
