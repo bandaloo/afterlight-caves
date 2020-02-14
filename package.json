@@ -1,6 +1,6 @@
 {
   "name": "proc-cave-game",
-  "version": "0.4.0",
+  "version": "0.5.1",
   "description": "a game where you shoot procedurally generated enemies in procedurally generated caves",
   "main": "main.js",
   "directories": {
