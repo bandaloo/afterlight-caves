@@ -1,7 +1,6 @@
 import { getCell } from "../modules/collision.js";
 import {
   getCameraOffset,
-  getContext,
   getScreenDimensions,
   getTotalTime,
   SPLATTER_SCALAR
@@ -9,16 +8,16 @@ import {
 import { clamp, randomNormalVec } from "../modules/helpers.js";
 import { Vector } from "../modules/vector.js";
 import { blockField } from "./generator.js";
-import { getSplatterContext } from "../modules/displaymanager.js";
+import { getSplatterContext, getContext } from "../modules/displaymanager.js";
 
 // this is to get rid of weird lines when moving the camera
 const overDraw = 0.5;
 
 /**
  * gets the appropriate drawing context
- * @param {boolean} splatter
+ * @param {boolean} [splatter] leave undefined to just get the draw context
  */
-export function getDrawContext(splatter) {
+export function getDrawContext(splatter = false) {
   return !splatter ? getContext() : getSplatterContext();
 }
 
@@ -377,7 +376,7 @@ export function roundedRect(
  * @param {number} lineWidth
  */
 export function line(pos1, pos2, strokeStyle, lineWidth) {
-  const context = getContext();
+  const context = getDrawContext();
   context.save();
   pos1 = pos1.add(getCameraOffset());
   pos2 = pos2.add(getCameraOffset());
@@ -399,7 +398,7 @@ export function line(pos1, pos2, strokeStyle, lineWidth) {
  */
 export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
   // TODO get rid of the need to pass in block width and height
-  let context = getContext();
+  let context = getDrawContext();
   context.save();
 
   /**
@@ -589,7 +588,7 @@ export function centeredText(
   strokeStyle,
   lineWidth
 ) {
-  const context = getContext();
+  const context = getDrawContext();
   centerVec = centerVec.add(getCameraOffset());
   context.save();
   context.font = fontStyle;
@@ -617,7 +616,7 @@ export function centeredText(
  */
 export function drawShines(centerVec, data, gradColor) {
   centerVec = centerVec.add(getCameraOffset());
-  const context = getContext();
+  const context = getDrawContext();
   const grad = context.createRadialGradient(
     centerVec.x,
     centerVec.y,
