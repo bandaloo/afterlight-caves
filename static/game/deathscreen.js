@@ -3,7 +3,6 @@ import { Menu } from "./menu.js";
 import { centeredText } from "./draw.js";
 import {
   getScreenDimensions,
-  getContext,
   toggleGuiElement,
   addToGui,
   toggleFullscreen
@@ -12,6 +11,7 @@ import { getImportantEntity } from "../modules/gamemanager.js";
 import { toScoreString } from "./scoredisplay.js";
 import { resetDemo } from "../main.js";
 import { ScoresMenu } from "./scoresmenu.js";
+import { getContext } from "../modules/displaymanager.js";
 
 /**
  * The screen that appears when a player dies, including a nice fade-in and
@@ -34,7 +34,7 @@ export class DeathScreen extends Menu {
     );
     const scoresmenu = new ScoresMenu();
     scoresmenu.active = false;
-    addToGui("scoresmenu", scoresmenu)
+    addToGui("scoresmenu", scoresmenu);
 
     this.items = [
       { text: "Submit score", func: this.submitScore.bind(this) },

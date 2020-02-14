@@ -804,11 +804,6 @@ export function setPause(arg = true) {
   gameManager.gamePause = arg;
 }
 
-// TODO move to DisplayManager
-export function getSplatterContext() {
-  return gameManager.splatterContext;
-}
-
 /**
  * @returns {Promise<void>}
  */
