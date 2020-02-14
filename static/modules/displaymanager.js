@@ -1,6 +1,11 @@
+import { Vector } from "./vector";
+
 const BLUR_SCALAR = 2;
 
 class DisplayManager {
+  /** @type {Vector} */
+  cameraOffset = new Vector(0, 0);
+
   constructor(
     width = 1920,
     height = 1080,
@@ -118,4 +123,19 @@ export function getScreenDimensions() {
  */
 export function setGameDrawFunc(drawFunc) {
   displayManager.drawFunc = drawFunc;
+}
+
+/**
+ * get the camera offset
+ */
+export function getCameraOffset() {
+  return displayManager.cameraOffset;
+}
+
+/**
+ * set the camera offset
+ * @param {Vector} cameraOffset
+ */
+export function setCameraOffset(cameraOffset) {
+  displayManager.cameraOffset = cameraOffset;
 }

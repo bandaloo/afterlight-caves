@@ -15,7 +15,7 @@ import { Vector } from "./vector.js";
 import { ageSounds } from "./sound.js";
 import { resetDemo } from "../main.js";
 import { PauseScreen } from "../game/pausescreen.js";
-import { getScreenDimensions } from "./displaymanager.js";
+import { getScreenDimensions, setCameraOffset } from "./displaymanager.js";
 
 // TODO move this
 const BLUR_SCALAR = 2;
@@ -678,20 +678,12 @@ export function addParticle(particle) {
   gameManager.particles.push(particle);
 }
 
+// TODO move this to DisplayManager
 /**
  * get the camera offset
  */
 export function getCameraOffset() {
   return gameManager.cameraOffset;
-}
-
-// TODO move this to DisplayManager
-/**
- * set the camera offset
- * @param {Vector} cameraOffset
- */
-export function setCameraOffset(cameraOffset) {
-  gameManager.cameraOffset = cameraOffset;
 }
 
 /**
