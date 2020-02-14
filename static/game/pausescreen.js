@@ -87,7 +87,7 @@ export class PauseScreen extends Menu {
     centeredText(
       "Paused!",
       this.pos.add(new Vector(screenDimensions.width / 2, 100)),
-      "bold 100px sans-serif",
+      "bold 100px anonymous",
       undefined,
       undefined,
       "red"

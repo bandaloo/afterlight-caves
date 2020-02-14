@@ -63,7 +63,7 @@ export class DeathScreen extends Menu {
     centeredText(
       "You have died",
       this.pos.add(new Vector(this.width / 2, this.height / 2)),
-      "bold 250px sans-serif",
+      "bold 250px anonymous",
       undefined,
       undefined,
       "rgba(255, 255, 255, " + this.opacity + ")",
@@ -73,7 +73,7 @@ export class DeathScreen extends Menu {
     centeredText(
       "your score was:",
       this.pos.add(new Vector(this.width / 2, this.height / 2 + 100)),
-      "bold 60px monospace",
+      "bold 60px anonymous",
       undefined,
       undefined,
       "rgba(255, 255, 255, " + this.opacity + ")"
@@ -81,7 +81,7 @@ export class DeathScreen extends Menu {
     centeredText(
       toScoreString(this.score),
       this.pos.add(new Vector(this.width / 2, this.height / 2 + 160)),
-      "bold 60px monospace",
+      "bold 60px anonymous",
       undefined,
       undefined,
       "rgba(255, 255, 255, " + this.opacity + ")"

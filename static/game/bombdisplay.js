@@ -35,7 +35,7 @@ export class BombDisplay extends GuiElement {
     centeredText(
       `${this.currentBombs} / ${this.maxBombs}`,
       this.pos.add(this.borderVec),
-      "bold 60px sans-serif",
+      "bold 60px anonymous",
       "left",
       "middle",
       "white"

@@ -21,7 +21,7 @@ export class Stats extends Menu {
     this.itemStrokeStyle = "rgba(0, 0, 0, 0)";
     /** @type {CanvasTextAlign} */
     this.textAlign = "left";
-    this.textStyle = "50px sans-serif";
+    this.textStyle = "50px anonymous";
   }
 
   /**

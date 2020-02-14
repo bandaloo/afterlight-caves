@@ -83,7 +83,7 @@ export class Menu extends GuiElement {
     this.itemBorderRadius = 0;
     this.itemHeight = 70;
     this.itemWidth = this.width;
-    this.textStyle = "bold 50px sans-serif";
+    this.textStyle = "bold 50px anonymous";
     this.textAlign = "center";
     this.textFillStyle = "white";
     this.itemMargin = 10;
