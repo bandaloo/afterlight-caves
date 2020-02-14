@@ -19,7 +19,8 @@ import {
   getScreenDimensions,
   setCameraOffset,
   getCameraOffset,
-  toggleFullscreen
+  toggleFullscreen,
+  drawGame
 } from "./displaymanager.js";
 
 // TODO move this
@@ -78,59 +79,7 @@ class GameManager {
    */
   importantEntities = new Map();
 
-  constructor(
-    width = 1920,
-    height = 1080,
-    displayWidth = 960,
-    displayHeight = 540
-  ) {
-    // the canvas for drawing
-    this.canvas = document.createElement("canvas");
-    this.context = this.canvas.getContext("2d");
-    //this.context.imageSmoothingEnabled = false;
-    this.canvas.tabIndex = 1;
-    this.canvas.width = width;
-    this.canvas.height = height;
-
-    // the canvas for displaying
-    this.displayCanvas = document.createElement("canvas");
-    this.displayContext = this.displayCanvas.getContext("2d");
-    //this.displayContext.imageSmoothingEnabled = false;
-    this.displayWidth = displayWidth;
-    this.displayHeight = displayHeight;
-    this.displayCanvas.width = displayWidth;
-    this.displayCanvas.height = displayHeight;
-
-    // the untouched canvas for blurring before copying
-    this.blurCanvas = document.createElement("canvas");
-    this.blurContext = this.blurCanvas.getContext("2d");
-    //this.blurContext.imageSmoothingEnabled = false;
-    this.blurCanvas.width = width / BLUR_SCALAR;
-    this.blurCanvas.height = height / BLUR_SCALAR;
-
-    // the canvas (that is rarely cleared) used for keeping permanent splatter
-    this.splatterCanvas = document.createElement("canvas");
-    this.splatterContext = this.splatterCanvas.getContext("2d");
-
-    this.screenWidth = width;
-    this.screenHeight = height;
-
-    this.resetCounter = 0;
-
-    this.blurContext.filter = "blur(3px) brightness(200%)";
-
-    // drawing func defaults to a no-op
-    this.drawFunc = () => {};
-
-    const exitHandler = () => {
-      if (document.fullscreenElement === null) {
-        this.displayCanvas.width = this.displayWidth;
-        this.displayCanvas.height = this.displayHeight;
-      }
-    };
-
-    this.displayCanvas.addEventListener("fullscreenchange", exitHandler, false);
-
+  constructor() {
     document.getElementById("name-input").addEventListener("focus", () => {
       collectInput(false);
     });
