@@ -662,12 +662,10 @@ export function splatter(
   style,
   size,
   shape,
-  vel = new Vector(0, 0)
+  vel = new Vector(0, 0),
+  options = { splats: 10, offsetScalar: 2, velocityScalar: 15, sizeScalar: 0.6 }
 ) {
-  const splats = 10;
-  const offsetScalar = 2;
-  const velocityScalar = 15;
-  const sizeScalar = 0.6;
+  const { splats, offsetScalar, velocityScalar, sizeScalar } = options;
   for (let i = 0; i < splats; i++) {
     const sizeMod = ((i + 1) / (splats + 1)) * sizeScalar;
     const offsetVec = randomNormalVec()
