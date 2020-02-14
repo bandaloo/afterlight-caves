@@ -1,16 +1,16 @@
 import { Vector } from "../modules/vector.js";
 import { Menu } from "./menu.js";
 import { centeredText } from "./draw.js";
-import {
-  toggleGuiElement,
-  addToGui,
-  toggleFullscreen
-} from "../modules/gamemanager.js";
+import { toggleGuiElement, addToGui } from "../modules/gamemanager.js";
 import { getImportantEntity } from "../modules/gamemanager.js";
 import { toScoreString } from "./scoredisplay.js";
 import { resetDemo } from "../main.js";
 import { ScoresMenu } from "./scoresmenu.js";
-import { getContext, getScreenDimensions } from "../modules/displaymanager.js";
+import {
+  getContext,
+  getScreenDimensions,
+  toggleFullscreen
+} from "../modules/displaymanager.js";
 import { Hero } from "./hero.js";
 
 /**

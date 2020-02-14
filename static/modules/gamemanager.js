@@ -18,7 +18,8 @@ import { PauseScreen } from "../game/pausescreen.js";
 import {
   getScreenDimensions,
   setCameraOffset,
-  getCameraOffset
+  getCameraOffset,
+  toggleFullscreen
 } from "./displaymanager.js";
 
 // TODO move this
@@ -140,22 +141,6 @@ class GameManager {
     collectInput(true);
   }
 
-  // TODO move this to DisplayManager
-  /**
-   * @returns {Promise<void>}
-   */
-  toggleFullscreen() {
-    if (document.fullscreenElement === null) {
-      // enter fullscreen
-      this.displayCanvas.width = this.screenWidth;
-      this.displayCanvas.height = this.screenHeight;
-      return this.enterFullscreen();
-    } else {
-      // exit fullscreen
-      return document.exitFullscreen();
-    }
-  }
-
   togglePause() {
     if (!this.gamePause) {
       gameManager.guiElements.get("pausescreen").active = true;
@@ -268,7 +253,7 @@ class GameManager {
     this.destroyEntities(this.particles);
     // check pause and fullscreen buttons
     if (buttons.fullscreen.status.isPressed) {
-      this.toggleFullscreen();
+      toggleFullscreen();
     }
     if (buttons.pause.status.isPressed) {
       // you can't pause while dead
@@ -750,13 +735,6 @@ export function setFarDistance(farDistance) {
 
 export function setPause(arg = true) {
   gameManager.gamePause = arg;
-}
-
-/**
- * @returns {Promise<void>}
- */
-export function toggleFullscreen() {
-  return gameManager.toggleFullscreen();
 }
 
 /**

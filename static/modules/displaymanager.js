@@ -139,3 +139,19 @@ export function getCameraOffset() {
 export function setCameraOffset(cameraOffset) {
   displayManager.cameraOffset = cameraOffset;
 }
+
+// TODO move this to DisplayManager
+/**
+ * @returns {Promise<void>}
+ */
+export function toggleFullscreen() {
+  if (document.fullscreenElement === null) {
+    // enter fullscreen
+    displayManager.displayCanvas.width = this.screenWidth;
+    displayManager.displayCanvas.height = this.screenHeight;
+    return this.enterFullscreen();
+  } else {
+    // exit fullscreen
+    return document.exitFullscreen();
+  }
+}
