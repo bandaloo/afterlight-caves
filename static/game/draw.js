@@ -298,7 +298,7 @@ export function roundedRect(
   strokeStyle,
   lineWidth,
   borderRadius = 0,
-  splatter
+  splatter = false
 ) {
   const context = getDrawContext(splatter);
   context.save();
