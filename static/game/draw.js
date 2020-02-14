@@ -2,15 +2,45 @@ import { getCell } from "../modules/collision.js";
 import {
   getCameraOffset,
   getContext,
+  getSplatterContext,
   getScreenDimensions,
-  getTotalTime
+  getTotalTime,
+  SPLATTER_SCALAR
 } from "../modules/gamemanager.js";
-import { clamp } from "../modules/helpers.js";
+import { clamp, randomNormalVec } from "../modules/helpers.js";
 import { Vector } from "../modules/vector.js";
 import { blockField } from "./generator.js";
 
 // this is to get rid of weird lines when moving the camera
 const overDraw = 0.5;
+
+/**
+ * gets the appropriate drawing context
+ * @param {boolean} splatter
+ */
+export function getDrawContext(splatter) {
+  return !splatter ? getContext() : getSplatterContext();
+}
+
+/**
+ * adjusts the drawing vector based on camera and context
+ * @param {boolean} splatter
+ * @param {Vector} vec
+ * @param {number} width
+ * @param {number} height
+ * @return {{width: number, height: number, vec: Vector}}
+ */
+export function adjustDrawVec(splatter, vec, width, height) {
+  const adjustments = { width: width, height: height, vec: undefined };
+  if (splatter) {
+    adjustments.width /= SPLATTER_SCALAR;
+    adjustments.height /= SPLATTER_SCALAR;
+    adjustments.vec = vec.mult(1 / SPLATTER_SCALAR);
+  } else {
+    adjustments.vec = vec.add(getCameraOffset());
+  }
+  return adjustments;
+}
 
 /**
  * draws a polygon with wiggling sides
@@ -72,6 +102,7 @@ export function polygon(
  * @param {string|CanvasGradient|CanvasPattern} [strokeStyle] leave undefined
  * for no border
  * @param {number} [lineWidth] leave undefined for no border
+ * @param {boolean} [splatter] leave undefined for regular drawing
  */
 export function ellipse(
   centerVec,
@@ -79,12 +110,17 @@ export function ellipse(
   radiusY,
   fillStyle,
   lineWidth,
-  strokeStyle
+  strokeStyle,
+  splatter = false
 ) {
-  const context = getContext();
+  const context = getDrawContext(splatter);
+  ({ vec: centerVec, width: radiusX, height: radiusY } = adjustDrawVec(
+    splatter,
+    centerVec,
+    radiusX,
+    radiusY
+  ));
   context.save();
-  centerVec = centerVec.add(getCameraOffset());
-
   // account for border
   if (lineWidth === undefined) lineWidth = 0;
   radiusX -= lineWidth / 2;
@@ -140,6 +176,7 @@ export function circle(centerVec, radius, fillStyle, lineWidth, strokeStyle) {
  * @param {string|CanvasGradient|CanvasPattern} [strokeStyle] leave undefined
  * for no border
  * @param {number} [lineWidth] leave undefined for no border
+ * @param {boolean} [splatter]
  */
 export function centeredRect(
   centerVec,
@@ -147,7 +184,8 @@ export function centeredRect(
   height,
   fillStyle,
   strokeStyle,
-  lineWidth
+  lineWidth,
+  splatter = false
 ) {
   centeredRoundedRect(
     centerVec,
@@ -156,7 +194,8 @@ export function centeredRect(
     fillStyle,
     strokeStyle,
     lineWidth,
-    0
+    0,
+    splatter
   );
 }
 
@@ -177,6 +216,7 @@ export function centeredRect(
  *                  , bl: number
  *                  }
  *        } [borderRadius = 0] in pixels
+ * @param {boolean} [splatter]
  */
 export function centeredRoundedRect(
   centerVec,
@@ -185,7 +225,8 @@ export function centeredRoundedRect(
   fillStyle,
   strokeStyle,
   lineWidth,
-  borderRadius = 0
+  borderRadius = 0,
+  splatter = false
 ) {
   roundedRect(
     centerVec.sub(new Vector(width / 2, height / 2)),
@@ -194,7 +235,8 @@ export function centeredRoundedRect(
     fillStyle,
     strokeStyle,
     lineWidth,
-    borderRadius
+    borderRadius,
+    splatter
   );
 }
 
@@ -218,7 +260,16 @@ export function rect(
   strokeStyle,
   lineWidth
 ) {
-  roundedRect(topLeftVec, width, height, fillStyle, strokeStyle, lineWidth, 0);
+  roundedRect(
+    topLeftVec,
+    width,
+    height,
+    fillStyle,
+    strokeStyle,
+    lineWidth,
+    0,
+    false
+  );
 }
 
 /**
@@ -238,6 +289,7 @@ export function rect(
  *                  , bl: number
  *                  }
  *        } [borderRadius = 0] in pixels
+ * @param {boolean} splatter
  */
 export function roundedRect(
   topLeftVec,
@@ -246,11 +298,18 @@ export function roundedRect(
   fillStyle,
   strokeStyle,
   lineWidth,
-  borderRadius = 0
+  borderRadius = 0,
+  splatter
 ) {
-  const context = getContext();
+  const context = getDrawContext(splatter);
   context.save();
-  topLeftVec = topLeftVec.add(getCameraOffset());
+  //topLeftVec = topLeftVec.add(getCameraOffset());
+  ({ vec: topLeftVec, width: width, height: height } = adjustDrawVec(
+    splatter,
+    topLeftVec,
+    width,
+    height
+  ));
 
   // If it is a rounded rectangle
   let rounded = true;
@@ -431,15 +490,23 @@ export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
   // draw black squares on top
   for (let i = topLeftCell.x; i < bottomRightCell.x; i++) {
     for (let j = topLeftCell.y; j < bottomRightCell.y; j++) {
-      // TODO could be checking the block field instead of the terrain
-      context.fillStyle = "rgba(255, 255, 255, 0.1)";
+      context.fillStyle = "black";
       if (board[i][j] >= 1) {
-        context.clearRect(
+        context.fillRect(
           i * blockWidth - overDraw + cameraOffset.x,
           j * blockHeight - overDraw + cameraOffset.y,
           blockWidth + overDraw * 2,
           blockHeight + overDraw * 2
         );
+      }
+    }
+  }
+
+  // loop again through for the destructable blocks to avoid context switching
+  for (let i = topLeftCell.x; i < bottomRightCell.x; i++) {
+    for (let j = topLeftCell.y; j < bottomRightCell.y; j++) {
+      context.fillStyle = "rgba(255, 255, 255, 0.1)";
+      if (board[i][j] >= 1) {
         if (blockField[i][j].durability !== Infinity) {
           context.fillRect(
             i * blockWidth + overDraw + cameraOffset.x,
@@ -581,4 +648,45 @@ export function drawShines(centerVec, data, gradColor) {
     context.fill();
   }
   context.restore();
+}
+
+/**
+ * function to draw splatter on the splatter canvas
+ * @param {Vector} centerVec
+ * @param {string|CanvasGradient|CanvasPattern} style
+ * @param {number} size
+ * @param {"round" | "rectangular"} shape
+ */
+export function splatter(centerVec, style, size, shape, vel) {
+  const splats = 10;
+  const offsetScalar = 2;
+  const velocityScalar = 15;
+  const sizeScalar = 0.6;
+  for (let i = 0; i < splats; i++) {
+    const sizeMod = ((i + 1) / (splats + 1)) * sizeScalar;
+    const offsetVec = randomNormalVec()
+      .mult(Math.random() * size * offsetScalar * (1 - sizeMod))
+      .add(vel.mult(Math.random() * velocityScalar));
+    if (shape === "round") {
+      ellipse(
+        centerVec.add(offsetVec),
+        size * sizeMod,
+        size * sizeMod,
+        style,
+        undefined,
+        undefined,
+        true
+      );
+    } else if (shape === "rectangular") {
+      centeredRect(
+        centerVec.add(offsetVec),
+        size * sizeMod,
+        size * sizeMod,
+        style,
+        undefined,
+        undefined,
+        true
+      );
+    }
+  }
 }

@@ -18,6 +18,8 @@ import { PauseScreen } from "../game/pausescreen.js";
 
 const BLUR_SCALAR = 2;
 
+export const SPLATTER_SCALAR = 4;
+
 class GameManager {
   updateTime = 10;
   overTime = 0;
@@ -74,7 +76,6 @@ class GameManager {
    */
   importantEntities = new Map();
 
-  // TODO consider whether we want the options pattern here
   constructor(
     width = 1920,
     height = 1080,
@@ -106,12 +107,15 @@ class GameManager {
     this.blurCanvas.width = width / BLUR_SCALAR;
     this.blurCanvas.height = height / BLUR_SCALAR;
 
+    // the canvas (that is rarely cleared) used for keeping permanent splatter
+    this.splatterCanvas = document.createElement("canvas");
+    this.splatterContext = this.splatterCanvas.getContext("2d");
+
     this.screenWidth = width;
     this.screenHeight = height;
 
     this.resetCounter = 0;
 
-    // TODO get rid of this
     this.blurContext.filter = "blur(3px) brightness(200%)";
 
     // drawing func defaults to a no-op
@@ -176,6 +180,10 @@ class GameManager {
     }
   }
 
+  /**
+   * add the display to a div with a specific id
+   * @param {string} id
+   */
   addDisplayToDiv(id) {
     const displayDiv = document.getElementById(id);
     displayDiv.appendChild(this.displayCanvas);
@@ -307,14 +315,33 @@ class GameManager {
       this.displayCanvas.width,
       this.displayCanvas.height
     );
+
     // clear the drawing canvas with alpha 0
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
     // clear the blur canvas with alpha 0
     this.blurContext.clearRect(
       0,
       0,
       this.blurCanvas.width,
       this.blurCanvas.height
+    );
+
+    // copy the splatter canvas onto the drawing canvas
+    const targetCanvas = this.displayCanvas;
+    const targetContext = this.displayContext;
+    const splatterVec = this.cameraOffset.mult(-1 / SPLATTER_SCALAR);
+    const displayRatio = this.canvas.width / targetCanvas.width;
+    targetContext.drawImage(
+      this.splatterCanvas,
+      splatterVec.x,
+      splatterVec.y,
+      (targetCanvas.width / SPLATTER_SCALAR) * displayRatio,
+      (targetCanvas.height / SPLATTER_SCALAR) * displayRatio,
+      0,
+      0,
+      targetCanvas.width,
+      targetCanvas.height
     );
 
     // save drawing context
@@ -381,6 +408,7 @@ class GameManager {
       this.displayCanvas.width,
       this.displayCanvas.height
     );
+
     // restore display context
     this.displayContext.restore();
   }
@@ -445,6 +473,7 @@ class GameManager {
     }
   }
 
+  // TODO add documentation
   performTween(entityList, timeLeft) {
     for (let i = 0; i < entityList.length; i++) {
       // exclude inactive entities
@@ -600,6 +629,16 @@ export function getGameTime() {
 export function setDimensions(blockWidth, blockHeight) {
   gameManager.blockWidth = blockWidth;
   gameManager.blockHeight = blockHeight;
+  // set the splatter canvas to the correct width once this is done
+  const boardWidth = gameManager.terrain.length;
+  const boardHeight = gameManager.terrain[0].length;
+
+  // we don't actually need to clear the splatter canvas on a game reset
+  // because this happens when the width property of the canvas is changed
+  gameManager.splatterCanvas.width =
+    (boardWidth * blockWidth) / SPLATTER_SCALAR;
+  gameManager.splatterCanvas.height =
+    (boardHeight * blockHeight) / SPLATTER_SCALAR;
 }
 
 /**
@@ -752,8 +791,12 @@ export function setPause(arg = true) {
   gameManager.gamePause = arg;
 }
 
+export function getSplatterContext() {
+  return gameManager.splatterContext;
+}
+
 /**
- * return {Promise<void>}
+ * @returns {Promise<void>}
  */
 export function toggleFullscreen() {
   return gameManager.toggleFullscreen();
