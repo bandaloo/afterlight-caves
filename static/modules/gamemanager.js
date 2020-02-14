@@ -76,7 +76,6 @@ class GameManager {
    */
   importantEntities = new Map();
 
-  // TODO consider whether we want the options pattern here
   constructor(
     width = 1920,
     height = 1080,
@@ -111,10 +110,6 @@ class GameManager {
     // the canvas (that is rarely cleared) used for keeping permanent splatter
     this.splatterCanvas = document.createElement("canvas");
     this.splatterContext = this.splatterCanvas.getContext("2d");
-    //this.splatterCanvas.width = SPLATTER_WIDTH;
-    //this.splatterCanvas.height = SPLATTER_HEIGHT;
-    // TODO get rid of this
-    //document.getElementById("gamediv").appendChild(this.splatterCanvas);
 
     this.screenWidth = width;
     this.screenHeight = height;
@@ -798,7 +793,7 @@ export function getSplatterContext() {
 }
 
 /**
- * return {Promise<void>}
+ * @returns {Promise<void>}
  */
 export function toggleFullscreen() {
   return gameManager.toggleFullscreen();
