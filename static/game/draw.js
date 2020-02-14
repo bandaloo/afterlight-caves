@@ -7,12 +7,40 @@ import {
   getTotalTime,
   SPLATTER_SCALAR
 } from "../modules/gamemanager.js";
-import { clamp } from "../modules/helpers.js";
+import { clamp, randomNormalVec } from "../modules/helpers.js";
 import { Vector } from "../modules/vector.js";
 import { blockField } from "./generator.js";
 
 // this is to get rid of weird lines when moving the camera
 const overDraw = 0.5;
+
+/**
+ * gets the appropriate drawing context
+ * @param {boolean} splatter
+ */
+export function getDrawContext(splatter) {
+  return !splatter ? getContext() : getSplatterContext();
+}
+
+/**
+ * adjusts the drawing vector based on camera and context
+ * @param {boolean} splatter
+ * @param {Vector} centerVec
+ * @param {number} width
+ * @param {number} height
+ * @return {{width: number, height: number, centerVec: Vector}}
+ */
+export function adjustDrawVec(splatter, centerVec, width, height) {
+  const adjustments = { width: width, height: height, centerVec: undefined };
+  if (splatter) {
+    adjustments.width /= SPLATTER_SCALAR;
+    adjustments.height /= SPLATTER_SCALAR;
+    adjustments.centerVec = centerVec.mult(1 / SPLATTER_SCALAR);
+  } else {
+    adjustments.centerVec = centerVec.add(getCameraOffset());
+  }
+  return adjustments;
+}
 
 /**
  * draws a polygon with wiggling sides
@@ -85,16 +113,14 @@ export function ellipse(
   strokeStyle,
   splatter = false
 ) {
-  const context = !splatter ? getContext() : getSplatterContext();
+  const context = getDrawContext(splatter);
+  ({ centerVec: centerVec, width: radiusX, height: radiusY } = adjustDrawVec(
+    splatter,
+    centerVec,
+    radiusX,
+    radiusY
+  ));
   context.save();
-  if (splatter) {
-    radiusX /= SPLATTER_SCALAR;
-    radiusY /= SPLATTER_SCALAR;
-    centerVec = centerVec.mult(1 / SPLATTER_SCALAR);
-  } else {
-    centerVec = centerVec.add(getCameraOffset());
-  }
-
   // account for border
   if (lineWidth === undefined) lineWidth = 0;
   radiusX -= lineWidth / 2;
@@ -600,5 +626,18 @@ export function drawShines(centerVec, data, gradColor) {
  * @param {number} size
  */
 export function splatter(centerVec, style, size) {
-  ellipse(centerVec, size, size, style, undefined, undefined, true);
+  const splats = 10;
+  const offsetVec = randomNormalVec().mult(Math.random() * size);
+  for (let i = 0; i < splats; i++) {
+    const sizeMod = (i + 1) / (splats + 1) / 4;
+    ellipse(
+      centerVec.add(offsetVec),
+      size * sizeMod,
+      size * sizeMod,
+      style,
+      undefined,
+      undefined,
+      true
+    );
+  }
 }

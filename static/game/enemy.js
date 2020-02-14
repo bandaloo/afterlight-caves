@@ -62,7 +62,9 @@ export class Enemy extends Creature {
     this.basePoints = 50;
 
     // TODO get rid of this
-    this.drawColor = hsl(randomInt(360), 100, 70);
+    const randomHue = randomInt(360);
+    this.drawColor = hsl(randomHue, 100, 70);
+    this.splatterColor = `hsla(${randomHue}, 60%, 60%, 0.1)`;
     this.originalDrawColor = this.drawColor;
     this.bulletColor = this.drawColor;
 
@@ -103,7 +105,7 @@ export class Enemy extends Creature {
       let p = new Particle(this.pos, this.originalDrawColor, EffectEnum.spark);
       p.lineWidth = 5;
       addParticle(p);
-      splatter(this.pos, this.originalDrawColor, 100);
+      splatter(this.pos, this.splatterColor, this.width);
     }
 
     // TODO this assumes that enemies can only be killed by the hero
