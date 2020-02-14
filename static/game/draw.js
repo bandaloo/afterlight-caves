@@ -1,14 +1,17 @@
 import { getCell } from "../modules/collision.js";
 import {
   getCameraOffset,
-  getScreenDimensions,
   getTotalTime,
   SPLATTER_SCALAR
 } from "../modules/gamemanager.js";
 import { clamp, randomNormalVec } from "../modules/helpers.js";
 import { Vector } from "../modules/vector.js";
 import { blockField } from "./generator.js";
-import { getSplatterContext, getContext } from "../modules/displaymanager.js";
+import {
+  getSplatterContext,
+  getContext,
+  getScreenDimensions
+} from "../modules/displaymanager.js";
 
 // this is to get rid of weird lines when moving the camera
 const overDraw = 0.5;

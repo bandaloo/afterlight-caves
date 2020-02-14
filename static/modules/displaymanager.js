@@ -99,6 +99,18 @@ export function getCanvasHeight() {
   return displayManager.canvas.height;
 }
 
+// TODO is this redundant with getCanvasWidth and Height?
+/**
+ * return an object with info about screen dimensions
+ * @returns {{width: number, height: number}}
+ */
+export function getScreenDimensions() {
+  return {
+    width: displayManager.screenWidth,
+    height: displayManager.screenHeight
+  };
+}
+
 /**
  * set the additional draw function to happen every game loop (would be
  * commonly used for drawing terrain)

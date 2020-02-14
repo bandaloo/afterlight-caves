@@ -2,7 +2,6 @@ import { Vector } from "../modules/vector.js";
 import { Menu } from "./menu.js";
 import { centeredText } from "./draw.js";
 import {
-  getScreenDimensions,
   toggleGuiElement,
   addToGui,
   toggleFullscreen
@@ -11,7 +10,7 @@ import { getImportantEntity } from "../modules/gamemanager.js";
 import { toScoreString } from "./scoredisplay.js";
 import { resetDemo } from "../main.js";
 import { ScoresMenu } from "./scoresmenu.js";
-import { getContext } from "../modules/displaymanager.js";
+import { getContext, getScreenDimensions } from "../modules/displaymanager.js";
 import { Hero } from "./hero.js";
 
 /**

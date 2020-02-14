@@ -1,5 +1,4 @@
 import {
-  getScreenDimensions,
   setPause,
   addToGui,
   toggleGuiElement,
@@ -13,6 +12,7 @@ import { resetDemo } from "../main.js";
 import { Codex } from "./codex.js";
 import { Stats } from "./stats.js";
 import { Hero } from "./hero.js";
+import { getScreenDimensions } from "../modules/displaymanager.js";
 
 export class PauseScreen extends Menu {
   /** @type {Menu[]} */
