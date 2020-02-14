@@ -657,10 +657,12 @@ export function drawShines(centerVec, data, gradColor) {
  * @param {number} size
  * @param {"round" | "rectangular"} shape
  */
-export function splatter(centerVec, style, size, shape) {
+export function splatter(centerVec, style, size, shape, vel) {
   const splats = 10;
   const offsetScalar = 1;
-  const offsetVec = randomNormalVec().mult(Math.random() * size * offsetScalar);
+  const offsetVec = randomNormalVec()
+    .mult(Math.random() * size * offsetScalar)
+    .add(vel.mult(Math.random() * 10));
   const sizeScalar = 0.3;
   for (let i = 0; i < splats; i++) {
     const sizeMod = ((i + 1) / (splats + 1)) * sizeScalar;
