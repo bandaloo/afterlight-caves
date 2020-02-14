@@ -13,10 +13,15 @@ import {
 export class Codex extends Menu {
   constructor() {
     super(new Vector(0, 0), getCanvasWidth(), getCanvasHeight());
-    this.items = powerUpTypes.map(powerUpType => {
-      const pu = new powerUpType();
-      return { text: pu.powerUpClass + "\t" + pu.description, func: undefined };
-    });
+    this.setItems(
+      powerUpTypes.map(powerUpType => {
+        const pu = new powerUpType();
+        return {
+          text: pu.powerUpClass + "\t" + pu.description,
+          func: undefined
+        };
+      })
+    );
     this.itemWidth = 1500;
     /** @type {CanvasTextAlign} */
     this.textAlign = "left";

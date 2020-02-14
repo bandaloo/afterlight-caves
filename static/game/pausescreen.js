@@ -33,7 +33,7 @@ export class PauseScreen extends Menu {
     addToGui("stats", stats);
     this.childMenus = [codex, stats];
 
-    this.items = [
+    this.setItems([
       { text: "Resume", func: this.onBack.bind(this) },
       {
         text: "Codex",
@@ -62,7 +62,7 @@ export class PauseScreen extends Menu {
         }
       },
       { text: "Start over", func: resetDemo }
-    ];
+    ]);
     this.itemWidth = 600;
   }
 

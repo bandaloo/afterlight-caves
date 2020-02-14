@@ -102,6 +102,14 @@ export class Menu extends GuiElement {
     this.topPos = undefined;
     this.bottomPos = undefined;
     this.currentPos = undefined;
+  }
+
+  /**
+   * we need this because items isn't initialized in the constructor
+   * @param {{ text: string; func: () => void; }[]} items
+   */
+  setItems(items) {
+    this.items = items;
     this.updateTopAndBottomPos();
   }
 
