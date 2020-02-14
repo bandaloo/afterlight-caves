@@ -180,6 +180,9 @@ export class Menu extends GuiElement {
 
   /**
    * draws text at the right location
+   * @param {number} x
+   * @param {number} y
+   * @param {string} text
    */
   drawText(x, y, text) {
     let textOffset = 0;
