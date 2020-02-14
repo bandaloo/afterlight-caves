@@ -180,6 +180,7 @@ class GameManager {
     }
   }
 
+  // TODO move this to display manager
   /**
    * add the display to a div with a specific id
    * @param {string} id
@@ -375,6 +376,7 @@ class GameManager {
       this.canvas.height / BLUR_SCALAR
     );
 
+    // TODO move to DisplayManager
     // align camera, draw the gui, reset camera
     // this is after the draw canvas is copied to the blur canvas
     // move this to before if you want the gui blurred
@@ -550,22 +552,27 @@ export function startUp() {
   gameManager.update();
 }
 
+// TODO move to DisplayManager
 export function getCanvas() {
   return gameManager.canvas;
 }
 
+// TODO move to DisplayManager
 export function getContext() {
   return gameManager.context;
 }
 
+// TODO move to DisplayManager
 export function getCanvasWidth() {
   return gameManager.canvas.width;
 }
 
+// TODO move to DisplayManager
 export function getCanvasHeight() {
   return gameManager.canvas.height;
 }
 
+// TODO move to DisplayManager
 /**
  * set the additional draw function to happen every game loop
  * @param {() => void} drawFunc drawing function to happen every loop
@@ -796,6 +803,7 @@ export function setPause(arg = true) {
   gameManager.gamePause = arg;
 }
 
+// TODO move to DisplayManager
 export function getSplatterContext() {
   return gameManager.splatterContext;
 }
