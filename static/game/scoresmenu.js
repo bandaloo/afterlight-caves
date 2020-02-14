@@ -24,12 +24,16 @@ export class ScoresMenu extends Menu {
     this.itemFillStyle = "rgba(0, 0, 0, 0)";
     this.selectedFillStyle = "rgba(20, 20, 255, 1)";
     this.itemStrokeStyle = "rgba(0, 0, 0, 0)";
+    /** @type {CanvasTextAlign} */
     this.textAlign = "left";
     this.textStyle = "50px sans-serif";
   }
 
   /**
    * @override because canvas doesn't draw tabs. This is a dumb hack
+   * @param {number} x
+   * @param {number} y
+   * @param {string} text
    */
   drawText(x, y, text) {
     const tabs = text.split("\t");
