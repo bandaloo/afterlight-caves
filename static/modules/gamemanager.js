@@ -553,15 +553,6 @@ export function startUp() {
   gameManager.update();
 }
 
-// TODO move to DisplayManager
-/**
- * set the additional draw function to happen every game loop
- * @param {() => void} drawFunc drawing function to happen every loop
- */
-export function setGameDrawFunc(drawFunc) {
-  gameManager.drawFunc = drawFunc;
-}
-
 /**
  * set the grid of numbers to determine solid parts of world
  * @param {number[][]} board
