@@ -1,6 +1,10 @@
 import { GuiElement } from "../modules/guielement.js";
 import { Vector } from "../modules/vector.js";
-import { getCanvasWidth, getCanvasHeight } from "../modules/displaymanager.js";
+import {
+  getCanvasWidth,
+  getCanvasHeight,
+  getScreenDimensions
+} from "../modules/displaymanager.js";
 import { buttons } from "../modules/buttons.js";
 import { roundedRect, centeredText } from "./draw.js";
 
@@ -100,19 +104,33 @@ export class Menu extends GuiElement {
     this.updateTopAndBottomPos();
   }
 
+  calcTopOffset() {
+    return -this.index * (this.itemMargin + this.itemHeight);
+  }
+
+  calcBottomOffset() {
+    return (
+      (this.items.length - this.index) * (this.itemMargin + this.itemHeight) -
+      this.itemMargin
+    );
+  }
+
   updateTopAndBottomPos() {
-    this.topPos =
-      this.pos.y +
-      this.height / 2 -
-      this.index * (this.itemMargin + this.itemHeight);
+    const middle = this.pos.y + this.height / 2;
+
+    this.topPos = middle + this.calcTopOffset();
     console.log("top pos " + this.topPos);
 
+    this.bottomPos = middle + this.calcBottomOffset();
+
+    /*
     this.bottomPos =
-      this.pos.y +
-      this.height / 2 +
+      this.topPos +
+      this.index * (this.itemMargin + this.itemHeight) +
       (this.items.length - this.index) * (this.itemMargin + this.itemHeight) -
       this.itemMargin;
-    console.log("top pos " + this.bottomPos);
+      */
+    console.log("bottom pos " + this.bottomPos);
   }
 
   /**
@@ -181,11 +199,15 @@ export class Menu extends GuiElement {
   draw() {
     const x = this.pos.x + this.itemMargin;
     // adjust so that selected element is always centered
-    let y =
-      this.pos.y +
-      this.height / 2 -
-      this.index * (this.itemMargin + this.itemHeight) -
-      this.lerpVal;
+    let y = this.topPos - this.lerpVal;
+    const { height } = getScreenDimensions();
+    if (this.topPos > 0) {
+      // clamp to top
+      //y = 0;
+    }
+    if (this.bottomPos < height) {
+      // clamp to bottom
+    }
     // adjust y if the selected element is off the screen
     for (let i = 0; i < this.items.length; ++i) {
       let downOffset = 0;
