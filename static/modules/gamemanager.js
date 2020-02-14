@@ -19,8 +19,8 @@ import { splatter } from "../game/draw.js";
 
 const BLUR_SCALAR = 2;
 
-const SPLATTER_WIDTH = 2048;
-const SPLATTER_HEIGHT = 2048;
+//const SPLATTER_WIDTH = 2048;
+//const SPLATTER_HEIGHT = 2048;
 export const SPLATTER_SCALAR = 4;
 
 class GameManager {
@@ -114,8 +114,8 @@ class GameManager {
     // the canvas (that is rarely cleared) used for keeping permanent splatter
     this.splatterCanvas = document.createElement("canvas");
     this.splatterContext = this.splatterCanvas.getContext("2d");
-    this.splatterCanvas.width = SPLATTER_WIDTH;
-    this.splatterCanvas.height = SPLATTER_HEIGHT;
+    //this.splatterCanvas.width = SPLATTER_WIDTH;
+    //this.splatterCanvas.height = SPLATTER_HEIGHT;
     // TODO get rid of this
     //document.getElementById("gamediv").appendChild(this.splatterCanvas);
 
@@ -125,14 +125,6 @@ class GameManager {
     this.resetCounter = 0;
 
     this.blurContext.filter = "blur(3px) brightness(200%)";
-
-    // TODO get rid of this
-    this.splatterContext.fillStyle = "red";
-    for (let i = 0; i < SPLATTER_WIDTH; i += 32) {
-      for (let j = 0; j < SPLATTER_HEIGHT; j += 32) {
-        this.splatterContext.fillRect(i, j, 31, 31);
-      }
-    }
 
     // drawing func defaults to a no-op
     this.drawFunc = () => {};
@@ -643,6 +635,21 @@ export function getGameTime() {
 export function setDimensions(blockWidth, blockHeight) {
   gameManager.blockWidth = blockWidth;
   gameManager.blockHeight = blockHeight;
+  // set the splatter canvas to the correct width once this is done
+  const boardWidth = gameManager.terrain.length;
+  const boardHeight = gameManager.terrain[0].length;
+  gameManager.splatterCanvas.width =
+    (boardWidth * blockWidth) / SPLATTER_SCALAR;
+  gameManager.splatterCanvas.height =
+    (boardHeight * blockHeight) / SPLATTER_SCALAR;
+
+  // TODO get rid of this
+  gameManager.splatterContext.fillStyle = "#111111";
+  for (let i = 0; i < gameManager.splatterCanvas.width; i += 32) {
+    for (let j = 0; j < gameManager.splatterCanvas.height; j += 32) {
+      gameManager.splatterContext.fillRect(i, j, 31, 31);
+    }
+  }
 }
 
 /**

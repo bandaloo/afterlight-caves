@@ -58,6 +58,7 @@ export function resetDemo() {
 
   setTerrain(board);
   initBlockField(board);
+  // has to be called after setTerrain for the splatter canvas
   setDimensions(blockWidth, blockHeight);
 
   setGameDrawFunc(() => {
