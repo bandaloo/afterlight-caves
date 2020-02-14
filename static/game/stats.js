@@ -44,6 +44,7 @@ export class Stats extends Menu {
   action() {
     let items = [];
     const hero = /** @type {Hero} */ (getImportantEntity("hero"));
+    // TODO kind of weird it is doing this every game step
     if (hero === undefined || hero === null) return;
     hero.powerUps.forEach((mag, name) => {
       items.push({ text: name + "\t" + mag, func: undefined });
