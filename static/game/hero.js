@@ -41,6 +41,7 @@ export class Hero extends Creature {
     this.bombHue = 126;
     this.bulletColor = "white";
     this.score = 0;
+    this.setBombDamage(10);
 
     // collect powerups when you collide with them
     this.collideMap.set("PowerUp", entity => {

@@ -42,9 +42,9 @@ export function resetDemo() {
   destroyEverything();
   color = hsl(randomInt(360));
   setPause(false);
-  const input = /** @type {HTMLInputElement} */ document.getElementById(
+  const input = /** @type {HTMLInputElement} */ (document.getElementById(
     "name-input"
-  );
+  ));
   input.value = "";
 
   let board = getGrid(
@@ -192,9 +192,9 @@ startButton.innerText = "Start";
 startForm.appendChild(startButton);
 
 /**
- * @param {Event}
+ * @param {Event} ev
  */
-const start = (ev) => {
+const start = ev => {
   ev.preventDefault();
   startForm.remove();
   // set timeout so that button disappears immediately
