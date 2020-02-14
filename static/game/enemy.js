@@ -64,7 +64,7 @@ export class Enemy extends Creature {
     // TODO get rid of this
     const randomHue = randomInt(360);
     this.drawColor = hsl(randomHue, 100, 70);
-    this.splatterColor = `hsla(${randomHue}, 60%, 60%, 0.8)`;
+    this.splatterColor = `hsla(${randomHue}, 40%, 40%, 0.8)`;
     this.originalDrawColor = this.drawColor;
     this.bulletColor = this.drawColor;
 
