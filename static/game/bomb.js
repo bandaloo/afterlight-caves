@@ -167,7 +167,19 @@ export class Bomb extends Entity {
       }
     );
     const sizeScalar = 0.1;
-    splatter(this.pos, "#333333dd", this.blastRadius * sizeScalar, "round");
+    splatter(
+      this.pos,
+      "#222222dd",
+      this.blastRadius * sizeScalar,
+      "round",
+      undefined,
+      {
+        splats: 20,
+        offsetScalar: 7,
+        velocityScalar: 0,
+        sizeScalar: 1
+      }
+    );
   }
 
   /**
