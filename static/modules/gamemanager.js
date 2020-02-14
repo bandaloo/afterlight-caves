@@ -473,20 +473,23 @@ class GameManager {
     }
   }
 
-  // TODO add documentation
+  /**
+   * set all the draw positions of the entities to perform the tweening
+   * @param {Entity[]} entityList
+   * @param {number} timeLeft
+   */
   performTween(entityList, timeLeft) {
     for (let i = 0; i < entityList.length; i++) {
       // exclude inactive entities
       if (entityList[i].active) {
-        // value used for debugging
-        let tempPrevPos = entityList[i].lastPos;
+        // uncomment these to debug tweening
+        //let tempPrevPos = entityList[i].lastPos; // value used for debugging
         let tempDrawPos = entityList[i].lastPos.partway(
           entityList[i].pos,
           (this.updateTime + timeLeft) / this.updateTime
         );
-        // value used for debugging
-        let tempCurrPos = entityList[i].pos;
         // uncomment these to debug tweening
+        //let tempCurrPos = entityList[i].pos; // value used for debugging
         //console.log("prev " + tempPrevPos);
         //console.log("draw " + tempDrawPos);
         //console.log("curr " + tempCurrPos);
@@ -512,7 +515,8 @@ class GameManager {
     // Game time doesn't incrememnt when the game is paused.
     if (!this.gamePause) this.gameTime += deltaTime;
 
-    let gameSteps = 0;
+    // uncomment this for debugging
+    //let gameSteps = 0;
     let timeLeft = deltaTime - this.overTime;
     while (timeLeft > 0) {
       // if this loop is the last step before going over time
@@ -522,7 +526,8 @@ class GameManager {
       }
       this.stepGame();
       timeLeft -= this.updateTime;
-      gameSteps++;
+      // uncomment these to debug tweening
+      //gameSteps++;
     }
     // set all the tweened vectors to the draw positions
     this.performTween(this.entities, timeLeft);
