@@ -10,6 +10,7 @@ import { distanceBoard } from "./generator.js";
 import { powerUpTypes } from "./powerups/poweruptypes.js";
 import { Scatter } from "./scatter.js";
 import { Shooter } from "./shooter.js";
+import { Bomber } from "./bomber.js";
 
 /**
  * @param {number[][]} board
@@ -17,9 +18,20 @@ import { Shooter } from "./shooter.js";
  */
 export function populateLevel(board, numEnemies) {
   // board containing distances from nearest solid block
-  const { board: distBoard, cells: distCells } = distanceBoard(board);
+  const { cells: distCells } = distanceBoard(board);
 
-  const creatureClasses = [Chase, Scatter, Shooter, Crosser];
+  // TODO make actually enemy rarity
+  const creatureClasses = [
+    Chase,
+    Chase,
+    Scatter,
+    Scatter,
+    Shooter,
+    Shooter,
+    Crosser,
+    Crosser,
+    Bomber
+  ];
 
   for (let i = 0; i < numEnemies; i++) {
     const randomChoice = randomInt(creatureClasses.length);
@@ -73,9 +85,9 @@ export function populateLevel(board, numEnemies) {
     const numPowerUps = Math.random() * 6;
     for (let k = 0; k < numPowerUps; k++) {
       if (Math.random() > 0.75) {
-        const p = new powerUpTypes[
-          Math.floor(Math.random() * powerUpTypes.length)
-        ](Math.floor(Math.random() * 5));
+        const p = new powerUpTypes[randomInt(powerUpTypes.length)](
+          randomInt(6)
+        );
         p.apply(enemy);
       }
     }
