@@ -130,7 +130,7 @@ class GameManager {
     this.splatterContext.fillStyle = "red";
     for (let i = 0; i < SPLATTER_WIDTH; i += 32) {
       for (let j = 0; j < SPLATTER_HEIGHT; j += 32) {
-        this.splatterContext.fillRect(i, j, 30, 30);
+        this.splatterContext.fillRect(i, j, 31, 31);
       }
     }
 
@@ -336,6 +336,23 @@ class GameManager {
 
     // clear the drawing canvas with alpha 0
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+    // copy the splatter canvas onto the drawing canvas
+    const splatterVec = this.cameraOffset.mult(-1 / SPLATTER_SCALAR);
+    //const screenDisp = this.canvas.width / this.displayCanvas.width;
+    const screenDisp = 1;
+    this.context.drawImage(
+      this.splatterCanvas,
+      splatterVec.x,
+      splatterVec.y,
+      (this.canvas.width / SPLATTER_SCALAR) * screenDisp,
+      (this.canvas.height / SPLATTER_SCALAR) * screenDisp,
+      0,
+      0,
+      this.canvas.width,
+      this.canvas.height
+    );
+
     // clear the blur canvas with alpha 0
     this.blurContext.clearRect(
       0,
@@ -403,34 +420,6 @@ class GameManager {
     // copy the drawing canvas onto the display canvas
     this.displayContext.drawImage(
       this.canvas,
-      0,
-      0,
-      this.displayCanvas.width,
-      this.displayCanvas.height
-    );
-
-    // copy the splatter canvas onto the display canvas
-    const splatterVec = this.cameraOffset.mult(-1 / SPLATTER_SCALAR);
-    /*
-    this.displayContext.drawImage(
-      this.splatterCanvas,
-      splatterVec.x,
-      splatterVec.y,
-      this.canvas.width / SPLATTER_SCALAR,
-      this.canvas.height / SPLATTER_SCALAR,
-      0,
-      0,
-      this.canvas.width,
-      this.canvas.width
-    );
-    */
-    const screenDisp = this.canvas.width / this.displayCanvas.width;
-    this.displayContext.drawImage(
-      this.splatterCanvas,
-      splatterVec.x,
-      splatterVec.y,
-      (this.displayCanvas.width / SPLATTER_SCALAR) * screenDisp,
-      (this.displayCanvas.height / SPLATTER_SCALAR) * screenDisp,
       0,
       0,
       this.displayCanvas.width,
