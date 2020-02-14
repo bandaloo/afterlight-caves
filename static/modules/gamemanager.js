@@ -16,6 +16,7 @@ import { ageSounds } from "./sound.js";
 import { resetDemo } from "../main.js";
 import { PauseScreen } from "../game/pausescreen.js";
 
+// TODO move this
 const BLUR_SCALAR = 2;
 
 export const SPLATTER_SCALAR = 4;
