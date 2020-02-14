@@ -12,6 +12,7 @@ import { toScoreString } from "./scoredisplay.js";
 import { resetDemo } from "../main.js";
 import { ScoresMenu } from "./scoresmenu.js";
 import { getContext } from "../modules/displaymanager.js";
+import { Hero } from "./hero.js";
 
 /**
  * The screen that appears when a player dies, including a nice fade-in and
@@ -102,7 +103,7 @@ export class DeathScreen extends Menu {
       }
     } else {
       this.hero = getImportantEntity("hero");
-      this.score = /** @type {Creature} */ (this.hero).score;
+      this.score = /** @type {Hero} */ (this.hero).score;
       if (this.active) this.opacity += 0.01;
       this.selectedFillStyle = `rgba(0, 0, 255, ${this.opacity})`;
       this.downFillStyle = `rgba(68, 68, 204, ${this.opacity})`;
