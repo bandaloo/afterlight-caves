@@ -655,8 +655,15 @@ export function drawShines(centerVec, data, gradColor) {
  * @param {string|CanvasGradient|CanvasPattern} style
  * @param {number} size
  * @param {"round" | "rectangular"} shape
+ * @param {Vector} [vel] don't define for no velocity
  */
-export function splatter(centerVec, style, size, shape, vel) {
+export function splatter(
+  centerVec,
+  style,
+  size,
+  shape,
+  vel = new Vector(0, 0)
+) {
   const splats = 10;
   const offsetScalar = 2;
   const velocityScalar = 15;
