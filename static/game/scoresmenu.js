@@ -49,13 +49,18 @@ export class ScoresMenu extends Menu {
           if (this.scoresStatus !== 200) {
             throw new Error();
           }
-          this.items = JSON.parse(obj.message)
-            .scores.sort((a, b) => b.score - a.score)
-            .map(val => {
-              return { text: val.score + "\t" + val.username, func: undefined };
-            });
+          this.setItems(
+            JSON.parse(obj.message)
+              .scores.sort((a, b) => b.score - a.score)
+              .map(val => {
+                return {
+                  text: val.score + "\t" + val.username,
+                  func: undefined
+                };
+              })
+          );
           if (this.items.length === 0) {
-            this.items = [{ text: "No scores yet", func: undefined }];
+            this.setItems([{ text: "No scores yet", func: undefined }]);
           }
         })
         .catch(reason => {
@@ -64,9 +69,9 @@ export class ScoresMenu extends Menu {
         });
     }
     if (this.scoresStatus === 0) {
-      this.items = [{ text: "Fetching scores...", func: undefined }];
+      this.setItems([{ text: "Fetching scores...", func: undefined }]);
     } else if (this.scoresStatus !== 200) {
-      this.items = [{ text: "Failed to get scores", func: undefined }];
+      this.setItems([{ text: "Failed to get scores", func: undefined }]);
     }
     super.action();
   }

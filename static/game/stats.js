@@ -42,15 +42,16 @@ export class Stats extends Menu {
    * @override
    */
   action() {
-    this.items = [];
+    let items = [];
     const hero = /** @type {Hero} */ (getImportantEntity("hero"));
     if (hero === undefined || hero === null) return;
     hero.powerUps.forEach((mag, name) => {
-      this.items.push({ text: name + "\t" + mag, func: undefined });
+      items.push({ text: name + "\t" + mag, func: undefined });
     });
-    if (this.items.length === 0) {
-      this.items = [{ text: "No power ups yet", func: undefined }];
+    if (items.length === 0) {
+      items = [{ text: "No power ups yet", func: undefined }];
     }
+    this.setItems(items);
     super.action();
   }
 

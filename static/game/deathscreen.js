@@ -36,7 +36,7 @@ export class DeathScreen extends Menu {
     scoresmenu.active = false;
     addToGui("scoresmenu", scoresmenu);
 
-    this.items = [
+    this.setItems([
       { text: "Submit score", func: this.submitScore.bind(this) },
       {
         text: "View scores",
@@ -47,7 +47,7 @@ export class DeathScreen extends Menu {
         }
       },
       { text: "Restart", func: resetDemo }
-    ];
+    ]);
     this.score = 0;
     this.opacity = 0;
     this.itemWidth = 500;
