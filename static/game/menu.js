@@ -196,10 +196,10 @@ export class Menu extends GuiElement {
       this.index = 0;
       moved = false;
     }
-    if (moved) {
-      this.lerpVal = (this.itemMargin + this.itemHeight) * -num;
-    }
+    const prevTop = this.topPos;
     this.updateTopAndBottomPos();
+    const currTop = this.topPos;
+    this.lerpVal = currTop - prevTop;
   }
 
   /**
@@ -212,13 +212,26 @@ export class Menu extends GuiElement {
     // adjust so that selected element is always centered
     let y = this.topPos - this.lerpVal;
     const { height } = getScreenDimensions();
+    let overTop = false;
+    let overBottom = false;
     if (this.topPos > 0) {
       // clamp to top
-      //y = 0;
+      overTop = true;
     }
     if (this.bottomPos < height) {
       // clamp to bottom
+      overBottom = true;
     }
+
+    if (overTop && overBottom) {
+      // too small to clamp
+      y = this.calcMiddle();
+    } else if (overTop) {
+      y = 0;
+    } else if (overBottom) {
+      y = this.calcTopFromBottom(height);
+    }
+
     // adjust y if the selected element is off the screen
     for (let i = 0; i < this.items.length; ++i) {
       let downOffset = 0;
