@@ -46,6 +46,10 @@ export class Hero extends Creature {
     // collect powerups when you collide with them
     this.collideMap.set("PowerUp", entity => {
       playSound("spacey-snd");
+      const powerup = /** @type {PowerUp} */ (entity);
+      window.speechSynthesis.speak(
+        new SpeechSynthesisUtterance(powerup.powerUpClass + powerup.magnitude)
+      );
       /** @type {PowerUp} */ (entity).apply(this);
       for (let i = 0; i < 30; i++) {
         // TODO move this to the destroy of powerup
