@@ -554,11 +554,6 @@ export function startUp() {
 }
 
 // TODO move to DisplayManager
-export function getCanvas() {
-  return gameManager.canvas;
-}
-
-// TODO move to DisplayManager
 /**
  * set the additional draw function to happen every game loop
  * @param {() => void} drawFunc drawing function to happen every loop
