@@ -328,19 +328,20 @@ class GameManager {
     );
 
     // copy the splatter canvas onto the drawing canvas
-    console.log(this.splatterContext.filter);
+    const targetCanvas = this.displayCanvas;
+    const targetContext = this.displayContext;
     const splatterVec = this.cameraOffset.mult(-1 / SPLATTER_SCALAR);
-    const displayRatio = this.canvas.width / this.blurCanvas.width;
-    this.blurContext.drawImage(
+    const displayRatio = this.canvas.width / targetCanvas.width;
+    targetContext.drawImage(
       this.splatterCanvas,
       splatterVec.x,
       splatterVec.y,
-      (this.blurCanvas.width / SPLATTER_SCALAR) * displayRatio,
-      (this.blurCanvas.height / SPLATTER_SCALAR) * displayRatio,
+      (targetCanvas.width / SPLATTER_SCALAR) * displayRatio,
+      (targetCanvas.height / SPLATTER_SCALAR) * displayRatio,
       0,
       0,
-      this.blurCanvas.width,
-      this.blurCanvas.height
+      targetCanvas.width,
+      targetCanvas.height
     );
 
     // save drawing context
@@ -498,7 +499,6 @@ class GameManager {
    * @param {number} [currentTime]
    */
   update(currentTime = this.updateTime) {
-    console.log(this.splatterContext.filter);
     // get input from any controllers
     getGamepadInput();
 
