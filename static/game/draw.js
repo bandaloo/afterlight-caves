@@ -25,19 +25,19 @@ export function getDrawContext(splatter) {
 /**
  * adjusts the drawing vector based on camera and context
  * @param {boolean} splatter
- * @param {Vector} centerVec
+ * @param {Vector} vec
  * @param {number} width
  * @param {number} height
- * @return {{width: number, height: number, centerVec: Vector}}
+ * @return {{width: number, height: number, vec: Vector}}
  */
-export function adjustDrawVec(splatter, centerVec, width, height) {
-  const adjustments = { width: width, height: height, centerVec: undefined };
+export function adjustDrawVec(splatter, vec, width, height) {
+  const adjustments = { width: width, height: height, vec: undefined };
   if (splatter) {
     adjustments.width /= SPLATTER_SCALAR;
     adjustments.height /= SPLATTER_SCALAR;
-    adjustments.centerVec = centerVec.mult(1 / SPLATTER_SCALAR);
+    adjustments.vec = vec.mult(1 / SPLATTER_SCALAR);
   } else {
-    adjustments.centerVec = centerVec.add(getCameraOffset());
+    adjustments.vec = vec.add(getCameraOffset());
   }
   return adjustments;
 }
@@ -114,7 +114,7 @@ export function ellipse(
   splatter = false
 ) {
   const context = getDrawContext(splatter);
-  ({ centerVec: centerVec, width: radiusX, height: radiusY } = adjustDrawVec(
+  ({ vec: centerVec, width: radiusX, height: radiusY } = adjustDrawVec(
     splatter,
     centerVec,
     radiusX,
@@ -176,6 +176,7 @@ export function circle(centerVec, radius, fillStyle, lineWidth, strokeStyle) {
  * @param {string|CanvasGradient|CanvasPattern} [strokeStyle] leave undefined
  * for no border
  * @param {number} [lineWidth] leave undefined for no border
+ * @param {boolean} [splatter]
  */
 export function centeredRect(
   centerVec,
@@ -183,7 +184,8 @@ export function centeredRect(
   height,
   fillStyle,
   strokeStyle,
-  lineWidth
+  lineWidth,
+  splatter = false
 ) {
   centeredRoundedRect(
     centerVec,
@@ -192,7 +194,8 @@ export function centeredRect(
     fillStyle,
     strokeStyle,
     lineWidth,
-    0
+    0,
+    splatter
   );
 }
 
@@ -213,6 +216,7 @@ export function centeredRect(
  *                  , bl: number
  *                  }
  *        } [borderRadius = 0] in pixels
+ * @param {boolean} [splatter]
  */
 export function centeredRoundedRect(
   centerVec,
@@ -221,7 +225,8 @@ export function centeredRoundedRect(
   fillStyle,
   strokeStyle,
   lineWidth,
-  borderRadius = 0
+  borderRadius = 0,
+  splatter = false
 ) {
   roundedRect(
     centerVec.sub(new Vector(width / 2, height / 2)),
@@ -230,7 +235,8 @@ export function centeredRoundedRect(
     fillStyle,
     strokeStyle,
     lineWidth,
-    borderRadius
+    borderRadius,
+    splatter
   );
 }
 
@@ -254,7 +260,16 @@ export function rect(
   strokeStyle,
   lineWidth
 ) {
-  roundedRect(topLeftVec, width, height, fillStyle, strokeStyle, lineWidth, 0);
+  roundedRect(
+    topLeftVec,
+    width,
+    height,
+    fillStyle,
+    strokeStyle,
+    lineWidth,
+    0,
+    false
+  );
 }
 
 /**
@@ -274,6 +289,7 @@ export function rect(
  *                  , bl: number
  *                  }
  *        } [borderRadius = 0] in pixels
+ * @param {boolean} splatter
  */
 export function roundedRect(
   topLeftVec,
@@ -282,11 +298,18 @@ export function roundedRect(
   fillStyle,
   strokeStyle,
   lineWidth,
-  borderRadius = 0
+  borderRadius = 0,
+  splatter
 ) {
-  const context = getContext();
+  const context = getDrawContext(splatter);
   context.save();
-  topLeftVec = topLeftVec.add(getCameraOffset());
+  //topLeftVec = topLeftVec.add(getCameraOffset());
+  ({ vec: topLeftVec, width: width, height: height } = adjustDrawVec(
+    splatter,
+    topLeftVec,
+    width,
+    height
+  ));
 
   // If it is a rounded rectangle
   let rounded = true;
@@ -624,20 +647,33 @@ export function drawShines(centerVec, data, gradColor) {
  * @param {Vector} centerVec
  * @param {string|CanvasGradient|CanvasPattern} style
  * @param {number} size
+ * @param {"round" | "rectangular"} shape
  */
-export function splatter(centerVec, style, size) {
+export function splatter(centerVec, style, size, shape) {
   const splats = 10;
   const offsetVec = randomNormalVec().mult(Math.random() * size);
   for (let i = 0; i < splats; i++) {
     const sizeMod = (i + 1) / (splats + 1) / 4;
-    ellipse(
-      centerVec.add(offsetVec),
-      size * sizeMod,
-      size * sizeMod,
-      style,
-      undefined,
-      undefined,
-      true
-    );
+    if (shape === "round") {
+      ellipse(
+        centerVec.add(offsetVec),
+        size * sizeMod,
+        size * sizeMod,
+        style,
+        undefined,
+        undefined,
+        true
+      );
+    } else if (shape === "rectangular") {
+      centeredRect(
+        centerVec.add(offsetVec),
+        size * sizeMod,
+        size * sizeMod,
+        style,
+        undefined,
+        undefined,
+        true
+      );
+    }
   }
 }
