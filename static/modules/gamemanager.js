@@ -15,7 +15,11 @@ import { Vector } from "./vector.js";
 import { ageSounds } from "./sound.js";
 import { resetDemo } from "../main.js";
 import { PauseScreen } from "../game/pausescreen.js";
-import { getScreenDimensions, setCameraOffset } from "./displaymanager.js";
+import {
+  getScreenDimensions,
+  setCameraOffset,
+  getCameraOffset
+} from "./displaymanager.js";
 
 // TODO move this
 const BLUR_SCALAR = 2;
@@ -337,7 +341,7 @@ class GameManager {
     // copy the splatter canvas onto the drawing canvas
     const targetCanvas = this.displayCanvas;
     const targetContext = this.displayContext;
-    const splatterVec = this.cameraOffset.mult(-1 / SPLATTER_SCALAR);
+    const splatterVec = getCameraOffset().mult(-1 / SPLATTER_SCALAR);
     const displayRatio = this.canvas.width / targetCanvas.width;
     targetContext.drawImage(
       this.splatterCanvas,
@@ -676,14 +680,6 @@ export function destroyEverything() {
  */
 export function addParticle(particle) {
   gameManager.particles.push(particle);
-}
-
-// TODO move this to DisplayManager
-/**
- * get the camera offset
- */
-export function getCameraOffset() {
-  return gameManager.cameraOffset;
 }
 
 /**
