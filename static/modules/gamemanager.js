@@ -15,6 +15,7 @@ import { Vector } from "./vector.js";
 import { ageSounds } from "./sound.js";
 import { resetDemo } from "../main.js";
 import { PauseScreen } from "../game/pausescreen.js";
+import { getScreenDimensions } from "./displaymanager.js";
 
 // TODO move this
 const BLUR_SCALAR = 2;
@@ -703,15 +704,6 @@ export function getCameraEntity() {
  */
 export function setCameraEntity(cameraEntity) {
   gameManager.cameraEntity = cameraEntity;
-}
-
-// TODO move this to DisplayManager
-/**
- * return an object with info about screen dimensions
- * @returns {{width: number, height: number}}
- */
-export function getScreenDimensions() {
-  return { width: gameManager.screenWidth, height: gameManager.screenHeight };
 }
 
 /**
