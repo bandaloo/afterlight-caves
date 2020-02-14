@@ -74,7 +74,7 @@ export function polygon(
  * @param {string|CanvasGradient|CanvasPattern} [strokeStyle] leave undefined
  * for no border
  * @param {number} [lineWidth] leave undefined for no border
- * @param {boolean} splatter
+ * @param {boolean} [splatter] leave undefined for regular drawing
  */
 export function ellipse(
   centerVec,
@@ -86,8 +86,12 @@ export function ellipse(
   splatter = false
 ) {
   const context = !splatter ? getContext() : getSplatterContext();
-  if (splatter) centerVec.mult(1 / SPLATTER_SCALAR);
   context.save();
+  if (splatter) {
+    radiusX /= SPLATTER_SCALAR;
+    radiusY /= SPLATTER_SCALAR;
+    centerVec = centerVec.mult(1 / SPLATTER_SCALAR);
+  }
   centerVec = centerVec.add(getCameraOffset());
 
   // account for border
@@ -593,4 +597,6 @@ export function drawShines(centerVec, data, gradColor) {
  * @param {Vector} centerVec
  * @param {string|CanvasGradient|CanvasPattern} style
  */
-export function splatter(centerVec, style) {}
+export function splatter(centerVec, style) {
+  ellipse(centerVec, 32, 32, style, undefined, undefined, true);
+}
