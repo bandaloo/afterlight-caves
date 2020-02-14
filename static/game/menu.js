@@ -75,9 +75,9 @@ export class Menu extends GuiElement {
     this.width = width;
     this.height = height;
     this.items = items;
-    this.itemFillStyle = "green";
-    this.selectedFillStyle = "#0000ff";
-    this.downFillStyle = "#4444cc";
+    this.itemFillStyle = "#101010";
+    this.selectedFillStyle = "#202020";
+    this.downFillStyle = "#303030";
     this.itemStrokeStyle = "black";
     this.itemStrokeWidth = 4;
     this.itemBorderRadius = 0;

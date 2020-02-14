@@ -18,9 +18,6 @@ export class Codex extends Menu {
       return { text: pu.powerUpClass + "\t" + pu.description, func: undefined };
     });
     this.itemWidth = 1500;
-    this.itemFillStyle = "rgba(0, 0, 0, 0)";
-    this.selectedFillStyle = "rgba(20, 20, 255, 1)";
-    this.itemStrokeStyle = "rgba(0, 0, 0, 0)";
     /** @type {CanvasTextAlign} */
     this.textAlign = "left";
     this.textStyle = "50px anonymous";

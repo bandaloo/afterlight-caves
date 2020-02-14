@@ -22,9 +22,9 @@ export class ScoresMenu extends Menu {
     super(new Vector(0, 0), getCanvasWidth(), getCanvasHeight());
     this.scoresStatus = undefined;
     this.itemWidth = 1500;
-    this.itemFillStyle = "rgba(0, 0, 0, 0)";
-    this.selectedFillStyle = "rgba(20, 20, 255, 1)";
-    this.itemStrokeStyle = "rgba(0, 0, 0, 0)";
+    //this.itemFillStyle = "rgba(0, 0, 0, 0)";
+    //this.selectedFillStyle = "rgba(20, 20, 255, 1)";
+    //this.itemStrokeStyle = "rgba(0, 0, 0, 0)";
     /** @type {CanvasTextAlign} */
     this.textAlign = "left";
     this.textStyle = "50px anonymous";
