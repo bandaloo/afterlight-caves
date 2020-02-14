@@ -71,7 +71,10 @@ export class PowerUp extends Entity {
    */
   apply(creature) {
     // Set the creature's powerup magnitude for this type of powerup
-    const newMag = this.magnitude + creature.powerUps.get(this.powerUpClass);
+    let newMag = creature.powerUps.get(this.powerUpClass);
+    if (!newMag) newMag = 0; // covers NaN, undefined, 0, etc.
+    newMag += this.magnitude;
+
     creature.powerUps.set(this.powerUpClass, newMag);
 
     if (creature instanceof Hero) {

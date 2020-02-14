@@ -3,13 +3,15 @@ import { getImportantEntity } from "../modules/gamemanager.js";
 import { Vector } from "../modules/vector.js";
 import { circle, polygon } from "./draw.js";
 import { Enemy } from "./enemy.js";
+import { randomNormalVec } from "../modules/helpers.js";
 
 export class Scatter extends Enemy {
   /**
-   * constructs a random entity with all the relevant vectors
+   * constructs a scatter enemy
    * @param {Vector} pos
    * @param {Vector} vel
    * @param {Vector} acc
+   * @param {number} matryoshka
    */
   constructor(
     pos,
@@ -18,11 +20,9 @@ export class Scatter extends Enemy {
     matryoshka = 0
   ) {
     super(pos, vel, acc, matryoshka);
-    // TODO weird that you have to give a powerup a position, even if just using
-    // it to apply directly
+    this.baseHealth = 10;
+    this.initHealth();
     new Cone(2).apply(this);
-    this.maxHealth = 2;
-    this.gainHealth(2);
     this.bulletSpeed = 5;
     this.bulletLifetime = 300;
     this.fireDelay = 0;
@@ -39,13 +39,8 @@ export class Scatter extends Enemy {
 
   action() {
     super.action();
-    // TODO change this
     if (Math.random() < 0.01) {
-      const randomDir = Math.random() * 2 * Math.PI;
-      const acc = new Vector(
-        Math.cos(randomDir) * 0.1,
-        Math.sin(randomDir) * 0.1
-      );
+      const acc = randomNormalVec().mult(0.1);
       this.acc = acc.mult(this.movementMultiplier);
     }
   }

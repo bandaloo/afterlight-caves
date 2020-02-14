@@ -1,0 +1,15 @@
+[Unit]
+Description=Procedurally generated cave shooter for the web
+Documentation=https://github.com/bandaloo/proc-cave-game
+After=network.target
+
+[Service]
+Environment=NODE_PORT=3000
+Type=simple
+User=nobody
+WorkingDirectory=/var/www/proc-cave-game
+ExecStart=/usr/bin/node index.js
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
