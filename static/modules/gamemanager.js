@@ -339,14 +339,12 @@ class GameManager {
 
     // copy the splatter canvas onto the drawing canvas
     const splatterVec = this.cameraOffset.mult(-1 / SPLATTER_SCALAR);
-    //const screenDisp = this.canvas.width / this.displayCanvas.width;
-    const screenDisp = 1;
     this.context.drawImage(
       this.splatterCanvas,
       splatterVec.x,
       splatterVec.y,
-      (this.canvas.width / SPLATTER_SCALAR) * screenDisp,
-      (this.canvas.height / SPLATTER_SCALAR) * screenDisp,
+      this.canvas.width / SPLATTER_SCALAR,
+      this.canvas.height / SPLATTER_SCALAR,
       0,
       0,
       this.canvas.width,
