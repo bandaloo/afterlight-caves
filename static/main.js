@@ -14,7 +14,7 @@ import {
   setPause,
   getCanvasWidth
 } from "./modules/gamemanager.js";
-import { drawBoard, centeredText, rect } from "./game/draw.js";
+import { drawBoard } from "./game/draw.js";
 import { Vector } from "./modules/vector.js";
 import { shuffle, randomInt, hsl } from "./modules/helpers.js";
 import { Hero } from "./game/hero.js";
@@ -28,18 +28,6 @@ import { PauseScreen } from "./game/pausescreen.js";
 import { ScoreDisplay } from "./game/scoredisplay.js";
 import { DeathScreen } from "./game/deathscreen.js";
 
-// load resources
-addSound("enemy-hurt", "../sounds/enemy-hurt.wav");
-addSound("laser-shot", "../sounds/laser-shot.wav");
-addSound("spacey-snd", "../sounds/spacey-snd.wav");
-addSound("captive-portal", "../sounds/captive-portal.mp3");
-
-// TODO uncomment this when we get better music
-/*
-playSound("captive-portal", false);
-loopSound("captive-portal");
-*/
-
 const blockWidth = 60;
 const blockHeight = 60;
 const worldWidth = 1920;
@@ -50,10 +38,14 @@ const blockRows = worldHeight / blockHeight;
 /** @type {string} */
 let color;
 
-function resetDemo() {
+export function resetDemo() {
   destroyEverything();
   color = hsl(randomInt(360));
   setPause(false);
+  const input = /** @type {HTMLInputElement} */ (document.getElementById(
+    "name-input"
+  ));
+  input.value = "";
 
   let board = getGrid(
     blockColumns * 8,
@@ -80,8 +72,7 @@ function resetDemo() {
   const scoredisplay = new ScoreDisplay(new Vector(getCanvasWidth() - 5, 5));
   addToGui("scoredisplay", scoredisplay);
 
-  // Add the deathcreen and pausescreen to the GUI last
-  // as they should draw over everything else.
+  // add menus to the GUI last as they should draw over everything else
   const deathscreen = new DeathScreen();
   deathscreen.active = false;
   addToGui("deathscreen", deathscreen);
@@ -168,14 +159,66 @@ function resetDemo() {
   }
 }
 
-document.addEventListener("keydown", e => {
-  const code = e.keyCode;
-  const key = String.fromCharCode(code);
-  if (key == "R") {
-    resetDemo();
-  }
+const resources = [
+  { name: "enemy-hurt", file: "../sounds/enemy-hurt.wav" },
+  { name: "laser-shot", file: "../sounds/laser-shot.wav" },
+  { name: "spacey-snd", file: "../sounds/spacey-snd.wav" },
+  { name: "captive-portal", file: "../sounds/captive-portal.mp3" }
+];
+
+let loaded = 0;
+
+// load all resources
+resources.forEach(resource => {
+  addSound(resource.name, resource.file).then(() => {
+    loaded += 1 / resources.length;
+  });
 });
 
-resetDemo();
+// add loading bar to DOM
+const bar = document.createElement("div");
+bar.id = "loading-bar";
+const barFill = document.createElement("div");
+barFill.id = "loading-bar-fill";
+document.getElementById("gamediv").appendChild(bar);
+bar.appendChild(barFill);
 
-startUp();
+// create start button
+const startForm = document.createElement("form");
+const startButton = document.createElement("button");
+startButton.id = "start";
+startButton.type = "submit";
+startButton.innerText = "Start";
+startForm.appendChild(startButton);
+
+/**
+ * @param {Event} ev
+ */
+const start = ev => {
+  ev.preventDefault();
+  startForm.remove();
+  // set timeout so that button disappears immediately
+  setTimeout(() => {
+    playSound("captive-portal", false);
+    loopSound("captive-portal");
+    resetDemo();
+    startUp();
+  }, 1);
+};
+
+startForm.onsubmit = start;
+
+// spin doing nothing while we wait for everything load
+const checkLoading = () => {
+  if (loaded < 1) {
+    barFill.style.width = loaded * 100 + "%";
+    requestAnimationFrame(checkLoading);
+  } else {
+    // done loading
+    bar.remove();
+    document.getElementById("gamediv").appendChild(startForm);
+    startButton.focus();
+  }
+};
+
+checkLoading();

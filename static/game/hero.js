@@ -36,6 +36,7 @@ export class Hero extends Creature {
     this.gainHealth(this.maxHealth);
     this.bulletSpeed = 8;
     this.bulletLifetime = 60;
+    this.bulletDamage = 8;
     this.bombFuseTime = 300;
     this.bombHue = 126;
     this.bulletColor = "white";
@@ -158,9 +159,6 @@ export class Hero extends Creature {
   takeDamage(amt) {
     if (this.invincibilityFrames <= 0) {
       super.takeDamage(amt);
-      // TODO check this
-      //if (this.currentHealth <= 0) this.destroy();
-      //else this.invincibilityFrames = this.invincibilityFramesMax;
       this.invincibilityFrames = this.invincibilityFramesMax;
     }
   }

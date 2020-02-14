@@ -28,7 +28,6 @@ export class Shooter extends Enemy {
     matryoshka = 0
   ) {
     super(pos, vel, acc, matryoshka);
-    // TODO check this maxhealth
     this.baseHealth = 20;
     this.initHealth();
     this.fireDelay = 90;

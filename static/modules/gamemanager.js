@@ -13,6 +13,8 @@ import { Entity, FarEnum } from "./entity.js";
 import { inPlaceFilter } from "./helpers.js";
 import { Vector } from "./vector.js";
 import { ageSounds } from "./sound.js";
+import { resetDemo } from "../main.js";
+import { PauseScreen } from "../game/pausescreen.js";
 
 const BLUR_SCALAR = 2;
 
@@ -44,6 +46,9 @@ class GameManager {
 
   /** @type {number} */
   blockHeight;
+
+  /** @type {number} */
+  resetCounter;
 
   /** @type {Vector} */
   cameraOffset = new Vector(0, 0);
@@ -80,6 +85,7 @@ class GameManager {
     this.canvas = document.createElement("canvas");
     this.context = this.canvas.getContext("2d");
     //this.context.imageSmoothingEnabled = false;
+    this.canvas.tabIndex = 1;
     this.canvas.width = width;
     this.canvas.height = height;
 
@@ -103,6 +109,8 @@ class GameManager {
     this.screenWidth = width;
     this.screenHeight = height;
 
+    this.resetCounter = 0;
+
     // TODO get rid of this
     this.blurContext.filter = "blur(3px) brightness(200%)";
 
@@ -118,37 +126,51 @@ class GameManager {
 
     this.displayCanvas.addEventListener("fullscreenchange", exitHandler, false);
 
-    // add event listeners for hero controls
-    document.addEventListener("keydown", controlKeydownListener);
-    document.addEventListener("keyup", controlKeyupListener);
+    document.getElementById("name-input").addEventListener("focus", () => {
+      collectInput(false);
+    });
 
-    // deal with controllers
-    window.addEventListener("gamepadconnected", gamepadConnectListener);
-    window.addEventListener("gamepaddisconnected", gamepadDisconnectListener);
+    document.getElementById("name-input").addEventListener("blur", () => {
+      collectInput(true);
+    });
 
-    this.addDisplayToDiv("gamediv");
+    collectInput(true);
   }
 
+  /**
+   * return {Promise<void>}
+   */
   toggleFullscreen() {
     if (document.fullscreenElement === null) {
       // enter fullscreen
       this.displayCanvas.width = this.screenWidth;
       this.displayCanvas.height = this.screenHeight;
-      this.enterFullscreen();
+      return this.enterFullscreen();
     } else {
       // exit fullscreen
-      document.exitFullscreen();
+      return document.exitFullscreen();
     }
   }
 
   togglePause() {
-    toggleGuiElement("pausescreen");
-    this.gamePause = !this.gamePause;
+    if (!this.gamePause) {
+      gameManager.guiElements.get("pausescreen").active = true;
+      this.gamePause = true;
+    } else {
+      const pauseScreen = /** @type { PauseScreen} */ (this.guiElements.get(
+        "pausescreen"
+      ));
+      pauseScreen.onBack();
+      this.gamePause = false;
+    }
   }
 
+  /**
+   * return {Promise<void>}
+   */
   enterFullscreen() {
     if (this.displayCanvas.requestFullscreen) {
-      this.displayCanvas.requestFullscreen();
+      return this.displayCanvas.requestFullscreen();
     } else {
       throw new Error("no request fullscreen function");
     }
@@ -240,7 +262,17 @@ class GameManager {
       this.toggleFullscreen();
     }
     if (buttons.pause.status.isPressed) {
-      this.togglePause();
+      // you can't pause while dead
+      if (!this.importantEntities.get("hero").deleteMe) this.togglePause();
+    }
+    if (buttons.reset.status.isDown) {
+      this.resetCounter++;
+      if (this.resetCounter >= 60) {
+        this.resetCounter = 0;
+        resetDemo();
+      }
+    } else {
+      this.resetCounter = 0;
     }
 
     // tell buttons that a step has passed
@@ -480,6 +512,7 @@ class GameManager {
 const gameManager = new GameManager();
 
 export function startUp() {
+  gameManager.addDisplayToDiv("gamediv");
   gameManager.update();
 }
 
@@ -717,4 +750,33 @@ export function setFarDistance(farDistance) {
 
 export function setPause(arg = true) {
   gameManager.gamePause = arg;
+}
+
+/**
+ * return {Promise<void>}
+ */
+export function toggleFullscreen() {
+  return gameManager.toggleFullscreen();
+}
+
+/**
+ * Set whether or not to collect input from keyboard
+ */
+export function collectInput(arg = true) {
+  document.removeEventListener("keydown", controlKeydownListener);
+  document.removeEventListener("keyup", controlKeyupListener);
+
+  // deal with controllers
+  window.removeEventListener("gamepadconnected", gamepadConnectListener);
+  window.removeEventListener("gamepaddisconnected", gamepadDisconnectListener);
+
+  if (arg) {
+    // add event listeners for hero controls
+    document.addEventListener("keydown", controlKeydownListener);
+    document.addEventListener("keyup", controlKeyupListener);
+
+    // deal with controllers
+    window.addEventListener("gamepadconnected", gamepadConnectListener);
+    window.addEventListener("gamepaddisconnected", gamepadDisconnectListener);
+  }
 }

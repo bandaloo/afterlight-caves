@@ -51,6 +51,7 @@ class Directional {
     this.left = new Button(leftKey);
     this.vAxisIndex = vAxisIndex;
     this.hAxisIndex = hAxisIndex;
+    /** @type {Vector} */
     this.vec = new Vector(0, 0);
   }
 
@@ -106,8 +107,11 @@ export const buttons = {
 
   primary: new Button(" ", 4),
   secondary: new Button("e", 5),
-  fullscreen: new Button("f", 8),
+  select: new Button(" ", 0),
+  back: new Button("Tab", 1),
+  fullscreen: new Button("f", 3),
   pause: new Button("p", 9),
+  reset: new Button("r", 8),
 
   /** @return {Directional[]} */
   getDirectionals() {
@@ -116,7 +120,15 @@ export const buttons = {
 
   /** @return {Button[]} */
   getButtons() {
-    return [this.primary, this.secondary, this.fullscreen, this.pause];
+    return [
+      this.primary,
+      this.secondary,
+      this.select,
+      this.back,
+      this.fullscreen,
+      this.pause,
+      this.reset
+    ];
   },
 
   *[Symbol.iterator]() {

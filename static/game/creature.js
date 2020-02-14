@@ -108,14 +108,14 @@ export class Creature extends Entity {
   bombSpeed = 0;
 
   /** @type {number} the amount of damage this can take before dying */
-  maxHealth = 10;
+  maxHealth = 20;
 
   /**
    * @type {number} this creature's current health. Don't directly get or set
    * this! Instead use `takeDamage()` or `gainHealth()`
    * @private
    */
-  currentHealth = 10;
+  currentHealth = 20;
 
   /** @type {number} maximum number of bombs this creature can hold */
   maxBombs = 3;
@@ -131,6 +131,18 @@ export class Creature extends Entity {
 
   /** @type {number} size of bullets spawned by this */
   bulletSize = 24;
+
+  /** @type {number} added to damage each left-facing bullet deals */
+  leftBulletDamage = 0;
+
+  /** @type {number} added to size of each left-facing bullet */
+  leftBulletSize = 0;
+
+  /** @type {number} added to damage each right-facing bullet deals */
+  rightBulletDamage = 0;
+
+  /** @type {number} added to size of each right-facing bullet */
+  rightBulletSize = 0;
 
   /** @type {number} A multiplier for how fast the creature moves */
   movementMultiplier = 1;
@@ -191,7 +203,7 @@ export class Creature extends Entity {
     // bombs deal basic damage
     this.bombOnBlastCreature.push({
       name: "Basic Damage",
-      data: 1,
+      data: 12,
       func: (bomb, num, creature) => {
         creature.takeDamage(num);
       }
@@ -227,6 +239,19 @@ export class Creature extends Entity {
    * @return {Bullet}
    */
   getBullet(dir) {
+    /** @type {number} */
+    let dmg = this.bulletDamage;
+    /** @type {number} */
+    let size = this.bulletSize;
+    if (dir.x < 0.01 && Math.abs(dir.x) >= Math.abs(dir.y)) {
+      // left-facing
+      dmg += this.leftBulletDamage;
+      size += this.leftBulletSize;
+    } else if (dir.x > 0.01 && Math.abs(dir.x) >= Math.abs(dir.y)) {
+      // right-facing
+      dmg += this.rightBulletDamage;
+      size += this.rightBulletSize;
+    }
     const b = new Bullet(
       this.pos.add(dir.mult(this.width / 2)),
       dir.norm2().mult(this.bulletSpeed),
@@ -234,13 +259,13 @@ export class Creature extends Entity {
       this.type === "Hero",
       this.bulletColor,
       this.bulletLifetime,
-      this.bulletDamage
+      dmg
     );
     b.reflectsOffWalls = this.bulletReflectsOffWalls;
     b.wallReflectSpeed = this.bulletWallReflectSpeed;
     b.onDestroy = this.bulletOnDestroy;
     b.onHitEnemy = this.bulletOnHitEnemy;
-    b.width = this.bulletSize;
+    b.width = size;
     b.knockback = this.bulletKnockback;
     return b;
   }
@@ -320,13 +345,8 @@ export class Creature extends Entity {
     b.speed = this.bombSpeed;
     b.timeToExplode = this.bombTimeToExplode;
     b.owner = this;
-    if (!this.vel.isZeroVec()) {
+    if (this.vel.mag() > 1) {
       b.vel = this.vel.norm2().mult(b.speed);
-    } else {
-      // pick a random direction
-      const theta = Math.random() * Math.PI * 2;
-      const r = b.speed;
-      b.vel = new Vector(Math.cos(theta) * r, Math.sin(theta) * r);
     }
     b.reflectsOffWalls = true;
     b.wallReflectSpeed = this.bombSpeed;

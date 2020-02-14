@@ -5,7 +5,7 @@ import { Bullet } from "../bullet.js";
 import { addToWorld } from "../../modules/gamemanager.js";
 
 const MAX_EXPLODES = 10;
-const FIRE_DELAY_ADDEND = 10;
+const BULLET_DAMAGE_FACTOR = 1.2;
 
 export class Xplode extends PowerUp {
   /**
@@ -31,6 +31,8 @@ export class Xplode extends PowerUp {
   apply(creature) {
     if (!this.isAtMax(creature)) {
       super.apply(creature);
+
+      creature.bulletDamage *= (1 / this.magnitude) * BULLET_DAMAGE_FACTOR;
 
       // if the creature already has an Xplode powerup, just increase its data
       // value so it spawns more bullets to implement stacking
@@ -70,7 +72,6 @@ export class Xplode extends PowerUp {
         }
       };
 
-      creature.fireDelay += FIRE_DELAY_ADDEND * this.magnitude;
       creature.bulletOnDestroy.push({
         name: this.powerUpClass,
         data: this.magnitude,
