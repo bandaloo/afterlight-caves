@@ -15,12 +15,9 @@ import { Vector } from "./vector.js";
 import { ageSounds } from "./sound.js";
 import { resetDemo } from "../main.js";
 import { PauseScreen } from "../game/pausescreen.js";
-import { splatter } from "../game/draw.js";
 
 const BLUR_SCALAR = 2;
 
-//const SPLATTER_WIDTH = 2048;
-//const SPLATTER_HEIGHT = 2048;
 export const SPLATTER_SCALAR = 4;
 
 class GameManager {
@@ -125,7 +122,6 @@ class GameManager {
     this.resetCounter = 0;
 
     this.blurContext.filter = "blur(3px) brightness(200%)";
-    this.splatterContext.filter = "brightness(50%)";
 
     // drawing func defaults to a no-op
     this.drawFunc = () => {};
@@ -310,8 +306,6 @@ class GameManager {
   }
 
   drawGame() {
-    // copy the splatter canvas onto the display canvas
-
     // reposition camera if there is a followed entity
     if (this.cameraEntity !== undefined) {
       this.cameraOffset = this.cameraEntity.drawPos
@@ -330,23 +324,24 @@ class GameManager {
     // clear the drawing canvas with alpha 0
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
+    // clear the blur canvas with alpha 0
+    this.blurContext.clearRect(
+      0,
+      0,
+      this.blurCanvas.width,
+      this.blurCanvas.height
+    );
+
     // copy the splatter canvas onto the drawing canvas
+    console.log(this.splatterContext.filter);
     const splatterVec = this.cameraOffset.mult(-1 / SPLATTER_SCALAR);
-    const displayRatio = this.canvas.width / this.displayCanvas.width;
-    this.displayContext.drawImage(
+    const displayRatio = this.canvas.width / this.blurCanvas.width;
+    this.blurContext.drawImage(
       this.splatterCanvas,
       splatterVec.x,
       splatterVec.y,
-      (this.displayCanvas.width / SPLATTER_SCALAR) * displayRatio,
-      (this.displayCanvas.height / SPLATTER_SCALAR) * displayRatio,
-      0,
-      0,
-      this.displayCanvas.width,
-      this.displayCanvas.height
-    );
-
-    // clear the blur canvas with alpha 0
-    this.blurContext.clearRect(
+      (this.blurCanvas.width / SPLATTER_SCALAR) * displayRatio,
+      (this.blurCanvas.height / SPLATTER_SCALAR) * displayRatio,
       0,
       0,
       this.blurCanvas.width,
@@ -482,6 +477,7 @@ class GameManager {
     }
   }
 
+  // TODO add documentation
   performTween(entityList, timeLeft) {
     for (let i = 0; i < entityList.length; i++) {
       // exclude inactive entities
@@ -507,6 +503,7 @@ class GameManager {
    * @param {number} [currentTime]
    */
   update(currentTime = this.updateTime) {
+    console.log(this.splatterContext.filter);
     // get input from any controllers
     getGamepadInput();
 
@@ -644,14 +641,15 @@ export function setDimensions(blockWidth, blockHeight) {
     (boardWidth * blockWidth) / SPLATTER_SCALAR;
   gameManager.splatterCanvas.height =
     (boardHeight * blockHeight) / SPLATTER_SCALAR;
-
   // TODO get rid of this
+  /*
   gameManager.splatterContext.fillStyle = "#111111";
   for (let i = 0; i < gameManager.splatterCanvas.width; i += 15) {
     for (let j = 0; j < gameManager.splatterCanvas.height; j += 15) {
       gameManager.splatterContext.fillRect(i, j, 14, 14);
     }
   }
+  */
 }
 
 /**
