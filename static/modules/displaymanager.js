@@ -63,6 +63,17 @@ class DisplayManager {
   }
 
   /**
+   * @returns {Promise<void>}
+   */
+  enterFullscreen() {
+    if (this.displayCanvas.requestFullscreen) {
+      return this.displayCanvas.requestFullscreen();
+    } else {
+      throw new Error("no request fullscreen function");
+    }
+  }
+
+  /**
    * draw all the entities and particles
    * @param {Entity[]} entities
    * @param {Entity[]} particles

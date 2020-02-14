@@ -21,7 +21,8 @@ import {
   getCameraOffset,
   toggleFullscreen,
   drawGame,
-  setSplatterSize
+  setSplatterSize,
+  addDisplayToDiv
 } from "./displaymanager.js";
 
 // TODO move this
@@ -103,27 +104,6 @@ class GameManager {
       pauseScreen.onBack();
       this.gamePause = false;
     }
-  }
-
-  /**
-   * @returns {Promise<void>}
-   */
-  enterFullscreen() {
-    if (this.displayCanvas.requestFullscreen) {
-      return this.displayCanvas.requestFullscreen();
-    } else {
-      throw new Error("no request fullscreen function");
-    }
-  }
-
-  // TODO move this to display manager
-  /**
-   * add the display to a div with a specific id
-   * @param {string} id
-   */
-  addDisplayToDiv(id) {
-    const displayDiv = document.getElementById(id);
-    displayDiv.appendChild(this.displayCanvas);
   }
 
   stepGame() {
@@ -370,7 +350,7 @@ class GameManager {
 const gameManager = new GameManager();
 
 export function startUp() {
-  gameManager.addDisplayToDiv("gamediv");
+  addDisplayToDiv("gamediv");
   gameManager.update();
 }
 
