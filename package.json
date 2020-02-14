@@ -17,12 +17,14 @@
     "@babel/plugin-proposal-class-properties": "^7.8.3",
     "@babel/preset-env": "^7.8.4",
     "@types/chai": "^4.2.3",
-    "@types/mocha": "^5.2.7"
+    "@types/mocha": "^5.2.7",
+    "browserify": "^16.5.0"
   },
   "scripts": {
     "test": "echo \"to do this, launch a local server and run tests.html in your browser\" && exit 0",
     "start": "node index.js",
-    "build": "babel static --out-dir dist"
+    "build": "./build-prod.sh",
+    "start-compat": "npm run build && node index.js --compat"
   },
   "repository": {
     "type": "git",
