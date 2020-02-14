@@ -20,7 +20,8 @@ import {
   setCameraOffset,
   getCameraOffset,
   toggleFullscreen,
-  drawGame
+  drawGame,
+  setSplatterSize
 } from "./displaymanager.js";
 
 // TODO move this
@@ -438,10 +439,10 @@ export function setDimensions(blockWidth, blockHeight) {
 
   // we don't actually need to clear the splatter canvas on a game reset
   // because this happens when the width property of the canvas is changed
-  gameManager.splatterCanvas.width =
-    (boardWidth * blockWidth) / SPLATTER_SCALAR;
-  gameManager.splatterCanvas.height =
-    (boardHeight * blockHeight) / SPLATTER_SCALAR;
+  setSplatterSize(
+    (boardWidth * blockWidth) / SPLATTER_SCALAR,
+    (boardHeight * blockHeight) / SPLATTER_SCALAR
+  );
 }
 
 /**

@@ -290,3 +290,13 @@ export function toggleFullscreen() {
 export function drawGame(entities, particles, guiElements) {
   displayManager.drawGame(entities, particles, guiElements);
 }
+
+/**
+ * set the size of the splatter canvas (call to fit the size of the world)
+ * @param {number} width
+ * @param {number} height
+ */
+export function setSplatterSize(width, height) {
+  displayManager.splatterCanvas.width = width;
+  displayManager.splatterCanvas.height = height;
+}
