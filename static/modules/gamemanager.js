@@ -645,9 +645,9 @@ export function setDimensions(blockWidth, blockHeight) {
 
   // TODO get rid of this
   gameManager.splatterContext.fillStyle = "#111111";
-  for (let i = 0; i < gameManager.splatterCanvas.width; i += 32) {
-    for (let j = 0; j < gameManager.splatterCanvas.height; j += 32) {
-      gameManager.splatterContext.fillRect(i, j, 31, 31);
+  for (let i = 0; i < gameManager.splatterCanvas.width; i += 15) {
+    for (let j = 0; j < gameManager.splatterCanvas.height; j += 15) {
+      gameManager.splatterContext.fillRect(i, j, 14, 14);
     }
   }
 }
