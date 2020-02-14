@@ -656,6 +656,11 @@ export function drawShines(centerVec, data, gradColor) {
  * @param {number} size
  * @param {"round" | "rectangular"} shape
  * @param {Vector} [vel] don't define for no velocity
+ * @param {{ splats: number
+ *         , offsetScalar: number
+ *         , velocityScalar: number
+ *         , sizeScalar: number
+ *         }} [options] change the look of the splat (leave undefined for default)
  */
 export function splatter(
   centerVec,
