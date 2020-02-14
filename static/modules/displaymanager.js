@@ -283,9 +283,9 @@ export function setCameraOffset(cameraOffset) {
 export function toggleFullscreen() {
   if (document.fullscreenElement === null) {
     // enter fullscreen
-    displayManager.displayCanvas.width = this.screenWidth;
-    displayManager.displayCanvas.height = this.screenHeight;
-    return this.enterFullscreen();
+    displayManager.displayCanvas.width = displayManager.screenWidth;
+    displayManager.displayCanvas.height = displayManager.screenHeight;
+    return displayManager.enterFullscreen();
   } else {
     // exit fullscreen
     return document.exitFullscreen();
