@@ -559,16 +559,6 @@ export function getCanvas() {
 }
 
 // TODO move to DisplayManager
-export function getCanvasWidth() {
-  return gameManager.canvas.width;
-}
-
-// TODO move to DisplayManager
-export function getCanvasHeight() {
-  return gameManager.canvas.height;
-}
-
-// TODO move to DisplayManager
 /**
  * set the additional draw function to happen every game loop
  * @param {() => void} drawFunc drawing function to happen every loop
