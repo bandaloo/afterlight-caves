@@ -18,6 +18,10 @@ import { PauseScreen } from "../game/pausescreen.js";
 
 const BLUR_SCALAR = 2;
 
+const SPLATTER_WIDTH = 2048;
+const SPLATTER_HEIGHT = 2048;
+const SPLATTER_SCALAR = 4;
+
 class GameManager {
   updateTime = 10;
   overTime = 0;
@@ -106,6 +110,12 @@ class GameManager {
     this.blurCanvas.width = width / BLUR_SCALAR;
     this.blurCanvas.height = height / BLUR_SCALAR;
 
+    // the canvas (that is rarely cleared) used for keeping permanent splatter
+    this.splatterCanvas = document.createElement("canvas");
+    this.splatterContext = this.blurCanvas.getContext("2d");
+    this.splatterCanvas.width = SPLATTER_WIDTH / SPLATTER_SCALAR;
+    this.splatterCanvas.height = SPLATTER_HEIGHT / SPLATTER_SCALAR;
+
     this.screenWidth = width;
     this.screenHeight = height;
 
@@ -176,6 +186,10 @@ class GameManager {
     }
   }
 
+  /**
+   * add the display to a div with a specific id
+   * @param {string} id
+   */
   addDisplayToDiv(id) {
     const displayDiv = document.getElementById(id);
     displayDiv.appendChild(this.displayCanvas);
