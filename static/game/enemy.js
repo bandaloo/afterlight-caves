@@ -12,6 +12,7 @@ import { Creature } from "./creature.js";
 import { CHEAT_RADIUS, Hero } from "./hero.js";
 import { EffectEnum, Particle } from "./particle.js";
 import { Pickup, PickupEnum } from "./pickup.js";
+import { splatter } from "./draw.js";
 
 /**
  * an enum for allowed shapes of enemies
@@ -102,6 +103,7 @@ export class Enemy extends Creature {
       let p = new Particle(this.pos, this.originalDrawColor, EffectEnum.spark);
       p.lineWidth = 5;
       addParticle(p);
+      splatter(this.pos, this.drawColor, 100);
     }
 
     // TODO this assumes that enemies can only be killed by the hero

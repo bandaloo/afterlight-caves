@@ -91,8 +91,9 @@ export function ellipse(
     radiusX /= SPLATTER_SCALAR;
     radiusY /= SPLATTER_SCALAR;
     centerVec = centerVec.mult(1 / SPLATTER_SCALAR);
+  } else {
+    centerVec = centerVec.add(getCameraOffset());
   }
-  centerVec = centerVec.add(getCameraOffset());
 
   // account for border
   if (lineWidth === undefined) lineWidth = 0;
@@ -596,7 +597,8 @@ export function drawShines(centerVec, data, gradColor) {
  * function to draw splatter on the splatter canvas
  * @param {Vector} centerVec
  * @param {string|CanvasGradient|CanvasPattern} style
+ * @param {number} size
  */
-export function splatter(centerVec, style) {
-  ellipse(centerVec, 32, 32, style, undefined, undefined, true);
+export function splatter(centerVec, style, size) {
+  ellipse(centerVec, size, size, style, undefined, undefined, true);
 }
