@@ -166,7 +166,7 @@ export class Bomb extends Entity {
         }
       }
     );
-    const sizeScalar = 0.15;
+    const sizeScalar = 0.1;
     splatter(this.pos, "#333333dd", this.blastRadius * sizeScalar, "round");
   }
 

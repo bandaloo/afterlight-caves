@@ -676,8 +676,8 @@ export function splatter(
     if (shape === "round") {
       ellipse(
         centerVec.add(offsetVec),
-        size * sizeMod,
-        size * sizeMod,
+        size * sizeMod * 2,
+        size * sizeMod * 2,
         style,
         undefined,
         undefined,
