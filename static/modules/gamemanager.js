@@ -103,7 +103,6 @@ class GameManager {
     // the untouched canvas for blurring before copying
     this.blurCanvas = document.createElement("canvas");
     this.blurContext = this.blurCanvas.getContext("2d");
-    // TODO reconsider usage of image smoothing
     //this.blurContext.imageSmoothingEnabled = false;
     this.blurCanvas.width = width / BLUR_SCALAR;
     this.blurCanvas.height = height / BLUR_SCALAR;
@@ -353,7 +352,6 @@ class GameManager {
 
     // draw all particles
     for (let i = 0; i < this.particles.length; i++) {
-      // TODO see if culling particles does anything for performance
       if (this.particles[i].onScreen()) {
         this.particles[i].draw();
       }
@@ -565,7 +563,6 @@ export function getTerrain() {
   return gameManager.terrain;
 }
 
-// TODO make this use inboundsBoard
 /**
  * returns whether a coordinate is inbounds for the terrain
  * @param {number} i
