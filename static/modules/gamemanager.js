@@ -20,7 +20,7 @@ const BLUR_SCALAR = 2;
 
 const SPLATTER_WIDTH = 2048;
 const SPLATTER_HEIGHT = 2048;
-const SPLATTER_SCALAR = 4;
+export const SPLATTER_SCALAR = 4;
 
 class GameManager {
   updateTime = 10;
@@ -764,6 +764,10 @@ export function setFarDistance(farDistance) {
 
 export function setPause(arg = true) {
   gameManager.gamePause = arg;
+}
+
+export function getSplatterContext() {
+  return gameManager.splatterContext;
 }
 
 /**

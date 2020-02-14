@@ -2,8 +2,10 @@ import { getCell } from "../modules/collision.js";
 import {
   getCameraOffset,
   getContext,
+  getSplatterContext,
   getScreenDimensions,
-  getTotalTime
+  getTotalTime,
+  SPLATTER_SCALAR
 } from "../modules/gamemanager.js";
 import { clamp } from "../modules/helpers.js";
 import { Vector } from "../modules/vector.js";
@@ -72,6 +74,7 @@ export function polygon(
  * @param {string|CanvasGradient|CanvasPattern} [strokeStyle] leave undefined
  * for no border
  * @param {number} [lineWidth] leave undefined for no border
+ * @param {boolean} splatter
  */
 export function ellipse(
   centerVec,
@@ -79,9 +82,11 @@ export function ellipse(
   radiusY,
   fillStyle,
   lineWidth,
-  strokeStyle
+  strokeStyle,
+  splatter = false
 ) {
-  const context = getContext();
+  const context = !splatter ? getContext() : getSplatterContext();
+  if (splatter) centerVec.mult(1 / SPLATTER_SCALAR);
   context.save();
   centerVec = centerVec.add(getCameraOffset());
 
@@ -582,3 +587,10 @@ export function drawShines(centerVec, data, gradColor) {
   }
   context.restore();
 }
+
+/**
+ * function to draw splatter on the splatter canvas
+ * @param {Vector} centerVec
+ * @param {string|CanvasGradient|CanvasPattern} style
+ */
+export function splatter(centerVec, style) {}
