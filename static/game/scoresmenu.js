@@ -1,11 +1,12 @@
-import {
-  getScreenDimensions,
-  toggleGuiElement
-} from "../modules/gamemanager.js";
+import { toggleGuiElement } from "../modules/gamemanager.js";
 import { Menu } from "./menu.js";
 import { rect } from "./draw.js";
 import { Vector } from "../modules/vector.js";
-import { getCanvasWidth, getCanvasHeight } from "../modules/displaymanager.js";
+import {
+  getCanvasWidth,
+  getCanvasHeight,
+  getScreenDimensions
+} from "../modules/displaymanager.js";
 
 export class ScoresMenu extends Menu {
   /**

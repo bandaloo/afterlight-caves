@@ -1,6 +1,7 @@
 import { Vector } from "./vector.js";
 import { adjustEntity, isColliding } from "./collision.js";
-import { getScreenDimensions, getCameraOffset } from "./gamemanager.js";
+import { getCameraOffset } from "./gamemanager.js";
+import { getScreenDimensions } from "./displaymanager.js";
 
 /**
  * an enum for types of actions on far away
