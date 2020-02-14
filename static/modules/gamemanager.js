@@ -65,12 +65,6 @@ class GameManager {
   cameraEntity;
 
   /** @type {number} */
-  screenWidth;
-
-  /** @type {number} */
-  screenHeight;
-
-  /** @type {number} */
   farDistance = 3000;
 
   /** @type {boolean} */
