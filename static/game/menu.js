@@ -104,6 +104,10 @@ export class Menu extends GuiElement {
     this.updateTopAndBottomPos();
   }
 
+  calcMiddle() {
+    return this.pos.y + this.height / 2;
+  }
+
   calcTopOffset() {
     return -this.index * (this.itemMargin + this.itemHeight);
   }
@@ -115,22 +119,29 @@ export class Menu extends GuiElement {
     );
   }
 
+  /**
+   * calculate where the top should be given the bottom
+   * @param {number} bottom
+   */
+  calcTopFromBottom(bottom) {
+    return bottom - this.calcBottomOffset() + this.calcTopOffset();
+  }
+
   updateTopAndBottomPos() {
-    const middle = this.pos.y + this.height / 2;
+    const middle = this.calcMiddle();
 
     this.topPos = middle + this.calcTopOffset();
     console.log("top pos " + this.topPos);
 
     this.bottomPos = middle + this.calcBottomOffset();
-
+    console.log("bottom pos " + this.bottomPos);
     /*
     this.bottomPos =
       this.topPos +
       this.index * (this.itemMargin + this.itemHeight) +
       (this.items.length - this.index) * (this.itemMargin + this.itemHeight) -
       this.itemMargin;
-      */
-    console.log("bottom pos " + this.bottomPos);
+    */
   }
 
   /**
