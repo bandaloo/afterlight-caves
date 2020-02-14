@@ -659,13 +659,14 @@ export function drawShines(centerVec, data, gradColor) {
  */
 export function splatter(centerVec, style, size, shape, vel) {
   const splats = 10;
-  const offsetScalar = 1;
-  const offsetVec = randomNormalVec()
-    .mult(Math.random() * size * offsetScalar)
-    .add(vel.mult(Math.random() * 10));
-  const sizeScalar = 0.3;
+  const offsetScalar = 0.8;
+  const velocityScalar = 15;
+  const sizeScalar = 0.6;
   for (let i = 0; i < splats; i++) {
     const sizeMod = ((i + 1) / (splats + 1)) * sizeScalar;
+    const offsetVec = randomNormalVec()
+      .mult(Math.random() * size * offsetScalar * sizeMod)
+      .add(vel.mult(Math.random() * velocityScalar));
     if (shape === "round") {
       ellipse(
         centerVec.add(offsetVec),

@@ -18,7 +18,7 @@ import { PauseScreen } from "../game/pausescreen.js";
 
 const BLUR_SCALAR = 2;
 
-export const SPLATTER_SCALAR = 4;
+export const SPLATTER_SCALAR = 2;
 
 class GameManager {
   updateTime = 10;
