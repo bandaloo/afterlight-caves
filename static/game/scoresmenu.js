@@ -40,6 +40,7 @@ export class ScoresMenu extends Menu {
 
   action() {
     if (this.scoresStatus === undefined) {
+      this.scoresStatus = 0;
       fetch("/scores", { method: "GET" })
         .then(response => response.json())
         .then((/** @type {{ status: number, message: string }} */ obj) => {
@@ -52,13 +53,15 @@ export class ScoresMenu extends Menu {
             .map(val => {
               return { text: val.score + "\t" + val.username, func: undefined };
             });
+          if (this.items.length === 0) {
+            this.items = [{ text: "No scores yet", func: undefined }];
+          }
         })
         .catch(reason => {
           this.scoresStatus = 500;
           console.error(reason);
         });
     }
-
     if (this.scoresStatus === 0) {
       this.items = [{ text: "Fetching scores...", func: undefined }];
     } else if (this.scoresStatus !== 200) {

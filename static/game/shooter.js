@@ -28,8 +28,8 @@ export class Shooter extends Enemy {
     matryoshka = 0
   ) {
     super(pos, vel, acc, matryoshka);
-    this.maxHealth = 20 * (matryoshka + 1);
-    this.gainHealth(this.maxHealth);
+    this.baseHealth = 20;
+    this.initHealth();
     this.fireDelay = 90;
     this.bulletSpeed = 5;
     this.bulletLifetime = 500;
