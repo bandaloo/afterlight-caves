@@ -1,3 +1,7 @@
+canvas:fullscreen {
+  cursor: none;
+}
+
 body,
 html {
   height: 100%;

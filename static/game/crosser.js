@@ -21,8 +21,8 @@ export class Crosser extends Enemy {
     matryoshka = 0
   ) {
     super(pos, vel, acc, matryoshka);
-    this.currentHealth = 1;
-    this.currentHealth = this.maxHealth;
+    this.maxHealth = 25 * (matryoshka + 1);
+    this.gainHealth(this.maxHealth);
     this.basePoints = 60;
 
     // stuff for shooting

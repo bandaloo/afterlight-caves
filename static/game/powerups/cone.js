@@ -3,7 +3,7 @@ import { Vector } from "../../modules/vector.js";
 import { Creature } from "../creature.js";
 
 const MAX_SPLIT_BULLETS = 10;
-const BULLET_DAMAGE_FACTOR = 1.2;
+const FIRE_DELAY_ADDEND = 15;
 
 export class Cone extends PowerUp {
   /**
@@ -24,7 +24,7 @@ export class Cone extends PowerUp {
     if (!this.isAtMax(creature)) {
       super.apply(creature);
       creature.bulletsPerShot += this.magnitude;
-      creature.bulletDamage *= (1 / this.magnitude) * BULLET_DAMAGE_FACTOR;
+      creature.fireDelay += this.magnitude * FIRE_DELAY_ADDEND;
     } else {
       super.overflowAction(creature);
     }

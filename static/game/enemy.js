@@ -35,7 +35,7 @@ const BOMB_CHANCE = 0.3;
  */
 
 export class Enemy extends Creature {
-  health = 2;
+  health = 20;
   basePoints = 50;
 
   /**

@@ -2,17 +2,18 @@ import { PowerUp } from "../powerup.js";
 import { Vector } from "../../modules/vector.js";
 import { Creature } from "../creature.js";
 
-const MAX_BULLET_LIFETIME = 500;
-const RANGE_FACTOR = 5;
+const MAX_LEFT_DAMAGE = 1000;
+const DAMAGE_FACTOR = 5;
+const SIZE_FACTOR = 2;
 
-export class Sniper extends PowerUp {
+export class Left extends PowerUp {
   /**
-   * Increases your range (by increasing bullet lifetime)
-   * @param {number} magnitude how much this increases your range by, 1-5
+   * Makes your left-facing shots more powerful
+   * @param {number} magnitude how much smaller this makes you, 1-5
    * @param {Vector} [pos]
    */
   constructor(magnitude = 1, pos) {
-    super(magnitude, pos, "Sniper", "You can shoot farther");
+    super(magnitude, pos, "Left", "Deal more damage when shooting left");
   }
 
   /**
@@ -23,7 +24,8 @@ export class Sniper extends PowerUp {
   apply(creature) {
     if (!this.isAtMax(creature)) {
       super.apply(creature);
-      creature.bulletLifetime += this.magnitude * RANGE_FACTOR;
+      creature.leftBulletDamage += this.magnitude * DAMAGE_FACTOR;
+      creature.leftBulletSize += this.magnitude * SIZE_FACTOR;
     } else {
       this.overflowAction(creature);
     }
@@ -37,13 +39,13 @@ export class Sniper extends PowerUp {
    */
   isAtMax(creature) {
     // creature is just too big
-    if (creature.bulletLifetime >= MAX_BULLET_LIFETIME) {
+    if (creature.leftBulletDamage >= MAX_LEFT_DAMAGE) {
       return true;
     }
 
     // see if we need to trim magnitude
     const availMag = Math.floor(
-      Math.abs(MAX_BULLET_LIFETIME - creature.bulletLifetime) / RANGE_FACTOR
+      Math.abs(MAX_LEFT_DAMAGE - creature.leftBulletDamage) / DAMAGE_FACTOR
     );
     if (availMag < 1) return true;
 

@@ -3,7 +3,7 @@ import { Vector } from "../../modules/vector.js";
 import { Creature } from "../creature.js";
 
 const MAX_BULLET_SIZE = 300;
-const BULLET_SIZE_FACTOR = 1;
+const BULLET_SIZE_FACTOR = 2;
 
 export class Amplify extends PowerUp {
   /**
