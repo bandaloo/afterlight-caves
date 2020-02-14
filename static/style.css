@@ -56,3 +56,25 @@ input#name-input {
 input#name-input:focus {
   outline: 3px solid blue;
 }
+
+div#loading-bar {
+  height: 40px;
+  width: 400px;
+  border: 4px solid white;
+  margin: 0 auto;
+}
+
+div#loading-bar-fill {
+  height: 100%;
+  background-color: blue;
+}
+
+form#start {
+  margin: 0 auto;
+}
+
+button#start {
+  font-size: 2em;
+  padding: 0.75em 1.25em;
+  font-weight: bold;
+}
