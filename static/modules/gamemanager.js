@@ -632,6 +632,9 @@ export function setDimensions(blockWidth, blockHeight) {
   // set the splatter canvas to the correct width once this is done
   const boardWidth = gameManager.terrain.length;
   const boardHeight = gameManager.terrain[0].length;
+
+  // we don't actually need to clear the splatter canvas on a game reset
+  // because this happens when the width property of the canvas is changed
   gameManager.splatterCanvas.width =
     (boardWidth * blockWidth) / SPLATTER_SCALAR;
   gameManager.splatterCanvas.height =
