@@ -1,14 +1,14 @@
 import { Menu } from "./menu.js";
 import { Vector } from "../modules/vector.js";
 import {
-  getCanvasWidth,
-  getCanvasHeight,
   toggleGuiElement,
   getScreenDimensions
 } from "../modules/gamemanager.js";
 import { powerUpTypes } from "./powerups/poweruptypes.js";
 import { rect } from "./draw.js";
+import { getCanvasWidth, getCanvasHeight } from "../modules/displaymanager.js";
 
+// TODO fix this incorrectly extending from the base class
 export class Codex extends Menu {
   constructor() {
     super(new Vector(0, 0), getCanvasWidth(), getCanvasHeight());
