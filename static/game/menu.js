@@ -93,6 +93,7 @@ export class Menu extends GuiElement {
     this.keyCounter = 0;
     this.keyRepeated = false;
     this.down = false;
+    this.lerpVal = 0;
   }
 
   /**
@@ -100,6 +101,7 @@ export class Menu extends GuiElement {
    * @override
    */
   action() {
+    this.lerpVal *= 0.9;
     if (buttons.back.status.isReleased) {
       // Fixes a bug where the button being released was seen by multiple menus
       // at once. You should press it multiple times to close multiple menus
@@ -137,8 +139,18 @@ export class Menu extends GuiElement {
    */
   move(num) {
     this.index += num;
-    if (this.index >= this.items.length) this.index = this.items.length - 1;
-    if (this.index < 0) this.index = 0;
+    let moved = true;
+    if (this.index >= this.items.length) {
+      this.index = this.items.length - 1;
+      moved = false;
+    }
+    if (this.index < 0) {
+      this.index = 0;
+      moved = false;
+    }
+    if (moved) {
+      this.lerpVal = (this.itemMargin + this.itemHeight) * -num;
+    }
   }
 
   /**
@@ -152,7 +164,8 @@ export class Menu extends GuiElement {
     let y =
       this.pos.y +
       this.height / 2 -
-      this.index * (this.itemMargin + this.itemHeight);
+      this.index * (this.itemMargin + this.itemHeight) -
+      this.lerpVal;
     // adjust y if the selected element is off the screen
     for (let i = 0; i < this.items.length; ++i) {
       let downOffset = 0;
