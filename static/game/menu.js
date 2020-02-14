@@ -101,6 +101,7 @@ export class Menu extends GuiElement {
 
     this.topPos = undefined;
     this.bottomPos = undefined;
+    this.currentPos = undefined;
     this.updateTopAndBottomPos();
   }
 
@@ -142,6 +143,28 @@ export class Menu extends GuiElement {
       (this.items.length - this.index) * (this.itemMargin + this.itemHeight) -
       this.itemMargin;
     */
+    // adjust so that selected element is always centered
+    this.offsetPos = this.topPos;
+    const { height } = getScreenDimensions();
+    let overTop = false;
+    let overBottom = false;
+    if (this.topPos > 0) {
+      // clamp to top
+      overTop = true;
+    }
+    if (this.bottomPos < height) {
+      // clamp to bottom
+      overBottom = true;
+    }
+
+    if (overTop && overBottom) {
+      // too small to clamp
+      this.offsetPos = this.calcMiddle();
+    } else if (overTop) {
+      this.offsetPos = 0;
+    } else if (overBottom) {
+      this.offsetPos = this.calcTopFromBottom(height);
+    }
   }
 
   /**
@@ -187,19 +210,19 @@ export class Menu extends GuiElement {
    */
   move(num) {
     this.index += num;
-    let moved = true;
     if (this.index >= this.items.length) {
       this.index = this.items.length - 1;
-      moved = false;
     }
     if (this.index < 0) {
       this.index = 0;
-      moved = false;
     }
-    const prevTop = this.topPos;
+
+    // TODO replace with clamp
+
+    const prevPos = this.offsetPos;
     this.updateTopAndBottomPos();
-    const currTop = this.topPos;
-    this.lerpVal = currTop - prevTop;
+    const currPos = this.offsetPos;
+    this.lerpVal = prevPos - currPos;
   }
 
   /**
@@ -209,28 +232,7 @@ export class Menu extends GuiElement {
    */
   draw() {
     const x = this.pos.x + this.itemMargin;
-    // adjust so that selected element is always centered
-    let y = this.topPos - this.lerpVal;
-    const { height } = getScreenDimensions();
-    let overTop = false;
-    let overBottom = false;
-    if (this.topPos > 0) {
-      // clamp to top
-      overTop = true;
-    }
-    if (this.bottomPos < height) {
-      // clamp to bottom
-      overBottom = true;
-    }
-
-    if (overTop && overBottom) {
-      // too small to clamp
-      y = this.calcMiddle();
-    } else if (overTop) {
-      y = 0;
-    } else if (overBottom) {
-      y = this.calcTopFromBottom(height);
-    }
+    let y = this.offsetPos;
 
     // adjust y if the selected element is off the screen
     for (let i = 0; i < this.items.length; ++i) {
@@ -244,7 +246,10 @@ export class Menu extends GuiElement {
         }
       }
       roundedRect(
-        new Vector(x + (this.width - this.itemWidth) / 2, y + downOffset),
+        new Vector(
+          x + (this.width - this.itemWidth) / 2,
+          y + downOffset + this.lerpVal
+        ),
         this.itemWidth,
         this.itemHeight,
         style,
@@ -252,7 +257,7 @@ export class Menu extends GuiElement {
         this.itemStrokeWidth,
         this.itemBorderRadius
       );
-      this.drawText(x, y + downOffset, this.items[i].text);
+      this.drawText(x, y + this.lerpVal + downOffset, this.items[i].text);
       y += this.itemHeight + this.itemMargin;
     }
   }
