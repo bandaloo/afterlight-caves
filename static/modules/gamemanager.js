@@ -15,6 +15,7 @@ import { Vector } from "./vector.js";
 import { ageSounds } from "./sound.js";
 import { resetDemo } from "../main.js";
 import { PauseScreen } from "../game/pausescreen.js";
+import { splatter } from "../game/draw.js";
 
 const BLUR_SCALAR = 2;
 
@@ -112,17 +113,26 @@ class GameManager {
 
     // the canvas (that is rarely cleared) used for keeping permanent splatter
     this.splatterCanvas = document.createElement("canvas");
-    this.splatterContext = this.blurCanvas.getContext("2d");
-    this.splatterCanvas.width = SPLATTER_WIDTH / SPLATTER_SCALAR;
-    this.splatterCanvas.height = SPLATTER_HEIGHT / SPLATTER_SCALAR;
+    this.splatterContext = this.splatterCanvas.getContext("2d");
+    this.splatterCanvas.width = SPLATTER_WIDTH;
+    this.splatterCanvas.height = SPLATTER_HEIGHT;
+    // TODO get rid of this
+    //document.getElementById("gamediv").appendChild(this.splatterCanvas);
 
     this.screenWidth = width;
     this.screenHeight = height;
 
     this.resetCounter = 0;
 
-    // TODO get rid of this
     this.blurContext.filter = "blur(3px) brightness(200%)";
+
+    // TODO get rid of this
+    this.splatterContext.fillStyle = "red";
+    for (let i = 0; i < SPLATTER_WIDTH; i += 32) {
+      for (let j = 0; j < SPLATTER_HEIGHT; j += 32) {
+        this.splatterContext.fillRect(i, j, 30, 30);
+      }
+    }
 
     // drawing func defaults to a no-op
     this.drawFunc = () => {};
@@ -307,6 +317,8 @@ class GameManager {
   }
 
   drawGame() {
+    // copy the splatter canvas onto the display canvas
+
     // reposition camera if there is a followed entity
     if (this.cameraEntity !== undefined) {
       this.cameraOffset = this.cameraEntity.drawPos
@@ -321,6 +333,7 @@ class GameManager {
       this.displayCanvas.width,
       this.displayCanvas.height
     );
+
     // clear the drawing canvas with alpha 0
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     // clear the blur canvas with alpha 0
@@ -395,6 +408,35 @@ class GameManager {
       this.displayCanvas.width,
       this.displayCanvas.height
     );
+
+    // copy the splatter canvas onto the display canvas
+    const splatterVec = this.cameraOffset.mult(-1 / SPLATTER_SCALAR);
+    /*
+    this.displayContext.drawImage(
+      this.splatterCanvas,
+      splatterVec.x,
+      splatterVec.y,
+      this.canvas.width / SPLATTER_SCALAR,
+      this.canvas.height / SPLATTER_SCALAR,
+      0,
+      0,
+      this.canvas.width,
+      this.canvas.width
+    );
+    */
+    const screenDisp = this.canvas.width / this.displayCanvas.width;
+    this.displayContext.drawImage(
+      this.splatterCanvas,
+      splatterVec.x,
+      splatterVec.y,
+      (this.displayCanvas.width / SPLATTER_SCALAR) * screenDisp,
+      (this.displayCanvas.height / SPLATTER_SCALAR) * screenDisp,
+      0,
+      0,
+      this.displayCanvas.width,
+      this.displayCanvas.height
+    );
+
     // restore display context
     this.displayContext.restore();
   }
