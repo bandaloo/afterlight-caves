@@ -559,11 +559,6 @@ export function getCanvas() {
 }
 
 // TODO move to DisplayManager
-export function getContext() {
-  return gameManager.context;
-}
-
-// TODO move to DisplayManager
 export function getCanvasWidth() {
   return gameManager.canvas.width;
 }
