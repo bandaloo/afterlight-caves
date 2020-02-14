@@ -2,6 +2,7 @@ import { Vector } from "../modules/vector.js";
 import { getImportantEntity } from "../modules/gamemanager.js";
 import { GuiElement } from "../modules/guielement.js";
 import { centeredText } from "./draw.js";
+import { Hero } from "./hero.js";
 
 /**
  * @param {number} num
@@ -49,7 +50,7 @@ export class ScoreDisplay extends GuiElement {
       this.pos.add(new Vector(0, 50)),
       "bold 60px monospace",
       "right",
-      "center",
+      undefined,
       "white"
     );
     // draw points being added
@@ -59,24 +60,34 @@ export class ScoreDisplay extends GuiElement {
         this.pos.add(new Vector(0, 100)),
         "bold 60px monospace",
         "right",
-        "center",
+        undefined,
         "white"
       );
     }
   }
 
   /**
+   * function to get how much to take off the score counter for animation
+   */
+  scoreChunk() {
+    const invisibleScore =
+      /** @type {Hero} */ (getImportantEntity("hero")).score -
+      this.visibleScore;
+    return Math.min(Math.floor(0.1 * invisibleScore) + 5, invisibleScore);
+  }
+
+  /**
    * @override
    */
   action() {
-    this.hero = getImportantEntity("hero");
-    const heroScore = /** @type {Creature} */ (this.hero).score;
+    const hero = getImportantEntity("hero");
+    const heroScore = /** @type {Hero} */ (hero).score;
     if (heroScore != this.score) {
       this.score = heroScore;
       this.staticCounter = 60;
     }
-    if (this.staticCounter <= 0 && this.score != this.visibleScore) {
-      this.visibleScore += 1;
+    if (this.staticCounter <= 0 && this.score !== this.visibleScore) {
+      this.visibleScore += this.scoreChunk();
     }
     if (this.staticCounter > 0) this.staticCounter--;
   }

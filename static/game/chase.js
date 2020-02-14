@@ -22,11 +22,11 @@ export class Chase extends Enemy {
    */
   constructor(pos, vel = new Vector(0, 0), acc = new Vector(0, 0), matryoshka) {
     super(pos, vel, acc, matryoshka);
+    this.baseHealth = 20;
+    this.initHealth();
     this.basePoints = 40;
     this.drag = 0.015;
-    this.maxHealth = 24 * (matryoshka + 1);
-    this.gainHealth(this.maxHealth);
-    this.collideMap.set("PlayerBullet", () => {
+    this.collideMap.set("PlayerBullet", e => {
       this.followTimer = this.followTimerMax;
     });
   }
