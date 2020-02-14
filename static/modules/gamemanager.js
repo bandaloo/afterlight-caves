@@ -142,7 +142,7 @@ class GameManager {
   }
 
   /**
-   * return {Promise<void>}
+   * @returns {Promise<void>}
    */
   toggleFullscreen() {
     if (document.fullscreenElement === null) {
@@ -170,7 +170,7 @@ class GameManager {
   }
 
   /**
-   * return {Promise<void>}
+   * @returns {Promise<void>}
    */
   enterFullscreen() {
     if (this.displayCanvas.requestFullscreen) {
