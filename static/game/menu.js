@@ -94,6 +94,25 @@ export class Menu extends GuiElement {
     this.keyRepeated = false;
     this.down = false;
     this.lerpVal = 0;
+
+    this.topPos = undefined;
+    this.bottomPos = undefined;
+    this.updateTopAndBottomPos();
+  }
+
+  updateTopAndBottomPos() {
+    this.topPos =
+      this.pos.y +
+      this.height / 2 -
+      this.index * (this.itemMargin + this.itemHeight);
+    console.log("top pos " + this.topPos);
+
+    this.bottomPos =
+      this.pos.y +
+      this.height / 2 +
+      (this.items.length - this.index) * (this.itemMargin + this.itemHeight) -
+      this.itemMargin;
+    console.log("top pos " + this.bottomPos);
   }
 
   /**
@@ -151,19 +170,7 @@ export class Menu extends GuiElement {
     if (moved) {
       this.lerpVal = (this.itemMargin + this.itemHeight) * -num;
     }
-
-    const topPos =
-      this.pos.y +
-      this.height / 2 -
-      this.index * (this.itemMargin + this.itemHeight);
-    console.log("top pos " + topPos);
-
-    const bottomPos =
-      this.pos.y +
-      this.height / 2 +
-      (this.items.length - this.index) * (this.itemMargin + this.itemHeight) -
-      this.itemMargin;
-    console.log("bottom pos " + bottomPos);
+    this.updateTopAndBottomPos();
   }
 
   /**
