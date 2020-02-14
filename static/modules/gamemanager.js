@@ -641,15 +641,6 @@ export function setDimensions(blockWidth, blockHeight) {
     (boardWidth * blockWidth) / SPLATTER_SCALAR;
   gameManager.splatterCanvas.height =
     (boardHeight * blockHeight) / SPLATTER_SCALAR;
-  // TODO get rid of this
-  /*
-  gameManager.splatterContext.fillStyle = "#111111";
-  for (let i = 0; i < gameManager.splatterCanvas.width; i += 15) {
-    for (let j = 0; j < gameManager.splatterCanvas.height; j += 15) {
-      gameManager.splatterContext.fillRect(i, j, 14, 14);
-    }
-  }
-  */
 }
 
 /**
