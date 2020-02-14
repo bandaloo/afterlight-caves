@@ -7,6 +7,7 @@ import {
 } from "../modules/displaymanager.js";
 import { buttons } from "../modules/buttons.js";
 import { roundedRect, centeredText } from "./draw.js";
+import { clamp } from "../modules/helpers.js";
 
 /**
  * A vertical list of selectable items. Each item has text to display and a
@@ -218,15 +219,7 @@ export class Menu extends GuiElement {
    */
   move(num) {
     this.index += num;
-    if (this.index >= this.items.length) {
-      this.index = this.items.length - 1;
-    }
-    if (this.index < 0) {
-      this.index = 0;
-    }
-
-    // TODO replace with clamp
-
+    this.index = clamp(this.index, 0, this.items.length - 1);
     const prevPos = this.offsetPos;
     this.updateTopAndBottomPos();
     const currPos = this.offsetPos;
