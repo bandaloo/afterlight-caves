@@ -102,8 +102,6 @@ export class DeathScreen extends Menu {
       this.hero = getImportantEntity("hero");
       this.score = /** @type {Hero} */ (this.hero).score;
       if (this.active) this.opacity += 0.01;
-      this.selectedFillStyle = `rgba(0, 0, 255, ${this.opacity})`;
-      this.downFillStyle = `rgba(68, 68, 204, ${this.opacity})`;
       // get score from input box
       const input = /** @type {HTMLInputElement} */ (document.getElementById(
         "name-input"
