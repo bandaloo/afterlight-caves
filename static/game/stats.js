@@ -16,9 +16,6 @@ export class Stats extends Menu {
   constructor() {
     super(new Vector(0, 0), getCanvasWidth(), getCanvasHeight());
     this.itemWidth = 500;
-    this.itemFillStyle = "rgba(0, 0, 0, 0)";
-    this.selectedFillStyle = "rgba(20, 20, 255, 1)";
-    this.itemStrokeStyle = "rgba(0, 0, 0, 0)";
     /** @type {CanvasTextAlign} */
     this.textAlign = "left";
     this.textStyle = "50px anonymous";
