@@ -1,6 +1,6 @@
 {
   "name": "proc-cave-game",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "description": "a game where you shoot procedurally generated enemies in procedurally generated caves",
   "main": "main.js",
   "directories": {
@@ -23,7 +23,9 @@
   },
   "contributors": [
     {
-      "name": "Cole Granof"
+      "name": "Cole Granof",
+      "url": "https://www.bandaloo.fun",
+      "email": "colegranof@gmail.com"
     },
     {
       "name": "Joseph Petitti",
