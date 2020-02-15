@@ -23,6 +23,18 @@ body a {
   color: #40bcf4;
 }
 
+h1.title {
+  text-transform: uppercase;
+  font-family: monospace;
+  font-size: 3em;
+  margin-bottom: 0;
+}
+
+span#version {
+  font-size: 0.8em;
+  margin-bottom: 1em;
+}
+
 div#gamediv-holder {
   width: 100%;
   display: flex;
