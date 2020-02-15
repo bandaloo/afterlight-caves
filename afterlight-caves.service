@@ -1,13 +1,13 @@
 [Unit]
 Description=Procedurally generated cave shooter for the web
-Documentation=https://github.com/bandaloo/proc-cave-game
+Documentation=https://github.com/bandaloo/afterlight-caves
 After=network.target
 
 [Service]
 Environment=NODE_PORT=3000
 Type=simple
 User=nobody
-WorkingDirectory=/var/www/proc-cave-game
+WorkingDirectory=/var/www/afterlight-caves
 ExecStart=/usr/bin/node index.js
 Restart=on-failure
 
