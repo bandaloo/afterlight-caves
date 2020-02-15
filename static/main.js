@@ -2,7 +2,6 @@ import { getGrid, getEmptySpaces } from "./game/life.js";
 import { caveRules, EdgesEnum } from "./game/rules.js";
 import {
   startUp,
-  setGameDrawFunc,
   addToWorld,
   addToGui,
   setTerrain,
@@ -11,8 +10,7 @@ import {
   setCameraEntity,
   setImportantEntity,
   getTerrain,
-  setPause,
-  getCanvasWidth
+  setPause
 } from "./modules/gamemanager.js";
 import { drawBoard } from "./game/draw.js";
 import { Vector } from "./modules/vector.js";
@@ -27,6 +25,7 @@ import { BombDisplay } from "./game/bombdisplay.js";
 import { PauseScreen } from "./game/pausescreen.js";
 import { ScoreDisplay } from "./game/scoredisplay.js";
 import { DeathScreen } from "./game/deathscreen.js";
+import { setGameDrawFunc, getCanvasWidth } from "./modules/displaymanager.js";
 
 const blockWidth = 60;
 const blockHeight = 60;

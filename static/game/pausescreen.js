@@ -1,9 +1,7 @@
 import {
-  getScreenDimensions,
   setPause,
   addToGui,
   toggleGuiElement,
-  toggleFullscreen,
   getImportantEntity
 } from "../modules/gamemanager.js";
 import { Menu } from "./menu.js";
@@ -13,6 +11,10 @@ import { resetDemo } from "../main.js";
 import { Codex } from "./codex.js";
 import { Stats } from "./stats.js";
 import { Hero } from "./hero.js";
+import {
+  getScreenDimensions,
+  toggleFullscreen
+} from "../modules/displaymanager.js";
 
 export class PauseScreen extends Menu {
   /** @type {Menu[]} */

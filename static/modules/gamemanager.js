@@ -15,9 +15,20 @@ import { Vector } from "./vector.js";
 import { ageSounds } from "./sound.js";
 import { resetDemo } from "../main.js";
 import { PauseScreen } from "../game/pausescreen.js";
+import {
+  getScreenDimensions,
+  setCameraOffset,
+  getCameraOffset,
+  toggleFullscreen,
+  drawGame,
+  setSplatterSize,
+  addDisplayToDiv
+} from "./displaymanager.js";
 
+// TODO move this
 const BLUR_SCALAR = 2;
 
+// TODO move this to displaymanager
 export const SPLATTER_SCALAR = 4;
 
 class GameManager {
@@ -59,12 +70,6 @@ class GameManager {
   cameraEntity;
 
   /** @type {number} */
-  screenWidth;
-
-  /** @type {number} */
-  screenHeight;
-
-  /** @type {number} */
   farDistance = 3000;
 
   /** @type {boolean} */
@@ -76,60 +81,7 @@ class GameManager {
    */
   importantEntities = new Map();
 
-  constructor(
-    width = 1920,
-    height = 1080,
-    displayWidth = 960,
-    displayHeight = 540
-  ) {
-    // the canvas for drawing
-    this.canvas = document.createElement("canvas");
-    this.context = this.canvas.getContext("2d");
-    //this.context.imageSmoothingEnabled = false;
-    this.canvas.tabIndex = 1;
-    this.canvas.width = width;
-    this.canvas.height = height;
-
-    // the canvas for displaying
-    this.displayCanvas = document.createElement("canvas");
-    this.displayContext = this.displayCanvas.getContext("2d");
-    //this.displayContext.imageSmoothingEnabled = false;
-    this.displayWidth = displayWidth;
-    this.displayHeight = displayHeight;
-    this.displayCanvas.width = displayWidth;
-    this.displayCanvas.height = displayHeight;
-
-    // the untouched canvas for blurring before copying
-    this.blurCanvas = document.createElement("canvas");
-    this.blurContext = this.blurCanvas.getContext("2d");
-    // TODO reconsider usage of image smoothing
-    //this.blurContext.imageSmoothingEnabled = false;
-    this.blurCanvas.width = width / BLUR_SCALAR;
-    this.blurCanvas.height = height / BLUR_SCALAR;
-
-    // the canvas (that is rarely cleared) used for keeping permanent splatter
-    this.splatterCanvas = document.createElement("canvas");
-    this.splatterContext = this.splatterCanvas.getContext("2d");
-
-    this.screenWidth = width;
-    this.screenHeight = height;
-
-    this.resetCounter = 0;
-
-    this.blurContext.filter = "blur(3px) brightness(200%)";
-
-    // drawing func defaults to a no-op
-    this.drawFunc = () => {};
-
-    const exitHandler = () => {
-      if (document.fullscreenElement === null) {
-        this.displayCanvas.width = this.displayWidth;
-        this.displayCanvas.height = this.displayHeight;
-      }
-    };
-
-    this.displayCanvas.addEventListener("fullscreenchange", exitHandler, false);
-
+  constructor() {
     document.getElementById("name-input").addEventListener("focus", () => {
       collectInput(false);
     });
@@ -139,21 +91,6 @@ class GameManager {
     });
 
     collectInput(true);
-  }
-
-  /**
-   * return {Promise<void>}
-   */
-  toggleFullscreen() {
-    if (document.fullscreenElement === null) {
-      // enter fullscreen
-      this.displayCanvas.width = this.screenWidth;
-      this.displayCanvas.height = this.screenHeight;
-      return this.enterFullscreen();
-    } else {
-      // exit fullscreen
-      return document.exitFullscreen();
-    }
   }
 
   togglePause() {
@@ -167,26 +104,6 @@ class GameManager {
       pauseScreen.onBack();
       this.gamePause = false;
     }
-  }
-
-  /**
-   * return {Promise<void>}
-   */
-  enterFullscreen() {
-    if (this.displayCanvas.requestFullscreen) {
-      return this.displayCanvas.requestFullscreen();
-    } else {
-      throw new Error("no request fullscreen function");
-    }
-  }
-
-  /**
-   * add the display to a div with a specific id
-   * @param {string} id
-   */
-  addDisplayToDiv(id) {
-    const displayDiv = document.getElementById(id);
-    displayDiv.appendChild(this.displayCanvas);
   }
 
   stepGame() {
@@ -267,7 +184,7 @@ class GameManager {
     this.destroyEntities(this.particles);
     // check pause and fullscreen buttons
     if (buttons.fullscreen.status.isPressed) {
-      this.toggleFullscreen();
+      toggleFullscreen();
     }
     if (buttons.pause.status.isPressed) {
       // you can't pause while dead
@@ -298,119 +215,6 @@ class GameManager {
       entity => entity.lifetime > 0 && !entity.deleteMe,
       entity => entity.destroy()
     );
-  }
-
-  drawGame() {
-    // reposition camera if there is a followed entity
-    if (this.cameraEntity !== undefined) {
-      this.cameraOffset = this.cameraEntity.drawPos
-        .mult(-1)
-        .add(new Vector(this.screenWidth / 2, this.screenHeight / 2));
-    }
-
-    // clear the display canvas with black rectangle
-    this.displayContext.fillRect(
-      0,
-      0,
-      this.displayCanvas.width,
-      this.displayCanvas.height
-    );
-
-    // clear the drawing canvas with alpha 0
-    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-    // clear the blur canvas with alpha 0
-    this.blurContext.clearRect(
-      0,
-      0,
-      this.blurCanvas.width,
-      this.blurCanvas.height
-    );
-
-    // copy the splatter canvas onto the drawing canvas
-    const targetCanvas = this.displayCanvas;
-    const targetContext = this.displayContext;
-    const splatterVec = this.cameraOffset.mult(-1 / SPLATTER_SCALAR);
-    const displayRatio = this.canvas.width / targetCanvas.width;
-    targetContext.drawImage(
-      this.splatterCanvas,
-      splatterVec.x,
-      splatterVec.y,
-      (targetCanvas.width / SPLATTER_SCALAR) * displayRatio,
-      (targetCanvas.height / SPLATTER_SCALAR) * displayRatio,
-      0,
-      0,
-      targetCanvas.width,
-      targetCanvas.height
-    );
-
-    // save drawing context
-    this.context.save();
-    // run draw func specified by game programmer
-    this.drawFunc();
-
-    // draw all particles
-    for (let i = 0; i < this.particles.length; i++) {
-      // TODO see if culling particles does anything for performance
-      if (this.particles[i].onScreen()) {
-        this.particles[i].draw();
-      }
-    }
-
-    // draw all entities
-    for (let i = 0; i < this.entities.length; i++) {
-      if (this.entities[i].onScreen()) {
-        this.entities[i].draw();
-      }
-    }
-    // restore drawing context
-    this.context.restore();
-
-    // copy the drawing canvas onto the blur canvas
-    this.blurContext.drawImage(
-      this.canvas,
-      0,
-      0,
-      this.canvas.width / BLUR_SCALAR,
-      this.canvas.height / BLUR_SCALAR
-    );
-
-    // align camera, draw the gui, reset camera
-    // this is after the draw canvas is copied to the blur canvas
-    // move this to before if you want the gui blurred
-    const originalOffset = this.cameraOffset;
-    this.cameraOffset = new Vector(0, 0);
-    for (const guiKey of this.guiElements.keys()) {
-      if (this.guiElements.get(guiKey).active) {
-        this.guiElements.get(guiKey).draw();
-      }
-    }
-
-    this.cameraOffset = originalOffset;
-
-    // copy the blur canvas onto the display canvas
-    this.displayContext.drawImage(
-      this.blurCanvas,
-      0,
-      0,
-      this.displayCanvas.width,
-      this.displayCanvas.height
-    );
-
-    // save display context
-    this.displayContext.save();
-    this.displayContext.globalCompositeOperation = "lighter";
-    // copy the drawing canvas onto the display canvas
-    this.displayContext.drawImage(
-      this.canvas,
-      0,
-      0,
-      this.displayCanvas.width,
-      this.displayCanvas.height
-    );
-
-    // restore display context
-    this.displayContext.restore();
   }
 
   collideWithEntities() {
@@ -473,20 +277,23 @@ class GameManager {
     }
   }
 
-  // TODO add documentation
+  /**
+   * set all the draw positions of the entities to perform the tweening
+   * @param {Entity[]} entityList
+   * @param {number} timeLeft
+   */
   performTween(entityList, timeLeft) {
     for (let i = 0; i < entityList.length; i++) {
       // exclude inactive entities
       if (entityList[i].active) {
-        // value used for debugging
-        let tempPrevPos = entityList[i].lastPos;
+        // uncomment these to debug tweening
+        //let tempPrevPos = entityList[i].lastPos; // value used for debugging
         let tempDrawPos = entityList[i].lastPos.partway(
           entityList[i].pos,
           (this.updateTime + timeLeft) / this.updateTime
         );
-        // value used for debugging
-        let tempCurrPos = entityList[i].pos;
         // uncomment these to debug tweening
+        //let tempCurrPos = entityList[i].pos; // value used for debugging
         //console.log("prev " + tempPrevPos);
         //console.log("draw " + tempDrawPos);
         //console.log("curr " + tempCurrPos);
@@ -512,7 +319,8 @@ class GameManager {
     // Game time doesn't incrememnt when the game is paused.
     if (!this.gamePause) this.gameTime += deltaTime;
 
-    let gameSteps = 0;
+    // uncomment this for debugging
+    //let gameSteps = 0;
     let timeLeft = deltaTime - this.overTime;
     while (timeLeft > 0) {
       // if this loop is the last step before going over time
@@ -522,14 +330,15 @@ class GameManager {
       }
       this.stepGame();
       timeLeft -= this.updateTime;
-      gameSteps++;
+      // uncomment these to debug tweening
+      //gameSteps++;
     }
     // set all the tweened vectors to the draw positions
     this.performTween(this.entities, timeLeft);
     this.performTween(this.particles, timeLeft);
     this.overTime = -timeLeft;
 
-    this.drawGame();
+    drawGame(this.entities, this.particles, this.guiElements);
     //this.destroyEntities();
 
     // increase the time
@@ -541,32 +350,8 @@ class GameManager {
 const gameManager = new GameManager();
 
 export function startUp() {
-  gameManager.addDisplayToDiv("gamediv");
+  addDisplayToDiv("gamediv");
   gameManager.update();
-}
-
-export function getCanvas() {
-  return gameManager.canvas;
-}
-
-export function getContext() {
-  return gameManager.context;
-}
-
-export function getCanvasWidth() {
-  return gameManager.canvas.width;
-}
-
-export function getCanvasHeight() {
-  return gameManager.canvas.height;
-}
-
-/**
- * set the additional draw function to happen every game loop
- * @param {() => void} drawFunc drawing function to happen every loop
- */
-export function setGameDrawFunc(drawFunc) {
-  gameManager.drawFunc = drawFunc;
 }
 
 /**
@@ -581,7 +366,6 @@ export function getTerrain() {
   return gameManager.terrain;
 }
 
-// TODO make this use inboundsBoard
 /**
  * returns whether a coordinate is inbounds for the terrain
  * @param {number} i
@@ -635,10 +419,10 @@ export function setDimensions(blockWidth, blockHeight) {
 
   // we don't actually need to clear the splatter canvas on a game reset
   // because this happens when the width property of the canvas is changed
-  gameManager.splatterCanvas.width =
-    (boardWidth * blockWidth) / SPLATTER_SCALAR;
-  gameManager.splatterCanvas.height =
-    (boardHeight * blockHeight) / SPLATTER_SCALAR;
+  setSplatterSize(
+    (boardWidth * blockWidth) / SPLATTER_SCALAR,
+    (boardHeight * blockHeight) / SPLATTER_SCALAR
+  );
 }
 
 /**
@@ -693,21 +477,6 @@ export function addParticle(particle) {
 }
 
 /**
- * get the camera offset
- */
-export function getCameraOffset() {
-  return gameManager.cameraOffset;
-}
-
-/**
- * set the camera offset
- * @param {Vector} cameraOffset
- */
-export function setCameraOffset(cameraOffset) {
-  gameManager.cameraOffset = cameraOffset;
-}
-
-/**
  * gets the camera entity
  * @returns {Entity}
  */
@@ -721,14 +490,6 @@ export function getCameraEntity() {
  */
 export function setCameraEntity(cameraEntity) {
   gameManager.cameraEntity = cameraEntity;
-}
-
-/**
- * return an object with info about screen dimensions
- * @returns {{width: number, height: number}}
- */
-export function getScreenDimensions() {
-  return { width: gameManager.screenWidth, height: gameManager.screenHeight };
 }
 
 /**
@@ -789,17 +550,6 @@ export function setFarDistance(farDistance) {
 
 export function setPause(arg = true) {
   gameManager.gamePause = arg;
-}
-
-export function getSplatterContext() {
-  return gameManager.splatterContext;
-}
-
-/**
- * @returns {Promise<void>}
- */
-export function toggleFullscreen() {
-  return gameManager.toggleFullscreen();
 }
 
 /**

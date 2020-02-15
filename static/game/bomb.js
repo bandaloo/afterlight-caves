@@ -1,6 +1,6 @@
 import { Entity } from "../modules/entity.js";
 import { Vector } from "../modules/vector.js";
-import { polygon, circle } from "./draw.js";
+import { polygon, circle, splatter } from "./draw.js";
 import { Particle, EffectEnum } from "./particle.js";
 import { addParticle, setBlock } from "../modules/gamemanager.js";
 import { getCell } from "../modules/collision.js";
@@ -164,6 +164,20 @@ export class Bomb extends Entity {
             obj.func(this, obj.data, creature);
           });
         }
+      }
+    );
+    const sizeScalar = 0.1;
+    splatter(
+      this.pos,
+      "#222222dd",
+      this.blastRadius * sizeScalar,
+      "round",
+      undefined,
+      {
+        splats: 20,
+        offsetScalar: 7,
+        velocityScalar: 0,
+        sizeScalar: 1
       }
     );
   }
