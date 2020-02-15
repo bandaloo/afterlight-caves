@@ -73,7 +73,7 @@ export function resetDemo() {
   // TODO replace with some sort of border vec
   const scoredisplay = new ScoreDisplay(new Vector(getCanvasWidth() - 5, 5));
   addToGui("scoredisplay", scoredisplay);
-  const timedisplay = new TimeDisplay(new Vector(0, 200));
+  const timedisplay = new TimeDisplay(new Vector(0, 200 - 32));
   addToGui("timedisplay", timedisplay);
 
   // add menus to the GUI last as they should draw over everything else

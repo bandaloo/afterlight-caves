@@ -5,11 +5,14 @@ import { getImportantEntity, getPause } from "../modules/gamemanager.js";
 import { Hero } from "./hero.js";
 
 export class TimeDisplay extends GuiElement {
+  /**
+   * @param {Vector} pos
+   */
   constructor(pos) {
     super(pos);
     this.borderVec = new Vector(8, 8);
     this.time = 100 * 60 * 5; // five minutes
-    this.skullPulse = 1;
+    this.animPulse = 1;
   }
 
   action() {
@@ -21,9 +24,9 @@ export class TimeDisplay extends GuiElement {
       }
       // exactly on a second
       if (this.time !== 0 && this.time % 100 === 0) {
-        this.skullPulse = 1;
+        this.animPulse = 1;
       }
-      this.skullPulse *= 0.9;
+      this.animPulse *= 0.9;
     }
   }
 
@@ -38,18 +41,8 @@ export class TimeDisplay extends GuiElement {
     centeredText(
       this.stepsToTimeString(),
       this.pos.add(this.borderVec),
-      "bold 60px anonymous",
+      `bold ${Math.floor(this.animPulse * 8 + 60)}px anonymous`,
       "left",
-      "middle",
-      "white"
-    );
-
-    // draw pulsing skull (the emoji stays)
-    centeredText(
-      "💀",
-      this.pos.add(this.borderVec).add(new Vector(180, 0)),
-      `${Math.floor(this.skullPulse * 15 + 60)}px anonymous`,
-      "center",
       "middle",
       "white"
     );
