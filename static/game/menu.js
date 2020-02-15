@@ -100,6 +100,7 @@ export class Menu extends GuiElement {
     this.down = false;
     this.lerpVal = 0;
 
+    // values for clamping the position of menu correctly
     this.topPos = undefined;
     this.bottomPos = undefined;
     this.currentPos = undefined;
@@ -145,13 +146,7 @@ export class Menu extends GuiElement {
 
     this.bottomPos = middle + this.calcBottomOffset();
     console.log("bottom pos " + this.bottomPos);
-    /*
-    this.bottomPos =
-      this.topPos +
-      this.index * (this.itemMargin + this.itemHeight) +
-      (this.items.length - this.index) * (this.itemMargin + this.itemHeight) -
-      this.itemMargin;
-    */
+
     // adjust so that selected element is always centered
     this.offsetPos = this.topPos;
     const { height } = getScreenDimensions();
@@ -228,7 +223,6 @@ export class Menu extends GuiElement {
 
   /**
    * draws this menu
-   * TODO some animations here would be nice
    * @override
    */
   draw() {
