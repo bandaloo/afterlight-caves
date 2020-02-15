@@ -1,8 +1,13 @@
 import { GuiElement } from "../modules/guielement.js";
 import { Vector } from "../modules/vector.js";
 import { centeredText } from "./draw.js";
-import { getImportantEntity, getPause } from "../modules/gamemanager.js";
+import {
+  getImportantEntity,
+  getPause,
+  getGuiElement
+} from "../modules/gamemanager.js";
 import { Hero } from "./hero.js";
+import { DeathScreen } from "./deathscreen.js";
 
 export class TimeDisplay extends GuiElement {
   /**
@@ -20,7 +25,14 @@ export class TimeDisplay extends GuiElement {
       if (this.time > 0) {
         this.time--;
       } else {
+        // prevents the cause of death from being set after hero death
         /** @type {Hero} */ (getImportantEntity("hero")).takeDamage(Infinity);
+        const deathScreen = /** @type {DeathScreen} */ (getGuiElement(
+          "deathscreen"
+        ));
+        if (!deathScreen.active) {
+          deathScreen.causeOfDeath = "Time up";
+        }
       }
       // exactly on a second
       if (this.time !== 0 && this.time % 100 === 0) {

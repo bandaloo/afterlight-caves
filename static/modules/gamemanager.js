@@ -461,6 +461,14 @@ export function toggleGuiElement(key) {
 }
 
 /**
+ * get gui element from key
+ * @param {string} key
+ */
+export function getGuiElement(key) {
+  return gameManager.guiElements.get(key);
+}
+
+/**
  * get rid of all the entities
  */
 export function destroyEverything() {

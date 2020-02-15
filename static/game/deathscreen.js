@@ -24,6 +24,8 @@ export class DeathScreen extends Menu {
   opacity;
   /** @type {boolean} */
   submitted;
+  /** @type {string} */
+  causeOfDeath;
 
   constructor() {
     const screenDimensions = getScreenDimensions();
@@ -52,6 +54,7 @@ export class DeathScreen extends Menu {
     this.opacity = 0;
     this.itemWidth = 500;
     this.submitted = false;
+    this.causeOfDeath = "You have died";
   }
 
   /**
@@ -59,7 +62,7 @@ export class DeathScreen extends Menu {
    */
   draw() {
     centeredText(
-      "You have died",
+      this.causeOfDeath,
       this.pos.add(new Vector(this.width / 2, this.height / 2)),
       "bold 250px anonymous",
       undefined,
