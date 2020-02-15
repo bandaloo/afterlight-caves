@@ -130,6 +130,12 @@ export class Menu extends GuiElement {
     );
   }
 
+  calcListHeight() {
+    return (
+      this.items.length * (this.itemMargin + this.itemHeight) - this.itemMargin
+    );
+  }
+
   /**
    * calculate where the top should be given the bottom
    * @param {number} bottom
@@ -140,6 +146,7 @@ export class Menu extends GuiElement {
 
   updateTopAndBottomPos() {
     const middle = this.calcMiddle();
+    const { height } = getScreenDimensions();
 
     this.topPos = middle + this.calcTopOffset();
     console.log("top pos " + this.topPos);
@@ -147,9 +154,14 @@ export class Menu extends GuiElement {
     this.bottomPos = middle + this.calcBottomOffset();
     console.log("bottom pos " + this.bottomPos);
 
+    if (this.calcListHeight() < height) {
+      console.log("too small to clamp");
+      this.offsetPos = height / 2 - this.calcListHeight() / 2;
+      return;
+    }
+
     // adjust so that selected element is always centered
     this.offsetPos = this.topPos;
-    const { height } = getScreenDimensions();
     let overTop = false;
     let overBottom = false;
     if (this.topPos > 0) {
