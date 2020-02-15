@@ -230,7 +230,7 @@ export class Menu extends GuiElement {
     const prevPos = this.offsetPos;
     this.updateTopAndBottomPos();
     const currPos = this.offsetPos;
-    this.lerpVal = prevPos - currPos;
+    this.lerpVal += prevPos - currPos;
   }
 
   /**
