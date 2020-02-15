@@ -1,24 +1,23 @@
 import { getCell } from "../modules/collision.js";
-import {
-  getCameraOffset,
-  getContext,
-  getSplatterContext,
-  getScreenDimensions,
-  getTotalTime,
-  SPLATTER_SCALAR
-} from "../modules/gamemanager.js";
+import { getTotalTime, SPLATTER_SCALAR } from "../modules/gamemanager.js";
 import { clamp, randomNormalVec } from "../modules/helpers.js";
 import { Vector } from "../modules/vector.js";
 import { blockField } from "./generator.js";
+import {
+  getSplatterContext,
+  getContext,
+  getScreenDimensions,
+  getCameraOffset
+} from "../modules/displaymanager.js";
 
 // this is to get rid of weird lines when moving the camera
 const overDraw = 0.5;
 
 /**
  * gets the appropriate drawing context
- * @param {boolean} splatter
+ * @param {boolean} [splatter] leave undefined to just get the draw context
  */
-export function getDrawContext(splatter) {
+export function getDrawContext(splatter = false) {
   return !splatter ? getContext() : getSplatterContext();
 }
 
@@ -299,7 +298,7 @@ export function roundedRect(
   strokeStyle,
   lineWidth,
   borderRadius = 0,
-  splatter
+  splatter = false
 ) {
   const context = getDrawContext(splatter);
   context.save();
@@ -377,7 +376,7 @@ export function roundedRect(
  * @param {number} lineWidth
  */
 export function line(pos1, pos2, strokeStyle, lineWidth) {
-  const context = getContext();
+  const context = getDrawContext();
   context.save();
   pos1 = pos1.add(getCameraOffset());
   pos2 = pos2.add(getCameraOffset());
@@ -399,7 +398,7 @@ export function line(pos1, pos2, strokeStyle, lineWidth) {
  */
 export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
   // TODO get rid of the need to pass in block width and height
-  let context = getContext();
+  let context = getDrawContext();
   context.save();
 
   /**
@@ -589,7 +588,7 @@ export function centeredText(
   strokeStyle,
   lineWidth
 ) {
-  const context = getContext();
+  const context = getDrawContext();
   centerVec = centerVec.add(getCameraOffset());
   context.save();
   context.font = fontStyle;
@@ -617,7 +616,7 @@ export function centeredText(
  */
 export function drawShines(centerVec, data, gradColor) {
   centerVec = centerVec.add(getCameraOffset());
-  const context = getContext();
+  const context = getDrawContext();
   const grad = context.createRadialGradient(
     centerVec.x,
     centerVec.y,
@@ -656,12 +655,22 @@ export function drawShines(centerVec, data, gradColor) {
  * @param {string|CanvasGradient|CanvasPattern} style
  * @param {number} size
  * @param {"round" | "rectangular"} shape
+ * @param {Vector} [vel] don't define for no velocity
+ * @param {{ splats: number
+ *         , offsetScalar: number
+ *         , velocityScalar: number
+ *         , sizeScalar: number
+ *         }} [options] change the look of the splat (leave undefined for default)
  */
-export function splatter(centerVec, style, size, shape, vel) {
-  const splats = 10;
-  const offsetScalar = 2;
-  const velocityScalar = 15;
-  const sizeScalar = 0.6;
+export function splatter(
+  centerVec,
+  style,
+  size,
+  shape,
+  vel = new Vector(0, 0),
+  options = { splats: 10, offsetScalar: 2, velocityScalar: 15, sizeScalar: 0.6 }
+) {
+  const { splats, offsetScalar, velocityScalar, sizeScalar } = options;
   for (let i = 0; i < splats; i++) {
     const sizeMod = ((i + 1) / (splats + 1)) * sizeScalar;
     const offsetVec = randomNormalVec()
@@ -670,8 +679,8 @@ export function splatter(centerVec, style, size, shape, vel) {
     if (shape === "round") {
       ellipse(
         centerVec.add(offsetVec),
-        size * sizeMod,
-        size * sizeMod,
+        size * sizeMod * 2,
+        size * sizeMod * 2,
         style,
         undefined,
         undefined,

@@ -1,17 +1,17 @@
 import { Vector } from "../modules/vector.js";
 import { Menu } from "./menu.js";
 import { centeredText } from "./draw.js";
-import {
-  getScreenDimensions,
-  getContext,
-  toggleGuiElement,
-  addToGui,
-  toggleFullscreen
-} from "../modules/gamemanager.js";
+import { toggleGuiElement, addToGui } from "../modules/gamemanager.js";
 import { getImportantEntity } from "../modules/gamemanager.js";
 import { toScoreString } from "./scoredisplay.js";
 import { resetDemo } from "../main.js";
 import { ScoresMenu } from "./scoresmenu.js";
+import {
+  getContext,
+  getScreenDimensions,
+  toggleFullscreen
+} from "../modules/displaymanager.js";
+import { Hero } from "./hero.js";
 
 /**
  * The screen that appears when a player dies, including a nice fade-in and
@@ -34,7 +34,7 @@ export class DeathScreen extends Menu {
     );
     const scoresmenu = new ScoresMenu();
     scoresmenu.active = false;
-    addToGui("scoresmenu", scoresmenu)
+    addToGui("scoresmenu", scoresmenu);
 
     this.items = [
       { text: "Submit score", func: this.submitScore.bind(this) },
@@ -102,7 +102,7 @@ export class DeathScreen extends Menu {
       }
     } else {
       this.hero = getImportantEntity("hero");
-      this.score = /** @type {Creature} */ (this.hero).score;
+      this.score = /** @type {Hero} */ (this.hero).score;
       if (this.active) this.opacity += 0.01;
       this.selectedFillStyle = `rgba(0, 0, 255, ${this.opacity})`;
       this.downFillStyle = `rgba(68, 68, 204, ${this.opacity})`;

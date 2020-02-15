@@ -1,6 +1,6 @@
 import { GuiElement } from "../modules/guielement.js";
 import { Vector } from "../modules/vector.js";
-import { getCanvasWidth, getCanvasHeight } from "../modules/gamemanager.js";
+import { getCanvasWidth, getCanvasHeight } from "../modules/displaymanager.js";
 import { buttons } from "../modules/buttons.js";
 import { roundedRect, centeredText } from "./draw.js";
 

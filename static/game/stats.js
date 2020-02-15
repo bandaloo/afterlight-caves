@@ -1,14 +1,16 @@
 import { Menu } from "./menu.js";
 import { Vector } from "../modules/vector.js";
 import {
-  getCanvasWidth,
-  getCanvasHeight,
   getImportantEntity,
-  toggleGuiElement,
-  getScreenDimensions
+  toggleGuiElement
 } from "../modules/gamemanager.js";
 import { rect } from "./draw.js";
 import { Hero } from "./hero.js";
+import {
+  getCanvasWidth,
+  getCanvasHeight,
+  getScreenDimensions
+} from "../modules/displaymanager.js";
 
 export class Stats extends Menu {
   constructor() {
