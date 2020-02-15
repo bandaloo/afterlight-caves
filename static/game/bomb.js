@@ -51,8 +51,8 @@ export class Bomb extends Entity {
     this.maxFuseTime = fuseTime;
     this.onDetonate = new Array();
     this.onBlastCreature = new Array();
-    this.width = 75;
-    this.height = 75;
+    this.width = 56;
+    this.height = 56;
     // amount of time (in game steps) it takes to animate exploding
     this.timeToExplode = 20;
     this.blastRadius = 300;
@@ -122,8 +122,8 @@ export class Bomb extends Entity {
       polygon(
         this.drawPos,
         6,
-        this.width,
-        this.height,
+        this.width * 1.2,
+        this.height * 1.2,
         0,
         `hsl(${this.hue}, ${blink}%, 25%`,
         "white",
