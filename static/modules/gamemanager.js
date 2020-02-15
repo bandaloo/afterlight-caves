@@ -17,7 +17,6 @@ import { resetDemo } from "../main.js";
 import { PauseScreen } from "../game/pausescreen.js";
 import {
   getScreenDimensions,
-  setCameraOffset,
   getCameraOffset,
   toggleFullscreen,
   drawGame,
@@ -550,6 +549,10 @@ export function setFarDistance(farDistance) {
 
 export function setPause(arg = true) {
   gameManager.gamePause = arg;
+}
+
+export function getPause() {
+  return gameManager.gamePause;
 }
 
 /**
