@@ -149,13 +149,10 @@ export class Menu extends GuiElement {
     const { height } = getScreenDimensions();
 
     this.topPos = middle + this.calcTopOffset();
-    console.log("top pos " + this.topPos);
 
     this.bottomPos = middle + this.calcBottomOffset();
-    console.log("bottom pos " + this.bottomPos);
 
     if (this.calcListHeight() < height) {
-      console.log("too small to clamp");
       this.offsetPos = height / 2 - this.calcListHeight() / 2;
       return;
     }
