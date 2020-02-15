@@ -45,7 +45,7 @@ export class TimeDisplay extends GuiElement {
     // draw pulsing skull (the emoji stays)
     centeredText(
       "💀",
-      this.pos.add(this.borderVec).add(new Vector(200, 0)),
+      this.pos.add(this.borderVec).add(new Vector(180, 0)),
       `${Math.floor(this.skullPulse * 15 + 60)}px anonymous`,
       "center",
       "middle",
