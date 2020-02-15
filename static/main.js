@@ -139,12 +139,12 @@ export function resetDemo() {
         tilesPerAdditionalPowerupChance
     );
     const powerup_num = Math.floor(Math.random() * additional_powerups) + 1;
-    caveLocations[i].length;
 
     for (let p = 0; p < powerup_num; p++) {
       /** @type {Vector} */
-      const randomTile =
-        caveLocations[i][Math.floor(Math.random() * caveLocations[i].length)];
+      const randomIndex = Math.floor(Math.random() * caveLocations[i].length);
+      const randomTile = caveLocations[i][randomIndex];
+      caveLocations[i].splice(randomIndex, 1);
 
       const location = randomTile.add(
         new Vector(blockWidth / 2, blockHeight / 2)

@@ -32,7 +32,6 @@ export function populateLevel(board, numEnemies) {
     Crosser,
     Bomber
   ];
-  //const creatureClasses = [Bomber];
 
   for (let i = 0; i < numEnemies; i++) {
     const randomChoice = randomInt(creatureClasses.length);
