@@ -139,8 +139,6 @@ export function resetDemo() {
 
     for (let p = 0; p < powerup_num; p++) {
       /** @type {Vector} */
-      //const randomTile =
-      //  caveLocations[i][Math.floor(Math.random() * caveLocations[i].length)];
       const randomIndex = Math.floor(Math.random() * caveLocations[i].length);
       const randomTile = caveLocations[i][randomIndex];
       caveLocations[i].splice(randomIndex, 1);
