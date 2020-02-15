@@ -51,8 +51,6 @@ export class DeathScreen extends Menu {
     this.score = 0;
     this.opacity = 0;
     this.itemWidth = 500;
-    this.selectedFillStyle = `rgba(0, 0, 255, ${this.opacity})`;
-    this.downFillStyle = `rgba(68, 68, 204, ${this.opacity})`;
     this.submitted = false;
   }
 
@@ -67,7 +65,7 @@ export class DeathScreen extends Menu {
       undefined,
       undefined,
       "rgba(255, 255, 255, " + this.opacity + ")",
-      "rgba(0, 0, 0, " + this.opacity + ")",
+      undefined,
       8
     );
     centeredText(

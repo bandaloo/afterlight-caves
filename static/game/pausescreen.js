@@ -90,7 +90,7 @@ export class PauseScreen extends Menu {
       "bold 100px anonymous",
       undefined,
       undefined,
-      "red"
+      "white"
     );
   }
 
