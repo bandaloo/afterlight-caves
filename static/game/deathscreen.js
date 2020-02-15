@@ -85,9 +85,9 @@ export class DeathScreen extends Menu {
       "rgba(255, 255, 255, " + this.opacity + ")"
     );
     // TODO this is kind of a hack to push the normal menu elements down
-    getContext().translate(0, 240);
+    getContext().translate(0, 320);
     super.draw();
-    getContext().translate(0, -240);
+    getContext().translate(0, -320);
   }
 
   /**
