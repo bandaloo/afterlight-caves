@@ -127,8 +127,6 @@ export class Bullet extends Entity {
       if (setBlock(cellVec.x, cellVec.y, 0)) {
         destroyBlock(cellVec, this.type === "PlayerBullet");
         if (this.onScreen()) playSound("hit-breakable");
-      } else {
-        if (this.onScreen()) playSound("hit-nonbreakable");
       }
     }
     // remove the bullet if it's not supposed to bounce

@@ -9,7 +9,7 @@ const soundMap = new Map();
  * @param {string} str
  * @returns {HTMLAudioElement}
  */
-function getSound(str) {
+export function getSound(str) {
   if (soundMap.has(str)) {
     return soundMap.get(str).sound;
   } else {

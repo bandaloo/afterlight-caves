@@ -5,7 +5,7 @@ import { addParticle, toggleGuiElement } from "../modules/gamemanager.js";
 import { Particle, EffectEnum } from "./particle.js";
 import { PowerUp } from "./powerup.js";
 import { Creature } from "./creature.js";
-import { playSound } from "../modules/sound.js";
+import { playSound, getSound } from "../modules/sound.js";
 
 const DEFAULT_SIZE = 50;
 
@@ -74,12 +74,11 @@ export class Hero extends Creature {
           magSound = "five";
           break;
       }
+      const puClassSound = entity.powerUpClass.toLowerCase().replace(" ", "-");
       playSound("power-up");
-      setTimeout(() => {
-        playSound(
-          entity.powerUpClass.toLowerCase().replace(" ", "-")
-        ).onended = () => playSound(magSound);
-      }, 300)
+      const duration = getSound(puClassSound).duration;
+      setTimeout(() => playSound(puClassSound), 300);
+      setTimeout(() => playSound(magSound), duration * 1000 + 250);
       entity.deleteMe = true;
     });
 
