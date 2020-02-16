@@ -48,7 +48,7 @@ export class ScoreDisplay extends GuiElement {
     centeredText(
       toScoreString(this.visibleScore),
       this.pos.add(new Vector(0, 50)),
-      "bold 60px monospace",
+      "bold 60px anonymous",
       "right",
       undefined,
       "white"
@@ -58,7 +58,7 @@ export class ScoreDisplay extends GuiElement {
       centeredText(
         "+" + Math.floor(this.score - this.visibleScore),
         this.pos.add(new Vector(0, 100)),
-        "bold 60px monospace",
+        "bold 60px anonymous",
         "right",
         undefined,
         "white"

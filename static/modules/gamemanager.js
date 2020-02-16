@@ -17,7 +17,6 @@ import { resetDemo } from "../main.js";
 import { PauseScreen } from "../game/pausescreen.js";
 import {
   getScreenDimensions,
-  setCameraOffset,
   getCameraOffset,
   toggleFullscreen,
   drawGame,
@@ -462,6 +461,14 @@ export function toggleGuiElement(key) {
 }
 
 /**
+ * get gui element from key
+ * @param {string} key
+ */
+export function getGuiElement(key) {
+  return gameManager.guiElements.get(key);
+}
+
+/**
  * get rid of all the entities
  */
 export function destroyEverything() {
@@ -550,6 +557,10 @@ export function setFarDistance(farDistance) {
 
 export function setPause(arg = true) {
   gameManager.gamePause = arg;
+}
+
+export function getPause() {
+  return gameManager.gamePause;
 }
 
 /**

@@ -90,3 +90,8 @@ button#start {
   padding: 0.75em 1.25em;
   font-weight: bold;
 }
+
+@font-face {
+  font-family: Anonymous;
+  src: url("anonymous-pro-b.ttf");
+}

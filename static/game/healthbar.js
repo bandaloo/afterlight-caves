@@ -69,7 +69,7 @@ export class Healthbar extends GuiElement {
     centeredText(
       healthString,
       this.pos.add(this.borderVec).add(new Vector(0, this.healthHeight / 2)),
-      "bold 60px sans-serif",
+      "bold 60px anonymous",
       "left",
       "middle",
       "white"
