@@ -197,8 +197,8 @@ const start = ev => {
   startForm.remove();
   // set timeout so that button disappears immediately
   setTimeout(() => {
-    //playSound("captive-portal", false);
-    //loopSound("captive-portal");
+    playSound("captive-portal", false);
+    loopSound("captive-portal");
     resetDemo();
     startUp();
   }, 1);
