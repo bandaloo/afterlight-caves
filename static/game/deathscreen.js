@@ -1,17 +1,17 @@
 import { Vector } from "../modules/vector.js";
 import { Menu } from "./menu.js";
 import { centeredText } from "./draw.js";
-import {
-  getScreenDimensions,
-  getContext,
-  toggleGuiElement,
-  addToGui,
-  toggleFullscreen
-} from "../modules/gamemanager.js";
+import { toggleGuiElement, addToGui } from "../modules/gamemanager.js";
 import { getImportantEntity } from "../modules/gamemanager.js";
 import { toScoreString } from "./scoredisplay.js";
 import { resetDemo } from "../main.js";
 import { ScoresMenu } from "./scoresmenu.js";
+import {
+  getContext,
+  getScreenDimensions,
+  toggleFullscreen
+} from "../modules/displaymanager.js";
+import { Hero } from "./hero.js";
 
 /**
  * The screen that appears when a player dies, including a nice fade-in and
@@ -24,6 +24,8 @@ export class DeathScreen extends Menu {
   opacity;
   /** @type {boolean} */
   submitted;
+  /** @type {string} */
+  causeOfDeath;
 
   constructor() {
     const screenDimensions = getScreenDimensions();
@@ -34,9 +36,9 @@ export class DeathScreen extends Menu {
     );
     const scoresmenu = new ScoresMenu();
     scoresmenu.active = false;
-    addToGui("scoresmenu", scoresmenu)
+    addToGui("scoresmenu", scoresmenu);
 
-    this.items = [
+    this.setItems([
       { text: "Submit score", func: this.submitScore.bind(this) },
       {
         text: "View scores",
@@ -47,13 +49,12 @@ export class DeathScreen extends Menu {
         }
       },
       { text: "Restart", func: resetDemo }
-    ];
+    ]);
     this.score = 0;
     this.opacity = 0;
     this.itemWidth = 500;
-    this.selectedFillStyle = `rgba(0, 0, 255, ${this.opacity})`;
-    this.downFillStyle = `rgba(68, 68, 204, ${this.opacity})`;
     this.submitted = false;
+    this.causeOfDeath = "You have died";
   }
 
   /**
@@ -61,19 +62,19 @@ export class DeathScreen extends Menu {
    */
   draw() {
     centeredText(
-      "You have died",
+      this.causeOfDeath,
       this.pos.add(new Vector(this.width / 2, this.height / 2)),
-      "bold 250px sans-serif",
+      "bold 250px anonymous",
       undefined,
       undefined,
       "rgba(255, 255, 255, " + this.opacity + ")",
-      "rgba(0, 0, 0, " + this.opacity + ")",
+      undefined,
       8
     );
     centeredText(
       "your score was:",
       this.pos.add(new Vector(this.width / 2, this.height / 2 + 100)),
-      "bold 60px monospace",
+      "bold 60px anonymous",
       undefined,
       undefined,
       "rgba(255, 255, 255, " + this.opacity + ")"
@@ -81,15 +82,15 @@ export class DeathScreen extends Menu {
     centeredText(
       toScoreString(this.score),
       this.pos.add(new Vector(this.width / 2, this.height / 2 + 160)),
-      "bold 60px monospace",
+      "bold 60px anonymous",
       undefined,
       undefined,
       "rgba(255, 255, 255, " + this.opacity + ")"
     );
     // TODO this is kind of a hack to push the normal menu elements down
-    getContext().translate(0, 240);
+    getContext().translate(0, 320);
     super.draw();
-    getContext().translate(0, -240);
+    getContext().translate(0, -320);
   }
 
   /**
@@ -102,10 +103,8 @@ export class DeathScreen extends Menu {
       }
     } else {
       this.hero = getImportantEntity("hero");
-      this.score = /** @type {Creature} */ (this.hero).score;
+      this.score = /** @type {Hero} */ (this.hero).score;
       if (this.active) this.opacity += 0.01;
-      this.selectedFillStyle = `rgba(0, 0, 255, ${this.opacity})`;
-      this.downFillStyle = `rgba(68, 68, 204, ${this.opacity})`;
       // get score from input box
       const input = /** @type {HTMLInputElement} */ (document.getElementById(
         "name-input"

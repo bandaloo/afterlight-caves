@@ -1,12 +1,12 @@
-import {
-  getCanvasWidth,
-  getCanvasHeight,
-  getScreenDimensions,
-  toggleGuiElement
-} from "../modules/gamemanager.js";
+import { toggleGuiElement } from "../modules/gamemanager.js";
 import { Menu } from "./menu.js";
 import { rect } from "./draw.js";
 import { Vector } from "../modules/vector.js";
+import {
+  getCanvasWidth,
+  getCanvasHeight,
+  getScreenDimensions
+} from "../modules/displaymanager.js";
 
 export class ScoresMenu extends Menu {
   /**
@@ -22,15 +22,16 @@ export class ScoresMenu extends Menu {
     super(new Vector(0, 0), getCanvasWidth(), getCanvasHeight());
     this.scoresStatus = undefined;
     this.itemWidth = 1500;
-    this.itemFillStyle = "rgba(0, 0, 0, 0)";
-    this.selectedFillStyle = "rgba(20, 20, 255, 1)";
-    this.itemStrokeStyle = "rgba(0, 0, 0, 0)";
+    /** @type {CanvasTextAlign} */
     this.textAlign = "left";
-    this.textStyle = "50px sans-serif";
+    this.textStyle = "50px anonymous";
   }
 
   /**
    * @override because canvas doesn't draw tabs. This is a dumb hack
+   * @param {number} x
+   * @param {number} y
+   * @param {string} text
    */
   drawText(x, y, text) {
     const tabs = text.split("\t");
@@ -48,13 +49,18 @@ export class ScoresMenu extends Menu {
           if (this.scoresStatus !== 200) {
             throw new Error();
           }
-          this.items = JSON.parse(obj.message)
-            .scores.sort((a, b) => b.score - a.score)
-            .map(val => {
-              return { text: val.score + "\t" + val.username, func: undefined };
-            });
+          this.setItems(
+            JSON.parse(obj.message)
+              .scores.sort((a, b) => b.score - a.score)
+              .map(val => {
+                return {
+                  text: val.score + "\t" + val.username,
+                  func: undefined
+                };
+              })
+          );
           if (this.items.length === 0) {
-            this.items = [{ text: "No scores yet", func: undefined }];
+            this.setItems([{ text: "No scores yet", func: undefined }]);
           }
         })
         .catch(reason => {
@@ -63,9 +69,9 @@ export class ScoresMenu extends Menu {
         });
     }
     if (this.scoresStatus === 0) {
-      this.items = [{ text: "Fetching scores...", func: undefined }];
+      this.setItems([{ text: "Fetching scores...", func: undefined }]);
     } else if (this.scoresStatus !== 200) {
-      this.items = [{ text: "Failed to get scores", func: undefined }];
+      this.setItems([{ text: "Failed to get scores", func: undefined }]);
     }
     super.action();
   }

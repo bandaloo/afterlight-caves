@@ -1,9 +1,7 @@
 import {
-  getScreenDimensions,
   setPause,
   addToGui,
   toggleGuiElement,
-  toggleFullscreen,
   getImportantEntity
 } from "../modules/gamemanager.js";
 import { Menu } from "./menu.js";
@@ -13,6 +11,10 @@ import { resetDemo } from "../main.js";
 import { Codex } from "./codex.js";
 import { Stats } from "./stats.js";
 import { Hero } from "./hero.js";
+import {
+  getScreenDimensions,
+  toggleFullscreen
+} from "../modules/displaymanager.js";
 
 export class PauseScreen extends Menu {
   /** @type {Menu[]} */
@@ -31,7 +33,7 @@ export class PauseScreen extends Menu {
     addToGui("stats", stats);
     this.childMenus = [codex, stats];
 
-    this.items = [
+    this.setItems([
       { text: "Resume", func: this.onBack.bind(this) },
       {
         text: "Codex",
@@ -60,7 +62,7 @@ export class PauseScreen extends Menu {
         }
       },
       { text: "Start over", func: resetDemo }
-    ];
+    ]);
     this.itemWidth = 600;
   }
 
@@ -85,10 +87,10 @@ export class PauseScreen extends Menu {
     centeredText(
       "Paused!",
       this.pos.add(new Vector(screenDimensions.width / 2, 100)),
-      "bold 100px sans-serif",
+      "bold 100px anonymous",
       undefined,
       undefined,
-      "red"
+      "white"
     );
   }
 

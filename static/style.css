@@ -23,6 +23,18 @@ body a {
   color: #40bcf4;
 }
 
+h1.title {
+  text-transform: uppercase;
+  font-family: monospace;
+  font-size: 3em;
+  margin-bottom: 0;
+}
+
+span#version {
+  font-size: 0.8em;
+  margin-bottom: 1em;
+}
+
 div#gamediv-holder {
   width: 100%;
   display: flex;
@@ -77,4 +89,9 @@ button#start {
   font-size: 2em;
   padding: 0.75em 1.25em;
   font-weight: bold;
+}
+
+@font-face {
+  font-family: Anonymous;
+  src: url("anonymous-pro-b.ttf");
 }

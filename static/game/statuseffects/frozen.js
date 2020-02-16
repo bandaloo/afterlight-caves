@@ -1,7 +1,6 @@
 import { StatusEffect } from "../statuseffect.js";
 import { Creature } from "../creature.js";
 import { centeredRoundedRect, line } from "../draw.js";
-import { getContext, getCameraOffset } from "../../modules/gamemanager.js";
 import { Vector } from "../../modules/vector.js";
 
 const MAX_FROZEN_SPEED = 0.4;

@@ -2,7 +2,6 @@ import { getGrid, getEmptySpaces } from "./game/life.js";
 import { caveRules, EdgesEnum } from "./game/rules.js";
 import {
   startUp,
-  setGameDrawFunc,
   addToWorld,
   addToGui,
   setTerrain,
@@ -11,8 +10,7 @@ import {
   setCameraEntity,
   setImportantEntity,
   getTerrain,
-  setPause,
-  getCanvasWidth
+  setPause
 } from "./modules/gamemanager.js";
 import { drawBoard } from "./game/draw.js";
 import { Vector } from "./modules/vector.js";
@@ -28,6 +26,8 @@ import { PauseScreen } from "./game/pausescreen.js";
 import { ScoreDisplay } from "./game/scoredisplay.js";
 import { DeathScreen } from "./game/deathscreen.js";
 import { resources } from "./game/resources.js";
+import { setGameDrawFunc, getCanvasWidth } from "./modules/displaymanager.js";
+import { TimeDisplay } from "./game/timedisplay.js";
 
 const blockWidth = 60;
 const blockHeight = 60;
@@ -59,6 +59,7 @@ export function resetDemo() {
 
   setTerrain(board);
   initBlockField(board);
+  // has to be called after setTerrain for the splatter canvas
   setDimensions(blockWidth, blockHeight);
 
   setGameDrawFunc(() => {
@@ -70,8 +71,11 @@ export function resetDemo() {
   addToGui("healthbar", healthbar);
   const bombdisplay = new BombDisplay(new Vector(0, 100));
   addToGui("bombdisplay", bombdisplay);
+  // TODO replace with some sort of border vec
   const scoredisplay = new ScoreDisplay(new Vector(getCanvasWidth() - 5, 5));
   addToGui("scoredisplay", scoredisplay);
+  const timedisplay = new TimeDisplay(new Vector(0, 200 - 32));
+  addToGui("timedisplay", timedisplay);
 
   // add menus to the GUI last as they should draw over everything else
   const deathscreen = new DeathScreen();
@@ -136,12 +140,12 @@ export function resetDemo() {
         tilesPerAdditionalPowerupChance
     );
     const powerup_num = Math.floor(Math.random() * additional_powerups) + 1;
-    caveLocations[i].length;
 
     for (let p = 0; p < powerup_num; p++) {
       /** @type {Vector} */
-      const randomTile =
-        caveLocations[i][Math.floor(Math.random() * caveLocations[i].length)];
+      const randomIndex = Math.floor(Math.random() * caveLocations[i].length);
+      const randomTile = caveLocations[i][randomIndex];
+      caveLocations[i].splice(randomIndex, 1);
 
       const location = randomTile.add(
         new Vector(blockWidth / 2, blockHeight / 2)

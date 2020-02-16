@@ -1,4 +1,4 @@
-# Proc Cave Game
+# Afterlight Caves
 
 Created by
 [Cole Granof](http://www.bandaloo.fun),
@@ -17,7 +17,7 @@ The best way to try out this project is to run a Node server that serves the
 static content. With node.js installed, do this:
 
 ```
-$ git clone https://github.com/bandaloo/proc-cave-game
+$ git clone https://github.com/bandaloo/afterlight-caves
 $ cd proc-cave-game
 $ npm install
 $ npm start

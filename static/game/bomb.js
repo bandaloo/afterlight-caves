@@ -1,6 +1,6 @@
 import { Entity } from "../modules/entity.js";
 import { Vector } from "../modules/vector.js";
-import { polygon, circle } from "./draw.js";
+import { polygon, circle, splatter } from "./draw.js";
 import { Particle, EffectEnum } from "./particle.js";
 import { addParticle, setBlock } from "../modules/gamemanager.js";
 import { getCell } from "../modules/collision.js";
@@ -51,8 +51,8 @@ export class Bomb extends Entity {
     this.maxFuseTime = fuseTime;
     this.onDetonate = new Array();
     this.onBlastCreature = new Array();
-    this.width = 75;
-    this.height = 75;
+    this.width = 56;
+    this.height = 56;
     // amount of time (in game steps) it takes to animate exploding
     this.timeToExplode = 20;
     this.blastRadius = 300;
@@ -122,8 +122,8 @@ export class Bomb extends Entity {
       polygon(
         this.drawPos,
         6,
-        this.width,
-        this.height,
+        this.width * 1.2,
+        this.height * 1.2,
         0,
         `hsl(${this.hue}, ${blink}%, 25%`,
         "white",
@@ -164,6 +164,20 @@ export class Bomb extends Entity {
             obj.func(this, obj.data, creature);
           });
         }
+      }
+    );
+    const sizeScalar = 0.1;
+    splatter(
+      this.pos,
+      "#222222dd",
+      this.blastRadius * sizeScalar,
+      "round",
+      undefined,
+      {
+        splats: 20,
+        offsetScalar: 7,
+        velocityScalar: 0,
+        sizeScalar: 1
       }
     );
   }
