@@ -1,3 +1,5 @@
+import { settings } from "../game/settings.js";
+
 /** the default amount for how many times the same sound can play at once */
 const MAX_SOUNDS = 1;
 
@@ -24,6 +26,8 @@ export function getSound(str) {
  * @return {HTMLAudioElement}
  */
 export function playSound(str, copy = true) {
+  if (settings["Mute all"]) return getSound(str);
+
   // return if no more of the same sound can be played
   if (soundMap.get(str).counter <= 0) return;
   soundMap.get(str).counter--;

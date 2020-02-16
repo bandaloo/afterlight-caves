@@ -21,10 +21,10 @@ export class SettingsMenu extends Menu {
   action() {
     const items = [];
 
-    for (const setting of settings) {
+    for (const key in settings) {
       items.push({ 
-        text: setting.name + "\t" + setting.value,
-        func: setting.onClick.bind(setting)
+        text: key + "\t" + settings[key].value,
+        func: settings[key].onClick.bind(settings[key])
       });
     }
     this.setItems(items);

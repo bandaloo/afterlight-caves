@@ -1,8 +1,7 @@
-import { pauseSound, loopSound, playSound } from "../modules/sound.js";
+import { pauseSound, loopSound, playSound, getSound } from "../modules/sound.js";
 
 export const settings = {
-  muteMusic: {
-    name: "Mute music",
+  "Mute music": {
     value: false,
     onClick() {
       this.value = !this.value;
@@ -10,12 +9,20 @@ export const settings = {
         pauseSound("captive-portal");
       } else {
         loopSound("captive-portal");
-        playSound("captive-portal", false);
+        getSound("captive-portal").play();
       }
     }
   },
-
-  *[Symbol.iterator]() {
-    yield this.muteMusic;
-  }
+  "Mute all": {
+    value: false,
+    onClick() {
+      this.value = !this.value;
+      if (this.value) {
+        pauseSound("captive-portal");
+      } else {
+        loopSound("captive-portal");
+        getSound("captive-portal").play();
+      }
+    }
+  },
 }
