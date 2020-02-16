@@ -158,7 +158,11 @@ export class DeathScreen extends Menu {
     const username = input.value;
     fetch("/score", {
       method: "POST",
-      body: JSON.stringify({ username: username, score: this.score }),
+      body: JSON.stringify({
+        username: username,
+        score: this.score,
+        verification: ""
+      }),
       headers: new Headers({
         "Content-Type": "application/json"
       })

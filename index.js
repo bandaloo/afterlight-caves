@@ -1,6 +1,72 @@
 const express = require("express");
 const fs = require("fs");
+const fsp = require("fs").promises;
 const app = express();
+const md5 = require("md5");
+var path = require("path");
+
+async function hashFiles(root) {
+  return new Promise((resolve, reject) => {
+    fsp.readdir(root).then(files => {
+      let totalHash = [];
+      let filesScanned = 0;
+      files.forEach(function(file, index) {
+        var fullPath = path.join(root, file);
+        fsp
+          .stat(fullPath)
+          .then(stat => {
+            if (stat.isDirectory()) {
+              return hashFiles(fullPath);
+            } else if (stat.isFile() && path.extname(file) == ".js") {
+              return fsp.readFile(fullPath);
+            } else {
+              return;
+            }
+          })
+          .catch(error => {
+            console.error("Error stating file " + file + ".", error);
+          })
+          .then(promiseVal => {
+            if (promiseVal === undefined) {
+              //pass
+            } else if (promiseVal instanceof Buffer) {
+              const hash = md5(promiseVal);
+              totalHash.push([file, hash]);
+            } else if (promiseVal instanceof Array) {
+              promiseVal.forEach(buf => {
+                totalHash.push(buf);
+              });
+            }
+            filesScanned++;
+            if (filesScanned == files.length) {
+              resolve(totalHash);
+            }
+          })
+          .catch(error => {
+            console.error("Could not read file " + file + " ", error);
+          });
+      });
+    });
+  }).catch(err => {
+    //console.error("Could not list the directory.", err);
+    console.error("Could not list the directory.", err);
+  });
+}
+
+async function getVerification() {
+  let filehashes = await hashFiles("./static");
+  filehashes.sort();
+  console.log("filehashes");
+  console.log(filehashes);
+  let totalString = "";
+  filehashes.forEach(hash => {
+    totalString += hash[1];
+  });
+  const finalhash = md5(totalString);
+  console.log("finalhash");
+  console.log(finalhash);
+  return finalhash;
+}
 
 /**
  * @param {express.Response} res
@@ -28,6 +94,8 @@ app.use(express.json());
 
 // get port from environment variable, or use 3000 as the default
 const port = process.env.NODE_PORT || 4000;
+
+const verification = getVerification();
 
 /**
  * gets the current list of scores from the server and returns it like this:
@@ -80,7 +148,16 @@ app.post("/score", (req, res) => {
   } else if (body.score === undefined) {
     sendRes(res, 400, "Missing score field");
     return;
+  } else if (body.verification === undefined) {
+    sendRes(res, 400, "Missing verification field");
   } else {
+    if (body.verification != verification) {
+      sendRes(
+        res,
+        401,
+        "Verification Failed. Verify your version of the game."
+      );
+    }
     fs.readFile("./scores.json", (err, data) => {
       // ignore 'no such file' errors, we'll create a new one
       if (err && err.code !== "ENOENT") {

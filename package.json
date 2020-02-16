@@ -7,7 +7,8 @@
     "test": "test"
   },
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "md5": "^2.2.1"
   },
   "devDependencies": {
     "@types/chai": "^4.2.3",
