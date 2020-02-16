@@ -16,12 +16,9 @@ export class Stats extends Menu {
   constructor() {
     super(new Vector(0, 0), getCanvasWidth(), getCanvasHeight());
     this.itemWidth = 500;
-    this.itemFillStyle = "rgba(0, 0, 0, 0)";
-    this.selectedFillStyle = "rgba(20, 20, 255, 1)";
-    this.itemStrokeStyle = "rgba(0, 0, 0, 0)";
     /** @type {CanvasTextAlign} */
     this.textAlign = "left";
-    this.textStyle = "50px sans-serif";
+    this.textStyle = "50px anonymous";
   }
 
   /**
@@ -42,15 +39,17 @@ export class Stats extends Menu {
    * @override
    */
   action() {
-    this.items = [];
+    let items = [];
     const hero = /** @type {Hero} */ (getImportantEntity("hero"));
+    // TODO kind of weird it is doing this every game step
     if (hero === undefined || hero === null) return;
     hero.powerUps.forEach((mag, name) => {
-      this.items.push({ text: name + "\t" + mag, func: undefined });
+      items.push({ text: name + "\t" + mag, func: undefined });
     });
-    if (this.items.length === 0) {
-      this.items = [{ text: "No power ups yet", func: undefined }];
+    if (items.length === 0) {
+      items = [{ text: "No power ups yet", func: undefined }];
     }
+    this.setItems(items);
     super.action();
   }
 

@@ -1,8 +1,13 @@
 import { GuiElement } from "../modules/guielement.js";
 import { Vector } from "../modules/vector.js";
-import { getCanvasWidth, getCanvasHeight } from "../modules/displaymanager.js";
+import {
+  getCanvasWidth,
+  getCanvasHeight,
+  getScreenDimensions
+} from "../modules/displaymanager.js";
 import { buttons } from "../modules/buttons.js";
 import { roundedRect, centeredText } from "./draw.js";
+import { clamp } from "../modules/helpers.js";
 
 /**
  * A vertical list of selectable items. Each item has text to display and a
@@ -75,15 +80,15 @@ export class Menu extends GuiElement {
     this.width = width;
     this.height = height;
     this.items = items;
-    this.itemFillStyle = "green";
-    this.selectedFillStyle = "#0000ff";
-    this.downFillStyle = "#4444cc";
+    this.itemFillStyle = "#101010";
+    this.selectedFillStyle = "#fa5b11";
+    this.downFillStyle = "#303030";
     this.itemStrokeStyle = "black";
     this.itemStrokeWidth = 4;
     this.itemBorderRadius = 0;
     this.itemHeight = 70;
     this.itemWidth = this.width;
-    this.textStyle = "bold 50px sans-serif";
+    this.textStyle = "bold 50px anonymous";
     this.textAlign = "center";
     this.textFillStyle = "white";
     this.itemMargin = 10;
@@ -93,6 +98,86 @@ export class Menu extends GuiElement {
     this.keyCounter = 0;
     this.keyRepeated = false;
     this.down = false;
+    this.lerpVal = 0;
+
+    // values for clamping the position of menu correctly
+    this.topPos = undefined;
+    this.bottomPos = undefined;
+    this.currentPos = undefined;
+  }
+
+  /**
+   * we need this because items isn't initialized in the constructor
+   * @param {{ text: string; func: () => void; }[]} items
+   */
+  setItems(items) {
+    this.items = items;
+    this.updateTopAndBottomPos();
+  }
+
+  calcMiddle() {
+    return this.pos.y + this.height / 2;
+  }
+
+  calcTopOffset() {
+    return -this.index * (this.itemMargin + this.itemHeight);
+  }
+
+  calcBottomOffset() {
+    return (
+      (this.items.length - this.index) * (this.itemMargin + this.itemHeight) -
+      this.itemMargin
+    );
+  }
+
+  calcListHeight() {
+    return (
+      this.items.length * (this.itemMargin + this.itemHeight) - this.itemMargin
+    );
+  }
+
+  /**
+   * calculate where the top should be given the bottom
+   * @param {number} bottom
+   */
+  calcTopFromBottom(bottom) {
+    return bottom - this.calcBottomOffset() + this.calcTopOffset();
+  }
+
+  updateTopAndBottomPos() {
+    const middle = this.calcMiddle();
+    const { height } = getScreenDimensions();
+
+    this.topPos = middle + this.calcTopOffset();
+
+    this.bottomPos = middle + this.calcBottomOffset();
+
+    if (this.calcListHeight() < height) {
+      this.offsetPos = height / 2 - this.calcListHeight() / 2;
+      return;
+    }
+
+    // adjust so that selected element is always centered
+    this.offsetPos = this.topPos;
+    let overTop = false;
+    let overBottom = false;
+    if (this.topPos > 0) {
+      // clamp to top
+      overTop = true;
+    }
+    if (this.bottomPos < height) {
+      // clamp to bottom
+      overBottom = true;
+    }
+
+    if (overTop && overBottom) {
+      // too small to clamp
+      this.offsetPos = this.calcMiddle();
+    } else if (overTop) {
+      this.offsetPos = 0;
+    } else if (overBottom) {
+      this.offsetPos = this.calcTopFromBottom(height);
+    }
   }
 
   /**
@@ -100,6 +185,7 @@ export class Menu extends GuiElement {
    * @override
    */
   action() {
+    this.lerpVal *= 0.9;
     if (buttons.back.status.isReleased) {
       // Fixes a bug where the button being released was seen by multiple menus
       // at once. You should press it multiple times to close multiple menus
@@ -137,22 +223,21 @@ export class Menu extends GuiElement {
    */
   move(num) {
     this.index += num;
-    if (this.index >= this.items.length) this.index = this.items.length - 1;
-    if (this.index < 0) this.index = 0;
+    this.index = clamp(this.index, 0, this.items.length - 1);
+    const prevPos = this.offsetPos;
+    this.updateTopAndBottomPos();
+    const currPos = this.offsetPos;
+    this.lerpVal += prevPos - currPos;
   }
 
   /**
    * draws this menu
-   * TODO some animations here would be nice
    * @override
    */
   draw() {
     const x = this.pos.x + this.itemMargin;
-    // adjust so that selected element is always centered
-    let y =
-      this.pos.y +
-      this.height / 2 -
-      this.index * (this.itemMargin + this.itemHeight);
+    let y = this.offsetPos;
+
     // adjust y if the selected element is off the screen
     for (let i = 0; i < this.items.length; ++i) {
       let downOffset = 0;
@@ -165,7 +250,10 @@ export class Menu extends GuiElement {
         }
       }
       roundedRect(
-        new Vector(x + (this.width - this.itemWidth) / 2, y + downOffset),
+        new Vector(
+          x + (this.width - this.itemWidth) / 2,
+          y + downOffset + this.lerpVal
+        ),
         this.itemWidth,
         this.itemHeight,
         style,
@@ -173,13 +261,16 @@ export class Menu extends GuiElement {
         this.itemStrokeWidth,
         this.itemBorderRadius
       );
-      this.drawText(x, y + downOffset, this.items[i].text);
+      this.drawText(x, y + this.lerpVal + downOffset, this.items[i].text);
       y += this.itemHeight + this.itemMargin;
     }
   }
 
   /**
    * draws text at the right location
+   * @param {number} x
+   * @param {number} y
+   * @param {string} text
    */
   drawText(x, y, text) {
     let textOffset = 0;

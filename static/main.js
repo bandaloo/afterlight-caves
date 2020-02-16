@@ -26,6 +26,7 @@ import { PauseScreen } from "./game/pausescreen.js";
 import { ScoreDisplay } from "./game/scoredisplay.js";
 import { DeathScreen } from "./game/deathscreen.js";
 import { setGameDrawFunc, getCanvasWidth } from "./modules/displaymanager.js";
+import { TimeDisplay } from "./game/timedisplay.js";
 
 const blockWidth = 60;
 const blockHeight = 60;
@@ -69,8 +70,11 @@ export function resetDemo() {
   addToGui("healthbar", healthbar);
   const bombdisplay = new BombDisplay(new Vector(0, 100));
   addToGui("bombdisplay", bombdisplay);
+  // TODO replace with some sort of border vec
   const scoredisplay = new ScoreDisplay(new Vector(getCanvasWidth() - 5, 5));
   addToGui("scoredisplay", scoredisplay);
+  const timedisplay = new TimeDisplay(new Vector(0, 200 - 32));
+  addToGui("timedisplay", timedisplay);
 
   // add menus to the GUI last as they should draw over everything else
   const deathscreen = new DeathScreen();

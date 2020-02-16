@@ -158,8 +158,8 @@ export class PowerUp extends Entity {
     // text
     centeredText(
       this.powerUpClass.slice(0, 1),
-      this.drawPos.add(new Vector(0, 16)),
-      "bold 50px sans-serif",
+      this.drawPos.add(new Vector(2, 16)),
+      "bold 50px anonymous",
       "center",
       "alphabetic",
       drawColor

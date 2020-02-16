@@ -569,7 +569,7 @@ export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
 /**
  * @param {string} text
  * @param {Vector} centerVec
- * @param {string} [fontStyle] default "bold 50px sans-serif"
+ * @param {string} [fontStyle] default "bold 50px anonymous"
  * @param {CanvasTextAlign} [align] default "center"
  * @param {CanvasTextBaseline} [baseline] default "alphabetic"
  * @param {string|CanvasGradient|CanvasPattern} [fillStyle] leave undefined for
@@ -581,7 +581,7 @@ export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
 export function centeredText(
   text,
   centerVec,
-  fontStyle = "bold 50px sans-serif",
+  fontStyle = "bold 50px anonymous",
   align = "center",
   baseline = "alphabetic",
   fillStyle,
