@@ -3,11 +3,17 @@ export const resources = [
 
   { name: "hit-breakable", file: "../sounds/hit-breakable.wav" },
   { name: "enemy-hurt", file: "../sounds/enemy-hurt.wav" },
+  { name: "hero-hurt", file: "../sounds/hero-hurt.wav" },
   { name: "power-up", file: "../sounds/power-up.wav" },
   { name: "shoot", file: "../sounds/shoot.wav" },
   { name: "death", file: "../sounds/death.wav" },
   { name: "gem", file: "../sounds/gem.wav" },
+  { name: "menu-nav", file: "../sounds/menu-nav.wav" },
+  { name: "menu-back", file: "../sounds/menu-back.wav" },
+  { name: "menu-select", file: "../sounds/menu-select.wav" },
+  { name: "bomb-explode", file: "../sounds/bomb-explode.wav" },
 
+  // power up names
   { name: "amplify", file: "../sounds/powerups/amplify.wav" },
   { name: "icy", file: "../sounds/powerups/icy.wav" },
   { name: "nitroglycerin", file: "../sounds/powerups/nitroglycerin.wav" },
@@ -35,6 +41,7 @@ export const resources = [
   { name: "quick-shot", file: "../sounds/powerups/quick-shot.wav" },
   { name: "yeet", file: "../sounds/powerups/yeet.wav" },
 
+  // power up magnitudes
   { name: "one", file: "../sounds/powerups/one.wav" },
   { name: "two", file: "../sounds/powerups/two.wav" },
   { name: "three", file: "../sounds/powerups/three.wav" },

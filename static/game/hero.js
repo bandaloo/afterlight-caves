@@ -181,6 +181,7 @@ export class Hero extends Creature {
    * @override
    */
   takeDamage(amt) {
+    playSound("hero-hurt");
     if (this.invincibilityFrames <= 0) {
       super.takeDamage(amt);
       this.invincibilityFrames = this.invincibilityFramesMax;

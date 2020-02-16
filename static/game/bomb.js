@@ -5,6 +5,7 @@ import { Particle, EffectEnum } from "./particle.js";
 import { addParticle, setBlock } from "../modules/gamemanager.js";
 import { getCell } from "../modules/collision.js";
 import { destroyBlock } from "./block.js";
+import {playSound} from "../modules/sound.js";
 
 /**
  * This class represents a bomb that creatures can place in the game world,
@@ -148,6 +149,8 @@ export class Bomb extends Entity {
    * makes the bomb go kaboom
    */
   detonate() {
+    // TODO make this play for the whole duration of the explosion
+    if (this.onScreen()) playSound("bomb-explode");
     this.occludedByWalls = false;
     for (const od of this.onDetonate) {
       if (od) od.func(this, od.data);
