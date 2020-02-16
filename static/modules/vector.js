@@ -160,6 +160,10 @@ class Vector {
   toString() {
     return `[${this.x}, ${this.y}]`;
   }
+
+  getAngle() {
+    return Math.atan2(this.y, this.x);
+  }
 }
 
 export { Vector };
