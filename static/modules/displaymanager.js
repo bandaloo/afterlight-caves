@@ -39,6 +39,8 @@ class DisplayManager {
     this.displayHeight = displayHeight;
     this.displayCanvas.width = displayWidth;
     this.displayCanvas.height = displayHeight;
+    this.displayCanvas.id = "canvas";
+    this.displayCanvas.tabIndex = 0;
 
     // the untouched canvas for blurring before copying
     this.blurCanvas = document.createElement("canvas");

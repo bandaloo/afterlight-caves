@@ -84,6 +84,7 @@ class GameManager {
 
     document.getElementById("name-input").addEventListener("blur", () => {
       collectInput(true);
+      document.getElementById("canvas").focus();
     });
 
     collectInput(true);
