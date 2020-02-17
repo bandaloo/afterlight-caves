@@ -84,7 +84,13 @@ export class Enemy extends Creature {
    * @param {import("./hero.js").Hero} hero
    */
   touchHero(hero) {
-    if (isCollidingCheat(hero, this, CHEAT_RADIUS)) {
+    if (
+      isCollidingCheat(
+        hero.getCollisionShape(),
+        this.getCollisionShape(),
+        CHEAT_RADIUS
+      )
+    ) {
       // impart momentum
       if (hero.invincibilityFrames <= 0) {
         const sizeDiff =

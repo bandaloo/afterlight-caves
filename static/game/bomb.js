@@ -5,7 +5,7 @@ import { Particle, EffectEnum } from "./particle.js";
 import { addParticle, setBlock } from "../modules/gamemanager.js";
 import { getCell } from "../modules/collision.js";
 import { destroyBlock } from "./block.js";
-import {playSound} from "../modules/sound.js";
+import { playSound } from "../modules/sound.js";
 
 /**
  * This class represents a bomb that creatures can place in the game world,
@@ -187,10 +187,10 @@ export class Bomb extends Entity {
 
   /**
    * @override
-   * @param {Entity} entity
+   * @param {Vector} pos
    */
-  collideWithBlock(entity) {
-    const cellVec = getCell(entity.pos);
+  collideWithBlock(pos) {
+    const cellVec = getCell(pos);
     if (this.fuseTime <= 0) {
       if (setBlock(cellVec.x, cellVec.y, 0)) {
         destroyBlock(cellVec, this.owner.type === "Hero");

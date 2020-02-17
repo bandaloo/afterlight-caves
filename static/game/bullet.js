@@ -63,7 +63,14 @@ export class Bullet extends Entity {
     this.collideMap.set(
       entityType,
       /** @param {import ("./creature.js").Creature} c */ c => {
-        if (entityType === "Enemy" || isCollidingCheat(c, this, CHEAT_RADIUS)) {
+        if (
+          entityType === "Enemy" ||
+          isCollidingCheat(
+            c.getCollisionShape(),
+            this.getCollisionShape(),
+            CHEAT_RADIUS
+          )
+        ) {
           // deal basic damage
           c.takeDamage(this.damage);
           // impart momentum
@@ -116,10 +123,10 @@ export class Bullet extends Entity {
 
   /**
    * what to do when hitting a block
-   * @param {Entity} entity
+   * @param {Vector} pos
    */
-  collideWithBlock(entity) {
-    const cellVec = getCell(entity.pos);
+  collideWithBlock(pos) {
+    const cellVec = getCell(pos);
     if (
       inbounds(cellVec.x, cellVec.y) &&
       blockField[cellVec.x][cellVec.y].durability !== Infinity

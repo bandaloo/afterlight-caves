@@ -3,8 +3,8 @@ import {
   adjustEntity,
   isColliding,
   CollisionShape,
-  CollisionBox,
-  CollisionCircle
+  Box,
+  Circle
 } from "./collision.js";
 import { getScreenDimensions, getCameraOffset } from "./displaymanager.js";
 
@@ -53,19 +53,6 @@ export class Entity {
 
   /** @type {number} maximum magnitude acceleration can have */
   maxAccMag = Infinity;
-
-  // TODO these are only useful for collision tests; is there a better way?
-  /** @type {boolean} */
-  collidesLeft = true;
-
-  /** @type {boolean} */
-  collidesRight = true;
-
-  /** @type {boolean} */
-  collidesTop = true;
-
-  /** @type {boolean} */
-  collidesBottom = true;
 
   /**
    * amount of game steps to live before entity is destroyed
@@ -128,17 +115,17 @@ export class Entity {
 
   getCollisionShape() {
     if (this.colllisionType == "Box") {
-      return new CollisionBox(this.width, this.height, this.pos);
+      return new Box(this.width, this.height, this.pos);
     }
     if (this.colllisionType == "Circle") {
-      return new CollisionCircle(Math.min(this.width, this.height), this.pos);
+      return new Circle(Math.min(this.width, this.height), this.pos);
     }
     return new CollisionShape("undefined", this.pos);
   }
 
   onScreen() {
     const { width: screenWidth, height: screenHeight } = getScreenDimensions();
-    const screenBox = new CollisionBox(
+    const screenBox = new Box(
       screenWidth,
       screenHeight,
       new Vector(screenWidth / 2, screenHeight / 2).add(
@@ -191,7 +178,7 @@ export class Entity {
   }
 
   /**
-   * @param {Entity} entity
+   * @param {Vector} pos
    */
-  collideWithBlock(entity) {}
+  collideWithBlock(pos) {}
 }

@@ -5,7 +5,6 @@ import { Vector } from "../modules/vector.js";
 import { Bomb } from "./bomb.js";
 import { Bullet } from "./bullet.js";
 import { StatusEffect } from "./statuseffect.js";
-import {Hero} from "./hero.js";
 
 /**
  * Reduces damage according to defense
