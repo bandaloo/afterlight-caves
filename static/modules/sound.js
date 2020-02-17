@@ -26,7 +26,8 @@ export function getSound(str) {
  * @return {HTMLAudioElement}
  */
 export function playSound(str, copy = true) {
-  if (settings["Mute all"]) return getSound(str);
+  console.log(settings["Mute all"]);
+  if (settings["Mute all"].value) return getSound(str);
 
   // return if no more of the same sound can be played
   if (soundMap.get(str).counter <= 0) return;

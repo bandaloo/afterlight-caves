@@ -5,13 +5,13 @@ import { centeredText, drawShines, circle } from "./draw.js";
 import { TextDisplay } from "./textdisplay.js";
 import { addToWorld } from "../modules/gamemanager.js";
 
+/** number of points a powerup is worth per magnitude */
+export const POWER_UP_POINTS_FACTOR = 50;
+
 /**
  * @abstract
  */
 export class PowerUp extends Entity {
-  // number of points a powerup is worth per magnitude
-  static POINTS_FACTOR = 50;
-
   /**
    * constructs a new powerup
    * @param {number} [magnitude = 1] each powerup has a magnitude 1-5, e.g. how

@@ -3,7 +3,7 @@ import { circle } from "./draw.js";
 import { buttons } from "../modules/buttons.js";
 import { addParticle, toggleGuiElement } from "../modules/gamemanager.js";
 import { Particle, EffectEnum } from "./particle.js";
-import { PowerUp } from "./powerup.js";
+import { PowerUp, POWER_UP_POINTS_FACTOR } from "./powerup.js";
 import { Creature } from "./creature.js";
 import { playSound, getSound } from "../modules/sound.js";
 
@@ -54,7 +54,7 @@ export class Hero extends Creature {
         spark.multiplier = 8;
         addParticle(spark);
       }
-      this.addPoints(entity.magnitude * PowerUp.POINTS_FACTOR);
+      this.addPoints(entity.magnitude * POWER_UP_POINTS_FACTOR);
       // play sound
       let magSound;
       switch (entity.magnitude) {
@@ -181,8 +181,8 @@ export class Hero extends Creature {
    * @override
    */
   takeDamage(amt) {
-    playSound("hero-hurt");
     if (this.invincibilityFrames <= 0) {
+      playSound("hero-hurt");
       super.takeDamage(amt);
       this.invincibilityFrames = this.invincibilityFramesMax;
     }
