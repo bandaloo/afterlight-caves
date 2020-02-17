@@ -31,6 +31,30 @@ export function solidAt(i, j) {
 }
 
 /**
+ * return object containing corner cell positions of given entity
+ * @param {Entity} entity
+ * @returns {{topLeft: Vector, bottomRight: Vector}}
+ */
+export function calcCorners(entity) {
+  // Top left corner
+  const topLeftCell = getCell(
+    new Vector(
+      entity.pos.x - entity.width / 2,
+      entity.pos.y - entity.height / 2
+    )
+  );
+
+  const bottomRightCell = getCell(
+    new Vector(
+      entity.pos.x + entity.width / 2,
+      entity.pos.y + entity.height / 2
+    )
+  );
+
+  return { topLeft: topLeftCell, bottomRight: bottomRightCell };
+}
+
+/**
  * Returns a list of collision objects to represent the cells the entiity is
  * colliding with.
  * @param {Entity} entity
@@ -38,20 +62,7 @@ export function solidAt(i, j) {
 export function collideWithWorld(entity) {
   const { width: blockWidth, height: blockHeight } = getDimensions();
 
-  // Top left corner
-  const topLeft = getCell(
-    new Vector(
-      entity.pos.x - entity.width / 2,
-      entity.pos.y - entity.height / 2
-    )
-  );
-
-  const bottomRight = getCell(
-    new Vector(
-      entity.pos.x + entity.width / 2,
-      entity.pos.y + entity.height / 2
-    )
-  );
+  const { topLeft: topLeft, bottomRight: bottomRight } = calcCorners(entity);
 
   let collidingEntities = [];
 

@@ -2,8 +2,16 @@ import { Entity } from "../modules/entity.js";
 import { Vector } from "../modules/vector.js";
 import { polygon, circle, splatter } from "./draw.js";
 import { Particle, EffectEnum } from "./particle.js";
-import { addParticle, setBlock } from "../modules/gamemanager.js";
-import { getCell, isCollidingCheat } from "../modules/collision.js";
+import {
+  addParticle,
+  setBlock,
+  cellToWorldPosition
+} from "../modules/gamemanager.js";
+import {
+  getCell,
+  isCollidingCheat,
+  calcCorners
+} from "../modules/collision.js";
 import { destroyBlock } from "./block.js";
 import { CHEAT_RADIUS } from "./hero.js";
 
@@ -105,6 +113,23 @@ export class Bomb extends Entity {
         p.width = 20;
         p.height = 20;
         addParticle(p);
+
+        // iterate through all overlapping blocks
+        const { topLeft: topLeft, bottomRight: bottomRight } = calcCorners(
+          this
+        );
+
+        for (let i = topLeft.x; i < bottomRight.x + 1; i++) {
+          for (let j = topLeft.y; j < bottomRight.y + 1; j++) {
+            const cellVec = new Vector(i, j);
+            if (
+              cellToWorldPosition(cellVec).dist2(this.pos) <
+              (this.width / 2) ** 2
+            ) {
+              destroyBlock(cellVec, this.owner.type === "Hero");
+            }
+          }
+        }
       }
     } else if (this.fuseTime < -1 * this.timeToExplode) {
       // done exploding
@@ -189,6 +214,7 @@ export class Bomb extends Entity {
    * @override
    * @param {Entity} entity
    */
+  /*
   collideWithBlock(entity) {
     const cellVec = getCell(entity.pos);
     if (this.fuseTime <= 0) {
@@ -197,4 +223,5 @@ export class Bomb extends Entity {
       }
     }
   }
+  */
 }
