@@ -13,16 +13,10 @@ export const settings = {
       }
     }
   },
-  "Mute all": {
+  "Mute sound effects": {
     value: false,
     onClick() {
       this.value = !this.value;
-      if (this.value) {
-        pauseSound("captive-portal");
-      } else {
-        loopSound("captive-portal");
-        getSound("captive-portal").play();
-      }
     }
   },
 }
