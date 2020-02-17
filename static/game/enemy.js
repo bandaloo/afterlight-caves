@@ -13,6 +13,7 @@ import { CHEAT_RADIUS, Hero } from "./hero.js";
 import { EffectEnum, Particle } from "./particle.js";
 import { Pickup, PickupEnum } from "./pickup.js";
 import { splatter } from "./draw.js";
+import { powerUpTypes } from "./powerups/poweruptypes.js";
 
 /**
  * an enum for allowed shapes of enemies
@@ -136,6 +137,13 @@ export class Enemy extends Creature {
         );
         addToWorld(childEnemy);
         randDir += (2 * Math.PI) / spawnNum;
+      }
+      if (this.matryoshka > 1) {
+        // drop a level 1 power up as a reward
+        const powerUp = new powerUpTypes[
+          Math.floor(Math.random() * powerUpTypes.length)
+        ](Math.min(5, this.matryoshka - 1), this.pos);
+        addToWorld(powerUp);
       }
     }
 
