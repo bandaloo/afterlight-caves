@@ -31,33 +31,43 @@ export function solidAt(i, j) {
 }
 
 /**
+ * return object containing corner cell positions of given entity
+ * @param {CollisionShape} shape
+ * @returns {{topLeft: Vector, bottomRight: Vector}}
+ */
+export function calcCorners(shape) {
+  // Top left corner
+  const topLeftCell = getCell(
+    new Vector(shape.pos.x - shape.width / 2, shape.pos.y - shape.height / 2)
+  );
+
+  const bottomRightCell = getCell(
+    new Vector(shape.pos.x + shape.width / 2, shape.pos.y + shape.height / 2)
+  );
+
+  return { topLeft: topLeftCell, bottomRight: bottomRightCell };
+}
+
+/**
  * Returns a list of collision objects to represent the cells the entiity is
  * colliding with.
  * @param {CollisionShape} shape
- * @returns {Box[]}
  */
 export function collideWithWorld(shape) {
   const { width: blockWidth, height: blockHeight } = getDimensions();
 
-  // Top left corner
-  const top_left = getCell(
-    new Vector(shape.pos.x - shape.width / 2, shape.pos.y - shape.height / 2)
-  );
-
-  const bottom_right = getCell(
-    new Vector(shape.pos.x + shape.width / 2, shape.pos.y + shape.height / 2)
-  );
+  const { topLeft: topLeft, bottomRight: bottomRight } = calcCorners(shape);
 
   let terrainCollision = [];
 
-  // Iterate over any block within collision range of the shape
-  for (let i = top_left.x; i < bottom_right.x + 1; i++) {
-    for (let j = top_left.y; j < bottom_right.y + 1; j++) {
-      // If this block is solid, create a shape for it
+  // Iterate over any block within collision range of the entity
+  for (let i = topLeft.x; i < bottomRight.x + 1; i++) {
+    for (let j = topLeft.y; j < bottomRight.y + 1; j++) {
+      // If this block is solid, create an entity for it
       if (solidAt(i, j)) {
         let x = (i + 1) * blockWidth - blockWidth / 2;
         let y = (j + 1) * blockHeight - blockHeight / 2;
-        let b = new Box(blockWidth, blockHeight, new Vector(x, y));
+        let b = new Box(blockHeight, blockWidth, new Vector(x, y));
 
         // Determine if this cell needs has neighbors, and thus if it needs collision.
         if (solidAt(i + 1, j)) b.collidesRight = false;
@@ -80,82 +90,37 @@ export function collideWithWorld(shape) {
 }
 
 /**
- * Determines if two shapes are colliding if there is defined behavior
+ * Given two Shapes A and B, calculates the smallest vector needed to apply
+ * to entity A to prevent collision. Returns empty vector if A and B are not
+ * colliding.
  * @param {CollisionShape} shapeA
  * @param {CollisionShape} shapeB
- * @returns {boolean}
+ * @returns {Vector}
  */
-export function isColliding(shapeA, shapeB) {
-  const typeA = shapeA.type;
-  const typeB = shapeB.type;
-  if (typeA == "Box" && typeB == "Box") {
-    return isColliding_BoxBox(
+export function collide(shapeA, shapeB) {
+  if (shapeA instanceof Box && shapeB instanceof Box) {
+    return collide_BoxBox(
       /* @type {Box} */ (shapeA),
       /* @type {Box} */ (shapeB)
     );
-  } else if (typeA == "Circle" && typeB == "Box") {
-    return isColliding_BoxCircle(
+  } else if (shapeA instanceof Circle && shapeB instanceof Box) {
+    return collide_BoxCircle(
       /* @type {Box} */ (shapeB),
       /* @type {Circle} */ (shapeA)
     );
-  } else if (typeA == "Box" && typeB == "Circle") {
-    return isColliding_BoxCircle(
+  } else if (shapeA instanceof Box && shapeB instanceof Circle) {
+    return collide_BoxCircle(
       /* @type {Box} */ (shapeA),
       /* @type {Circle} */ (shapeB)
     );
-  } else if (typeA == "Circle" && typeB == "Circle") {
-    return isColliding_CircleCircle(
+  } else if (shapeA instanceof Circle && shapeB instanceof Circle) {
+    return collide_CircleCircle(
       /* @type {Circle} */ (shapeA),
       /* @type {Circle} */ (shapeB)
     );
   } else {
-    return false;
+    return new Vector(0, 0);
   }
-}
-
-/**
- * Determines if two Boxes are colliding
- * @param {Box} boxA
- * @param {Box} boxB
- * @returns {boolean}
- */
-export function isColliding_BoxBox(boxA, boxB) {
-  const aLeft = boxA.pos.x - boxA.width / 2;
-  const aTop = boxA.pos.y - boxA.height / 2;
-  const bLeft = boxB.pos.x - boxB.width / 2;
-  const bTop = boxB.pos.y - boxB.height / 2;
-
-  if (
-    aLeft + boxA.width > bLeft &&
-    aLeft < bLeft + boxB.width &&
-    aTop + boxA.height > bTop &&
-    aTop < bTop + boxB.height
-  ) {
-    return true;
-  }
-  return false;
-}
-
-/**
- * Determines if two Boxes are colliding
- * @param {Box} boxA
- * @param {Circle} circleB
- * @returns {boolean}
- */
-export function isColliding_BoxCircle(boxA, circleB) {
-  return false;
-}
-
-/**
- * Determines if two Circles are colliding
- * @param {Circle} circleA
- * @param {Circle} circleB
- * @returns {boolean}
- */
-export function isColliding_CircleCircle(circleA, circleB) {
-  const dist2 = circleA.pos.dist2(circleB.pos);
-  const radius2 = Math.pow(circleA.radius + circleB.radius, 2);
-  return dist2 < radius2;
 }
 
 /**
@@ -172,14 +137,92 @@ export function isCollidingCheat(shapeA, shapeB, cheatRadius) {
 }
 
 /**
- * Given two entities A and B, calculates the smallest vector needed to apply
- * to entity A to prevent collision. Returns empty vector if A and B are not
- * colliding. Assumes rectangle A does not surround rectangle B
+ * Determines if two Circles are colliding
+ * @param {Circle} circleA
+ * @param {Circle} circleB
+ * @returns {Vector}
+ */
+export function collide_CircleCircle(circleA, circleB) {
+  const dist = circleA.pos.dist(circleB.pos);
+  const radius = circleA.radius + circleB.radius;
+
+  let cVector = new Vector(0, 0);
+  // If the circles are colliding, find out by how much
+  if (dist < radius) {
+    const move = radius - dist;
+    cVector.x = circleB.pos.x - circleA.pos.x;
+    cVector.y = circleB.pos.y - circleA.pos.y;
+    cVector = cVector.norm();
+    cVector = cVector.mult(move);
+  }
+
+  return cVector;
+}
+
+/**
+ * Determines if two Boxes are colliding
+ * @param {Box} boxA
+ * @param {Circle} circleB
+ * @returns {Vector}
+ */
+export function collide_BoxCircle(boxA, circleB) {
+  const aRight = boxA.pos.x + boxA.width / 2;
+  const aLeft = boxA.pos.x - boxA.width / 2;
+  const aBottom = boxA.pos.y + boxA.height / 2;
+  const aTop = boxA.pos.y - boxA.height / 2;
+
+  // let testX = circleB.pos.x;
+  // let testY = circleB.pos.y;
+  // if (circleB.pos.x < boxA.pos.x) testX = aLeft;
+  // else if (circleB.pos.x > boxA.pos.x + boxA.width) testX = aRight;
+  // if (circleB.pos.y < boxA.pos.y) testY = aTop;
+  // else if (circleB.pos.y < boxA.pos.y + boxA.height) testY = aBottom;
+
+  // // get distance from closest edges
+  // let distX = circleB.pos.x - testX;
+  // let distY = circleB.pos.y - testY;
+  // let distance = Math.sqrt(distX * distX + distY * distY);
+
+  let cVector = new Vector(0, 0);
+
+  const nearestX = Math.max(aLeft, Math.min(circleB.pos.x, aRight));
+  const nearestY = Math.max(aTop, Math.min(circleB.pos.y, aBottom));
+  const nearestCorner = new Vector(nearestX, nearestY);
+
+  // if the distance is less than the radius, collision!
+  if (nearestCorner != circleB.pos) {
+    let dist = circleB.pos.dist(nearestCorner);
+    if (dist < circleB.radius && dist != 0) {
+      // console.log(
+      //   " dist from " +
+      //     circleB.pos +
+      //     " to " +
+      //     nearestCorner +
+      //     " shorter than " +
+      //     circleB.radius
+      // );
+      console.log("collision!");
+
+      //Find the closest corner
+      const nearestX = Math.max(aLeft, Math.min(circleB.pos.x, aRight));
+      const nearestY = Math.max(aTop, Math.min(circleB.pos.y, aBottom));
+      // const dist = new Vector(circleB.pos.x - nearestX, circleB.pos.y - nearestY);
+      // const depth = circleB.radius - dist.mag();
+      // cVector = dist.norm();
+      // cVector = cVector.mult(depth);
+    }
+  }
+
+  return cVector;
+}
+
+/**
+ * Calculates the collision vector for two boxes
  * @param {Box} boxA
  * @param {Box} boxB
  * @returns {Vector}
  */
-export function calculateCollisionVector_BoxBox(boxA, boxB) {
+export function collide_BoxBox(boxA, boxB) {
   // Define the 4 corners of each bounding rectangle
   const aRight = boxA.pos.x + boxA.width / 2;
   const aLeft = boxA.pos.x - boxA.width / 2;
@@ -190,37 +233,47 @@ export function calculateCollisionVector_BoxBox(boxA, boxB) {
   const bBottom = boxB.pos.y + boxB.height / 2;
   const bTop = boxB.pos.y - boxB.height / 2;
 
+  //TODO: check to make sure A surrounding B still works.
+
   let cVector = new Vector(0, 0);
-  // If the right wall of A is between the horizontal walls of B
-  if (bLeft < aRight && aRight < bRight) {
-    cVector.x = aRight - bLeft;
-  }
-  // If the left wall of A is between the horizontal walls of B
-  if (bLeft < aLeft && aLeft < bRight) {
-    cVector.x = aLeft - bRight;
-  }
-  // If the bottom wall of A is between the vertical walls of B
-  if (bTop < aBottom && aBottom < bBottom) {
-    cVector.y = aBottom - bTop;
-  }
-  // If the top wall of A is between the vertical walls of B
-  if (bTop < aTop && aTop < bBottom) {
-    cVector.y = aTop - bBottom;
-  }
+  // If the boxes are colliding, find out by how much
+  if (
+    aLeft + boxA.width > bLeft &&
+    aLeft < bLeft + boxB.width &&
+    aTop + boxA.height > bTop &&
+    aTop < bTop + boxB.height
+  ) {
+    // If the right wall of A is between the horizontal walls of B
+    if (bLeft < aRight && aRight < bRight) {
+      cVector.x = aRight - bLeft;
+    }
+    // If the left wall of A is between the horizontal walls of B
+    if (bLeft < aLeft && aLeft < bRight) {
+      cVector.x = aLeft - bRight;
+    }
+    // If the bottom wall of A is between the vertical walls of B
+    if (bTop < aBottom && aBottom < bBottom) {
+      cVector.y = aBottom - bTop;
+    }
+    // If the top wall of A is between the vertical walls of B
+    if (bTop < aTop && aTop < bBottom) {
+      cVector.y = aTop - bBottom;
+    }
 
-  // If the shape doesn't have collision in a direction, make sure it doesn't
-  // have the vector points that way.
-  if (!boxB.collidesBottom) cVector.y = Math.max(0, cVector.y);
-  if (!boxB.collidesTop) cVector.y = Math.min(0, cVector.y);
-  if (!boxB.collidesLeft) cVector.x = Math.min(0, cVector.x);
-  if (!boxB.collidesRight) cVector.x = Math.max(0, cVector.x);
+    // If the shape doesn't have collision in a direction, make sure it doesn't
+    // have the vector points that way.
+    if (!boxB.collidesBottom) cVector.y = Math.max(0, cVector.y);
+    if (!boxB.collidesTop) cVector.y = Math.min(0, cVector.y);
+    if (!boxB.collidesLeft) cVector.x = Math.min(0, cVector.x);
+    if (!boxB.collidesRight) cVector.x = Math.max(0, cVector.x);
 
-  // Only return the "easier" direction to resolve from.
-  // TODO: figure out why this works?
-  if (Math.abs(cVector.x) < Math.abs(cVector.y) && cVector.x != 0) {
-    cVector.y = 0;
-  } else if (Math.abs(cVector.y) < Math.abs(cVector.x) && cVector.y != 0) {
-    cVector.x = 0;
+    // Only return the "easier" direction to resolve from.
+    // TODO: figure out why this works?
+    if (Math.abs(cVector.x) < Math.abs(cVector.y) && cVector.x != 0) {
+      cVector.y = 0;
+    } else if (Math.abs(cVector.y) < Math.abs(cVector.x) && cVector.y != 0) {
+      cVector.x = 0;
+    }
   }
 
   return cVector;
@@ -245,13 +298,12 @@ export function adjustEntity(entity) {
   // Iterate through each colliding entity, and get a vector that defines how
   // "collided" they are
   for (let i = 0; i < terrainCollision.length; i++) {
-    const collisionVector = calculateCollisionVector(
+    const collisionVector = collide(
       entity.getCollisionShape(),
       terrainCollision[i]
     );
 
     if (!collisionVector.isZeroVec()) {
-      console.log("colliding");
       collisionVectors.push(collisionVector);
       hitTerrain.push(terrainCollision[i]);
     }
@@ -259,24 +311,28 @@ export function adjustEntity(entity) {
   if (entity.occludedByWalls) {
     // Keep track of how far entity moved during adjustment.
     const mv = new Vector(0, 0);
+
+    //TODO: this is used to prevent multiple of the same collision from different wall
+    // tiles from being applied. The COREECT solution is to build the "world" collision objects better
+    // do that.
+    let alreadyAppliedVectorsX = [];
+    let alreadyAppliedVectorsY = [];
+
     // For each colliding vector, resolve the collision.
     for (let i = 0; i < collisionVectors.length; i++) {
       const cv = collisionVectors[i];
-      if (Math.abs(cv.x) > Math.abs(cv.y) && cv.x != 0) {
-        // If x is the "easiest" solution (but not 0), use x.
-        if (Math.abs(cv.x) > Math.abs(mv.x)) {
-          mv.x = cv.x;
-        }
-      } else if (Math.abs(cv.y) > Math.abs(cv.x) && cv.y != 0) {
-        // If y is the "easiest" solution (but not 0), use y.
-        if (Math.abs(cv.y) > Math.abs(mv.y)) {
-          mv.y = cv.y;
-        }
-      } else {
-        // If X and Y are equal, resolve them both.
+
+      //TODO: This fixed multiple of the same collision being applied. Find another way.
+
+      if (!alreadyAppliedVectorsX.includes(cv.x)) {
         entity.pos.x -= cv.x;
-        entity.pos.y -= cv.y;
+        alreadyAppliedVectorsX.push(cv.x);
       }
+      if (!alreadyAppliedVectorsY.includes(cv.y)) {
+        entity.pos.y -= cv.y;
+        alreadyAppliedVectorsY.push(cv.y);
+      }
+      // }
     }
 
     entity.pos = entity.pos.sub(mv);
@@ -308,6 +364,12 @@ export class CollisionShape {
   /** @type {"Box"|"Circle"|"undefined"} */
   type;
 
+  /** @type {number} */
+  width;
+
+  /** @type {number} */
+  height;
+
   /**
    * Class used to store collision information
    * @param {"Box"|"Circle"|"undefined"} type
@@ -320,12 +382,6 @@ export class CollisionShape {
 }
 
 export class Box extends CollisionShape {
-  /** @type {number} */
-  width;
-
-  /** @type {number} */
-  height;
-
   /** @type {boolean} */
   collidesLeft = true;
 
@@ -363,5 +419,7 @@ export class Circle extends CollisionShape {
   constructor(radius, pos) {
     super("Circle", pos);
     this.radius = radius;
+    this.width = radius * 2;
+    this.height = radius * 2;
   }
 }

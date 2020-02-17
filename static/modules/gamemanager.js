@@ -8,7 +8,7 @@ import {
   getGamepadInput,
   buttons
 } from "./buttons.js";
-import { isColliding } from "./collision.js";
+import { collide } from "./collision.js";
 import { Entity, FarEnum } from "./entity.js";
 import { inPlaceFilter } from "./helpers.js";
 import { Vector } from "./vector.js";
@@ -23,9 +23,6 @@ import {
   setSplatterSize,
   addDisplayToDiv
 } from "./displaymanager.js";
-
-// TODO move this
-const BLUR_SCALAR = 2;
 
 // TODO move this to displaymanager
 export const SPLATTER_SCALAR = 4;
@@ -73,6 +70,8 @@ class GameManager {
 
   /** @type {boolean} */
   gamePause = false;
+
+  displayCanvas = undefined;
 
   /**
    * map for entities that game programmer might want to access frequently, like player
@@ -261,10 +260,10 @@ class GameManager {
           if (collideEntities !== undefined) {
             for (let k = 0; k < collideEntities.length; k++) {
               if (
-                isColliding(
+                !collide(
                   targetEntity.getCollisionShape(),
                   collideEntities[k].getCollisionShape()
-                )
+                ).isZeroVec()
               ) {
                 targetEntity.collideWithEntity(collideEntities[k]);
               }
@@ -399,7 +398,7 @@ export function inbounds(i, j) {
  * @returns {boolean} whether the block was able to be set
  */
 export function setBlock(i, j, val) {
-  if (inbounds(i, j)) {
+  if (inbounds(i, j) && gameManager.terrain[i][j] !== val) {
     gameManager.terrain[i][j] = val;
     // was able to set it
     return true;

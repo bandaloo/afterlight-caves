@@ -1,10 +1,10 @@
 import { Vector } from "./vector.js";
 import {
   adjustEntity,
-  isColliding,
   CollisionShape,
   Box,
-  Circle
+  Circle,
+  collide
 } from "./collision.js";
 import { getScreenDimensions, getCameraOffset } from "./displaymanager.js";
 
@@ -118,7 +118,7 @@ export class Entity {
       return new Box(this.width, this.height, this.pos);
     }
     if (this.colllisionType == "Circle") {
-      return new Circle(Math.min(this.width, this.height), this.pos);
+      return new Circle(Math.min(this.width, this.height) / 2, this.pos);
     }
     return new CollisionShape("undefined", this.pos);
   }
@@ -132,7 +132,7 @@ export class Entity {
         getCameraOffset().mult(-1)
       )
     );
-    return isColliding(this.getCollisionShape(), screenBox);
+    return !collide(this.getCollisionShape(), screenBox).isZeroVec() || true;
   }
 
   /**
