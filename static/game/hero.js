@@ -3,9 +3,9 @@ import { circle } from "./draw.js";
 import { buttons } from "../modules/buttons.js";
 import { addParticle, toggleGuiElement } from "../modules/gamemanager.js";
 import { Particle, EffectEnum } from "./particle.js";
-import { PowerUp } from "./powerup.js";
+import { PowerUp, POWER_UP_POINTS_FACTOR } from "./powerup.js";
 import { Creature } from "./creature.js";
-import { playSound } from "../modules/sound.js";
+import { playSound, getSound } from "../modules/sound.js";
 
 const DEFAULT_SIZE = 50;
 
@@ -41,14 +41,12 @@ export class Hero extends Creature {
     this.bombHue = 126;
     this.bulletColor = "white";
     this.score = 0;
-    this.setBombDamage(10);
+    this.setBombDamage(18);
 
     // collect powerups when you collide with them
-    this.collideMap.set("PowerUp", entity => {
-      playSound("spacey-snd");
-      /** @type {PowerUp} */ (entity).apply(this);
+    this.collideMap.set("PowerUp", (/** @type {PowerUp} */ entity) => {
+      entity.apply(this);
       for (let i = 0; i < 30; i++) {
-        // TODO move this to the destroy of powerup
         let randColor =
           "hsl(" + Math.floor(Math.random() * 360) + ", 100%, 50%)";
         const spark = new Particle(this.pos, randColor, EffectEnum.spark);
@@ -56,6 +54,31 @@ export class Hero extends Creature {
         spark.multiplier = 8;
         addParticle(spark);
       }
+      this.addPoints(entity.magnitude * POWER_UP_POINTS_FACTOR);
+      // play sound
+      let magSound;
+      switch (entity.magnitude) {
+        case 1:
+          magSound = "one";
+          break;
+        case 2:
+          magSound = "two";
+          break;
+        case 3:
+          magSound = "three";
+          break;
+        case 4:
+          magSound = "four";
+          break;
+        case 5:
+          magSound = "five";
+          break;
+      }
+      const puClassSound = entity.powerUpClass.toLowerCase().replace(" ", "-");
+      playSound("power-up");
+      const duration = getSound(puClassSound).duration;
+      setTimeout(() => playSound(puClassSound), 300);
+      setTimeout(() => playSound(magSound), duration * 1000 + 250);
       entity.deleteMe = true;
     });
 
@@ -114,7 +137,7 @@ export class Hero extends Creature {
     this.acc = buttons.move.vec.mult(this.movementMultiplier);
     // prevents velocity from getting too small and normalization messing up
     if (this.shoot(buttons.shoot.vec, this.vel.mult(0.5))) {
-      playSound("laser-shot");
+      playSound("shoot");
     }
     if (!buttons.shoot.vec.isZeroVec()) {
       const normalizedShootVec = buttons.shoot.vec.norm2();
@@ -135,6 +158,7 @@ export class Hero extends Creature {
   }
 
   destroy() {
+    playSound("death");
     for (let i = 0; i < 40; i++) {
       let p = new Particle(
         this.pos,
@@ -158,6 +182,7 @@ export class Hero extends Creature {
    */
   takeDamage(amt) {
     if (this.invincibilityFrames <= 0) {
+      playSound("hero-hurt");
       super.takeDamage(amt);
       this.invincibilityFrames = this.invincibilityFramesMax;
     }

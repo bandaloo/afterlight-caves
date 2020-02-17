@@ -15,6 +15,7 @@ import {
   getScreenDimensions,
   toggleFullscreen
 } from "../modules/displaymanager.js";
+import { SettingsMenu } from "./settingsmenu.js";
 
 export class PauseScreen extends Menu {
   /** @type {Menu[]} */
@@ -31,7 +32,11 @@ export class PauseScreen extends Menu {
     const stats = new Stats();
     stats.active = false;
     addToGui("stats", stats);
-    this.childMenus = [codex, stats];
+    const settingsmenu = new SettingsMenu();
+    settingsmenu.active = false;
+    addToGui("settingsmenu", settingsmenu);
+    this.childMenus = [codex, stats, settingsmenu];
+    
 
     this.setItems([
       { text: "Resume", func: this.onBack.bind(this) },
@@ -47,6 +52,13 @@ export class PauseScreen extends Menu {
         func: () => {
           this.active = false;
           toggleGuiElement("stats");
+        }
+      },
+      {
+        text: "Settings",
+        func: () => {
+          this.active = false;
+          toggleGuiElement("settingsmenu");
         }
       },
       {
@@ -68,9 +80,9 @@ export class PauseScreen extends Menu {
 
   action() {
     if (document.fullscreenElement === null) {
-      this.items[3].text = "Enter fullscreen";
+      this.items[4].text = "Enter fullscreen";
     } else {
-      this.items[3].text = "Exit fullscreen";
+      this.items[4].text = "Exit fullscreen";
     }
     super.action();
   }

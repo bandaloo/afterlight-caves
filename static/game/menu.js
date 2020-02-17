@@ -8,6 +8,7 @@ import {
 import { buttons } from "../modules/buttons.js";
 import { roundedRect, centeredText } from "./draw.js";
 import { clamp } from "../modules/helpers.js";
+import { playSound } from "../modules/sound.js";
 
 /**
  * A vertical list of selectable items. Each item has text to display and a
@@ -194,6 +195,7 @@ export class Menu extends GuiElement {
     }
     this.down = buttons.select.status.isDown;
     if (buttons.select.status.isReleased) {
+      playSound("menu-select");
       if (this.items[this.index] && this.items[this.index].func !== undefined)
         this.items[this.index].func();
     }
@@ -222,6 +224,7 @@ export class Menu extends GuiElement {
    * @param {number} num number of items to move (positive or negative)
    */
   move(num) {
+    playSound("menu-nav");
     this.index += num;
     this.index = clamp(this.index, 0, this.items.length - 1);
     const prevPos = this.offsetPos;
@@ -301,6 +304,7 @@ export class Menu extends GuiElement {
    * By default pressing 'back' closes the menu, but can be overriden
    */
   onBack() {
+    playSound("menu-back");
     this.active = false;
   }
 }
