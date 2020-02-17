@@ -145,19 +145,6 @@ export function collide(shapeA, shapeB, resolve = true) {
 }
 
 /**
- * Determines if two entities are colliding and if damage should take place
- * @param {CollisionShape} shapeA
- * @param {CollisionShape} shapeB
- * @param {number} cheatRadius
- */
-export function isCollidingCheat(shapeA, shapeB, cheatRadius) {
-  return (
-    shapeA.pos.sub(shapeB.pos).mag() <
-    shapeA.width / 2 + shapeB.width / 2 - cheatRadius
-  );
-}
-
-/**
  * Determines if two Circles are colliding
  * @param {Circle} circleA
  * @param {Circle} circleB
@@ -191,7 +178,6 @@ export function collide_CircleCircle(circleA, circleB, resolve) {
  */
 export function collide_BoxCircle(boxA, circleB, resolve) {
   // Short-Circut for speed
-  // TODO: maybe this is a valid use for isCollidingCheat?
   const distanceBetween = circleB.pos.dist(boxA.pos);
   const vecBetween = circleB.pos.sub(boxA.pos);
   if (circleB.pos.dist(boxA.pos) > boxA.width + circleB.radius) {
@@ -199,22 +185,28 @@ export function collide_BoxCircle(boxA, circleB, resolve) {
   }
 
   // Define box constants
+  // These constraints are helpful so that we don't calculate collision for
+  // parts of the box that are inactive, i.e. a box that doesn't collide on
+  // the top won't include it's top line segment.
   const aRight = boxA.pos.x + boxA.width / 2;
   const aLeft = boxA.pos.x - boxA.width / 2;
   const aBottom = boxA.pos.y + boxA.height / 2;
   const aTop = boxA.pos.y - boxA.height / 2;
-  const points = [
-    new Vector(aLeft, aTop), //Top Left
-    new Vector(aLeft, aBottom), //Bottom Left
-    new Vector(aRight, aTop), // Top Right
-    new Vector(aRight, aBottom) // Bottom Right
-  ];
-  const sides = [
-    [points[0], points[1]], //Left
-    [points[2], points[3]], //Right
-    [points[0], points[2]], //Top
-    [points[1], points[3]] //Bottom
-  ];
+  const points = [];
+  if (boxA.collidesLeft && boxA.collidesTop)
+    points.push(new Vector(aLeft, aTop)); // Top Left
+  if (boxA.collidesRight && boxA.collidesTop)
+    points.push(new Vector(aRight, aTop)); // Top Right
+  if (boxA.collidesLeft && boxA.collidesBottom)
+    points.push(new Vector(aLeft, aBottom)); // Bottom Left
+  if (boxA.collidesRight && boxA.collidesBottom)
+    points.push(new Vector(aRight, aBottom)); // Bottom Right
+
+  const sides = [];
+  if (boxA.collidesTop) sides.push([points[0], points[2]]);
+  if (boxA.collidesBottom) sides.push([points[1], points[3]]);
+  if (boxA.collidesLeft) sides.push([points[0], points[1]]);
+  if (boxA.collidesRight) sides.push([points[2], points[3]]);
 
   // Define circle constants
   const bRight = circleB.pos.x + circleB.radius;
@@ -385,7 +377,6 @@ export function collide_BoxBox(boxA, boxB, resolve) {
     if (!boxB.collidesRight) cVector.x = Math.max(0, cVector.x);
 
     // Only return the "easier" direction to resolve from.
-    // TODO: figure out why this works?
     if (Math.abs(cVector.x) < Math.abs(cVector.y) && cVector.x != 0) {
       cVector.y = 0;
     } else if (Math.abs(cVector.y) < Math.abs(cVector.x) && cVector.y != 0) {
@@ -429,27 +420,10 @@ export function adjustEntity(entity) {
     // Keep track of how far entity moved during adjustment.
     const mv = new Vector(0, 0);
 
-    //TODO: this is used to prevent multiple of the same collision from different wall
-    // tiles from being applied. The COREECT solution is to build the "world" collision objects better
-    // do that.
-    let alreadyAppliedVectorsX = [];
-    let alreadyAppliedVectorsY = [];
-
     // For each colliding vector, resolve the collision.
     for (let i = 0; i < collisionVectors.length; i++) {
       const cv = collisionVectors[i];
-
-      //TODO: This fixed multiple of the same collision being applied. Find another way.
-
-      if (!alreadyAppliedVectorsX.includes(cv.x)) {
-        entity.pos.x -= cv.x;
-        alreadyAppliedVectorsX.push(cv.x);
-      }
-      if (!alreadyAppliedVectorsY.includes(cv.y)) {
-        entity.pos.y -= cv.y;
-        alreadyAppliedVectorsY.push(cv.y);
-      }
-      // }
+      entity.pos = entity.pos.sub(cv);
     }
 
     entity.pos = entity.pos.sub(mv);

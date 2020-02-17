@@ -1,4 +1,4 @@
-import { getCell, isCollidingCheat } from "../modules/collision.js";
+import { getCell } from "../modules/collision.js";
 import { Entity, FarEnum } from "../modules/entity.js";
 import { addParticle, inbounds, setBlock } from "../modules/gamemanager.js";
 import { Vector } from "../modules/vector.js";
@@ -63,25 +63,16 @@ export class Bullet extends Entity {
     this.collideMap.set(
       entityType,
       /** @param {import ("./creature.js").Creature} c */ c => {
-        if (
-          entityType === "Enemy" ||
-          isCollidingCheat(
-            c.getCollisionShape(),
-            this.getCollisionShape(),
-            CHEAT_RADIUS
-          )
-        ) {
-          // deal basic damage
-          c.takeDamage(this.damage);
-          // impart momentum
-          const size = (c.width * c.height) / 300;
-          c.vel = c.vel.add(this.vel.mult(this.knockback / size));
-          // call onHitEnemy functions
-          for (const ohe of this.onHitEnemy) {
-            if (ohe.func) ohe.func(this, ohe.data, c);
-          }
-          this.deleteMe = true;
+        // deal basic damage
+        c.takeDamage(this.damage);
+        // impart momentum
+        const size = (c.width * c.height) / 300;
+        c.vel = c.vel.add(this.vel.mult(this.knockback / size));
+        // call onHitEnemy functions
+        for (const ohe of this.onHitEnemy) {
+          if (ohe.func) ohe.func(this, ohe.data, c);
         }
+        this.deleteMe = true;
       }
     );
   }
