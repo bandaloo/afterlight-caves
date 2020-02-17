@@ -21,18 +21,16 @@ export class TimeDisplay extends GuiElement {
   }
 
   action() {
-    if (!getPause()) {
+    // prevent the timer from ticking down while the player is dead
+    const deathScreen = /** @type {DeathScreen} */ (getGuiElement(
+      "deathscreen"
+    ));
+    if (!getPause() && !deathScreen.active) {
       if (this.time > 0) {
         this.time--;
       } else {
-        // prevents the cause of death from being set after hero death
         /** @type {Hero} */ (getImportantEntity("hero")).takeDamage(Infinity);
-        const deathScreen = /** @type {DeathScreen} */ (getGuiElement(
-          "deathscreen"
-        ));
-        if (!deathScreen.active) {
-          deathScreen.causeOfDeath = "Time up";
-        }
+        deathScreen.causeOfDeath = "Time up";
       }
       // exactly on a second
       if (this.time !== 0 && this.time % 100 === 0) {
@@ -49,6 +47,9 @@ export class TimeDisplay extends GuiElement {
   }
 
   draw() {
+    let color = "white";
+    if (this.time < 100 * 30) color = "orange";
+    if (this.time < 100 * 10) color = "red";
     // draw time
     centeredText(
       this.stepsToTimeString(),
@@ -56,7 +57,7 @@ export class TimeDisplay extends GuiElement {
       `bold ${Math.floor(this.animPulse * 8 + 60)}px anonymous`,
       "left",
       "middle",
-      "white"
+      color
     );
   }
 }
