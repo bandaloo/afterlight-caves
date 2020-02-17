@@ -24,9 +24,6 @@ import {
   addDisplayToDiv
 } from "./displaymanager.js";
 
-// TODO move this
-const BLUR_SCALAR = 2;
-
 // TODO move this to displaymanager
 export const SPLATTER_SCALAR = 4;
 
