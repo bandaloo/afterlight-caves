@@ -25,6 +25,7 @@ import { BombDisplay } from "./game/bombdisplay.js";
 import { PauseScreen } from "./game/pausescreen.js";
 import { ScoreDisplay } from "./game/scoredisplay.js";
 import { DeathScreen } from "./game/deathscreen.js";
+import { resources } from "./game/resources.js";
 import { setGameDrawFunc, getCanvasWidth } from "./modules/displaymanager.js";
 import { TimeDisplay } from "./game/timedisplay.js";
 
@@ -163,13 +164,6 @@ export function resetDemo() {
   }
 }
 
-const resources = [
-  { name: "enemy-hurt", file: "../sounds/enemy-hurt.wav" },
-  { name: "laser-shot", file: "../sounds/laser-shot.wav" },
-  { name: "spacey-snd", file: "../sounds/spacey-snd.wav" },
-  { name: "captive-portal", file: "../sounds/captive-portal.mp3" }
-];
-
 let loaded = 0;
 
 // load all resources
@@ -214,7 +208,7 @@ startForm.onsubmit = start;
 
 // spin doing nothing while we wait for everything load
 const checkLoading = () => {
-  if (loaded < 1) {
+  if (1 - loaded > 0.001) {
     barFill.style.width = loaded * 100 + "%";
     requestAnimationFrame(checkLoading);
   } else {
