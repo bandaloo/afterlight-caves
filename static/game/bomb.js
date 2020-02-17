@@ -209,19 +209,4 @@ export class Bomb extends Entity {
       }
     );
   }
-
-  /**
-   * @override
-   * @param {Entity} entity
-   */
-  /*
-  collideWithBlock(entity) {
-    const cellVec = getCell(entity.pos);
-    if (this.fuseTime <= 0) {
-      if (setBlock(cellVec.x, cellVec.y, 0)) {
-        destroyBlock(cellVec, this.owner.type === "Hero");
-      }
-    }
-  }
-  */
 }
