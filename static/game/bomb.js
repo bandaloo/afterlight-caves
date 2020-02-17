@@ -2,10 +2,19 @@ import { Entity } from "../modules/entity.js";
 import { Vector } from "../modules/vector.js";
 import { polygon, circle, splatter } from "./draw.js";
 import { Particle, EffectEnum } from "./particle.js";
-import { addParticle, setBlock } from "../modules/gamemanager.js";
-import { getCell } from "../modules/collision.js";
+import {
+  addParticle,
+  setBlock,
+  cellToWorldPosition
+} from "../modules/gamemanager.js";
+import {
+  getCell,
+  isCollidingCheat,
+  calcCorners
+} from "../modules/collision.js";
 import { destroyBlock } from "./block.js";
-import {playSound} from "../modules/sound.js";
+import { CHEAT_RADIUS } from "./hero.js";
+import { playSound } from "../modules/sound.js";
 
 /**
  * This class represents a bomb that creatures can place in the game world,
@@ -105,6 +114,23 @@ export class Bomb extends Entity {
         p.width = 20;
         p.height = 20;
         addParticle(p);
+
+        // iterate through all overlapping blocks
+        const { topLeft: topLeft, bottomRight: bottomRight } = calcCorners(
+          this
+        );
+
+        for (let i = topLeft.x; i < bottomRight.x + 1; i++) {
+          for (let j = topLeft.y; j < bottomRight.y + 1; j++) {
+            const cellVec = new Vector(i, j);
+            if (
+              cellToWorldPosition(cellVec).dist2(this.pos) <
+              (this.width / 2) ** 2
+            ) {
+              destroyBlock(cellVec, this.owner.type === "Hero");
+            }
+          }
+        }
       }
     } else if (this.fuseTime < -1 * this.timeToExplode) {
       // done exploding
@@ -159,13 +185,15 @@ export class Bomb extends Entity {
       this.good ? "Enemy" : "Hero",
       /** @param {import("./creature.js").Creature} creature */ creature => {
         // deal damage only every 1/2 second or at the very end of the explosion
-        if (
-          this.fuseTime === -1 * this.timeToExplode ||
-          this.fuseTime % 30 === 0
-        ) {
-          this.onBlastCreature.map(obj => {
-            obj.func(this, obj.data, creature);
-          });
+        if (isCollidingCheat(creature, this, this.good ? 0 : CHEAT_RADIUS)) {
+          if (
+            this.fuseTime === -1 * this.timeToExplode ||
+            this.fuseTime % 30 === 0
+          ) {
+            this.onBlastCreature.map(obj => {
+              obj.func(this, obj.data, creature);
+            });
+          }
         }
       }
     );
@@ -183,18 +211,5 @@ export class Bomb extends Entity {
         sizeScalar: 1
       }
     );
-  }
-
-  /**
-   * @override
-   * @param {Entity} entity
-   */
-  collideWithBlock(entity) {
-    const cellVec = getCell(entity.pos);
-    if (this.fuseTime <= 0) {
-      if (setBlock(cellVec.x, cellVec.y, 0)) {
-        destroyBlock(cellVec, this.owner.type === "Hero");
-      }
-    }
   }
 }
