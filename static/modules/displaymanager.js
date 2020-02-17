@@ -5,7 +5,7 @@ import { GuiElement } from "./guielement.js";
 import { settings } from "../game/settings.js";
 
 const BLUR_SCALAR = 2;
-
+export const FILTER_STRING = "blur(3px) brightness(200%)";
 export const SPLATTER_SCALAR = 4;
 
 class DisplayManager {
@@ -127,15 +127,13 @@ class DisplayManager {
     // clear the drawing canvas with alpha 0
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-    if (settings["Glow effect"].value) {
-      // clear the blur canvas with alpha 0
-      this.blurContext.clearRect(
-        0,
-        0,
-        this.blurCanvas.width,
-        this.blurCanvas.height
-      );
-    }
+    // clear the blur canvas with alpha 0
+    this.blurContext.clearRect(
+      0,
+      0,
+      this.blurCanvas.width,
+      this.blurCanvas.height
+    );
 
     if (settings["Splatter effects"].value) {
       // copy the splatter canvas onto the drawing canvas
@@ -177,16 +175,14 @@ class DisplayManager {
     // restore drawing context
     this.context.restore();
 
-    if (settings["Glow effect"].value) {
-      // copy the drawing canvas onto the blur canvas
-      this.blurContext.drawImage(
-        this.canvas,
-        0,
-        0,
-        this.canvas.width / BLUR_SCALAR,
-        this.canvas.height / BLUR_SCALAR
-      );
-    }
+    // copy the drawing canvas onto the blur canvas
+    this.blurContext.drawImage(
+      this.canvas,
+      0,
+      0,
+      this.canvas.width / BLUR_SCALAR,
+      this.canvas.height / BLUR_SCALAR
+    );
 
     // align camera, draw the gui, reset camera
     // this is after the draw canvas is copied to the blur canvas
@@ -201,15 +197,13 @@ class DisplayManager {
     this.cameraOffset = originalOffset;
 
     // copy the blur canvas onto the display canvas
-    if (settings["Glow effect"].value) {
-      this.displayContext.drawImage(
-        this.blurCanvas,
-        0,
-        0,
-        this.displayCanvas.width,
-        this.displayCanvas.height
-      );
-    }
+    this.displayContext.drawImage(
+      this.blurCanvas,
+      0,
+      0,
+      this.displayCanvas.width,
+      this.displayCanvas.height
+    );
 
     // save display context
     this.displayContext.save();
@@ -258,6 +252,13 @@ export function getContext() {
  */
 export function getSplatterContext() {
   return displayManager.splatterContext;
+}
+
+/**
+ * returns the blur context
+ */
+export function getBlurContext() {
+  return displayManager.blurContext;
 }
 
 /**

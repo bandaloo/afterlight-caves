@@ -4,6 +4,7 @@ import {
   playSound,
   getSound
 } from "../modules/sound.js";
+import { getBlurContext, FILTER_STRING } from "../modules/displaymanager.js";
 
 export const settings = {
   "Mute music": {
@@ -46,6 +47,9 @@ export const settings = {
     },
     onClick() {
       this.value = !this.value;
+      this.value
+        ? (getBlurContext().filter = FILTER_STRING)
+        : (getBlurContext().filter = "none");
     }
   },
   "Splatter effects": {
@@ -56,5 +60,5 @@ export const settings = {
     onClick() {
       this.value = !this.value;
     }
-  },
+  }
 };
