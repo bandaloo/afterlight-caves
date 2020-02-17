@@ -2,7 +2,8 @@ import { GuiElement } from "../modules/guielement.js";
 import { Creature } from "./creature.js";
 import { getImportantEntity } from "../modules/gamemanager.js";
 import { Vector } from "../modules/vector.js";
-import { centeredText, rect } from "./draw.js";
+import { centeredText } from "./draw.js";
+
 export class BombDisplay extends GuiElement {
   /** @type {Vector} */
   borderVec;
@@ -28,10 +29,13 @@ export class BombDisplay extends GuiElement {
   }
 
   draw() {
+    // fixes issue with BombDisplay loading before hero
+    if (this.currentBombs === undefined) this.currentBombs = 0;
+    if (this.maxBombs === undefined) this.maxBombs = 0;
     centeredText(
       `${this.currentBombs} / ${this.maxBombs}`,
       this.pos.add(this.borderVec),
-      "bold 60px sans-serif",
+      "bold 60px anonymous",
       "left",
       "middle",
       "white"

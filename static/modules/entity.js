@@ -6,7 +6,7 @@ import {
   CollisionBox,
   CollisionCircle
 } from "./collision.js";
-import { getScreenDimensions, getCameraOffset } from "./gamemanager.js";
+import { getScreenDimensions, getCameraOffset } from "./displaymanager.js";
 
 /**
  * an enum for types of actions on far away

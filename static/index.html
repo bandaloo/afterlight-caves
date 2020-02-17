@@ -2,32 +2,45 @@
 <html lang="en-US">
   <head>
     <meta charset="utf-8" />
-    <title>Proc Cave Game</title>
+    <title>Afterlight Caves</title>
     <script type="module" src="main.js"></script>
     <link href="style.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
     <div id="gamediv-holder">
-      <h1>Proc Cave Game</h1>
+      <h1 class="title">Afterlight Caves</h1>
+      <span id="version">Beta version 0.6.1</span>
+
+      <input
+        type="text"
+        id="name-input"
+        maxlength="64"
+        placeholder="Name (optional)"
+      />
+
       <div id="gamediv"></div>
+
       <p style="text-align:center">
-        WASD: move<br/>
-        arrow keys: shoot<br/>
-        space: bomb<br/>
-        F: Fullscreen<br/>
-        P: Pause.<br/>
-      <p>
+        🎮🎮🎮 <b>Try using a controller for analog controls!</b> 🎮🎮🎮<br />
+        wasd <i>(or left sick)</i>: move<br />
+        arrow keys <i>(or right stick)</i>: shoot<br />
+        space <i>(or LB/L1)</i>: bomb<br />
+        space <i>(or A/cross)</i>: select<br />
+        tab <i>(or B/circle)</i>: back<br />
+        f: fullscreen<br />
+        p <i>(or start)</i>: pause<br />
+      </p>
     </div>
 
     <div id="credits-container">
       <p id="credits">
         &copy; 2020
-        <a href="http://bandaloo.fun">Cole Granof</a>,
+        <a href="https://www.bandaloo.fun">Cole Granof</a>,
         <a href="https://petitti.org">Joseph Petitti</a>, and
         <a href="https://www.mattpuentes.com/">Matt Puentes</a>
       </p>
       <p id="license">
-        <a href="https://github.com/bandaloo/proc-cave-game">Source code</a>
+        <a href="https://github.com/bandaloo/afterlight-caves">Source code</a>
         released under the terms of the <a href="license.txt">MIT license</a>
       </p>
     </div>

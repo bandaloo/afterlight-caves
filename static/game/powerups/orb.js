@@ -14,7 +14,7 @@ export class Orb extends PowerUp {
    * @param {Vector} [pos]
    */
   constructor(magnitude = 1, pos) {
-    super(magnitude, pos, "Orb", "Bombs create into bullets when they explode");
+    super(magnitude, pos, "Orb", "Bombs explosions make bullet rings");
     /**
      * @type {{name: string, data: number, func: (b: Bomb, n: number) => void}} */
     this.existingOrb = undefined;

@@ -51,6 +51,7 @@ class Directional {
     this.left = new Button(leftKey);
     this.vAxisIndex = vAxisIndex;
     this.hAxisIndex = hAxisIndex;
+    /** @type {Vector} */
     this.vec = new Vector(0, 0);
   }
 
@@ -58,11 +59,35 @@ class Directional {
    * Sets this vec for a directional based on what buttons are being pressed
    */
   setVecFromButtons() {
-    this.vec = new Vector(0, 0);
-    if (this.left.status.isDown) this.vec.x -= 1;
-    if (this.right.status.isDown) this.vec.x += 1;
-    if (this.up.status.isDown) this.vec.y -= 1;
-    if (this.down.status.isDown) this.vec.y += 1;
+    // temporarily make all values 1
+    this.vec.x = Math.sign(this.vec.x);
+    this.vec.y = Math.sign(this.vec.y);
+
+    // set the vec based on key presses
+    if (this.left.status.isPressed) this.vec.x = -1;
+    if (this.right.status.isPressed) this.vec.x = 1;
+    if (this.up.status.isPressed) this.vec.y = -1;
+    if (this.down.status.isPressed) this.vec.y = 1;
+
+    // adjust the vec based on key releases
+    if (this.left.status.isReleased) {
+      if (this.right.status.isDown) this.vec.x = 1;
+      else this.vec.x = 0;
+    }
+    if (this.right.status.isReleased) {
+      if (this.left.status.isDown) this.vec.x = -1;
+      else this.vec.x = 0;
+    }
+    if (this.up.status.isReleased) {
+      if (this.down.status.isDown) this.vec.y = 1;
+      else this.vec.y = 0;
+    }
+    if (this.down.status.isReleased) {
+      if (this.up.status.isDown) this.vec.y = -1;
+      else this.vec.y = 0;
+    }
+
+    // normalize (all components of vec were made 1, -1 and 0 before)
     this.vec = this.vec.norm2();
   }
 
@@ -106,8 +131,11 @@ export const buttons = {
 
   primary: new Button(" ", 4),
   secondary: new Button("e", 5),
-  fullscreen: new Button("f", 8),
+  select: new Button(" ", 0),
+  back: new Button("Tab", 1),
+  fullscreen: new Button("f", 3),
   pause: new Button("p", 9),
+  reset: new Button("r", 8),
 
   /** @return {Directional[]} */
   getDirectionals() {
@@ -116,7 +144,15 @@ export const buttons = {
 
   /** @return {Button[]} */
   getButtons() {
-    return [this.primary, this.secondary, this.fullscreen, this.pause];
+    return [
+      this.primary,
+      this.secondary,
+      this.select,
+      this.back,
+      this.fullscreen,
+      this.pause,
+      this.reset
+    ];
   },
 
   *[Symbol.iterator]() {
