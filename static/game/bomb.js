@@ -3,8 +3,9 @@ import { Vector } from "../modules/vector.js";
 import { polygon, circle, splatter } from "./draw.js";
 import { Particle, EffectEnum } from "./particle.js";
 import { addParticle, setBlock } from "../modules/gamemanager.js";
-import { getCell } from "../modules/collision.js";
+import { getCell, isCollidingCheat } from "../modules/collision.js";
 import { destroyBlock } from "./block.js";
+import { CHEAT_RADIUS } from "./hero.js";
 
 /**
  * This class represents a bomb that creatures can place in the game world,
@@ -156,13 +157,15 @@ export class Bomb extends Entity {
       this.good ? "Enemy" : "Hero",
       /** @param {import("./creature.js").Creature} creature */ creature => {
         // deal damage only every 1/2 second or at the very end of the explosion
-        if (
-          this.fuseTime === -1 * this.timeToExplode ||
-          this.fuseTime % 30 === 0
-        ) {
-          this.onBlastCreature.map(obj => {
-            obj.func(this, obj.data, creature);
-          });
+        if (isCollidingCheat(creature, this, this.good ? 0 : CHEAT_RADIUS)) {
+          if (
+            this.fuseTime === -1 * this.timeToExplode ||
+            this.fuseTime % 30 === 0
+          ) {
+            this.onBlastCreature.map(obj => {
+              obj.func(this, obj.data, creature);
+            });
+          }
         }
       }
     );
