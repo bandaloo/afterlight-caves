@@ -1,13 +1,13 @@
+import { Creature } from "./creature.js";
 import { Vector } from "../modules/vector.js";
 import { circle } from "./draw.js";
 import { buttons } from "../modules/buttons.js";
 import { addParticle, toggleGuiElement } from "../modules/gamemanager.js";
 import { Particle, EffectEnum } from "./particle.js";
 import { PowerUp, POWER_UP_POINTS_FACTOR } from "./powerup.js";
-import { Creature } from "./creature.js";
 import { playSound, getSound } from "../modules/sound.js";
 
-const DEFAULT_SIZE = 50;
+const DEFAULT_SIZE = 60;
 
 // circles have to overlap by this many units for hero to be hit
 export const CHEAT_RADIUS = 16;

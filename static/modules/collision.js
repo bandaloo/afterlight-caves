@@ -160,57 +160,142 @@ export function collide_CircleCircle(circleA, circleB) {
 }
 
 /**
- * Determines if two Boxes are colliding
+ * Determines if a box and a circle are colliding
  * @param {Box} boxA
  * @param {Circle} circleB
  * @returns {Vector}
  */
 export function collide_BoxCircle(boxA, circleB) {
+  // Short-Circut for speed
+  // TODO: maybe this is a valid use for isCollidingCheat?
+  const distanceBetween = circleB.pos.dist(boxA.pos);
+  if (circleB.pos.dist(boxA.pos) > boxA.width + circleB.radius) {
+    return new Vector(0, 0);
+  }
+
+  // Define box constants
   const aRight = boxA.pos.x + boxA.width / 2;
   const aLeft = boxA.pos.x - boxA.width / 2;
   const aBottom = boxA.pos.y + boxA.height / 2;
   const aTop = boxA.pos.y - boxA.height / 2;
+  const points = [
+    new Vector(aLeft, aTop), //Top Left
+    new Vector(aLeft, aBottom), //Bottom Left
+    new Vector(aRight, aTop), // Top Right
+    new Vector(aRight, aBottom) // Bottom Right
+  ];
+  const sides = [
+    [points[0], points[1]], //Left
+    [points[2], points[3]], //Right
+    [points[0], points[2]], //Top
+    [points[1], points[3]] //Bottom
+  ];
 
-  // let testX = circleB.pos.x;
-  // let testY = circleB.pos.y;
-  // if (circleB.pos.x < boxA.pos.x) testX = aLeft;
-  // else if (circleB.pos.x > boxA.pos.x + boxA.width) testX = aRight;
-  // if (circleB.pos.y < boxA.pos.y) testY = aTop;
-  // else if (circleB.pos.y < boxA.pos.y + boxA.height) testY = aBottom;
+  // Define circle constants
+  const bRight = circleB.pos.x + circleB.radius;
+  const bLeft = circleB.pos.x - circleB.radius;
+  const bBottom = circleB.pos.y + circleB.radius;
+  const bTop = circleB.pos.y - circleB.radius;
+  //Radius2 used for comparing with dist2
+  const radius2 = circleB.radius ** 2;
 
-  // // get distance from closest edges
-  // let distX = circleB.pos.x - testX;
-  // let distY = circleB.pos.y - testY;
-  // let distance = Math.sqrt(distX * distX + distY * distY);
-
+  //The return vector
   let cVector = new Vector(0, 0);
 
-  const nearestX = Math.max(aLeft, Math.min(circleB.pos.x, aRight));
-  const nearestY = Math.max(aTop, Math.min(circleB.pos.y, aBottom));
-  const nearestCorner = new Vector(nearestX, nearestY);
-
-  // if the distance is less than the radius, collision!
-  if (nearestCorner != circleB.pos) {
-    let dist = circleB.pos.dist(nearestCorner);
-    if (dist < circleB.radius && dist != 0) {
-      // console.log(
-      //   " dist from " +
-      //     circleB.pos +
-      //     " to " +
-      //     nearestCorner +
-      //     " shorter than " +
-      //     circleB.radius
-      // );
-      console.log("collision!");
-
-      //Find the closest corner
-      const nearestX = Math.max(aLeft, Math.min(circleB.pos.x, aRight));
-      const nearestY = Math.max(aTop, Math.min(circleB.pos.y, aBottom));
-      // const dist = new Vector(circleB.pos.x - nearestX, circleB.pos.y - nearestY);
-      // const depth = circleB.radius - dist.mag();
-      // cVector = dist.norm();
-      // cVector = cVector.mult(depth);
+  // Firstly, if the circle's position is within the horizontal or vertical bounds of the box, check for side collision.
+  // TODO: This is very similar to the BoxvBox collision code, we should make this more DRY
+  if (
+    (aTop < circleB.pos.y && circleB.pos.y < aBottom) ||
+    (aLeft < circleB.pos.x && circleB.pos.x < aRight)
+  ) {
+    // If the right bounds of A is between the horizontal bounds of B
+    if (bLeft < aRight && aRight < bRight) {
+      cVector.x = bLeft - aRight;
     }
+    // If the left bounds of A is between the horizontal bounds of B
+    if (bLeft < aLeft && aLeft < bRight) {
+      cVector.x = bRight - aLeft;
+    }
+    // If the bottom bounds of A is between the vertical bounds of B
+    if (bTop < aBottom && aBottom < bBottom) {
+      cVector.y = bTop - aBottom;
+    }
+    // If the top bounds of A is between the vertical bounds of B
+    if (bTop < aTop && aTop < bBottom) {
+      cVector.y = bBottom - aTop;
+    }
+
+    // If there was a collision, resolve it.
+    if (!cVector.isZeroVec()) {
+      // If the shape doesn't have collision in a direction, make sure it doesn't
+      // have the vector points that way.
+      if (!boxA.collidesBottom) cVector.y = Math.max(0, cVector.y);
+      if (!boxA.collidesTop) cVector.y = Math.min(0, cVector.y);
+      if (!boxA.collidesLeft) cVector.x = Math.min(0, cVector.x);
+      if (!boxA.collidesRight) cVector.x = Math.max(0, cVector.x);
+
+      // Only return the "easier" direction to resolve from.
+      if (Math.abs(cVector.x) < Math.abs(cVector.y) && cVector.x != 0) {
+        cVector.y = 0;
+      } else if (Math.abs(cVector.y) < Math.abs(cVector.x) && cVector.y != 0) {
+        cVector.x = 0;
+      }
+
+      return cVector;
+    }
+  }
+
+  //Second, check if any of the corners are within the circle
+  let collidingCorner = undefined;
+  let collisionDistance = Infinity;
+  for (let corner of points) {
+    if (
+      circleB.pos.dist2(corner) < radius2 &&
+      circleB.pos.dist2(corner) < collisionDistance
+    ) {
+      collidingCorner = corner;
+      collisionDistance = circleB.pos.dist(corner);
+    }
+  }
+  // If there were collisions with the corners, resolve them.
+  // Again, the below code is repreated maybe able to make more DRY.
+  if (collidingCorner !== undefined) {
+    const dist = new Vector(
+      circleB.pos.x - collidingCorner.x,
+      circleB.pos.y - collidingCorner.y
+    );
+    cVector = dist.norm().mult(dist.mag() - circleB.radius);
+    return cVector;
+  }
+
+  //Lastly, check if the box surrounds the circle
+  const distance = new Vector(
+    circleB.pos.x - boxA.pos.x,
+    circleB.pos.y - boxA.pos.y
+  );
+  if (
+    Math.abs(distance.x) < boxA.width / 2 &&
+    Math.abs(distance.y) < boxA.height / 2
+  ) {
+    if (boxA.collidesBottom)
+      cVector.y = Math.max(0, boxA.height / 2 + circleB.radius);
+    else if (boxA.collidesTop)
+      cVector.y = Math.max(0, -boxA.height / 2 + circleB.radius);
+    else if (boxA.collidesLeft)
+      cVector.y = Math.max(-boxA.width / 2 + circleB.radius, 0);
+    else if (boxA.collidesRight)
+      cVector.y = Math.max(boxA.width / 2 + circleB.radius, 0);
+
+    if (distance.isZeroVec()) {
+      cVector = new Vector(
+        boxA.width / 2 + circleB.radius,
+        boxA.width / 2 + circleB.radius
+      );
+    } else {
+      cVector = distance.norm().mult(distance.mag() - circleB.radius);
+    }
+
+    return cVector;
   }
 
   return cVector;
