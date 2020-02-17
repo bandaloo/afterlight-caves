@@ -220,13 +220,13 @@ function buttonStep(button, currentlyDown = false) {
  */
 export function controlKeydownListener(e) {
   usingKeyboard = true;
-  const key = e.key;
+  const key = e.key.toLowerCase();
 
   // is it a stick button?
   for (const stick of buttons.getDirectionals()) {
     for (const dir of stick.getButtons()) {
-      if (key === dir.key) {
-        e.preventDefault();
+      if (key === dir.key.toLowerCase()) {
+        if (!e.ctrlKey && !e.altKey && !e.metaKey) e.preventDefault();
         buttonDown(dir);
         stick.setVecFromButtons();
       }
@@ -235,8 +235,8 @@ export function controlKeydownListener(e) {
 
   // is it a normal button?
   for (const nb of buttons.getButtons()) {
-    if (key === nb.key) {
-      e.preventDefault();
+    if (key === nb.key.toLowerCase()) {
+      if (!e.ctrlKey && !e.altKey && !e.metaKey) e.preventDefault();
       buttonDown(nb);
     }
   }
@@ -248,13 +248,13 @@ export function controlKeydownListener(e) {
  */
 export function controlKeyupListener(e) {
   usingKeyboard = true;
-  const key = e.key;
+  const key = e.key.toLowerCase();
 
   // is it a stick button?
   for (const stick of buttons.getDirectionals()) {
     for (const dir of stick.getButtons()) {
-      if (key === dir.key) {
-        e.preventDefault();
+      if (key === dir.key.toLowerCase()) {
+        if (!e.ctrlKey && !e.altKey && !e.metaKey) e.preventDefault();
         buttonUp(dir);
         stick.setVecFromButtons();
       }
@@ -263,8 +263,8 @@ export function controlKeyupListener(e) {
 
   // is it a normal button?
   for (const nb of buttons.getButtons()) {
-    if (key === nb.key) {
-      e.preventDefault();
+    if (key === nb.key.toLowerCase()) {
+      if (!e.ctrlKey && !e.altKey && !e.metaKey) e.preventDefault();
       buttonUp(nb);
     }
   }

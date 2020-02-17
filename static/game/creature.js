@@ -5,6 +5,7 @@ import { Vector } from "../modules/vector.js";
 import { Bomb } from "./bomb.js";
 import { Bullet } from "./bullet.js";
 import { StatusEffect } from "./statuseffect.js";
+import {Hero} from "./hero.js";
 
 /**
  * Reduces damage according to defense
@@ -243,15 +244,11 @@ export class Creature extends Entity {
     let dmg = this.bulletDamage;
     /** @type {number} */
     let size = this.bulletSize;
-    if (dir.x < 0.01 && Math.abs(dir.x) >= Math.abs(dir.y)) {
-      // left-facing
-      dmg += this.leftBulletDamage;
-      size += this.leftBulletSize;
-    } else if (dir.x > 0.01 && Math.abs(dir.x) >= Math.abs(dir.y)) {
-      // right-facing
-      dmg += this.rightBulletDamage;
-      size += this.rightBulletSize;
-    }
+    const angle = dir.getAngle();
+    dmg += this.rightBulletDamage * Math.max(0, Math.cos(angle));
+    dmg += this.leftBulletDamage * Math.max(0, -Math.cos(angle));
+    size += this.rightBulletSize * Math.max(0, Math.cos(angle));
+    size += this.leftBulletSize * Math.max(0, -Math.cos(angle));
     const b = new Bullet(
       this.pos.add(dir.mult(this.width / 2)),
       dir.norm2().mult(this.bulletSpeed),

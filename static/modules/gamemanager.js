@@ -97,7 +97,7 @@ class GameManager {
       gameManager.guiElements.get("pausescreen").active = true;
       this.gamePause = true;
     } else {
-      const pauseScreen = /** @type { PauseScreen} */ (this.guiElements.get(
+      const pauseScreen = /** @type { PauseScreen } */ (this.guiElements.get(
         "pausescreen"
       ));
       pauseScreen.onBack();
