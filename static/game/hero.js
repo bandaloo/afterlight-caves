@@ -26,8 +26,6 @@ export class Hero extends Creature {
    */
   constructor(startingPos) {
     super(startingPos);
-    /** @type {"Box"|"Circle"|"undefined"} */
-    this.colllisionType = "Circle";
     this.type = "Hero";
 
     // set initial attributes

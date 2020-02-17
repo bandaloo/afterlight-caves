@@ -69,7 +69,8 @@ export function collideWithWorld(shape) {
         let y = (j + 1) * blockHeight - blockHeight / 2;
         let b = new Box(blockHeight, blockWidth, new Vector(x, y));
 
-        // Determine if this cell needs has neighbors, and thus if it needs collision.
+        // Determine if this cell needs has neighbors, and thus if it needs
+        // collision.
         if (solidAt(i + 1, j)) b.collidesRight = false;
         if (solidAt(i - 1, j)) b.collidesLeft = false;
         if (solidAt(i, j - 1)) b.collidesTop = false;
@@ -90,33 +91,53 @@ export function collideWithWorld(shape) {
 }
 
 /**
- * Given two Shapes A and B, calculates the smallest vector needed to apply
- * to entity A to prevent collision. Returns empty vector if A and B are not
- * colliding.
+ * Given two CollisionShapes A and B, determines if the shapes are colliding.
+ * Acts as wrapper for collide(CollisionShape, CollisionShape, resolve = false).
  * @param {CollisionShape} shapeA
  * @param {CollisionShape} shapeB
+ * @returns {boolean}
+ */
+export function isColliding(shapeA, shapeB) {
+  return !collide(shapeA, shapeB, false).isZeroVec();
+}
+
+/**
+ * Given two CollisionShapes A and B, calculates the smallest vector needed to
+ * apply to entity A to prevent collision. Returns empty vector if A and B are
+ * not colliding.
+ *
+ * If resolve is False, it will return either Vector(0, 0) for no collision or
+ * Vector(1, 1) if there is collision. This is used so that determining if
+ * collision exists is faster.
+ * @param {CollisionShape} shapeA
+ * @param {CollisionShape} shapeB
+ * @param {boolean} resolve
  * @returns {Vector}
  */
-export function collide(shapeA, shapeB) {
+export function collide(shapeA, shapeB, resolve = true) {
   if (shapeA instanceof Box && shapeB instanceof Box) {
     return collide_BoxBox(
       /* @type {Box} */ (shapeA),
-      /* @type {Box} */ (shapeB)
+      /* @type {Box} */ (shapeB),
+      resolve
     );
   } else if (shapeA instanceof Circle && shapeB instanceof Box) {
     return collide_BoxCircle(
       /* @type {Box} */ (shapeB),
-      /* @type {Circle} */ (shapeA)
+      /* @type {Circle} */ (shapeA),
+      resolve
     );
   } else if (shapeA instanceof Box && shapeB instanceof Circle) {
     return collide_BoxCircle(
       /* @type {Box} */ (shapeA),
-      /* @type {Circle} */ (shapeB)
+      /* @type {Circle} */ (shapeB),
+      resolve
     );
   } else if (shapeA instanceof Circle && shapeB instanceof Circle) {
     return collide_CircleCircle(
       /* @type {Circle} */ (shapeA),
-      /* @type {Circle} */ (shapeB)
+      /* @type {Circle} */ (shapeB),
+      resolve
     );
   } else {
     return new Vector(0, 0);
@@ -140,15 +161,17 @@ export function isCollidingCheat(shapeA, shapeB, cheatRadius) {
  * Determines if two Circles are colliding
  * @param {Circle} circleA
  * @param {Circle} circleB
+ * @param {boolean} resolve
  * @returns {Vector}
  */
-export function collide_CircleCircle(circleA, circleB) {
+export function collide_CircleCircle(circleA, circleB, resolve) {
   const dist = circleA.pos.dist(circleB.pos);
   const radius = circleA.radius + circleB.radius;
 
   let cVector = new Vector(0, 0);
   // If the circles are colliding, find out by how much
   if (dist < radius) {
+    if (!resolve) return new Vector(1, 1);
     const move = radius - dist;
     cVector.x = circleB.pos.x - circleA.pos.x;
     cVector.y = circleB.pos.y - circleA.pos.y;
@@ -163,9 +186,10 @@ export function collide_CircleCircle(circleA, circleB) {
  * Determines if a box and a circle are colliding
  * @param {Box} boxA
  * @param {Circle} circleB
+ * @param {boolean} resolve
  * @returns {Vector}
  */
-export function collide_BoxCircle(boxA, circleB) {
+export function collide_BoxCircle(boxA, circleB, resolve) {
   // Short-Circut for speed
   // TODO: maybe this is a valid use for isCollidingCheat?
   const distanceBetween = circleB.pos.dist(boxA.pos);
@@ -227,6 +251,7 @@ export function collide_BoxCircle(boxA, circleB) {
 
     // If there was a collision, resolve it.
     if (!cVector.isZeroVec()) {
+      if (!resolve) return new Vector(1, 1);
       // If the shape doesn't have collision in a direction, make sure it doesn't
       // have the vector points that way.
       if (!boxA.collidesBottom) cVector.y = Math.max(0, cVector.y);
@@ -260,6 +285,7 @@ export function collide_BoxCircle(boxA, circleB) {
   // If there were collisions with the corners, resolve them.
   // Again, the below code is repreated maybe able to make more DRY.
   if (collidingCorner !== undefined) {
+    if (!resolve) return new Vector(1, 1);
     const dist = new Vector(
       circleB.pos.x - collidingCorner.x,
       circleB.pos.y - collidingCorner.y
@@ -273,10 +299,13 @@ export function collide_BoxCircle(boxA, circleB) {
     circleB.pos.x - boxA.pos.x,
     circleB.pos.y - boxA.pos.y
   );
+  //If the circle's center is within the box, resolve the collision
   if (
     Math.abs(distance.x) < boxA.width / 2 &&
     Math.abs(distance.y) < boxA.height / 2
   ) {
+    if (!resolve) return new Vector(1, 1);
+
     if (boxA.collidesBottom)
       cVector.y = Math.max(0, boxA.height / 2 + circleB.radius);
     else if (boxA.collidesTop)
@@ -305,9 +334,10 @@ export function collide_BoxCircle(boxA, circleB) {
  * Calculates the collision vector for two boxes
  * @param {Box} boxA
  * @param {Box} boxB
+ * @param {boolean} resolve
  * @returns {Vector}
  */
-export function collide_BoxBox(boxA, boxB) {
+export function collide_BoxBox(boxA, boxB, resolve) {
   // Define the 4 corners of each bounding rectangle
   const aRight = boxA.pos.x + boxA.width / 2;
   const aLeft = boxA.pos.x - boxA.width / 2;
@@ -328,6 +358,7 @@ export function collide_BoxBox(boxA, boxB) {
     aTop + boxA.height > bTop &&
     aTop < bTop + boxB.height
   ) {
+    if (!resolve) return new Vector(1, 1);
     // If the right wall of A is between the horizontal walls of B
     if (bLeft < aRight && aRight < bRight) {
       cVector.x = aRight - bLeft;

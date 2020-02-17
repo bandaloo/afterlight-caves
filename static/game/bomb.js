@@ -7,13 +7,8 @@ import {
   setBlock,
   cellToWorldPosition
 } from "../modules/gamemanager.js";
-import {
-  getCell,
-  isCollidingCheat,
-  calcCorners
-} from "../modules/collision.js";
+import { getCell, isColliding, calcCorners } from "../modules/collision.js";
 import { destroyBlock } from "./block.js";
-import { CHEAT_RADIUS } from "./hero.js";
 import { playSound } from "../modules/sound.js";
 
 /**
@@ -117,7 +112,7 @@ export class Bomb extends Entity {
 
         // iterate through all overlapping blocks
         const { topLeft: topLeft, bottomRight: bottomRight } = calcCorners(
-          this
+          this.getCollisionShape()
         );
 
         for (let i = topLeft.x; i < bottomRight.x + 1; i++) {
@@ -186,11 +181,7 @@ export class Bomb extends Entity {
       /** @param {import("./creature.js").Creature} creature */ creature => {
         // deal damage only every 1/2 second or at the very end of the explosion
         if (
-          isCollidingCheat(
-            creature.getCollisionShape(),
-            this,
-            this.good ? 0 : CHEAT_RADIUS
-          )
+          isColliding(creature.getCollisionShape(), this.getCollisionShape())
         ) {
           if (
             this.fuseTime === -1 * this.timeToExplode ||

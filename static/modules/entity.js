@@ -110,7 +110,7 @@ export class Entity {
     this.vel = vel;
     /** @type {Vector} */
     this.acc = acc;
-    this.colllisionType = "Box";
+    this.colllisionType = "Circle";
   }
 
   getCollisionShape() {
