@@ -137,22 +137,24 @@ class DisplayManager {
       );
     }
 
-    // copy the splatter canvas onto the drawing canvas
-    const targetCanvas = this.displayCanvas;
-    const targetContext = this.displayContext;
-    const splatterVec = getCameraOffset().mult(-1 / SPLATTER_SCALAR);
-    const displayRatio = this.canvas.width / targetCanvas.width;
-    targetContext.drawImage(
-      this.splatterCanvas,
-      splatterVec.x,
-      splatterVec.y,
-      (targetCanvas.width / SPLATTER_SCALAR) * displayRatio,
-      (targetCanvas.height / SPLATTER_SCALAR) * displayRatio,
-      0,
-      0,
-      targetCanvas.width,
-      targetCanvas.height
-    );
+    if (settings["Splatter effects"].value) {
+      // copy the splatter canvas onto the drawing canvas
+      const targetCanvas = this.displayCanvas;
+      const targetContext = this.displayContext;
+      const splatterVec = getCameraOffset().mult(-1 / SPLATTER_SCALAR);
+      const displayRatio = this.canvas.width / targetCanvas.width;
+      targetContext.drawImage(
+        this.splatterCanvas,
+        splatterVec.x,
+        splatterVec.y,
+        (targetCanvas.width / SPLATTER_SCALAR) * displayRatio,
+        (targetCanvas.height / SPLATTER_SCALAR) * displayRatio,
+        0,
+        0,
+        targetCanvas.width,
+        targetCanvas.height
+      );
+    }
 
     // save drawing context
     this.context.save();

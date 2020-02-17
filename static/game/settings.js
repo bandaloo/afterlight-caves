@@ -48,4 +48,13 @@ export const settings = {
       this.value = !this.value;
     }
   },
+  "Splatter effects": {
+    value: true,
+    getDisplayVal() {
+      return this.value ? "on" : "off";
+    },
+    onClick() {
+      this.value = !this.value;
+    }
+  },
 };
