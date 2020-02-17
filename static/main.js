@@ -128,12 +128,6 @@ export function resetDemo() {
   setCameraEntity(hero);
   addToWorld(hero);
 
-  let result = collide(
-    new Circle(3, new Vector(0, 0)),
-    new Circle(1, new Vector(1, 0))
-  );
-  console.log(result);
-
   populateLevel(getTerrain(), 320);
 
   const tilesPerAdditionalPowerupChance = 300;

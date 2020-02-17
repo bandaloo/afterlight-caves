@@ -6,6 +6,7 @@ import { addParticle, toggleGuiElement } from "../modules/gamemanager.js";
 import { Particle, EffectEnum } from "./particle.js";
 import { PowerUp, POWER_UP_POINTS_FACTOR } from "./powerup.js";
 import { playSound, getSound } from "../modules/sound.js";
+import { CollisionShape, Circle } from "../modules/collision.js";
 
 const DEFAULT_SIZE = 60;
 
@@ -42,6 +43,15 @@ export class Hero extends Creature {
     this.bulletColor = "white";
     this.score = 0;
     this.setBombDamage(18);
+
+    // Manually set the collision shape to allow for a smaller hitbox
+    const collisionShape = new Circle(
+      DEFAULT_SIZE - CHEAT_RADIUS / 2,
+      this.pos
+    );
+    const terrainCollisionShape = new Circle(DEFAULT_SIZE / 2, this.pos);
+    this.setCollisionShape(collisionShape);
+    this.setTerrainCollisionShape(terrainCollisionShape);
 
     // collect powerups when you collide with them
     this.collideMap.set("PowerUp", (/** @type {PowerUp} */ entity) => {

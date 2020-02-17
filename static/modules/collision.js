@@ -173,9 +173,9 @@ export function collide_CircleCircle(circleA, circleB, resolve) {
   if (dist < radius) {
     if (!resolve) return new Vector(1, 1);
     const move = radius - dist;
-    cVector.x = circleB.pos.x - circleA.pos.x;
-    cVector.y = circleB.pos.y - circleA.pos.y;
-    cVector = cVector.norm();
+    cVector.x = circleA.pos.x - circleB.pos.x;
+    cVector.y = circleA.pos.y - circleB.pos.y;
+    cVector = cVector.norm2();
     cVector = cVector.mult(move);
   }
 
@@ -193,6 +193,7 @@ export function collide_BoxCircle(boxA, circleB, resolve) {
   // Short-Circut for speed
   // TODO: maybe this is a valid use for isCollidingCheat?
   const distanceBetween = circleB.pos.dist(boxA.pos);
+  const vecBetween = circleB.pos.sub(boxA.pos);
   if (circleB.pos.dist(boxA.pos) > boxA.width + circleB.radius) {
     return new Vector(0, 0);
   }
@@ -290,7 +291,7 @@ export function collide_BoxCircle(boxA, circleB, resolve) {
       circleB.pos.x - collidingCorner.x,
       circleB.pos.y - collidingCorner.y
     );
-    cVector = dist.norm().mult(dist.mag() - circleB.radius);
+    cVector = dist.norm2().mult(dist.mag() - circleB.radius);
     return cVector;
   }
 
@@ -318,10 +319,10 @@ export function collide_BoxCircle(boxA, circleB, resolve) {
     if (distance.isZeroVec()) {
       cVector = new Vector(
         boxA.width / 2 + circleB.radius,
-        boxA.width / 2 + circleB.radius
+        boxA.height / 2 + circleB.radius
       );
     } else {
-      cVector = distance.norm().mult(distance.mag() - circleB.radius);
+      cVector = distance.norm2().mult(distance.mag() - circleB.radius);
     }
 
     return cVector;
@@ -403,7 +404,7 @@ export function adjustEntity(entity) {
   // Initialize collision list with collisions between entity and the world
 
   /** @type {Box[]} */
-  const terrainCollision = collideWithWorld(entity.getCollisionShape());
+  const terrainCollision = collideWithWorld(entity.getTerrainCollisionShape());
 
   /** @type {Vector[]} */
   const collisionVectors = [];
@@ -415,7 +416,7 @@ export function adjustEntity(entity) {
   // "collided" they are
   for (let i = 0; i < terrainCollision.length; i++) {
     const collisionVector = collide(
-      entity.getCollisionShape(),
+      entity.getTerrainCollisionShape(),
       terrainCollision[i]
     );
 

@@ -93,8 +93,26 @@ export class Entity {
   /** @type {boolean} */
   pausable = true;
 
+  /**
+   * Determines what type of collision will be generated when getCollisionShape
+   * is called and collisionShape is undefined.
+   */
   /** @type {"Box"|"Circle"|"undefined"} */
   colllisionType;
+
+  /**
+   * Allows for the collision shape of an entity to be overriden for terrain
+   * collision. By default, it is just collisionShape.
+   */
+  /** @type {CollisionShape} */
+  terrainCollisionShape;
+
+  /**
+   * Allows for the collision shape of an entity to be overriden. By default, is
+   * calculated every time getCollisionShape is called.
+   */
+  /** @type {CollisionShape} */
+  collisionShape;
 
   /**
    * constructs an entity with all the relevant vectors
@@ -113,14 +131,55 @@ export class Entity {
     this.colllisionType = "Circle";
   }
 
+  /**
+   * Set the collisionShape of the entity. Give no arguments to reset the shape
+   * to be calculated each call of getCollisonShape
+   * @param {CollisionShape | undefined} collisionShape
+   * @returns {void}
+   */
+  setCollisionShape(collisionShape) {
+    this.collisionShape = collisionShape;
+  }
+  /**
+   * Set the collisionShape of the entity when colliding with terrain. Give no
+   * arguments to reset the shape to be the same as collisionShape
+   * @returns {void}
+   */
+  setTerrainCollisionShape(terrainCollisionShape) {
+    this.terrainCollisionShape = terrainCollisionShape;
+  }
+
+  /**
+   * Returns the CollisionShape of the entity.
+   * If the entity has a collisionEntity property, that shape is updated to the
+   * current position and is returned. Otherwise, a new CollisionShape is
+   * calculated.
+   * @returns {CollisionShape}
+   */
   getCollisionShape() {
-    if (this.colllisionType == "Box") {
+    if (this.collisionShape !== undefined) {
+      this.collisionShape.pos = this.pos;
+      return this.collisionShape;
+    } else if (this.colllisionType == "Box") {
       return new Box(this.width, this.height, this.pos);
-    }
-    if (this.colllisionType == "Circle") {
+    } else if (this.colllisionType == "Circle") {
       return new Circle(Math.min(this.width, this.height) / 2, this.pos);
     }
     return new CollisionShape("undefined", this.pos);
+  }
+
+  /**
+   * Returns the terrainCollisionShape of the entity.
+   * If the entity has a collisionEntity property, that shape is updated to the
+   * current position and returned. Otherwise, the collisionShape is returned.
+   * @returns {CollisionShape}
+   */
+  getTerrainCollisionShape() {
+    if (this.terrainCollisionShape !== undefined) {
+      this.terrainCollisionShape.pos = this.pos;
+      return this.terrainCollisionShape;
+    }
+    return this.getCollisionShape();
   }
 
   onScreen() {
