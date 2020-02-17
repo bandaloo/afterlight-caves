@@ -1,3 +1,5 @@
+import { settings } from "../game/settings.js";
+
 /** the default amount for how many times the same sound can play at once */
 const MAX_SOUNDS = 1;
 
@@ -9,7 +11,7 @@ const soundMap = new Map();
  * @param {string} str
  * @returns {HTMLAudioElement}
  */
-function getSound(str) {
+export function getSound(str) {
   if (soundMap.has(str)) {
     return soundMap.get(str).sound;
   } else {
@@ -21,8 +23,11 @@ function getSound(str) {
  * play a sound or copy the sound and play it (useful for overlapping sounds)
  * @param {string} str
  * @param {boolean} copy whether to play a copy of the sound
+ * @return {HTMLAudioElement}
  */
 export function playSound(str, copy = true) {
+  if (settings["Mute all"].value) return getSound(str);
+
   // return if no more of the same sound can be played
   if (soundMap.get(str).counter <= 0) return;
   soundMap.get(str).counter--;
@@ -32,6 +37,7 @@ export function playSound(str, copy = true) {
       str
     ).cloneNode(true));
     clonedSound.play();
+    return clonedSound;
   } else {
     // Due to an autoplay policy, sound can't be played until the DOM is
     // interacted with. If that happens, the sound will try to play again in one
@@ -49,6 +55,7 @@ export function playSound(str, copy = true) {
           playSound(str, copy);
         }, 1000);
       });
+      return getSound(str);
   }
 }
 
