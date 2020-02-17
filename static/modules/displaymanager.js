@@ -127,13 +127,15 @@ class DisplayManager {
     // clear the drawing canvas with alpha 0
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-    // clear the blur canvas with alpha 0
-    this.blurContext.clearRect(
-      0,
-      0,
-      this.blurCanvas.width,
-      this.blurCanvas.height
-    );
+    if (settings["Glow effect"].value) {
+      // clear the blur canvas with alpha 0
+      this.blurContext.clearRect(
+        0,
+        0,
+        this.blurCanvas.width,
+        this.blurCanvas.height
+      );
+    }
 
     // copy the splatter canvas onto the drawing canvas
     const targetCanvas = this.displayCanvas;
@@ -173,16 +175,17 @@ class DisplayManager {
     // restore drawing context
     this.context.restore();
 
-    // copy the drawing canvas onto the blur canvas
-    this.blurContext.drawImage(
-      this.canvas,
-      0,
-      0,
-      this.canvas.width / BLUR_SCALAR,
-      this.canvas.height / BLUR_SCALAR
-    );
+    if (settings["Glow effect"].value) {
+      // copy the drawing canvas onto the blur canvas
+      this.blurContext.drawImage(
+        this.canvas,
+        0,
+        0,
+        this.canvas.width / BLUR_SCALAR,
+        this.canvas.height / BLUR_SCALAR
+      );
+    }
 
-    // TODO move to DisplayManager
     // align camera, draw the gui, reset camera
     // this is after the draw canvas is copied to the blur canvas
     // move this to before if you want the gui blurred
@@ -196,13 +199,15 @@ class DisplayManager {
     this.cameraOffset = originalOffset;
 
     // copy the blur canvas onto the display canvas
-    this.displayContext.drawImage(
-      this.blurCanvas,
-      0,
-      0,
-      this.displayCanvas.width,
-      this.displayCanvas.height
-    );
+    if (settings["Glow effect"].value) {
+      this.displayContext.drawImage(
+        this.blurCanvas,
+        0,
+        0,
+        this.displayCanvas.width,
+        this.displayCanvas.height
+      );
+    }
 
     // save display context
     this.displayContext.save();

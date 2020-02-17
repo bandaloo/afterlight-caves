@@ -38,5 +38,14 @@ export const settings = {
     onClick() {
       return (this.value = !this.value);
     }
-  }
+  },
+  "Glow effect": {
+    value: true,
+    getDisplayVal() {
+      return this.value ? "on" : "off";
+    },
+    onClick() {
+      this.value = !this.value;
+    }
+  },
 };
