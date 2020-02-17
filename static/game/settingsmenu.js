@@ -23,7 +23,7 @@ export class SettingsMenu extends Menu {
 
     for (const key in settings) {
       items.push({ 
-        text: key + "\t" + settings[key].value,
+        text: key + "\t" + settings[key].getDisplayVal.apply(settings[key]),
         func: settings[key].onClick.bind(settings[key])
       });
     }

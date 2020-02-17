@@ -2,6 +2,7 @@ import { Vector } from "./vector.js";
 import { getCameraEntity } from "./gamemanager.js";
 import { Entity } from "./entity.js";
 import { GuiElement } from "./guielement.js";
+import { settings } from "../game/settings.js";
 
 const BLUR_SCALAR = 2;
 
@@ -10,6 +11,13 @@ export const SPLATTER_SCALAR = 4;
 class DisplayManager {
   /** @type {Vector} */
   cameraOffset = new Vector(0, 0);
+
+  /**
+   * @type {number} radius of a circle in the center of the screen in which the
+   * camera entity can move freely without the camera following it
+   * TODO possible tweak the size of this depending on what feels right
+   */
+  cameraDeadzone = 75;
 
   constructor(
     width = 1920,
@@ -81,13 +89,31 @@ class DisplayManager {
    */
   drawGame(entities, particles, guiElements) {
     // reposition camera if there is a followed entity
-    const { width: screenWidth, height: screenHeight } = getScreenDimensions();
     if (getCameraEntity() !== undefined) {
-      setCameraOffset(
-        getCameraEntity()
+      // if the camera entity is bigger than the deadzone the camera should
+      // always stick to it
+      if (
+        settings["Camera following strategy"].value || // "tight" following
+        this.cameraDeadzone < getCameraEntity().width ||
+        this.cameraDeadzone < getCameraEntity().height
+      ) {
+        this.cameraOffset = getCameraEntity()
           .drawPos.mult(-1)
-          .add(new Vector(screenWidth / 2, screenHeight / 2))
-      );
+          .add(new Vector(this.screenWidth / 2, this.screenHeight / 2));
+      } else {
+        const diff = getCameraEntity().drawPos.add(
+          getCameraOffset().sub(
+            new Vector(this.screenWidth / 2, this.screenHeight / 2)
+          )
+        );
+        const distToAdjust = diff.mag() - this.cameraDeadzone;
+        if (distToAdjust > 0) {
+          // outside the deadzone
+          setCameraOffset(
+            getCameraOffset().add(diff.norm2().mult(-distToAdjust))
+          );
+        }
+      }
     }
 
     // clear the display canvas with black rectangle

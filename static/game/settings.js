@@ -1,8 +1,16 @@
-import { pauseSound, loopSound, playSound, getSound } from "../modules/sound.js";
+import {
+  pauseSound,
+  loopSound,
+  playSound,
+  getSound
+} from "../modules/sound.js";
 
 export const settings = {
   "Mute music": {
     value: false,
+    getDisplayVal() {
+      return this.value ? "on" : "off";
+    },
     onClick() {
       this.value = !this.value;
       if (this.value) {
@@ -15,8 +23,20 @@ export const settings = {
   },
   "Mute sound effects": {
     value: false,
+    getDisplayVal() {
+      return this.value ? "on" : "off";
+    },
     onClick() {
       this.value = !this.value;
     }
   },
-}
+  "Camera following strategy": {
+    value: true,
+    getDisplayVal() {
+      return this.value ? "tight" : "loose";
+    },
+    onClick() {
+      return (this.value = !this.value);
+    }
+  }
+};
