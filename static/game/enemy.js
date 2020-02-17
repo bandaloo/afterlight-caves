@@ -147,8 +147,7 @@ export class Enemy extends Creature {
       }
     }
 
-    // TODO change this to being only a chance
-    if (Math.random() < DROP_CHANCE) {
+    if (Math.random() < DROP_CHANCE && this.matryoshka <= 1) {
       if (Math.random() < BOMB_CHANCE) {
         addToWorld(new Pickup(this.pos, PickupEnum.bomb));
       } else {
