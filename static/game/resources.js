@@ -12,6 +12,8 @@ export const resources = [
   { name: "menu-back", file: "../sounds/menu-back.wav" },
   { name: "menu-select", file: "../sounds/menu-select.wav" },
   { name: "bomb-explode", file: "../sounds/bomb-explode.wav" },
+  { name: "health-pickup", file: "../sounds/health-pickup.wav" },
+  { name: "bomb-pickup", file: "../sounds/bomb-pickup.wav" },
 
   // power up names
   { name: "amplify", file: "../sounds/powerups/amplify.wav" },
