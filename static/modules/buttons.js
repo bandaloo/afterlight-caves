@@ -1,9 +1,27 @@
 import { Vector } from "./vector.js";
+import { collectInput } from "./gamemanager.js";
 
 const noisy = false;
 const DEADZONE = 0.2;
 const STICK_SENSITIVITY = 1.4;
 let usingKeyboard = true;
+let ignoreGampad = false;
+
+/**
+ * @return {boolean} whether the player is using a keyboard (as opposed to a
+ * controller)
+ */
+export const getUsingKeyboard = () => {
+  return usingKeyboard;
+}
+
+/**
+ * Set to true to ignore input from gamepads
+ * @param {boolean} [arg] true if omitted
+ */
+export const suppressGamepad = (arg = true) => {
+  ignoreGampad = arg;
+}
 
 /**
  * @typedef {Object} Status
@@ -16,13 +34,15 @@ let usingKeyboard = true;
 
 class Button {
   /**
+   * @param {string} name the display name of this button
    * @param {string} key the KeyboardEvent.key value of the key associated with
    * this button. See here for details:
    * https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values
    * @param {number} [gpButtonIndex] index in gamepad.buttons. Only has effect
    * if this has type "button"
    */
-  constructor(key, gpButtonIndex) {
+  constructor(name, key, gpButtonIndex) {
+    this.name = name;
     this.key = key;
     this.status = initStatus();
     this.gpButtonIndex = gpButtonIndex;
@@ -31,6 +51,7 @@ class Button {
 
 class Directional {
   /**
+   * @param {string} name the display name of this directional
    * @param {string} upKey the KeyboardEvent.key value of the key associated
    * with going up on this directional
    * @param {string} rightKey the KeyboardEvent.key value of the key associated
@@ -44,11 +65,12 @@ class Directional {
    * @param {number} hAxisIndex index of this directional's horizontal axis
    * in gamepad.axes
    */
-  constructor(upKey, rightKey, downKey, leftKey, vAxisIndex, hAxisIndex) {
-    this.up = new Button(upKey);
-    this.right = new Button(rightKey);
-    this.down = new Button(downKey);
-    this.left = new Button(leftKey);
+  constructor(name, upKey, rightKey, downKey, leftKey, vAxisIndex, hAxisIndex) {
+    this.name = name;
+    this.up = new Button(this.name + " up", upKey);
+    this.right = new Button(this.name + "right", rightKey);
+    this.down = new Button(this.name + "down", downKey);
+    this.left = new Button(this.name + "left", leftKey);
     this.vAxisIndex = vAxisIndex;
     this.hAxisIndex = hAxisIndex;
     /** @type {Vector} */
@@ -118,9 +140,10 @@ function initStatus() {
  * whether it was just held, pressed, or released
  */
 export const buttons = {
-  move: new Directional("w", "d", "s", "a", 1, 0),
+  move: new Directional("Move", "w", "d", "s", "a", 1, 0),
 
   shoot: new Directional(
+    "Shoot",
     "ArrowUp",
     "ArrowRight",
     "ArrowDown",
@@ -129,13 +152,13 @@ export const buttons = {
     2
   ),
 
-  primary: new Button(" ", 4),
-  secondary: new Button("e", 5),
-  select: new Button(" ", 0),
-  back: new Button("Tab", 1),
-  fullscreen: new Button("f", 3),
-  pause: new Button("p", 9),
-  reset: new Button("r", 8),
+  primary: new Button("Bomb", " ", 4),
+  secondary: new Button("Secondary", "e", 5),
+  select: new Button("Select", " ", 0),
+  back: new Button("Back", "Tab", 1),
+  fullscreen: new Button("Fullscreen", "f", 3),
+  pause: new Button("Pause", "p", 9),
+  reset: new Button("Reset", "r", 8),
 
   /** @return {Directional[]} */
   getDirectionals() {
@@ -293,6 +316,8 @@ export function gamepadDisconnectListener(e) {
  * controllers
  */
 export function getGamepadInput() {
+  if (ignoreGampad) return;
+
   /**
    * @param {number} x
    * @return {number} 0 if x is within DEADZONE of 0, otherwise x
@@ -361,4 +386,51 @@ export function getGamepadInput() {
       }
     }
   }
+}
+
+/**
+ * Stops all other keyboard listeners and suppresses gamepad input to get the
+ * next key pressed, then resumes collecting input normally
+ * @return {Promise<string>} a promise that resolves with the name of the next
+ * key pressed
+ */
+export async function getNextKey() {
+  collectInput(false);
+  suppressGamepad(true);
+  return new Promise(resolve => {
+    /** @param {KeyboardEvent} ev */
+    const handler = ev => {
+      document.removeEventListener("keydown", handler);
+      collectInput(true);
+      suppressGamepad(false);
+      resolve(ev.key);
+    }
+    document.addEventListener("keydown", handler);
+  });
+}
+
+/**
+ * Stops all other keyboard listeners and suppresses gamepad input to get the
+ * next gamepad button pressed, then resumes collecting input normally
+ * @return {Promise<number>} a promise that resolves with the index of the next
+ * gamepad button pressed
+ */
+export async function getNextGamepadButton() {
+  suppressGamepad(true);
+  return new Promise(resolve => {
+    while (true) {
+      for (const gamepad of navigator.getGamepads()) {
+        if (!gamepad || !gamepad.connected) continue;
+        for (let i = 0; i < gamepad.buttons.length; ++i) {
+          if (gamepad.buttons[i].pressed || gamepad.buttons[i].value > 0) {
+            // set timeout to allow for the button to be released so it isn't
+            // immediately triggered again
+            setTimeout(() => suppressGamepad(false), 500);
+            resolve(i);
+            return;
+          }
+        }
+      }
+    }
+  });
 }

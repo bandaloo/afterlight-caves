@@ -16,6 +16,7 @@ import {
   toggleFullscreen
 } from "../modules/displaymanager.js";
 import { SettingsMenu } from "./settingsmenu.js";
+import { ControlsMenu } from "./controlsmenu.js";
 
 export class PauseScreen extends Menu {
   /** @type {Menu[]} */
@@ -36,7 +37,9 @@ export class PauseScreen extends Menu {
     settingsmenu.active = false;
     addToGui("settingsmenu", settingsmenu);
     this.childMenus = [codex, stats, settingsmenu];
-    
+    const controlsmenu = new ControlsMenu();
+    controlsmenu.active = false;
+    addToGui("controlsmenu", controlsmenu);
 
     this.setItems([
       { text: "Resume", func: this.onBack.bind(this) },
@@ -62,6 +65,13 @@ export class PauseScreen extends Menu {
         }
       },
       {
+        text: "Controls",
+        func: () => {
+          this.active = false;
+          toggleGuiElement("controlsmenu");
+        }
+      },
+      {
         text: "Enter fullscreen",
         func: toggleFullscreen
       },
@@ -80,9 +90,9 @@ export class PauseScreen extends Menu {
 
   action() {
     if (document.fullscreenElement === null) {
-      this.items[4].text = "Enter fullscreen";
+      this.items[5].text = "Enter fullscreen";
     } else {
-      this.items[4].text = "Exit fullscreen";
+      this.items[5].text = "Exit fullscreen";
     }
     super.action();
   }
