@@ -1,7 +1,6 @@
 #!/bin/bash
 
-node_modules/.bin/babel static --out-dir build
-node_modules/.bin/browserify -vd build/main.js -o dist/bundle.js
+npm run compile-compat && npm run browserify-compat
 cp static/index.html dist/
 cp static/style.css dist/
 cp static/license.txt dist/
