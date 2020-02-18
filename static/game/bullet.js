@@ -65,7 +65,7 @@ export class Bullet extends Entity {
       /** @param {import ("./creature.js").Creature} c */ c => {
         if (entityType === "Enemy" || isCollidingCheat(c, this, CHEAT_RADIUS)) {
           // deal basic damage
-          c.takeDamage(this.damage);
+          c.takeDamage(this.damage, this.vel);
           // impart momentum
           const size = (c.width * c.height) / 300;
           c.vel = c.vel.add(this.vel.mult(this.knockback / size));

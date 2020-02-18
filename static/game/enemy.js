@@ -97,7 +97,7 @@ export class Enemy extends Creature {
         if (ote.func) ote.func(ote.data, /** @type{Creature} */ (hero));
       }
       // deal basic touch damage
-      hero.takeDamage(this.touchDamage);
+      hero.takeDamage(this.touchDamage, this.vel.norm2());
     }
   }
 
@@ -176,12 +176,13 @@ export class Enemy extends Creature {
   /**
    * @override
    * @param {number} amt amount of damage to take
+   * @param {Vector} [dir] the direction the damage came from
    */
-  takeDamage(amt) {
+  takeDamage(amt, dir) {
     playSound("enemy-hurt");
     this.redFrames = this.maxRedFrames;
     this.drawColor = "orangered";
-    super.takeDamage(amt);
+    super.takeDamage(amt, dir);
   }
 
   /**
