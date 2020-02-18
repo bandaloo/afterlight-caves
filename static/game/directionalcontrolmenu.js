@@ -1,4 +1,9 @@
-import { Directional, getUsingKeyboard, getNextKey } from "../modules/buttons.js";
+import {
+  Directional,
+  getUsingKeyboard,
+  getNextKey,
+  getNextStickAxis
+} from "../modules/buttons.js";
 import { getScreenDimensions } from "../modules/displaymanager.js";
 import { toggleGuiElement } from "../modules/gamemanager.js";
 import { Vector } from "../modules/vector.js";
@@ -20,17 +25,70 @@ export class DirectionalControlMenu extends Menu {
   action() {
     const items = [];
     if (getUsingKeyboard()) {
+      // rebind a key
       for (const b of this.directional.getButtons()) {
         items.push({
           text: b.name + "\t" + b.key,
           func: () => {
+            const oldKey = b.key;
             b.key = "Press a key...";
             getNextKey().then(newKey => {
-              b.key = newKey;
+              if (newKey === undefined) b.key = oldKey;
+              else b.key = newKey;
             });
           }
         });
       }
+    } else {
+      // rebind a stick
+      items.push({
+        text:
+          "Vertical axis\t" +
+          (this.directional.invertVAxis ? "-" : "") +
+          this.directional.vAxisIndex,
+        func: () => {
+          const oldIndex = this.directional.vAxisIndex;
+          const oldInverse = this.directional.invertVAxis;
+          this.directional.vAxisIndex = "Move a stick down...";
+          this.directional.invertVAxis = false;
+          // set timeout so instruction appears immediately (thanks JavaScript)
+          setTimeout(() => {
+            getNextStickAxis().then(obj => {
+              if (obj === undefined) {
+                this.directional.vAxisIndex = oldIndex;
+                this.directional.invertVAxis = oldInverse;
+              } else {
+                this.directional.vAxisIndex = obj.index;
+                this.directional.invertVAxis = obj.inverse;
+              }
+            });
+          }, 1);
+        }
+      });
+      items.push({
+        text:
+          "Horizontal axis\t" +
+          (this.directional.invertHAxis ? "-" : "") +
+          this.directional.hAxisIndex,
+        func: () => {
+          const oldIndex = this.directional.hAxisIndex;
+          const oldInverse = this.directional.invertHAxis;
+          this.directional.hAxisIndex = "Move a stick right...";
+          this.directional.invertHAxis = false;
+          // set timeout so instruction appears immediately (thanks JavaScript)
+          setTimeout(() => {
+            getNextStickAxis().then(obj => {
+              if (obj === undefined) {
+                this.directional.hAxisIndex = oldIndex;
+                this.directional.invertHAxis = oldInverse;
+              } else {
+                this.directional.hAxisIndex = obj.index;
+                this.directional.invertHAxis = obj.inverse;
+              }
+            });
+          }, 1);
+        }
+      });
     }
     this.setItems(items);
     super.action();

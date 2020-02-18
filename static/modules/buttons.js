@@ -24,6 +24,14 @@ export const suppressGamepad = (arg = true) => {
 }
 
 /**
+ * @param {number} x
+ * @return {number} 0 if x is within DEADZONE of 0, otherwise x
+ */
+const deadzoneGuard = x => {
+  return Math.abs(x) > DEADZONE ? x : 0;
+};
+
+/**
  * @typedef {Object} Status
  * @property {boolean} isDown if the key is down
  * @property {boolean} wasDown if the key was down last step
@@ -73,6 +81,8 @@ export class Directional {
     this.left = new Button(this.name + " left", leftKey);
     this.vAxisIndex = vAxisIndex;
     this.hAxisIndex = hAxisIndex;
+    this.invertHAxis = false;
+    this.invertVAxis = false;
     /** @type {Vector} */
     this.vec = new Vector(0, 0);
   }
@@ -318,14 +328,6 @@ export function gamepadDisconnectListener(e) {
 export function getGamepadInput() {
   if (ignoreGampad) return;
 
-  /**
-   * @param {number} x
-   * @return {number} 0 if x is within DEADZONE of 0, otherwise x
-   */
-  const deadzoneGuard = x => {
-    return Math.abs(x) > DEADZONE ? x : 0;
-  };
-
   for (const gamepad of navigator.getGamepads()) {
     if (!gamepad || !gamepad.connected) {
       continue;
@@ -370,6 +372,8 @@ export function getGamepadInput() {
         if (yai !== undefined && gamepad.axes[yai]) {
           yReading = deadzoneGuard(gamepad.axes[yai]);
         }
+        if (dir.invertHAxis) xReading *= -1;
+        if (dir.invertVAxis) yReading *= -1;
         dir.vec = new Vector(xReading, yReading).mult(STICK_SENSITIVITY);
         if (dir.vec.mag() > 1) dir.vec = dir.vec.norm2();
       }
@@ -412,13 +416,21 @@ export async function getNextKey() {
 /**
  * Stops all other keyboard listeners and suppresses gamepad input to get the
  * next gamepad button pressed, then resumes collecting input normally
- * @return {Promise<number>} a promise that resolves with the index of the next
- * gamepad button pressed
+ * @return {Promise<number | undefined>} a promise that resolves with the index
+ * of the next gamepad button pressed, or undefined if we should keep the old
+ * value
  */
 export async function getNextGamepadButton() {
   suppressGamepad(true);
   return new Promise(resolve => {
-    while (true) {
+    const startTime = window.performance.now();
+    // loop for 5 seconds waiting for gamepad input
+    while (window.performance.now() - startTime < 5000) {
+      // break out if the user goes back to using a keyboard
+      if (usingKeyboard) {
+        resolve(undefined);
+        return;
+      }
       for (const gamepad of navigator.getGamepads()) {
         if (!gamepad || !gamepad.connected) continue;
         for (let i = 0; i < gamepad.buttons.length; ++i) {
@@ -431,6 +443,38 @@ export async function getNextGamepadButton() {
           }
         }
       }
+    }
+    suppressGamepad(false);
+    resolve(undefined);
+  });
+}
+
+/**
+ * Stops all other keyboard listeners and suppresses gamepad input to get the
+ * next gamepad joystick pressed
+ * @return {Promise<{ index: number, inverse: boolean } | undefined>} a promise
+ * that resolves with the index of the next gamepad button pressed
+ */
+export async function getNextStickAxis() {
+  suppressGamepad(true);
+  return new Promise(resolve => {
+    const startTime = window.performance.now()
+    // loop for 5 seconds waiting for gamepad input
+    while (window.performance.now() - startTime < 5000) {
+      for (const gamepad of navigator.getGamepads()) {
+        if (!gamepad || !gamepad.connected) continue;
+        for (let i = 0; i < gamepad.axes.length; ++i) {
+          if (deadzoneGuard(gamepad.axes[i]) !== 0) {
+            // set timeout to allow for the stick to be released so it isn't
+            // immediately triggered again
+            setTimeout(() => suppressGamepad(false), 500);
+            resolve({ index: i, inverse: gamepad.axes[i] < 0 });
+            return;
+          }
+        }
+      }
+      suppressGamepad(false);
+      resolve(undefined);
     }
   });
 }

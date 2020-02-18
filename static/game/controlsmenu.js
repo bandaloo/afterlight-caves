@@ -51,12 +51,15 @@ export class ControlsMenu extends Menu {
               button.key = newKey;
             });
           } else {
-            const oldKey = button.key;
-            button.key = "Press a button...";
-            getNextGamepadButton().then(newIndex => {
-              button.gpButtonIndex = newIndex;
-              button.key = oldKey;
-            });
+            const oldButton = button.gpButtonIndex;
+            button.gpButtonIndex = "Press a button...";
+            // set timeout so instruction appears immediately
+            setTimeout(() => {
+              getNextGamepadButton().then(newIndex => {
+                if (newIndex === undefined) button.gpButtonIndex = oldButton;
+                else button.gpButtonIndex = newIndex;
+              });
+            }, 1);
           }
         }
       });
