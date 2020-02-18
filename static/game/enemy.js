@@ -102,6 +102,7 @@ export class Enemy extends Creature {
   }
 
   destroy() {
+    playSound("enemy-dead");
     for (let i = 0; i < 25; i++) {
       let p = new Particle(this.pos, this.originalDrawColor, EffectEnum.spark);
       p.lineWidth = 5;
