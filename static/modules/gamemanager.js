@@ -582,3 +582,11 @@ export function collectInput(arg = true) {
     window.addEventListener("gamepaddisconnected", gamepadDisconnectListener);
   }
 }
+
+export function getBlockWidth() {
+  return gameManager.blockWidth;
+}
+
+export function getBlockHeight() {
+  return gameManager.blockHeight;
+}
