@@ -5,10 +5,11 @@ import {
   getUsingKeyboard
 } from "../modules/buttons.js";
 import { getScreenDimensions } from "../modules/displaymanager.js";
-import { toggleGuiElement } from "../modules/gamemanager.js";
+import { toggleGuiElement, addToGui } from "../modules/gamemanager.js";
 import { Vector } from "../modules/vector.js";
 import { centeredText, rect } from "./draw.js";
 import { Menu } from "./menu.js";
+import {DirectionalControlMenu} from "./directionalcontrolmenu.js";
 
 export class ControlsMenu extends Menu {
   constructor() {
@@ -16,6 +17,14 @@ export class ControlsMenu extends Menu {
     super(new Vector(0, 0), screenDimensions.width, screenDimensions.height);
     this.itemWidth = 1200;
     this.textAlign = "left";
+    // make a sub-menu for each directional
+    this.childMenus = [];
+    for (const dir of buttons.getDirectionals()) {
+      const dcm = new DirectionalControlMenu(dir);
+      dcm.active = false;
+      addToGui(dir.name + "controlmenu", dcm);
+      this.childMenus.push(dcm);
+    }
   }
 
   action() {
@@ -23,7 +32,10 @@ export class ControlsMenu extends Menu {
     for (const directional of buttons.getDirectionals()) {
       items.push({
         text: directional.name,
-        func: undefined
+        func: () => {
+          this.active = false;
+          toggleGuiElement(directional.name + "controlmenu");
+        }
       });
     }
 

@@ -36,10 +36,10 @@ export class PauseScreen extends Menu {
     const settingsmenu = new SettingsMenu();
     settingsmenu.active = false;
     addToGui("settingsmenu", settingsmenu);
-    this.childMenus = [codex, stats, settingsmenu];
-    const controlsmenu = new ControlsMenu();
-    controlsmenu.active = false;
-    addToGui("controlsmenu", controlsmenu);
+    this.controlsmenu = new ControlsMenu();
+    this.controlsmenu.active = false;
+    addToGui("controlsmenu", this.controlsmenu);
+    this.childMenus = [codex, stats, settingsmenu, this.controlsmenu];
 
     this.setItems([
       { text: "Resume", func: this.onBack.bind(this) },
@@ -124,6 +124,9 @@ export class PauseScreen extends Menu {
   onBack() {
     // close all sub-menus
     this.childMenus.forEach(menu => {
+      menu.active = false;
+    });
+    this.controlsmenu.childMenus.forEach(menu => {
       menu.active = false;
     });
     setPause(false);

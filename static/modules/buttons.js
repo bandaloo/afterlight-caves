@@ -49,7 +49,7 @@ class Button {
   }
 }
 
-class Directional {
+export class Directional {
   /**
    * @param {string} name the display name of this directional
    * @param {string} upKey the KeyboardEvent.key value of the key associated
@@ -68,9 +68,9 @@ class Directional {
   constructor(name, upKey, rightKey, downKey, leftKey, vAxisIndex, hAxisIndex) {
     this.name = name;
     this.up = new Button(this.name + " up", upKey);
-    this.right = new Button(this.name + "right", rightKey);
-    this.down = new Button(this.name + "down", downKey);
-    this.left = new Button(this.name + "left", leftKey);
+    this.right = new Button(this.name + " right", rightKey);
+    this.down = new Button(this.name + " down", downKey);
+    this.left = new Button(this.name + " left", leftKey);
     this.vAxisIndex = vAxisIndex;
     this.hAxisIndex = hAxisIndex;
     /** @type {Vector} */
