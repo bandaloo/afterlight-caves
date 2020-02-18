@@ -1,12 +1,20 @@
+import { pauseSound, loopSound, getSound } from "../modules/sound.js";
 import {
-  pauseSound,
-  loopSound,
-  playSound,
-  getSound
-} from "../modules/sound.js";
-import { getBlurContext, FILTER_STRING } from "../modules/displaymanager.js";
+  getBlurContext,
+  FILTER_STRING,
+  toggleFullscreen
+} from "../modules/displaymanager.js";
 
 export const settings = {
+  Fullscreen: {
+    value: false,
+    getDisplayVal() {
+      return document.fullscreenElement !== null ? "on" : "off";
+    },
+    onClick() {
+      toggleFullscreen();
+    }
+  },
   "Mute music": {
     value: false,
     getDisplayVal() {

@@ -11,10 +11,7 @@ import { resetDemo } from "../main.js";
 import { Codex } from "./codex.js";
 import { Stats } from "./stats.js";
 import { Hero } from "./hero.js";
-import {
-  getScreenDimensions,
-  toggleFullscreen
-} from "../modules/displaymanager.js";
+import { getScreenDimensions } from "../modules/displaymanager.js";
 import { SettingsMenu } from "./settingsmenu.js";
 import { ControlsMenu } from "./controlsmenu.js";
 
@@ -72,10 +69,6 @@ export class PauseScreen extends Menu {
         }
       },
       {
-        text: "Enter fullscreen",
-        func: toggleFullscreen
-      },
-      {
         text: "Give up",
         func: () => {
           const hero = /** @type {Hero} */ (getImportantEntity("hero"));
@@ -86,15 +79,6 @@ export class PauseScreen extends Menu {
       { text: "Start over", func: resetDemo }
     ]);
     this.itemWidth = 600;
-  }
-
-  action() {
-    if (document.fullscreenElement === null) {
-      this.items[5].text = "Enter fullscreen";
-    } else {
-      this.items[5].text = "Exit fullscreen";
-    }
-    super.action();
   }
 
   draw() {
