@@ -418,12 +418,12 @@ export function adjustEntity(entity) {
   }
   if (entity.occludedByWalls) {
     // Keep track of how far entity moved during adjustment.
-    const mv = new Vector(0, 0);
+    let mv = new Vector(0, 0);
 
     // For each colliding vector, resolve the collision.
     for (let i = 0; i < collisionVectors.length; i++) {
       const cv = collisionVectors[i];
-      entity.pos = entity.pos.sub(cv);
+      mv = mv.add(cv);
     }
 
     entity.pos = entity.pos.sub(mv);
