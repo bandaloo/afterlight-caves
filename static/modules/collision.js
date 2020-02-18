@@ -192,21 +192,24 @@ export function collide_BoxCircle(boxA, circleB, resolve) {
   const aLeft = boxA.pos.x - boxA.width / 2;
   const aBottom = boxA.pos.y + boxA.height / 2;
   const aTop = boxA.pos.y - boxA.height / 2;
+  const aTopLeft = new Vector(aLeft, aTop); // Top Left
+  const aTopRight = new Vector(aRight, aTop); // Top Right
+  const aBottomLeft = new Vector(aLeft, aBottom); // Bottom Left
+  const aBottomRight = new Vector(aRight, aBottom); // Bottom Right
+  const aRightSide = [aTopRight, aBottomRight];
+  const aLeftSide = [aBottomLeft, aTopRight];
+  const aBottomSide = [aBottomRight, aBottomLeft];
+  const aTopSide = [aTopLeft, aTopRight];
   const points = [];
-  if (boxA.collidesLeft && boxA.collidesTop)
-    points.push(new Vector(aLeft, aTop)); // Top Left
-  if (boxA.collidesRight && boxA.collidesTop)
-    points.push(new Vector(aRight, aTop)); // Top Right
-  if (boxA.collidesLeft && boxA.collidesBottom)
-    points.push(new Vector(aLeft, aBottom)); // Bottom Left
-  if (boxA.collidesRight && boxA.collidesBottom)
-    points.push(new Vector(aRight, aBottom)); // Bottom Right
-
+  if (boxA.collidesLeft && boxA.collidesTop) points.push(aTopLeft);
+  if (boxA.collidesRight && boxA.collidesTop) points.push(aTopRight);
+  if (boxA.collidesLeft && boxA.collidesBottom) points.push(aBottomLeft);
+  if (boxA.collidesRight && boxA.collidesBottom) points.push(aBottomRight);
   const sides = [];
-  if (boxA.collidesTop) sides.push([points[0], points[2]]);
-  if (boxA.collidesBottom) sides.push([points[1], points[3]]);
-  if (boxA.collidesLeft) sides.push([points[0], points[1]]);
-  if (boxA.collidesRight) sides.push([points[2], points[3]]);
+  if (boxA.collidesTop) sides.push(aTopSide);
+  if (boxA.collidesBottom) sides.push(aBottomSide);
+  if (boxA.collidesLeft) sides.push(aLeftSide);
+  if (boxA.collidesRight) sides.push(aRightSide);
 
   // Define circle constants
   const bRight = circleB.pos.x + circleB.radius;
@@ -225,32 +228,29 @@ export function collide_BoxCircle(boxA, circleB, resolve) {
     (aTop < circleB.pos.y && circleB.pos.y < aBottom) ||
     (aLeft < circleB.pos.x && circleB.pos.x < aRight)
   ) {
-    // If the right bounds of A is between the horizontal bounds of B
-    if (bLeft < aRight && aRight < bRight) {
-      cVector.x = bLeft - aRight;
+    if (aLeft < circleB.pos.x && circleB.pos.x < aRight) {
+      // If the bottom bounds of A is between the vertical bounds of B
+      if (bTop < aBottom && aBottom < bBottom) {
+        cVector.y = bTop - aBottom;
+      }
+      // If the top bounds of A is between the vertical bounds of B
+      if (bTop < aTop && aTop < bBottom) {
+        cVector.y = bBottom - aTop;
+      }
     }
-    // If the left bounds of A is between the horizontal bounds of B
-    if (bLeft < aLeft && aLeft < bRight) {
-      cVector.x = bRight - aLeft;
+    if (aTop < circleB.pos.y && circleB.pos.y < aBottom) {
+      if (bLeft < aRight && aRight < bRight) {
+        // If the right bounds of A is between the horizontal bounds of B
+        cVector.x = bLeft - aRight;
+      }
+      // If the left bounds of A is between the horizontal bounds of B
+      if (bLeft < aLeft && aLeft < bRight) {
+        cVector.x = bRight - aLeft;
+      }
     }
-    // If the bottom bounds of A is between the vertical bounds of B
-    if (bTop < aBottom && aBottom < bBottom) {
-      cVector.y = bTop - aBottom;
-    }
-    // If the top bounds of A is between the vertical bounds of B
-    if (bTop < aTop && aTop < bBottom) {
-      cVector.y = bBottom - aTop;
-    }
-
     // If there was a collision, resolve it.
     if (!cVector.isZeroVec()) {
       if (!resolve) return new Vector(1, 1);
-      // If the shape doesn't have collision in a direction, make sure it doesn't
-      // have the vector points that way.
-      if (!boxA.collidesBottom) cVector.y = Math.max(0, cVector.y);
-      if (!boxA.collidesTop) cVector.y = Math.min(0, cVector.y);
-      if (!boxA.collidesLeft) cVector.x = Math.min(0, cVector.x);
-      if (!boxA.collidesRight) cVector.x = Math.max(0, cVector.x);
 
       // Only return the "easier" direction to resolve from.
       if (Math.abs(cVector.x) < Math.abs(cVector.y) && cVector.x != 0) {
@@ -265,12 +265,9 @@ export function collide_BoxCircle(boxA, circleB, resolve) {
 
   //Second, check if any of the corners are within the circle
   let collidingCorner = undefined;
-  let collisionDistance = Infinity;
+  let collisionDistance = radius2;
   for (let corner of points) {
-    if (
-      circleB.pos.dist2(corner) < radius2 &&
-      circleB.pos.dist2(corner) < collisionDistance
-    ) {
+    if (circleB.pos.dist2(corner) < collisionDistance) {
       collidingCorner = corner;
       collisionDistance = circleB.pos.dist(corner);
     }
@@ -279,11 +276,20 @@ export function collide_BoxCircle(boxA, circleB, resolve) {
   // Again, the below code is repreated maybe able to make more DRY.
   if (collidingCorner !== undefined) {
     if (!resolve) return new Vector(1, 1);
+
     const dist = new Vector(
       circleB.pos.x - collidingCorner.x,
       circleB.pos.y - collidingCorner.y
     );
-    cVector = dist.norm2().mult(dist.mag() - circleB.radius);
+
+    cVector = dist.norm2().mult(dist.mag() - circleB.radius + 1);
+
+    // Only return the "easier" direction to resolve from.
+    if (Math.abs(cVector.x) > Math.abs(cVector.y) && cVector.x != 0) {
+      cVector.y = 0;
+    } else if (Math.abs(cVector.y) > Math.abs(cVector.x) && cVector.y != 0) {
+      cVector.x = 0;
+    }
     return cVector;
   }
 
@@ -369,13 +375,6 @@ export function collide_BoxBox(boxA, boxB, resolve) {
       cVector.y = aTop - bBottom;
     }
 
-    // If the shape doesn't have collision in a direction, make sure it doesn't
-    // have the vector points that way.
-    if (!boxB.collidesBottom) cVector.y = Math.max(0, cVector.y);
-    if (!boxB.collidesTop) cVector.y = Math.min(0, cVector.y);
-    if (!boxB.collidesLeft) cVector.x = Math.min(0, cVector.x);
-    if (!boxB.collidesRight) cVector.x = Math.max(0, cVector.x);
-
     // Only return the "easier" direction to resolve from.
     if (Math.abs(cVector.x) < Math.abs(cVector.y) && cVector.x != 0) {
       cVector.y = 0;
@@ -420,10 +419,24 @@ export function adjustEntity(entity) {
     // Keep track of how far entity moved during adjustment.
     let mv = new Vector(0, 0);
 
+    /** TODO: this is used to prevent multiple of the same collision from
+     * different wall tiles from being applied. The "correct" solution is to
+     * build the "world" collision objects better but that's difficult and slow.
+     */
+    let alreadyAppliedVectorsX = [];
+    let alreadyAppliedVectorsY = [];
+
     // For each colliding vector, resolve the collision.
     for (let i = 0; i < collisionVectors.length; i++) {
       const cv = collisionVectors[i];
-      mv = mv.add(cv);
+      if (!alreadyAppliedVectorsX.includes(cv.x)) {
+        mv.x += cv.x;
+        alreadyAppliedVectorsX.push(cv.x);
+      }
+      if (!alreadyAppliedVectorsY.includes(cv.y)) {
+        mv.y += cv.y;
+        alreadyAppliedVectorsY.push(cv.y);
+      }
     }
 
     entity.pos = entity.pos.sub(mv);
@@ -452,6 +465,9 @@ export class CollisionShape {
   /** @type {Vector} */
   pos;
 
+  /** @type {Vector} */
+  vel;
+
   /** @type {"Box"|"Circle"|"undefined"} */
   type;
 
@@ -465,10 +481,16 @@ export class CollisionShape {
    * Class used to store collision information
    * @param {"Box"|"Circle"|"undefined"} type
    * @param {Vector} pos
+   * @param {Vector} vel
    */
-  constructor(type = "undefined", pos = new Vector(0, 0)) {
+  constructor(
+    type = "undefined",
+    pos = new Vector(0, 0),
+    vel = new Vector(0, 0)
+  ) {
     this.type = type;
     this.pos = pos;
+    this.vel = vel;
   }
 }
 
@@ -490,9 +512,10 @@ export class Box extends CollisionShape {
    * @param {number} width
    * @param {number} height
    * @param {Vector} pos
+   * @param {Vector} vel
    */
-  constructor(width, height, pos) {
-    super("Box", pos);
+  constructor(width, height, pos, vel = new Vector(0, 0)) {
+    super("Box", pos, vel);
     this.width = width;
     this.height = height;
   }
@@ -506,9 +529,10 @@ export class Circle extends CollisionShape {
    * Class used for axis-aligned box collision
    * @param {number} radius
    * @param {Vector} pos
+   * @param {Vector} vel
    */
-  constructor(radius, pos) {
-    super("Circle", pos);
+  constructor(radius, pos, vel = new Vector(0, 0)) {
+    super("Circle", pos, vel);
     this.radius = radius;
     this.width = radius * 2;
     this.height = radius * 2;

@@ -98,7 +98,7 @@ export class Entity {
    * is called and collisionShape is undefined.
    */
   /** @type {"Box"|"Circle"|"undefined"} */
-  colllisionType;
+  collisionType;
 
   /**
    * Allows for the collision shape of an entity to be overriden for terrain
@@ -128,7 +128,7 @@ export class Entity {
     this.vel = vel;
     /** @type {Vector} */
     this.acc = acc;
-    this.colllisionType = "Circle";
+    this.collisionType = "Circle";
   }
 
   /**
@@ -159,13 +159,18 @@ export class Entity {
   getCollisionShape() {
     if (this.collisionShape !== undefined) {
       this.collisionShape.pos = this.pos;
+      this.collisionShape.vel = this.vel;
       return this.collisionShape;
-    } else if (this.colllisionType == "Box") {
-      return new Box(this.width, this.height, this.pos);
-    } else if (this.colllisionType == "Circle") {
-      return new Circle(Math.min(this.width, this.height) / 2, this.pos);
+    } else if (this.collisionType == "Box") {
+      return new Box(this.width, this.height, this.pos, this.vel);
+    } else if (this.collisionType == "Circle") {
+      return new Circle(
+        Math.min(this.width, this.height) / 2,
+        this.pos,
+        this.vel
+      );
     }
-    return new CollisionShape("undefined", this.pos);
+    return new CollisionShape("undefined", this.pos, this.vel);
   }
 
   /**
@@ -177,6 +182,7 @@ export class Entity {
   getTerrainCollisionShape() {
     if (this.terrainCollisionShape !== undefined) {
       this.terrainCollisionShape.pos = this.pos;
+      this.terrainCollisionShape.vel = this.vel;
       return this.terrainCollisionShape;
     }
     return this.getCollisionShape();
