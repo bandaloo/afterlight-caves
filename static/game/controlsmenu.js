@@ -2,14 +2,15 @@ import {
   buttons,
   getNextGamepadButton,
   getNextKey,
-  getUsingKeyboard
+  getUsingKeyboard,
+  saveControls
 } from "../modules/buttons.js";
 import { getScreenDimensions } from "../modules/displaymanager.js";
 import { toggleGuiElement, addToGui } from "../modules/gamemanager.js";
 import { Vector } from "../modules/vector.js";
 import { centeredText, rect } from "./draw.js";
 import { Menu } from "./menu.js";
-import {DirectionalControlMenu} from "./directionalcontrolmenu.js";
+import { DirectionalControlMenu } from "./directionalcontrolmenu.js";
 
 export class ControlsMenu extends Menu {
   constructor() {
@@ -49,6 +50,7 @@ export class ControlsMenu extends Menu {
             button.key = "Press a key...";
             getNextKey().then(newKey => {
               button.key = newKey;
+              saveControls();
             });
           } else {
             const oldButton = button.gpButtonIndex;
@@ -58,6 +60,7 @@ export class ControlsMenu extends Menu {
             getNextGamepadButton().then(newIndex => {
               if (newIndex === undefined) button.gpButtonIndex = oldButton;
               else button.gpButtonIndex = newIndex;
+              saveControls();
             });
           }
         }
@@ -104,6 +107,7 @@ export class ControlsMenu extends Menu {
    * @override
    */
   onBack() {
+    saveControls();
     super.onBack();
     toggleGuiElement("pausescreen");
   }

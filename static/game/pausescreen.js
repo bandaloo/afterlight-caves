@@ -15,6 +15,7 @@ import { getScreenDimensions } from "../modules/displaymanager.js";
 import { SettingsMenu } from "./settingsmenu.js";
 import { ControlsMenu } from "./controlsmenu.js";
 import { saveSettings, restoreSettings } from "./settings.js";
+import { saveControls, restoreControls } from "../modules/buttons.js";
 
 export class PauseScreen extends Menu {
   /** @type {Menu[]} */
@@ -39,6 +40,7 @@ export class PauseScreen extends Menu {
     addToGui("controlsmenu", this.controlsmenu);
     this.childMenus = [codex, stats, settingsmenu, this.controlsmenu];
     restoreSettings();
+    restoreControls();
 
     this.setItems([
       { text: "Resume", func: this.onBack.bind(this) },
@@ -109,6 +111,7 @@ export class PauseScreen extends Menu {
    */
   onBack() {
     saveSettings();
+    saveControls();
     // close all sub-menus
     this.childMenus.forEach(menu => {
       menu.active = false;

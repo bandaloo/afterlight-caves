@@ -2,7 +2,8 @@ import {
   Directional,
   getUsingKeyboard,
   getNextKey,
-  getNextStickAxis
+  getNextStickAxis,
+  saveControls
 } from "../modules/buttons.js";
 import { getScreenDimensions } from "../modules/displaymanager.js";
 import { toggleGuiElement } from "../modules/gamemanager.js";
@@ -35,6 +36,7 @@ export class DirectionalControlMenu extends Menu {
             getNextKey().then(newKey => {
               if (newKey === undefined) b.key = oldKey;
               else b.key = newKey;
+              saveControls();
             });
           }
         });
@@ -61,6 +63,7 @@ export class DirectionalControlMenu extends Menu {
               this.directional.vAxisIndex = obj.index;
               this.directional.invertVAxis = obj.inverse;
             }
+            saveControls();
           });
         }
       });
@@ -76,18 +79,16 @@ export class DirectionalControlMenu extends Menu {
           // okay because we'll assign it back soon
           this.directional.hAxisIndex = "Move a stick right...";
           this.directional.invertHAxis = false;
-          // set timeout so instruction appears immediately (thanks JavaScript)
-          setTimeout(() => {
-            getNextStickAxis().then(obj => {
-              if (obj === undefined) {
-                this.directional.hAxisIndex = oldIndex;
-                this.directional.invertHAxis = oldInverse;
-              } else {
-                this.directional.hAxisIndex = obj.index;
-                this.directional.invertHAxis = obj.inverse;
-              }
-            });
-          }, 1);
+          getNextStickAxis().then(obj => {
+            if (obj === undefined) {
+              this.directional.hAxisIndex = oldIndex;
+              this.directional.invertHAxis = oldInverse;
+            } else {
+              this.directional.hAxisIndex = obj.index;
+              this.directional.invertHAxis = obj.inverse;
+            }
+            saveControls();
+          });
         }
       });
     }

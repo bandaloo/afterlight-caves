@@ -4,6 +4,7 @@ import {
   FILTER_STRING,
   toggleFullscreen
 } from "../modules/displaymanager.js";
+import { getCookie } from "../modules/helpers.js";
 
 export const settings = {
   Fullscreen: {
@@ -116,7 +117,7 @@ export function saveSettings() {
   document.cookie =
     "settings=" +
     settingsString +
-    "; expires = " +
+    "; expires=" +
     date.toUTCString() +
     "; path=/;";
 }
@@ -125,20 +126,17 @@ export function saveSettings() {
  * restores settings based on cookie value, if it exists
  */
 export function restoreSettings() {
-  const parts = document.cookie.split(";");
-  for (const part of parts) {
-    if (part.trim().indexOf("settings=") === 0) {
-      try {
-        const json = JSON.parse(part.trim().substring("settings=".length));
-        for (const key in json) {
-          if (settings[key] !== undefined) {
-            settings[key].value = json[key];
-            settings[key].update();
-          }
-        }
-      } catch (e) {
-        // ignore errors
+  const settingsString = getCookie("settings");
+  if (settingsString === undefined) return;
+  try {
+    const json = JSON.parse(settingsString);
+    for (const key in json) {
+      if (settings[key] !== undefined) {
+        settings[key].value = json[key];
+        settings[key].update();
       }
     }
+  } catch (e) {
+    // ignore errors
   }
 }

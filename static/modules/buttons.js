@@ -1,5 +1,6 @@
 import { Vector } from "./vector.js";
 import { collectInput } from "./gamemanager.js";
+import { getCookie } from "./helpers.js";
 
 const noisy = false;
 const DEADZONE = 0.2;
@@ -46,14 +47,24 @@ class Button {
    * @param {string} key the KeyboardEvent.key value of the key associated with
    * this button. See here for details:
    * https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values
-   * @param {number} [gpButtonIndex] index in gamepad.buttons. Only has effect
-   * if this has type "button"
+   * @param {number} [gpButtonIndex] index in gamepad.buttons.
    */
   constructor(name, key, gpButtonIndex) {
     this.name = name;
     this.key = key;
     this.status = initStatus();
     this.gpButtonIndex = gpButtonIndex;
+  }
+
+  /**
+   * sets all attributes from parameters if they aren't undefined
+   * @param {string} key the KeyboardEvent.key value of the key associated with
+   * this button.
+   * @param {number} [gpButtonIndex] index in gamepad.buttons.
+   */
+  setAll(key, gpButtonIndex) {
+    if (key !== undefined) this.key = key;
+    if (gpButtonIndex !== undefined) this.gpButtonIndex = gpButtonIndex;
   }
 }
 
@@ -128,6 +139,43 @@ export class Directional {
    */
   getButtons() {
     return [this.up, this.right, this.down, this.left];
+  }
+
+  /**
+   * sets all attributes from parameters if they aren't undefined
+   * @param {string} upKey the KeyboardEvent.key value of the key associated
+   * with going up on this directional
+   * @param {string} rightKey the KeyboardEvent.key value of the key associated
+   * with going right on this directional
+   * @param {string} downKey the KeyboardEvent.key value of the key associated
+   * with going down on this directional
+   * @param {string} leftKey the KeyboardEvent.key value of the key associated
+   * with going left on this directional
+   * @param {number} vAxisIndex index of this directional's vertical axis in
+   * gamepad.axes
+   * @param {number} hAxisIndex index of this directional's horizontal axis
+   * in gamepad.axes
+   * @param {boolean} invertHAxis whether to invert the horizontal axis
+   * @param {boolean} invertVAxis whether to invert the vertical axis
+   */
+  setAll(
+    upKey,
+    rightKey,
+    downKey,
+    leftKey,
+    vAxisIndex,
+    hAxisIndex,
+    invertHAxis,
+    invertVAxis
+  ) {
+    if (upKey !== undefined) this.up.key = upKey;
+    if (rightKey !== undefined) this.right.key = rightKey;
+    if (downKey !== undefined) this.down.key = downKey;
+    if (leftKey !== undefined) this.left.key = leftKey;
+    if (vAxisIndex !== undefined) this.vAxisIndex = vAxisIndex;
+    if (hAxisIndex !== undefined) this.hAxisIndex = hAxisIndex;
+    if (invertHAxis !== undefined) this.invertHAxis = invertHAxis;
+    if (invertVAxis !== undefined) this.invertVAxis = invertVAxis;
   }
 }
 
@@ -488,4 +536,81 @@ export async function getNextStickAxis() {
     };
     func();
   });
+}
+
+/**
+ * saves controls as a cookie that expires after 7 days
+ */
+export function saveControls() {
+  // create date one week in the future
+  const date = new Date();
+  date.setTime(date.getTime() + 7 * 24 * 60 * 60 * 1000);
+  const json = { buttons: {}, directionals: {} };
+
+  for (const id in buttons) {
+    // save buttons
+    if (buttons[id] instanceof Button) {
+      json.buttons[id] = {
+        key: buttons[id].key,
+        gpButtonIndex: buttons[id].gpButtonIndex
+      };
+    }
+    // save directionals
+    if (buttons[id] instanceof Directional) {
+      const dir = /** @type {Directional} */ (buttons[id]);
+      json.directionals[id] = {
+        upKey: dir.up.key,
+        rightKey: dir.right.key,
+        downKey: dir.down.key,
+        leftKey: dir.left.key,
+        hAxisIndex: dir.hAxisIndex,
+        vAxisIndex: dir.vAxisIndex,
+        invertHAxis: dir.invertHAxis,
+        invertVAxis: dir.invertVAxis
+      };
+    }
+  }
+
+  const controlsString = JSON.stringify(json);
+  document.cookie =
+    "controls=" +
+    controlsString +
+    "; expires=" +
+    date.toUTCString() +
+    "; path=/;";
+}
+
+/**
+ * restore controls based on cookie value, if it exists
+ */
+export function restoreControls() {
+  const controlsString = getCookie("controls");
+  if (controlsString === undefined) return;
+  try {
+    const json = JSON.parse(controlsString);
+    for (const id in json.buttons) {
+      if (buttons[id] instanceof Button) {
+        /** @type {Button} */ (buttons[id]).setAll(
+          json.buttons[id].key,
+          json.buttons[id].gpButtonIndex
+        );
+      }
+    }
+    for (const id in json.directionals) {
+      if (buttons[id] instanceof Directional) {
+        /** @type {Directional} */ (buttons[id]).setAll(
+          json.directionals[id].upKey,
+          json.directionals[id].rightKey,
+          json.directionals[id].downKey,
+          json.directionals[id].leftKey,
+          json.directionals[id].vAxisIndex,
+          json.directionals[id].hAxisIndex,
+          json.directionals[id].invertHAxis,
+          json.directionals[id].invertVAxis
+        );
+      }
+    }
+  } catch (e) {
+    // ignore errors
+  }
 }
