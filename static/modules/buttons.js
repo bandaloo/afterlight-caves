@@ -13,7 +13,7 @@ let ignoreGampad = false;
  */
 export const getUsingKeyboard = () => {
   return usingKeyboard;
-}
+};
 
 /**
  * Set to true to ignore input from gamepads
@@ -21,7 +21,7 @@ export const getUsingKeyboard = () => {
  */
 export const suppressGamepad = (arg = true) => {
   ignoreGampad = arg;
-}
+};
 
 /**
  * @param {number} x
@@ -408,7 +408,7 @@ export async function getNextKey() {
       collectInput(true);
       suppressGamepad(false);
       resolve(ev.key);
-    }
+    };
     document.addEventListener("keydown", handler);
   });
 }
@@ -425,12 +425,8 @@ export async function getNextGamepadButton() {
   return new Promise(resolve => {
     const startTime = window.performance.now();
     // loop for 5 seconds waiting for gamepad input
-    while (window.performance.now() - startTime < 5000) {
-      // break out if the user goes back to using a keyboard
-      if (usingKeyboard) {
-        resolve(undefined);
-        return;
-      }
+    const func = () => {
+      // check all gamepads for input
       for (const gamepad of navigator.getGamepads()) {
         if (!gamepad || !gamepad.connected) continue;
         for (let i = 0; i < gamepad.buttons.length; ++i) {
@@ -443,9 +439,16 @@ export async function getNextGamepadButton() {
           }
         }
       }
-    }
-    suppressGamepad(false);
-    resolve(undefined);
+      if (window.performance.now() - startTime < 5000 && !usingKeyboard) {
+        requestAnimationFrame(func);
+      } else {
+        // break out if it's been more than 5 seconds we're using the keyboard
+        suppressGamepad(false);
+        resolve(undefined);
+        return;
+      }
+    };
+    func();
   });
 }
 
@@ -458,23 +461,31 @@ export async function getNextGamepadButton() {
 export async function getNextStickAxis() {
   suppressGamepad(true);
   return new Promise(resolve => {
-    const startTime = window.performance.now()
+    const startTime = window.performance.now();
     // loop for 5 seconds waiting for gamepad input
-    while (window.performance.now() - startTime < 5000) {
+    const func = () => {
+      // check all gamepads for input
       for (const gamepad of navigator.getGamepads()) {
         if (!gamepad || !gamepad.connected) continue;
         for (let i = 0; i < gamepad.axes.length; ++i) {
           if (deadzoneGuard(gamepad.axes[i]) !== 0) {
-            // set timeout to allow for the stick to be released so it isn't
+            // set timeout to allow for the button to be released so it isn't
             // immediately triggered again
-            setTimeout(() => suppressGamepad(false), 500);
+            setTimeout(() => suppressGamepad(false), 300);
             resolve({ index: i, inverse: gamepad.axes[i] < 0 });
             return;
           }
         }
       }
-      suppressGamepad(false);
-      resolve(undefined);
-    }
+      if (window.performance.now() - startTime < 5000 && !usingKeyboard) {
+        requestAnimationFrame(func);
+      } else {
+        // break out if it's been more than 5 seconds we're using the keyboard
+        suppressGamepad(false);
+        resolve(undefined);
+        return;
+      }
+    };
+    func();
   });
 }

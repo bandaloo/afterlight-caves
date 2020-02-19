@@ -51,18 +51,15 @@ export class DirectionalControlMenu extends Menu {
           const oldInverse = this.directional.invertVAxis;
           this.directional.vAxisIndex = "Move a stick down...";
           this.directional.invertVAxis = false;
-          // set timeout so instruction appears immediately (thanks JavaScript)
-          setTimeout(() => {
-            getNextStickAxis().then(obj => {
-              if (obj === undefined) {
-                this.directional.vAxisIndex = oldIndex;
-                this.directional.invertVAxis = oldInverse;
-              } else {
-                this.directional.vAxisIndex = obj.index;
-                this.directional.invertVAxis = obj.inverse;
-              }
-            });
-          }, 1);
+          getNextStickAxis().then(obj => {
+            if (obj === undefined) {
+              this.directional.vAxisIndex = oldIndex;
+              this.directional.invertVAxis = oldInverse;
+            } else {
+              this.directional.vAxisIndex = obj.index;
+              this.directional.invertVAxis = obj.inverse;
+            }
+          });
         }
       });
       items.push({
