@@ -1,6 +1,7 @@
 import { Entity } from "./entity.js";
 import { getDimensions, getTerrain } from "./gamemanager.js";
 import { Vector } from "./vector.js";
+import { Bullet } from "../game/bullet.js";
 
 /**
  * @param {Vector} pos
@@ -67,7 +68,13 @@ export function collideWithWorld(shape) {
       if (solidAt(i, j)) {
         let x = (i + 1) * blockWidth - blockWidth / 2;
         let y = (j + 1) * blockHeight - blockHeight / 2;
-        let b = new Box(blockHeight, blockWidth, new Vector(x, y));
+        let b = new Box(
+          blockHeight,
+          blockWidth,
+          new Vector(x, y),
+          undefined,
+          true
+        );
 
         // Determine if this cell needs has neighbors, and thus if it needs
         // collision.
@@ -230,27 +237,28 @@ export function collide_BoxCircle(boxA, circleB, resolve) {
   ) {
     if (aLeft < circleB.pos.x && circleB.pos.x < aRight) {
       // If the bottom bounds of A is between the vertical bounds of B
-      if (bTop < aBottom && aBottom < bBottom) {
+      if (bTop < aBottom && aBottom < bBottom && boxA.collidesBottom) {
         cVector.y = bTop - aBottom;
       }
       // If the top bounds of A is between the vertical bounds of B
-      if (bTop < aTop && aTop < bBottom) {
+      if (bTop < aTop && aTop < bBottom && boxA.collidesTop) {
         cVector.y = bBottom - aTop;
       }
     }
     if (aTop < circleB.pos.y && circleB.pos.y < aBottom) {
-      if (bLeft < aRight && aRight < bRight) {
+      if (bLeft < aRight && aRight < bRight && boxA.collidesRight) {
         // If the right bounds of A is between the horizontal bounds of B
         cVector.x = bLeft - aRight;
       }
       // If the left bounds of A is between the horizontal bounds of B
-      if (bLeft < aLeft && aLeft < bRight) {
+      if (bLeft < aLeft && aLeft < bRight && boxA.collidesLeft) {
         cVector.x = bRight - aLeft;
       }
     }
     // If there was a collision, resolve it.
     if (!cVector.isZeroVec()) {
       if (!resolve) return new Vector(1, 1);
+      if (circleB.debug && boxA.debug) console.log("SIDE");
 
       // Only return the "easier" direction to resolve from.
       if (Math.abs(cVector.x) < Math.abs(cVector.y) && cVector.x != 0) {
@@ -276,6 +284,7 @@ export function collide_BoxCircle(boxA, circleB, resolve) {
   // Again, the below code is repreated maybe able to make more DRY.
   if (collidingCorner !== undefined) {
     if (!resolve) return new Vector(1, 1);
+    if (circleB.debug && boxA.debug) console.log("CORNER");
 
     const dist = new Vector(
       circleB.pos.x - collidingCorner.x,
@@ -304,15 +313,16 @@ export function collide_BoxCircle(boxA, circleB, resolve) {
     Math.abs(distance.y) < boxA.height / 2
   ) {
     if (!resolve) return new Vector(1, 1);
+    if (circleB.debug && boxA.debug) console.log("INSIDE");
 
-    if (boxA.collidesBottom)
-      cVector.y = Math.max(0, boxA.height / 2 + circleB.radius);
-    else if (boxA.collidesTop)
-      cVector.y = Math.max(0, -boxA.height / 2 + circleB.radius);
-    else if (boxA.collidesLeft)
-      cVector.y = Math.max(-boxA.width / 2 + circleB.radius, 0);
-    else if (boxA.collidesRight)
-      cVector.y = Math.max(boxA.width / 2 + circleB.radius, 0);
+    // if (boxA.collidesBottom)
+    //   cVector.y = Math.max(0, boxA.height / 2 + circleB.radius);
+    // else if (boxA.collidesTop)
+    //   cVector.y = Math.max(0, -boxA.height / 2 + circleB.radius);
+    // else if (boxA.collidesLeft)
+    //   cVector.x = Math.max(-boxA.width / 2 + circleB.radius, 0);
+    // else if (boxA.collidesRight)
+    //   cVector.x = Math.max(boxA.width / 2 + circleB.radius, 0);
 
     if (distance.isZeroVec()) {
       cVector = new Vector(
@@ -320,7 +330,8 @@ export function collide_BoxCircle(boxA, circleB, resolve) {
         boxA.height / 2 + circleB.radius
       );
     } else {
-      cVector = distance.norm2().mult(distance.mag() - circleB.radius);
+      // cVector = distance.norm2().mult(distance.mag() - circleB.radius);
+      cVector = circleB.vel.add(boxA.vel).mult(-1);
     }
 
     return cVector;
@@ -374,6 +385,10 @@ export function collide_BoxBox(boxA, boxB, resolve) {
     if (bTop < aTop && aTop < bBottom) {
       cVector.y = aTop - bBottom;
     }
+    if (!boxA.collidesTop) cVector.y = Math.max(cVector.y, 0);
+    if (!boxA.collidesBottom) cVector.y = Math.min(cVector.y, 0);
+    if (!boxA.collidesLeft) cVector.y = Math.max(cVector.x, 0);
+    if (!boxA.collidesRight) cVector.y = Math.min(cVector.x, 0);
 
     // Only return the "easier" direction to resolve from.
     if (Math.abs(cVector.x) < Math.abs(cVector.y) && cVector.x != 0) {
@@ -402,6 +417,13 @@ export function adjustEntity(entity) {
   /** @type {Box[]} */
   const hitTerrain = [];
 
+  let debug = false;
+  if (entity instanceof Bullet) {
+    if (entity.good) {
+      debug = true;
+    }
+  }
+
   // Iterate through each colliding entity, and get a vector that defines how
   // "collided" they are
   for (let i = 0; i < terrainCollision.length; i++) {
@@ -418,6 +440,8 @@ export function adjustEntity(entity) {
   if (entity.occludedByWalls) {
     // Keep track of how far entity moved during adjustment.
     let mv = new Vector(0, 0);
+
+    if (entity.getCollisionShape().debug) console.log("Game Step");
 
     /** TODO: this is used to prevent multiple of the same collision from
      * different wall tiles from being applied. The "correct" solution is to
@@ -477,6 +501,8 @@ export class CollisionShape {
   /** @type {number} */
   height;
 
+  debug;
+
   /**
    * Class used to store collision information
    * @param {"Box"|"Circle"|"undefined"} type
@@ -486,11 +512,13 @@ export class CollisionShape {
   constructor(
     type = "undefined",
     pos = new Vector(0, 0),
-    vel = new Vector(0, 0)
+    vel = new Vector(0, 0),
+    debug = false
   ) {
     this.type = type;
     this.pos = pos;
     this.vel = vel;
+    this.debug = debug;
   }
 }
 
@@ -514,8 +542,8 @@ export class Box extends CollisionShape {
    * @param {Vector} pos
    * @param {Vector} vel
    */
-  constructor(width, height, pos, vel = new Vector(0, 0)) {
-    super("Box", pos, vel);
+  constructor(width, height, pos, vel = new Vector(0, 0), debug = false) {
+    super("Box", pos, vel, debug);
     this.width = width;
     this.height = height;
   }
@@ -531,8 +559,8 @@ export class Circle extends CollisionShape {
    * @param {Vector} pos
    * @param {Vector} vel
    */
-  constructor(radius, pos, vel = new Vector(0, 0)) {
-    super("Circle", pos, vel);
+  constructor(radius, pos, vel = new Vector(0, 0), debug = false) {
+    super("Circle", pos, vel, debug);
     this.radius = radius;
     this.width = radius * 2;
     this.height = radius * 2;

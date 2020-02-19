@@ -1,4 +1,4 @@
-import { getCell } from "../modules/collision.js";
+import { getCell, Circle } from "../modules/collision.js";
 import { Entity, FarEnum } from "../modules/entity.js";
 import { addParticle, inbounds, setBlock } from "../modules/gamemanager.js";
 import { Vector } from "../modules/vector.js";
@@ -39,6 +39,16 @@ export class Bullet extends Entity {
     this.color = color;
     this.damage = damage;
     this.knockback = 3;
+    this.reflectNum = 100;
+
+    const col = new Circle(
+      Math.min(this.width, this.height) / 2,
+      this.pos,
+      this.vel,
+      this.good
+    );
+    this.setCollisionShape(col);
+
     /**
      * @type {{ name: string, data: number, func: (function(Bullet, number): void) }[]}
      */
@@ -93,6 +103,7 @@ export class Bullet extends Entity {
 
   destroy() {
     // execute all on-destroy functions
+    if (this.good) console.log("--DEAD--");
     for (const od of this.onDestroy) {
       if (od["func"]) od["func"](this, od["data"]);
     }
@@ -130,6 +141,9 @@ export class Bullet extends Entity {
     // remove the bullet if it's not supposed to bounce
     if (!this.reflectsOffWalls) {
       this.deleteMe = true;
+    } else {
+      this.reflectNum--;
+      if (this.reflectNum <= 0) this.reflectsOffWalls = false;
     }
   }
 }
