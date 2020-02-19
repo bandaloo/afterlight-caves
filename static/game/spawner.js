@@ -12,6 +12,8 @@ import { Scatter } from "./scatter.js";
 import { Shooter } from "./shooter.js";
 import { Bomber } from "./bomber.js";
 import { Vector } from "../modules/vector.js";
+import { ChanceTable } from "../modules/chancetable.js";
+import { Enemy } from "./enemy.js";
 
 /**
  * a continuous function that 0 when x is below a certain point, 1 when x is
@@ -93,21 +95,15 @@ export function populateLevel(board, numEnemies) {
   // board containing distances from nearest solid block
   const { cells: distCells } = distanceBoard(board);
 
-  // TODO make actually enemy rarity
-  const creatureClasses = [
-    Chase,
-    Chase,
-    Scatter,
-    Scatter,
-    Shooter,
-    Shooter,
-    Crosser,
-    Crosser,
-    Bomber
-  ];
+  /** @type {ChanceTable<(typeof Enemy)>} */
+  const chanceTable = new ChanceTable();
+  chanceTable.add(Chase, 2);
+  chanceTable.add(Scatter, 2);
+  chanceTable.add(Shooter, 2);
+  chanceTable.add(Crosser, 2);
+  chanceTable.add(Bomber, 1);
 
   for (let i = 0; i < numEnemies; i++) {
-    const randomChoice = randomInt(creatureClasses.length);
     // TODO randomly choose this position correctly
     const size = randomInt(3);
     if (distCells[size + 1] === undefined) {
@@ -147,7 +143,7 @@ export function populateLevel(board, numEnemies) {
       positionOkay = true;
     }
     // TODO catch the situation where enemy is too large to spawn anywhere
-    const enemy = new creatureClasses[randomChoice](
+    const enemy = new (chanceTable.pick())(
       position,
       undefined,
       undefined,
