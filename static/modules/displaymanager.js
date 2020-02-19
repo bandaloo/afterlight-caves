@@ -317,14 +317,15 @@ export function setCameraOffset(cameraOffset) {
  * @returns {Promise<void>}
  */
 export function toggleFullscreen() {
-  settings["Fullscreen"].value = !settings["Fullscreen"].value;
   if (document.fullscreenElement === null) {
     // enter fullscreen
     displayManager.displayCanvas.width = displayManager.screenWidth;
     displayManager.displayCanvas.height = displayManager.screenHeight;
+    settings["Fullscreen"].value = true;
     return displayManager.enterFullscreen();
   } else {
     // exit fullscreen
+    settings["Fullscreen"].value = false;
     return document.exitFullscreen();
   }
 }

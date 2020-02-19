@@ -9,7 +9,7 @@ import {
 } from "../modules/gamemanager.js";
 import { Vector } from "../modules/vector.js";
 import { rect, centeredText } from "./draw.js";
-import { settings } from "./settings.js";
+import { settings, saveSettings } from "./settings.js";
 
 export class SettingsMenu extends Menu {
   constructor() {
@@ -74,6 +74,7 @@ export class SettingsMenu extends Menu {
    * @override
    */
   onBack() {
+    saveSettings();
     super.onBack();
     toggleGuiElement("pausescreen");
   }
