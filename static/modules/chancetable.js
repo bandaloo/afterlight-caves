@@ -16,6 +16,16 @@ export class ChanceTable {
   }
 
   /**
+   * add to the table in bulk
+   * @param {{result: T, chance: number}[]} pairs
+   */
+  addAll(pairs) {
+    for (const p of pairs) {
+      this.add(p.result, p.chance);
+    }
+  }
+
+  /**
    * picks a random element from the chance table based on the weights
    * @returns {T}
    */
