@@ -7,6 +7,7 @@
     "test": "test"
   },
   "dependencies": {
+    "electron": "^8.0.1",
     "express": "^4.17.1"
   },
   "devDependencies": {
@@ -16,15 +17,18 @@
     "@babel/preset-env": "^7.8.4",
     "@types/chai": "^4.2.3",
     "@types/mocha": "^5.2.7",
+    "babel-runtime": "^6.26.0",
     "browserify": "^16.5.0",
     "core-js": "^3.6.4",
-    "babel-runtime": "^6.26.0"
+    "electron-serve": "^0.4.1"
   },
   "scripts": {
     "test": "echo \"to do this, launch a local server and run tests.html in your browser\" && exit 0",
     "start": "node index.js",
+    "start-electron": "electron electron.js",
     "compile-compat": "babel static --out-dir build",
     "browserify-compat": "browserify -vd build/main.js -o dist/bundle.js",
+    "build-electron": "npm run build && echo 'p, table, div#credits-container, h1, span#version { display: none; }' >> dist/style.css",
     "build": "./build-prod.sh",
     "start-compat": "npm run build && node index.js --compat"
   },
