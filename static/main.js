@@ -128,7 +128,7 @@ export function resetDemo() {
   addToWorld(hero);
 
   //populateLevel(getTerrain(), 320);
-  spawnEnemies(getTerrain(), 0.05, 1000, 3000);
+  spawnEnemies(getTerrain(), 0.025, 1000, 4000);
 
   const tilesPerAdditionalPowerupChance = 300;
 

@@ -246,6 +246,7 @@ export function connectBoard(board, blockField) {
  * @returns {{board: number[][], cells: Vector[][]}}
  */
 export function distanceBoard(board) {
+  // TODO we can probably eliminate the need for distCells (it's slow)
   const distCells = [];
 
   /**

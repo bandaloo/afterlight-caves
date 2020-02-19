@@ -28,6 +28,13 @@ function riseFunction(x, lo, hi) {
 }
 
 /**
+ * returns 0, 1 or 2 with 1 and 2 being more rare
+ */
+function sizeChance() {
+  return Math.floor(3 * Math.random() ** 2);
+}
+
+/**
  *
  * @param {number[][]} board
  * @param {number} chance
@@ -40,7 +47,7 @@ export function spawnEnemies(
   safetyDistance = 1000,
   hardDistance = 5000
 ) {
-  const { cells: distCells } = distanceBoard(board);
+  const { board: distBoard } = distanceBoard(board);
 
   // TODO make actually have rarity
   const creatureClasses = [
@@ -63,14 +70,17 @@ export function spawnEnemies(
     const scaledChance =
       chance * riseFunction(distanceToHero, safetyDistance, hardDistance);
     if (roll < scaledChance) {
+      const matryoshka = Math.min(distBoard[i][j] - 1, sizeChance());
+
       // TODO determine a size based on distCells
       const enemy = new creatureClasses[randomInt(creatureClasses.length)](
         position,
         undefined,
         undefined,
-        0
+        matryoshka
       );
       addToWorld(enemy);
+      console.log("added an enemy to the world");
     }
   });
 }
