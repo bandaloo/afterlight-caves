@@ -108,11 +108,11 @@ export function saveSettings() {
   // turn settings into a string
   const json = {};
   for (const key in settings) {
-    json[key] = settings[key].value;
+    // don't remember fullscreen setting. It causes weird behavior if you reload
+    // the page and it tries to immediately enter fullscreen again
+    if (key !== "Fullscreen")
+      json[key] = settings[key].value;
   }
-  // don't remember fullscreen setting. It causes weird behavior if you reload
-  // the page and it tries to immediately enter fullscreen again
-  json["Fullscreen"] = false;
   const settingsString = JSON.stringify(json);
   document.cookie = "settings=" + settingsString + "; expires = " + date.toUTCString() + "; path=/;";
 }
