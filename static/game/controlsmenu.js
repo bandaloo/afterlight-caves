@@ -16,7 +16,7 @@ export class ControlsMenu extends Menu {
     const screenDimensions = getScreenDimensions();
     super(new Vector(0, 0), screenDimensions.width, screenDimensions.height);
     this.itemWidth = 1200;
-    this.textAlign = "left";
+    this.textAlign = /** @type {CanvasTextAlign} */ ("left");
     // make a sub-menu for each directional
     this.childMenus = [];
     for (const dir of buttons.getDirectionals()) {
@@ -52,6 +52,8 @@ export class ControlsMenu extends Menu {
             });
           } else {
             const oldButton = button.gpButtonIndex;
+            // @ts-ignore I know we're assigning a string to a number, but it's
+            // okay because we'll assign it back soon
             button.gpButtonIndex = "Press a button...";
             getNextGamepadButton().then(newIndex => {
               if (newIndex === undefined) button.gpButtonIndex = oldButton;

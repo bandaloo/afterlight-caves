@@ -104,17 +104,21 @@ export const settings = {
 export function saveSettings() {
   // create date one week in the future
   const date = new Date();
-  date.setTime(date.getTime() + (7 * 24 * 60 * 60 * 1000));
+  date.setTime(date.getTime() + 7 * 24 * 60 * 60 * 1000);
   // turn settings into a string
   const json = {};
   for (const key in settings) {
     // don't remember fullscreen setting. It causes weird behavior if you reload
     // the page and it tries to immediately enter fullscreen again
-    if (key !== "Fullscreen")
-      json[key] = settings[key].value;
+    if (key !== "Fullscreen") json[key] = settings[key].value;
   }
   const settingsString = JSON.stringify(json);
-  document.cookie = "settings=" + settingsString + "; expires = " + date.toUTCString() + "; path=/;";
+  document.cookie =
+    "settings=" +
+    settingsString +
+    "; expires = " +
+    date.toUTCString() +
+    "; path=/;";
 }
 
 /**
@@ -123,7 +127,7 @@ export function saveSettings() {
 export function restoreSettings() {
   const parts = document.cookie.split(";");
   for (const part of parts) {
-    if (part.trim().indexOf("settings=" === 0)) {
+    if (part.trim().indexOf("settings=") === 0) {
       try {
         const json = JSON.parse(part.trim().substring("settings=".length));
         for (const key in json) {

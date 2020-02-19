@@ -19,7 +19,7 @@ export class DirectionalControlMenu extends Menu {
     super(new Vector(0, 0), screenDimensions.width, screenDimensions.height);
     this.directional = directional;
     this.itemWidth = 1200;
-    this.textAlign = "left";
+    this.textAlign = /** @type {CanvasTextAlign} */ ("left");
   }
 
   action() {
@@ -49,6 +49,8 @@ export class DirectionalControlMenu extends Menu {
         func: () => {
           const oldIndex = this.directional.vAxisIndex;
           const oldInverse = this.directional.invertVAxis;
+          // @ts-ignore I know we're assigning a string to a number, but it's
+          // okay because we'll assign it back soon
           this.directional.vAxisIndex = "Move a stick down...";
           this.directional.invertVAxis = false;
           getNextStickAxis().then(obj => {
@@ -70,6 +72,8 @@ export class DirectionalControlMenu extends Menu {
         func: () => {
           const oldIndex = this.directional.hAxisIndex;
           const oldInverse = this.directional.invertHAxis;
+          // @ts-ignore I know we're assigning a string to a number, but it's
+          // okay because we'll assign it back soon
           this.directional.hAxisIndex = "Move a stick right...";
           this.directional.invertHAxis = false;
           // set timeout so instruction appears immediately (thanks JavaScript)
