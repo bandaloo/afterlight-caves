@@ -123,7 +123,6 @@ export class Entity {
         getCameraOffset().mult(-1)
       )
     );
-    //console.log(screenEntity.pos);
     screenEntity.width = screenWidth;
     screenEntity.height = screenHeight;
     return isColliding(this, screenEntity);

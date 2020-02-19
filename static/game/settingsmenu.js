@@ -9,13 +9,13 @@ import {
 } from "../modules/gamemanager.js";
 import { Vector } from "../modules/vector.js";
 import { rect, centeredText } from "./draw.js";
-import { settings } from "./settings.js";
+import { settings, saveSettings } from "./settings.js";
 
 export class SettingsMenu extends Menu {
   constructor() {
     super(new Vector(0, 0), getCanvasWidth(), getCanvasHeight());
     this.itemWidth = 1200;
-    this.textAlign = "left";
+    this.textAlign = /** @type {CanvasTextAlign} */ "left";
   }
 
   action() {
@@ -23,7 +23,7 @@ export class SettingsMenu extends Menu {
 
     for (const key in settings) {
       items.push({ 
-        text: key + "\t" + settings[key].value,
+        text: key + "\t" + settings[key].getDisplayVal.apply(settings[key]),
         func: settings[key].onClick.bind(settings[key])
       });
     }
@@ -74,6 +74,7 @@ export class SettingsMenu extends Menu {
    * @override
    */
   onBack() {
+    saveSettings();
     super.onBack();
     toggleGuiElement("pausescreen");
   }

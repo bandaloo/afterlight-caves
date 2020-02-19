@@ -194,8 +194,8 @@ export class Menu extends GuiElement {
       this.onBack();
     }
     this.down = buttons.select.status.isDown;
+    if (buttons.select.status.isPressed) playSound("menu-select");
     if (buttons.select.status.isReleased) {
-      playSound("menu-select");
       if (this.items[this.index] && this.items[this.index].func !== undefined)
         this.items[this.index].func();
     }

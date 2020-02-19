@@ -59,16 +59,6 @@ source {
   display: none;
 }
 
-input#name-input {
-  margin: 1em;
-  outline: 3px solid #00000000;
-  box-sizing: border-box;
-}
-
-input#name-input:focus {
-  outline: 3px solid blue;
-}
-
 div#loading-bar {
   height: 40px;
   width: 400px;
@@ -81,14 +71,19 @@ div#loading-bar-fill {
   background-color: blue;
 }
 
-form#start {
-  margin: 0 auto;
-}
-
 button#start {
   font-size: 2em;
   padding: 0.75em 1.25em;
   font-weight: bold;
+}
+
+table tr > td:first-child {
+  text-align: left;
+}
+
+table tr > td {
+  text-align: center;
+  padding: 0 1em;
 }
 
 @font-face {

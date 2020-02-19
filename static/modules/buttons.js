@@ -1,9 +1,36 @@
 import { Vector } from "./vector.js";
+import { collectInput } from "./gamemanager.js";
+import { getCookie } from "./helpers.js";
 
 const noisy = false;
 const DEADZONE = 0.2;
 const STICK_SENSITIVITY = 1.4;
 let usingKeyboard = true;
+let ignoreGampad = false;
+
+/**
+ * @return {boolean} whether the player is using a keyboard (as opposed to a
+ * controller)
+ */
+export const getUsingKeyboard = () => {
+  return usingKeyboard;
+};
+
+/**
+ * Set to true to ignore input from gamepads
+ * @param {boolean} [arg] true if omitted
+ */
+export const suppressGamepad = (arg = true) => {
+  ignoreGampad = arg;
+};
+
+/**
+ * @param {number} x
+ * @return {number} 0 if x is within DEADZONE of 0, otherwise x
+ */
+const deadzoneGuard = x => {
+  return Math.abs(x) > DEADZONE ? x : 0;
+};
 
 /**
  * @typedef {Object} Status
@@ -16,21 +43,34 @@ let usingKeyboard = true;
 
 class Button {
   /**
+   * @param {string} name the display name of this button
    * @param {string} key the KeyboardEvent.key value of the key associated with
    * this button. See here for details:
    * https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values
-   * @param {number} [gpButtonIndex] index in gamepad.buttons. Only has effect
-   * if this has type "button"
+   * @param {number} [gpButtonIndex] index in gamepad.buttons.
    */
-  constructor(key, gpButtonIndex) {
+  constructor(name, key, gpButtonIndex) {
+    this.name = name;
     this.key = key;
     this.status = initStatus();
     this.gpButtonIndex = gpButtonIndex;
   }
+
+  /**
+   * sets all attributes from parameters if they aren't undefined
+   * @param {string} key the KeyboardEvent.key value of the key associated with
+   * this button.
+   * @param {number} [gpButtonIndex] index in gamepad.buttons.
+   */
+  setAll(key, gpButtonIndex) {
+    if (key !== undefined) this.key = key;
+    if (gpButtonIndex !== undefined) this.gpButtonIndex = gpButtonIndex;
+  }
 }
 
-class Directional {
+export class Directional {
   /**
+   * @param {string} name the display name of this directional
    * @param {string} upKey the KeyboardEvent.key value of the key associated
    * with going up on this directional
    * @param {string} rightKey the KeyboardEvent.key value of the key associated
@@ -44,13 +84,16 @@ class Directional {
    * @param {number} hAxisIndex index of this directional's horizontal axis
    * in gamepad.axes
    */
-  constructor(upKey, rightKey, downKey, leftKey, vAxisIndex, hAxisIndex) {
-    this.up = new Button(upKey);
-    this.right = new Button(rightKey);
-    this.down = new Button(downKey);
-    this.left = new Button(leftKey);
+  constructor(name, upKey, rightKey, downKey, leftKey, vAxisIndex, hAxisIndex) {
+    this.name = name;
+    this.up = new Button(this.name + " up", upKey);
+    this.right = new Button(this.name + " right", rightKey);
+    this.down = new Button(this.name + " down", downKey);
+    this.left = new Button(this.name + " left", leftKey);
     this.vAxisIndex = vAxisIndex;
     this.hAxisIndex = hAxisIndex;
+    this.invertHAxis = false;
+    this.invertVAxis = false;
     /** @type {Vector} */
     this.vec = new Vector(0, 0);
   }
@@ -97,6 +140,43 @@ class Directional {
   getButtons() {
     return [this.up, this.right, this.down, this.left];
   }
+
+  /**
+   * sets all attributes from parameters if they aren't undefined
+   * @param {string} upKey the KeyboardEvent.key value of the key associated
+   * with going up on this directional
+   * @param {string} rightKey the KeyboardEvent.key value of the key associated
+   * with going right on this directional
+   * @param {string} downKey the KeyboardEvent.key value of the key associated
+   * with going down on this directional
+   * @param {string} leftKey the KeyboardEvent.key value of the key associated
+   * with going left on this directional
+   * @param {number} vAxisIndex index of this directional's vertical axis in
+   * gamepad.axes
+   * @param {number} hAxisIndex index of this directional's horizontal axis
+   * in gamepad.axes
+   * @param {boolean} invertHAxis whether to invert the horizontal axis
+   * @param {boolean} invertVAxis whether to invert the vertical axis
+   */
+  setAll(
+    upKey,
+    rightKey,
+    downKey,
+    leftKey,
+    vAxisIndex,
+    hAxisIndex,
+    invertHAxis,
+    invertVAxis
+  ) {
+    if (upKey !== undefined) this.up.key = upKey;
+    if (rightKey !== undefined) this.right.key = rightKey;
+    if (downKey !== undefined) this.down.key = downKey;
+    if (leftKey !== undefined) this.left.key = leftKey;
+    if (vAxisIndex !== undefined) this.vAxisIndex = vAxisIndex;
+    if (hAxisIndex !== undefined) this.hAxisIndex = hAxisIndex;
+    if (invertHAxis !== undefined) this.invertHAxis = invertHAxis;
+    if (invertVAxis !== undefined) this.invertVAxis = invertVAxis;
+  }
 }
 
 /**
@@ -118,9 +198,10 @@ function initStatus() {
  * whether it was just held, pressed, or released
  */
 export const buttons = {
-  move: new Directional("w", "d", "s", "a", 1, 0),
+  move: new Directional("Move", "w", "d", "s", "a", 1, 0),
 
   shoot: new Directional(
+    "Shoot",
     "ArrowUp",
     "ArrowRight",
     "ArrowDown",
@@ -129,13 +210,13 @@ export const buttons = {
     2
   ),
 
-  primary: new Button(" ", 4),
-  secondary: new Button("e", 5),
-  select: new Button(" ", 0),
-  back: new Button("Tab", 1),
-  fullscreen: new Button("f", 3),
-  pause: new Button("p", 9),
-  reset: new Button("r", 8),
+  primary: new Button("Bomb", " ", 4),
+  secondary: new Button("Secondary", "e", 5),
+  select: new Button("Select", " ", 0),
+  back: new Button("Back", "Tab", 1),
+  fullscreen: new Button("Fullscreen", "f", 3),
+  pause: new Button("Pause", "p", 9),
+  reset: new Button("Reset", "r", 8),
 
   /** @return {Directional[]} */
   getDirectionals() {
@@ -293,13 +374,7 @@ export function gamepadDisconnectListener(e) {
  * controllers
  */
 export function getGamepadInput() {
-  /**
-   * @param {number} x
-   * @return {number} 0 if x is within DEADZONE of 0, otherwise x
-   */
-  const deadzoneGuard = x => {
-    return Math.abs(x) > DEADZONE ? x : 0;
-  };
+  if (ignoreGampad) return;
 
   for (const gamepad of navigator.getGamepads()) {
     if (!gamepad || !gamepad.connected) {
@@ -345,6 +420,8 @@ export function getGamepadInput() {
         if (yai !== undefined && gamepad.axes[yai]) {
           yReading = deadzoneGuard(gamepad.axes[yai]);
         }
+        if (dir.invertHAxis) xReading *= -1;
+        if (dir.invertVAxis) yReading *= -1;
         dir.vec = new Vector(xReading, yReading).mult(STICK_SENSITIVITY);
         if (dir.vec.mag() > 1) dir.vec = dir.vec.norm2();
       }
@@ -360,5 +437,180 @@ export function getGamepadInput() {
         }
       }
     }
+  }
+}
+
+/**
+ * Stops all other keyboard listeners and suppresses gamepad input to get the
+ * next key pressed, then resumes collecting input normally
+ * @return {Promise<string>} a promise that resolves with the name of the next
+ * key pressed
+ */
+export async function getNextKey() {
+  collectInput(false);
+  suppressGamepad(true);
+  return new Promise(resolve => {
+    /** @param {KeyboardEvent} ev */
+    const handler = ev => {
+      document.removeEventListener("keydown", handler);
+      collectInput(true);
+      suppressGamepad(false);
+      resolve(ev.key);
+    };
+    document.addEventListener("keydown", handler);
+  });
+}
+
+/**
+ * Stops all other keyboard listeners and suppresses gamepad input to get the
+ * next gamepad button pressed, then resumes collecting input normally
+ * @return {Promise<number | undefined>} a promise that resolves with the index
+ * of the next gamepad button pressed, or undefined if we should keep the old
+ * value
+ */
+export async function getNextGamepadButton() {
+  suppressGamepad(true);
+  return new Promise(resolve => {
+    const startTime = window.performance.now();
+    // loop for 5 seconds waiting for gamepad input
+    const func = () => {
+      // check all gamepads for input
+      for (const gamepad of navigator.getGamepads()) {
+        if (!gamepad || !gamepad.connected) continue;
+        for (let i = 0; i < gamepad.buttons.length; ++i) {
+          if (gamepad.buttons[i].pressed || gamepad.buttons[i].value > 0) {
+            // set timeout to allow for the button to be released so it isn't
+            // immediately triggered again
+            setTimeout(() => suppressGamepad(false), 500);
+            resolve(i);
+            return;
+          }
+        }
+      }
+      if (window.performance.now() - startTime < 5000 && !usingKeyboard) {
+        requestAnimationFrame(func);
+      } else {
+        // break out if it's been more than 5 seconds we're using the keyboard
+        suppressGamepad(false);
+        resolve(undefined);
+        return;
+      }
+    };
+    func();
+  });
+}
+
+/**
+ * Stops all other keyboard listeners and suppresses gamepad input to get the
+ * next gamepad joystick pressed
+ * @return {Promise<{ index: number, inverse: boolean } | undefined>} a promise
+ * that resolves with the index of the next gamepad button pressed
+ */
+export async function getNextStickAxis() {
+  suppressGamepad(true);
+  return new Promise(resolve => {
+    const startTime = window.performance.now();
+    // loop for 5 seconds waiting for gamepad input
+    const func = () => {
+      // check all gamepads for input
+      for (const gamepad of navigator.getGamepads()) {
+        if (!gamepad || !gamepad.connected) continue;
+        for (let i = 0; i < gamepad.axes.length; ++i) {
+          if (deadzoneGuard(gamepad.axes[i]) !== 0) {
+            // set timeout to allow for the button to be released so it isn't
+            // immediately triggered again
+            setTimeout(() => suppressGamepad(false), 300);
+            resolve({ index: i, inverse: gamepad.axes[i] < 0 });
+            return;
+          }
+        }
+      }
+      if (window.performance.now() - startTime < 5000 && !usingKeyboard) {
+        requestAnimationFrame(func);
+      } else {
+        // break out if it's been more than 5 seconds we're using the keyboard
+        suppressGamepad(false);
+        resolve(undefined);
+        return;
+      }
+    };
+    func();
+  });
+}
+
+/**
+ * saves controls as a cookie that expires after 7 days
+ */
+export function saveControls() {
+  // create date one week in the future
+  const date = new Date();
+  date.setTime(date.getTime() + 7 * 24 * 60 * 60 * 1000);
+  const json = { buttons: {}, directionals: {} };
+
+  for (const id in buttons) {
+    // save buttons
+    if (buttons[id] instanceof Button) {
+      json.buttons[id] = {
+        key: buttons[id].key,
+        gpButtonIndex: buttons[id].gpButtonIndex
+      };
+    }
+    // save directionals
+    if (buttons[id] instanceof Directional) {
+      const dir = /** @type {Directional} */ (buttons[id]);
+      json.directionals[id] = {
+        upKey: dir.up.key,
+        rightKey: dir.right.key,
+        downKey: dir.down.key,
+        leftKey: dir.left.key,
+        hAxisIndex: dir.hAxisIndex,
+        vAxisIndex: dir.vAxisIndex,
+        invertHAxis: dir.invertHAxis,
+        invertVAxis: dir.invertVAxis
+      };
+    }
+  }
+
+  const controlsString = JSON.stringify(json);
+  document.cookie =
+    "controls=" +
+    controlsString +
+    "; expires=" +
+    date.toUTCString() +
+    "; path=/;";
+}
+
+/**
+ * restore controls based on cookie value, if it exists
+ */
+export function restoreControls() {
+  const controlsString = getCookie("controls");
+  if (controlsString === undefined) return;
+  try {
+    const json = JSON.parse(controlsString);
+    for (const id in json.buttons) {
+      if (buttons[id] instanceof Button) {
+        /** @type {Button} */ (buttons[id]).setAll(
+          json.buttons[id].key,
+          json.buttons[id].gpButtonIndex
+        );
+      }
+    }
+    for (const id in json.directionals) {
+      if (buttons[id] instanceof Directional) {
+        /** @type {Directional} */ (buttons[id]).setAll(
+          json.directionals[id].upKey,
+          json.directionals[id].rightKey,
+          json.directionals[id].downKey,
+          json.directionals[id].leftKey,
+          json.directionals[id].vAxisIndex,
+          json.directionals[id].hAxisIndex,
+          json.directionals[id].invertHAxis,
+          json.directionals[id].invertVAxis
+        );
+      }
+    }
+  } catch (e) {
+    // ignore errors
   }
 }
