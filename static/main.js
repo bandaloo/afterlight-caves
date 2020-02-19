@@ -43,10 +43,6 @@ export function resetDemo() {
   destroyEverything();
   color = hsl(randomInt(360));
   setPause(false);
-  const input = /** @type {HTMLInputElement} */ (document.getElementById(
-    "name-input"
-  ));
-  input.value = "";
 
   let board = getGrid(
     blockColumns * 8,

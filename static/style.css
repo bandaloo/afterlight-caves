@@ -59,16 +59,6 @@ source {
   display: none;
 }
 
-input#name-input {
-  margin: 1em;
-  outline: 3px solid #00000000;
-  box-sizing: border-box;
-}
-
-input#name-input:focus {
-  outline: 3px solid blue;
-}
-
 div#loading-bar {
   height: 40px;
   width: 400px;
@@ -79,10 +69,6 @@ div#loading-bar {
 div#loading-bar-fill {
   height: 100%;
   background-color: blue;
-}
-
-form#start {
-  margin: 0 auto;
 }
 
 button#start {

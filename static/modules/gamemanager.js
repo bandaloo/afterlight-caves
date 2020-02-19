@@ -78,15 +78,6 @@ class GameManager {
   importantEntities = new Map();
 
   constructor() {
-    document.getElementById("name-input").addEventListener("focus", () => {
-      collectInput(false);
-    });
-
-    document.getElementById("name-input").addEventListener("blur", () => {
-      collectInput(true);
-      document.getElementById("canvas").focus();
-    });
-
     collectInput(true);
   }
 
