@@ -12,7 +12,7 @@ import { isColliding } from "./collision.js";
 import { Entity, FarEnum } from "./entity.js";
 import { inPlaceFilter } from "./helpers.js";
 import { Vector } from "./vector.js";
-import { ageSounds } from "./sound.js";
+import { ageSounds, playSound } from "./sound.js";
 import { resetDemo } from "../main.js";
 import { PauseScreen } from "../game/pausescreen.js";
 import {
@@ -92,6 +92,7 @@ class GameManager {
 
   togglePause() {
     if (!this.gamePause) {
+      playSound("menu-select");
       gameManager.guiElements.get("pausescreen").active = true;
       this.gamePause = true;
     } else {
