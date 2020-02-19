@@ -24,9 +24,6 @@ import {
   addDisplayToDiv
 } from "./displaymanager.js";
 
-// TODO move this
-const BLUR_SCALAR = 2;
-
 // TODO move this to displaymanager
 export const SPLATTER_SCALAR = 4;
 
@@ -387,7 +384,7 @@ export function inbounds(i, j) {
  * @returns {boolean} whether the block was able to be set
  */
 export function setBlock(i, j, val) {
-  if (inbounds(i, j)) {
+  if (inbounds(i, j) && gameManager.terrain[i][j] !== val) {
     gameManager.terrain[i][j] = val;
     // was able to set it
     return true;
