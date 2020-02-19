@@ -17,7 +17,7 @@ import { Vector } from "./modules/vector.js";
 import { shuffle, randomInt, hsl } from "./modules/helpers.js";
 import { Hero } from "./game/hero.js";
 import { initBlockField, segregateTerrain } from "./game/generator.js";
-import { populateLevel } from "./game/spawner.js";
+import { populateLevel, spawnEnemies } from "./game/spawner.js";
 import { powerUpTypes } from "./game/powerups/poweruptypes.js";
 import { addSound, playSound, loopSound } from "./modules/sound.js";
 import { Healthbar } from "./game/healthbar.js";
@@ -127,7 +127,8 @@ export function resetDemo() {
   setCameraEntity(hero);
   addToWorld(hero);
 
-  populateLevel(getTerrain(), 320);
+  //populateLevel(getTerrain(), 320);
+  spawnEnemies(getTerrain(), 0.05, 1000, 3000);
 
   const tilesPerAdditionalPowerupChance = 300;
 
@@ -142,7 +143,6 @@ export function resetDemo() {
     const powerup_num = Math.floor(Math.random() * additional_powerups) + 1;
 
     for (let p = 0; p < powerup_num; p++) {
-      /** @type {Vector} */
       const randomIndex = Math.floor(Math.random() * caveLocations[i].length);
       const randomTile = caveLocations[i][randomIndex];
       caveLocations[i].splice(randomIndex, 1);

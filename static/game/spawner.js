@@ -3,7 +3,7 @@ import {
   cellToWorldPosition,
   getImportantEntity
 } from "../modules/gamemanager.js";
-import { randomInt, randomPop } from "../modules/helpers.js";
+import { randomInt, randomPop, griderate } from "../modules/helpers.js";
 import { Chase } from "./chase.js";
 import { Crosser } from "./crosser.js";
 import { distanceBoard } from "./generator.js";
@@ -11,6 +11,69 @@ import { powerUpTypes } from "./powerups/poweruptypes.js";
 import { Scatter } from "./scatter.js";
 import { Shooter } from "./shooter.js";
 import { Bomber } from "./bomber.js";
+import { Vector } from "../modules/vector.js";
+
+/**
+ * a continuous function that 0 when x is below a certain point, 1 when x is
+ * above a certain point. when x is between these two points, the function
+ * rises from 0 to 1 with a constant slope
+ * @param {number} x
+ * @param {number} lo
+ * @param {number} hi
+ */
+function riseFunction(x, lo, hi) {
+  if (x < lo) return 0;
+  if (x > hi) return 1;
+  return (x - lo) / (hi - lo);
+}
+
+/**
+ *
+ * @param {number[][]} board
+ * @param {number} chance
+ * @param {number} safetyDistance
+ * @param {number} hardDistance
+ */
+export function spawnEnemies(
+  board,
+  chance,
+  safetyDistance = 1000,
+  hardDistance = 5000
+) {
+  const { cells: distCells } = distanceBoard(board);
+
+  // TODO make actually have rarity
+  const creatureClasses = [
+    Chase,
+    Chase,
+    Scatter,
+    Scatter,
+    Shooter,
+    Shooter,
+    Crosser,
+    Crosser,
+    Bomber
+  ];
+
+  griderate(board, (board, i, j) => {
+    if (board[i][j] === 1) return;
+    const position = cellToWorldPosition(new Vector(i, j));
+    const distanceToHero = position.dist(getImportantEntity("hero").pos);
+    const roll = Math.random();
+    const scaledChance =
+      chance * riseFunction(distanceToHero, safetyDistance, hardDistance);
+    if (roll < scaledChance) {
+      // TODO determine a size based on distCells
+      const enemy = new creatureClasses[randomInt(creatureClasses.length)](
+        position,
+        undefined,
+        undefined,
+        0
+      );
+      addToWorld(enemy);
+    }
+  });
+}
 
 /**
  * @param {number[][]} board
