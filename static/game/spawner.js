@@ -113,6 +113,7 @@ export function spawnPowerups(board, powerupChance = 280) {
   } = segregateTerrain(board);
 
   // Init the cave locations array
+  /** @type {Vector[][]} */
   const caveLocations = [];
   for (let i = 0; i < groupNum; i++) {
     caveLocations.push([]);
@@ -122,10 +123,11 @@ export function spawnPowerups(board, powerupChance = 280) {
   for (let i = 0; i < segregatedBoard.length; i++) {
     for (let j = 0; j < segregatedBoard[i].length; j++) {
       const location = segregatedBoard[i][j];
-      if (location != 0)
+      if (location !== 0) {
         caveLocations[location - 1].push(
           new Vector(i * blockWidth, j * blockHeight)
         );
+      }
     }
   }
 
