@@ -38,14 +38,6 @@ export class Chase extends Enemy {
     });
   }
 
-  /**
-   * @override
-   * @param {import("./hero.js").Hero} hero
-   */
-  touchHero(hero) {
-    super.touchHero(hero);
-  }
-
   action() {
     super.action();
     if (hasImportantEntity("hero")) {
