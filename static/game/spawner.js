@@ -3,7 +3,7 @@ import {
   cellToWorldPosition,
   getImportantEntity
 } from "../modules/gamemanager.js";
-import { randomInt, randomPop, griderate } from "../modules/helpers.js";
+import { randomInt, griderate } from "../modules/helpers.js";
 import { Chase } from "./chase.js";
 import { Crosser } from "./crosser.js";
 import { distanceBoard } from "./generator.js";
