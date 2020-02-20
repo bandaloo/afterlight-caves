@@ -14,8 +14,6 @@ import { EffectEnum, Particle } from "./particle.js";
 import { Pickup, PickupEnum } from "./pickup.js";
 import { splatter } from "./draw.js";
 import { powerUpTypes } from "./powerups/poweruptypes.js";
-import { ChanceTable } from "../modules/chancetable.js";
-import { PowerUp } from "./powerup.js";
 
 const DROP_CHANCE = 0.2;
 const BOMB_CHANCE = 0.3;
@@ -35,7 +33,7 @@ export class Enemy extends Creature {
    * @param {Vector} acc
    * @param {number} matryoshka
    * @param {number} level
-   * @param {ChanceTable<typeof PowerUp>} powerUpTable
+   * @param {import("../modules/chancetable.js").ChanceTable<typeof import("./powerup.js").PowerUp>} powerUpTable
    */
   constructor(
     pos,
@@ -50,6 +48,7 @@ export class Enemy extends Creature {
     this.type = "Enemy";
     /** if the enemy is big and will split up */
     this.matryoshka = matryoshka;
+    this.level = level;
     this.width = size;
     this.height = size;
     this.reflectsOffWalls = true;
@@ -61,20 +60,13 @@ export class Enemy extends Creature {
     this.touchDamage = 10;
     this.farType = FarEnum.deactivate;
     this.basePoints = 50;
-
-    // TODO make hue dependent on the color
-    const randomHue = randomInt(360);
-    this.drawColor = hsl(randomHue, 100, 70);
-    this.splatterColor = `hsla(${randomHue}, 40%, 40%, 0.8)`;
-    this.originalDrawColor = this.drawColor;
-    this.bulletColor = this.drawColor;
+    this.applyPowerColor();
 
     this.collideMap.set(
       "Hero",
       /** @param {import("./hero.js").Hero} h */ h => this.touchHero(h)
     );
 
-    this.level = level;
     this.applyPowerUps(powerUpTable);
   }
 
@@ -216,12 +208,35 @@ export class Enemy extends Creature {
 
   /**
    * apply powerups based on level
-   * @param {ChanceTable<typeof PowerUp>} powerUpTable
+   * @param {import("../modules/chancetable.js").ChanceTable<typeof import("./powerup.js").PowerUp>} powerUpTable
    */
   applyPowerUps(powerUpTable) {
     if (powerUpTable === undefined) return;
     for (let i = 0; i < this.level; i++) {
       powerUpTable.pick().apply(this);
     }
+  }
+
+  /**
+   *
+   */
+  applyPowerColor() {
+    let hue;
+    if (this.level < 1) {
+      hue = 0; // red
+    } else if (this.level < 3) {
+      hue = 136; // green (kind of seafoam)
+    } else if (this.level < 5) {
+      hue = 187; // blue (light)
+    } else if (this.level < 7) {
+      hue = 273; // purple (royal)
+    } else {
+      hue = 43; // orange (light tangerine)
+    }
+
+    this.drawColor = hsl(hue, 100, 70);
+    this.splatterColor = `hsla(${hue}, 40%, 40%, 0.8)`;
+    this.originalDrawColor = this.drawColor;
+    this.bulletColor = this.drawColor;
   }
 }

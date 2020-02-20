@@ -17,7 +17,7 @@ import { Vector } from "./modules/vector.js";
 import { shuffle, randomInt, hsl } from "./modules/helpers.js";
 import { Hero } from "./game/hero.js";
 import { initBlockField, segregateTerrain } from "./game/generator.js";
-import { populateLevel, spawnEnemies } from "./game/spawner.js";
+import { spawnEnemies } from "./game/spawner.js";
 import { powerUpTypes } from "./game/powerups/poweruptypes.js";
 import { addSound, playSound, loopSound } from "./modules/sound.js";
 import { Healthbar } from "./game/healthbar.js";
