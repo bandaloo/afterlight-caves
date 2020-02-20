@@ -4,6 +4,7 @@ import { Vector } from "../modules/vector.js";
 import { centeredRect, circle } from "./draw.js";
 import { Hero } from "./hero.js";
 import { EffectEnum, Particle } from "./particle.js";
+import {playSound} from "../modules/sound.js";
 
 /**
  * @enum {number}
@@ -74,9 +75,11 @@ export class Pickup extends Entity {
    */
   getPicked(entity) {
     if (this.pickupType === PickupEnum.bomb) {
+      playSound("bomb-pickup");
       // checking for existance of hero shouldn't be necessary
       /** @type {Hero} */ (entity).addBombs(1);
     } else if (this.pickupType === PickupEnum.health) {
+      playSound("health-pickup");
       /** @type {Hero} */ (entity).gainHealth(5);
     }
 

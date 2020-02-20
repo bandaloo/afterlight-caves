@@ -11,11 +11,11 @@ import { resetDemo } from "../main.js";
 import { Codex } from "./codex.js";
 import { Stats } from "./stats.js";
 import { Hero } from "./hero.js";
-import {
-  getScreenDimensions,
-  toggleFullscreen
-} from "../modules/displaymanager.js";
+import { getScreenDimensions } from "../modules/displaymanager.js";
 import { SettingsMenu } from "./settingsmenu.js";
+import { ControlsMenu } from "./controlsmenu.js";
+import { saveSettings, restoreSettings } from "./settings.js";
+import { saveControls, restoreControls } from "../modules/buttons.js";
 
 export class PauseScreen extends Menu {
   /** @type {Menu[]} */
@@ -35,8 +35,12 @@ export class PauseScreen extends Menu {
     const settingsmenu = new SettingsMenu();
     settingsmenu.active = false;
     addToGui("settingsmenu", settingsmenu);
-    this.childMenus = [codex, stats, settingsmenu];
-    
+    this.controlsmenu = new ControlsMenu();
+    this.controlsmenu.active = false;
+    addToGui("controlsmenu", this.controlsmenu);
+    this.childMenus = [codex, stats, settingsmenu, this.controlsmenu];
+    restoreSettings();
+    restoreControls();
 
     this.setItems([
       { text: "Resume", func: this.onBack.bind(this) },
@@ -62,8 +66,11 @@ export class PauseScreen extends Menu {
         }
       },
       {
-        text: "Enter fullscreen",
-        func: toggleFullscreen
+        text: "Controls",
+        func: () => {
+          this.active = false;
+          toggleGuiElement("controlsmenu");
+        }
       },
       {
         text: "Give up",
@@ -76,15 +83,6 @@ export class PauseScreen extends Menu {
       { text: "Start over", func: resetDemo }
     ]);
     this.itemWidth = 600;
-  }
-
-  action() {
-    if (document.fullscreenElement === null) {
-      this.items[4].text = "Enter fullscreen";
-    } else {
-      this.items[4].text = "Exit fullscreen";
-    }
-    super.action();
   }
 
   draw() {
@@ -112,8 +110,13 @@ export class PauseScreen extends Menu {
    * @override
    */
   onBack() {
+    saveSettings();
+    saveControls();
     // close all sub-menus
     this.childMenus.forEach(menu => {
+      menu.active = false;
+    });
+    this.controlsmenu.childMenus.forEach(menu => {
       menu.active = false;
     });
     setPause(false);

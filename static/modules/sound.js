@@ -23,10 +23,11 @@ export function getSound(str) {
  * play a sound or copy the sound and play it (useful for overlapping sounds)
  * @param {string} str
  * @param {boolean} copy whether to play a copy of the sound
+ * @param {boolean} music whether this sound is music (as opposed to sfx)
  * @return {HTMLAudioElement}
  */
-export function playSound(str, copy = true) {
-  if (settings["Mute all"].value) return getSound(str);
+export function playSound(str, copy = true, music = false) {
+  if (!music && settings["Mute sound effects"].value) return getSound(str);
 
   // return if no more of the same sound can be played
   if (soundMap.get(str).counter <= 0) return;

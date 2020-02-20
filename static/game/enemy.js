@@ -92,11 +92,12 @@ export class Enemy extends Creature {
         if (ote.func) ote.func(ote.data, /** @type{Creature} */ (hero));
       }
       // deal basic touch damage
-      hero.takeDamage(this.touchDamage);
+      hero.takeDamage(this.touchDamage, this.vel.norm2());
     }
   }
 
   destroy() {
+    playSound("enemy-dead");
     for (let i = 0; i < 25; i++) {
       let p = new Particle(this.pos, this.originalDrawColor, EffectEnum.spark);
       p.lineWidth = 5;
@@ -142,8 +143,7 @@ export class Enemy extends Creature {
       }
     }
 
-    // TODO change this to being only a chance
-    if (Math.random() < DROP_CHANCE) {
+    if (Math.random() < DROP_CHANCE && this.matryoshka <= 1) {
       if (Math.random() < BOMB_CHANCE) {
         addToWorld(new Pickup(this.pos, PickupEnum.bomb));
       } else {
@@ -171,12 +171,13 @@ export class Enemy extends Creature {
   /**
    * @override
    * @param {number} amt amount of damage to take
+   * @param {Vector} [dir] the direction the damage came from
    */
-  takeDamage(amt) {
+  takeDamage(amt, dir) {
     playSound("enemy-hurt");
     this.redFrames = this.maxRedFrames;
     this.drawColor = "orangered";
-    super.takeDamage(amt);
+    super.takeDamage(amt, dir);
   }
 
   /**

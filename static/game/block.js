@@ -4,11 +4,15 @@ import {
   cellToWorldPosition,
   setBlock,
   addParticle,
-  getImportantEntity
+  getImportantEntity,
+  inbounds,
+  getBlockWidth,
+  getBlockHeight
 } from "../modules/gamemanager.js";
 import { blockField } from "./generator.js";
 import { Hero } from "./hero.js";
 import { playSound } from "../modules/sound.js";
+import { Entity } from "../modules/entity.js";
 
 export class Block {
   /**
@@ -27,13 +31,20 @@ export class Block {
  * @param {boolean} grantPoints
  */
 export function destroyBlock(cellVec, grantPoints = true) {
-  const worldVec = cellToWorldPosition(cellVec);
   if (setBlock(cellVec.x, cellVec.y, 0)) {
-    for (let i = 0; i < 3; i++) {
-      const p = new Particle(worldVec, "black", EffectEnum.square, 5, 3);
-      p.lineWidth = 1;
-      p.strokeStyle = "white";
-      addParticle(p);
+    const worldVec = cellToWorldPosition(cellVec);
+    // check if the block is on screen
+    const testEntity = new Entity(worldVec);
+    testEntity.width = getBlockWidth();
+    testEntity.height = getBlockHeight();
+    if (testEntity.onScreen()) {
+      playSound("hit-breakable");
+      for (let i = 0; i < 3; i++) {
+        const p = new Particle(worldVec, "black", EffectEnum.square, 5, 3);
+        p.lineWidth = 1;
+        p.strokeStyle = "white";
+        addParticle(p);
+      }
     }
     if (grantPoints) {
       const gemType = blockField[cellVec.x][cellVec.y].gemType;
