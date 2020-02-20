@@ -38,9 +38,11 @@ export class Scatter extends Enemy {
     pos,
     vel = new Vector(0, 0),
     acc = new Vector(0, 0),
-    matryoshka = 0
+    matryoshka = 0,
+    level,
+    powerUpTable = SCATTER_CHANCE_TABLE
   ) {
-    super(pos, vel, acc, matryoshka);
+    super(pos, vel, acc, matryoshka, level, powerUpTable);
     this.baseHealth = 10;
     this.initHealth();
     new Cone(2).apply(this);

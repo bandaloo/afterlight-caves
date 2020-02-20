@@ -40,12 +40,16 @@ export class Enemy extends Creature {
    * @param {Vector} vel
    * @param {Vector} acc
    * @param {number} matryoshka
+   * @param {number} level
+   * @param {ChanceTable<typeof PowerUp>} powerUpTable
    */
   constructor(
     pos,
     vel = new Vector(0, 0),
     acc = new Vector(0, 0),
-    matryoshka = 0
+    matryoshka = 0,
+    level = 0,
+    powerUpTable = undefined
   ) {
     super(pos, vel, acc);
     const size = BASE_SIZE + MATRYOSHKA_SIZE * matryoshka;
@@ -64,7 +68,7 @@ export class Enemy extends Creature {
     this.farType = FarEnum.deactivate;
     this.basePoints = 50;
 
-    // TODO get rid of this
+    // TODO make hue dependent on the color
     const randomHue = randomInt(360);
     this.drawColor = hsl(randomHue, 100, 70);
     this.splatterColor = `hsla(${randomHue}, 40%, 40%, 0.8)`;
@@ -76,7 +80,10 @@ export class Enemy extends Creature {
       /** @param {import("./hero.js").Hero} h */ h => this.touchHero(h)
     );
 
-    this.level = 0;
+    this.level = level;
+    this.powerUpTable = powerUpTable;
+
+    this.applyPowerUps();
   }
 
   initHealth() {
@@ -215,12 +222,9 @@ export class Enemy extends Creature {
     return out;
   }
 
-  /**
-   * @param {ChanceTable<typeof PowerUp>} chanceTable
-   */
-  applyPowerUps(chanceTable, amount = this.level) {
-    for (let i = 0; i < amount; i++) {
-      chanceTable.pick().apply(this);
+  applyPowerUps() {
+    for (let i = 0; i < this.level; i++) {
+      this.powerUpTable.pick().apply(this);
     }
   }
 }
