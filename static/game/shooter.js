@@ -72,12 +72,12 @@ export class Shooter extends Enemy {
       let dirVec = hero.pos.sub(this.pos);
       const strafeVec = dirVec.norm2().rotate(Math.PI / 2);
       // TODO do we need avoid timer
-      if (this.avoidTimer >= 0 || dirVec.magnitude() < this.avoidDistance) {
+      if (this.avoidTimer >= 0 || dirVec.mag() < this.avoidDistance) {
         this.avoidTimer--;
         this.avoiding = true;
         this.acc = dirVec
           .norm2()
-          .mult(0.15 * (this.chaseDistance > dirVec.magnitude() ? -1.5 : 1))
+          .mult(0.15 * (this.chaseDistance > dirVec.mag() ? -1.5 : 1))
           .mult(this.movementMultiplier)
           .add(strafeVec.mult(0.05 * this.strafeScalar));
       } else {
@@ -85,7 +85,7 @@ export class Shooter extends Enemy {
         this.acc = new Vector(0, 0);
       }
 
-      if (dirVec.magnitude() < this.shootDistance) {
+      if (dirVec.mag() < this.shootDistance) {
         this.shoot(dirVec, this.vel.mult(0.2));
       }
     }

@@ -53,7 +53,7 @@ export class Chase extends Enemy {
       const hero = getImportantEntity("hero");
       /** @type {Vector} */
       let dirVec = hero.pos.sub(this.pos);
-      if (this.followTimer >= 0 || dirVec.magnitude() < this.followDistace) {
+      if (this.followTimer >= 0 || dirVec.mag() < this.followDistace) {
         this.followTimer--;
         this.following = true;
         this.acc = dirVec
