@@ -52,9 +52,9 @@ export class ScoresMenu extends Menu {
           this.setItems(
             JSON.parse(obj.message)
               .scores.sort((a, b) => b.score - a.score)
-              .map(val => {
+              .map((val, i) => {
                 return {
-                  text: val.score + "\t" + val.username,
+                  text: `${i + 1})  ${val.score}\t${val.username}`,
                   func: undefined
                 };
               })

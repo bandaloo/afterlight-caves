@@ -4,7 +4,6 @@ import { polygon, circle, splatter } from "./draw.js";
 import { Particle, EffectEnum } from "./particle.js";
 import {
   addParticle,
-  setBlock,
   cellToWorldPosition
 } from "../modules/gamemanager.js";
 import {

@@ -3,6 +3,7 @@ export const resources = [
 
   { name: "hit-breakable", file: "../sounds/hit-breakable.wav" },
   { name: "enemy-hurt", file: "../sounds/enemy-hurt.wav" },
+  { name: "enemy-dead", file: "../sounds/enemy-dead.wav" },
   { name: "hero-hurt", file: "../sounds/hero-hurt.wav" },
   { name: "power-up", file: "../sounds/power-up.wav" },
   { name: "shoot", file: "../sounds/shoot.wav" },
@@ -12,6 +13,8 @@ export const resources = [
   { name: "menu-back", file: "../sounds/menu-back.wav" },
   { name: "menu-select", file: "../sounds/menu-select.wav" },
   { name: "bomb-explode", file: "../sounds/bomb-explode.wav" },
+  { name: "health-pickup", file: "../sounds/health-pickup.wav" },
+  { name: "bomb-pickup", file: "../sounds/bomb-pickup.wav" },
 
   // power up names
   { name: "amplify", file: "../sounds/powerups/amplify.wav" },
