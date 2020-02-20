@@ -219,7 +219,7 @@ export class Enemy extends Creature {
   }
 
   /**
-   *
+   * choose a hue based on the power level, and set all appropriate colors
    */
   applyPowerColor() {
     let hue;
