@@ -28,6 +28,7 @@ import { DeathScreen } from "./game/deathscreen.js";
 import { resources } from "./game/resources.js";
 import { setGameDrawFunc, getCanvasWidth } from "./modules/displaymanager.js";
 import { TimeDisplay } from "./game/timedisplay.js";
+import { BeamShooter } from "./game/beamshooter.js";
 
 const blockWidth = 60;
 const blockHeight = 60;
@@ -118,6 +119,9 @@ export function resetDemo() {
       new Vector(blockWidth / 2, blockHeight / 2).add(emptySpaces[11])
     )
   );
+
+  const bs = new BeamShooter(hero.pos.add(new Vector(100, 0)));
+  addToWorld(bs);
 
   setImportantEntity("hero", hero);
   setCameraEntity(hero);
