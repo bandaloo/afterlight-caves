@@ -14,7 +14,7 @@ chanceTable.addAll([
   { result: PowerUpTypes.DamageUp, chance: 1 },
   { result: PowerUpTypes.Elastic, chance: 1 },
   { result: PowerUpTypes.FlameThrower, chance: 1 },
-  { result: PowerUpTypes.GroupBomb, chance: 5 },
+  { result: PowerUpTypes.GroupBomb, chance: 0.5 },
   { result: PowerUpTypes.Hot, chance: 1 },
   { result: PowerUpTypes.Icy, chance: 1 },
   { result: PowerUpTypes.Jalapeno, chance: 10 },
