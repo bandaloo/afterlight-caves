@@ -42,9 +42,11 @@ export class Shooter extends Enemy {
    * @param {Vector} pos
    * @param {Vector} vel
    * @param {Vector} acc
+   * @param {number} matryoshka
+   * @param {number} level
    */
-  constructor(pos, vel, acc, matryoshka) {
-    super(pos, vel, acc, matryoshka);
+  constructor(pos, vel, acc, matryoshka, level, powerUpTable = chanceTable) {
+    super(pos, vel, acc, matryoshka, level, powerUpTable);
     this.baseHealth = 20;
     this.initHealth();
     this.fireDelay = 90;

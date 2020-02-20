@@ -36,14 +36,7 @@ export class Scatter extends Enemy {
    * @param {number} matryoshka
    * @param {number} level
    */
-  constructor(
-    pos,
-    vel,
-    acc,
-    matryoshka,
-    level,
-    powerUpTable = SCATTER_CHANCE_TABLE
-  ) {
+  constructor(pos, vel, acc, matryoshka, level, powerUpTable = chanceTable) {
     super(pos, vel, acc, matryoshka, level, powerUpTable);
     this.baseHealth = 10;
     this.initHealth();
