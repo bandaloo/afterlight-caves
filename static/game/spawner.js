@@ -7,7 +7,6 @@ import { randomInt, randomPop, griderate } from "../modules/helpers.js";
 import { Chase } from "./chase.js";
 import { Crosser } from "./crosser.js";
 import { distanceBoard } from "./generator.js";
-import { powerUpTypes } from "./powerups/poweruptypes.js";
 import { Scatter } from "./scatter.js";
 import { Shooter } from "./shooter.js";
 import { Bomber } from "./bomber.js";
@@ -37,10 +36,15 @@ function sizeChance() {
 }
 
 /**
- * @param {number[][]} board
- * @param {number} chance
- * @param {number} densityDistanceLo
- * @param {number} densityDistanceHi
+ * spawns the enemies based on a chance. has a chance to spawn bigger enemies,
+ * but they will all be scaled down if they can't fit. a bigger board will
+ * yield more enemies
+ * @param {number[][]} board number grid indicating how to spawn enemies
+ * @param {number} chance of an enemy spawning
+ * @param {number} densityDistanceLo where enemy density starts ramping up
+ * @param {number} densityDistanceHi where enemy density stops ramping up
+ * @param {number} powerDistanceLo where enemy power level starts ramping up
+ * @param {number} powerDistanceHi where enemy power level stops ramping up
  */
 export function spawnEnemies(
   board,
