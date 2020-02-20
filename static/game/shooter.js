@@ -58,7 +58,7 @@ export class Shooter extends Enemy {
       this.avoidTimer = this.avoidTimerMax;
     });
     // scalar to switch strafing directions (-1 or 1)
-    this.strafeScalar = randomInt(2);
+    this.strafeScalar = 1 - 2 * randomInt(2);
   }
 
   action() {
