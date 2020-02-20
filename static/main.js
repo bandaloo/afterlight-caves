@@ -17,7 +17,7 @@ import { Vector } from "./modules/vector.js";
 import { shuffle, randomInt, hsl } from "./modules/helpers.js";
 import { Hero } from "./game/hero.js";
 import { initBlockField, segregateTerrain } from "./game/generator.js";
-import { spawnEnemies } from "./game/spawner.js";
+import { spawnEnemies, spawnPowerups } from "./game/spawner.js";
 import { powerUpTypes } from "./game/powerups/poweruptypes.js";
 import { addSound, playSound, loopSound } from "./modules/sound.js";
 import { Healthbar } from "./game/healthbar.js";
@@ -83,36 +83,6 @@ export function resetDemo() {
 
   let emptySpaces = shuffle(getEmptySpaces(board, 10, blockWidth, blockHeight));
 
-  // Get the segregated board
-  const {
-    segregatedBoard: segregatedBoard,
-    groupNum: groupNum,
-    largestGroup: largestGroup
-  } = segregateTerrain(board);
-
-  // Init the cave locations array
-  const caveLocations = [];
-  for (let i = 0; i < groupNum; i++) {
-    caveLocations.push([]);
-  }
-
-  // For each cave, give it a list of available terrain.
-  for (let i = 0; i < segregatedBoard.length; i++) {
-    for (let j = 0; j < segregatedBoard[i].length; j++) {
-      const location = segregatedBoard[i][j];
-      if (location != 0)
-        caveLocations[location - 1].push(
-          new Vector(i * blockWidth, j * blockHeight)
-        );
-    }
-  }
-
-  // If empty numbers exist (They shouldn't, but do) delete them.
-  // TODO: figure out why we need this
-  for (let i = 0; i < caveLocations.length; i++) {
-    if (caveLocations[i].length == 0) caveLocations.splice(i, i);
-  }
-
   const hero = new Hero(
     new Vector(0, 0).add(
       new Vector(blockWidth / 2, blockHeight / 2).add(emptySpaces[11])
@@ -124,39 +94,7 @@ export function resetDemo() {
   addToWorld(hero);
 
   spawnEnemies(getTerrain(), 0.025, 1000, 4000);
-
-  const tilesPerAdditionalPowerupChance = 280;
-
-  for (let i = 0; i < caveLocations.length; i++) {
-    if (i == largestGroup) continue;
-
-    // Have a chance for an additional powerup for every 10 blocks.
-    const additional_powerups = Math.floor(
-      Math.max(1000 - caveLocations[i].length, 0) /
-        tilesPerAdditionalPowerupChance
-    );
-    const powerup_num = Math.floor(Math.random() * additional_powerups) + 1;
-
-    for (let p = 0; p < powerup_num; p++) {
-      const randomIndex = Math.floor(Math.random() * caveLocations[i].length);
-      const randomTile = caveLocations[i][randomIndex];
-      caveLocations[i].splice(randomIndex, 1);
-
-      const location = randomTile.add(
-        new Vector(blockWidth / 2, blockHeight / 2)
-      );
-
-      const r = Math.random();
-      const magnitude = Math.floor(Math.random() * 5) + 1;
-      for (let j = 1; j <= powerUpTypes.length; ++j) {
-        if (r < j / powerUpTypes.length) {
-          const powerUp = new powerUpTypes[j - 1](magnitude, location);
-          addToWorld(powerUp);
-          break;
-        }
-      }
-    }
-  }
+  spawnPowerups(getTerrain());
 }
 
 let loaded = 0;
