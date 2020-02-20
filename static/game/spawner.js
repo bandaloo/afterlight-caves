@@ -40,14 +40,17 @@ function sizeChance() {
  *
  * @param {number[][]} board
  * @param {number} chance
- * @param {number} safetyDistance
- * @param {number} hardDistance
+ * @param {number} densityDistanceLo
+ * @param {number} densityDistanceHi
  */
 export function spawnEnemies(
   board,
   chance,
-  safetyDistance = 1000,
-  hardDistance = 5000
+  densityDistanceLo = 1000,
+  densityDistanceHi = 5000,
+  powerDistanceLo = 1000,
+  powerDistanceHi = 6000,
+  powerScalar = 3
 ) {
   const { board: distBoard } = distanceBoard(board);
 
@@ -65,17 +68,23 @@ export function spawnEnemies(
     const distanceToHero = position.dist(getImportantEntity("hero").pos);
     const roll = Math.random();
     const scaledChance =
-      chance * riseFunction(distanceToHero, safetyDistance, hardDistance);
+      chance *
+      riseFunction(distanceToHero, densityDistanceLo, densityDistanceHi);
     if (roll < scaledChance) {
       const matryoshka = Math.min(distBoard[i][j] - 1, sizeChance());
+      const powerLevel = riseFunction(
+        distanceToHero,
+        powerDistanceLo,
+        powerDistanceHi
+      );
+      const scaledPowerLevel = randomInt(3) + powerLevel * powerScalar;
 
-      // TODO determine a size based on distCells
       const enemy = new (chanceTable.pick())(
         position,
         undefined,
         undefined,
         matryoshka,
-        0
+        scaledPowerLevel
       );
       addToWorld(enemy);
       console.log("added an enemy to the world");

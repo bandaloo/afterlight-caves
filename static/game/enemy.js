@@ -213,7 +213,7 @@ export class Enemy extends Creature {
   applyPowerUps(powerUpTable) {
     if (powerUpTable === undefined) return;
     for (let i = 0; i < this.level; i++) {
-      powerUpTable.pick().apply(this);
+      new (powerUpTable.pick())(randomInt(5) + 1).apply(this);
     }
   }
 
@@ -224,11 +224,11 @@ export class Enemy extends Creature {
     let hue;
     if (this.level < 1) {
       hue = 0; // red
-    } else if (this.level < 3) {
+    } else if (this.level < 2) {
       hue = 136; // green (kind of seafoam)
-    } else if (this.level < 5) {
+    } else if (this.level < 3) {
       hue = 187; // blue (light)
-    } else if (this.level < 7) {
+    } else if (this.level < 4) {
       hue = 273; // purple (royal)
     } else {
       hue = 43; // orange (light tangerine)
