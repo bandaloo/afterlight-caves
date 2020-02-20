@@ -170,6 +170,7 @@ export class DeathScreen extends Menu {
     this.enteringUsername = true;
     /** @param {KeyboardEvent} ev */
     const listener = ev => {
+      if (!ev.ctrlKey && !ev.altKey && !ev.metaKey) ev.preventDefault();
       if (ev.key === "Enter") {
         // break out
         this.enteringUsername = false;

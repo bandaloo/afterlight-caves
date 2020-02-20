@@ -12,13 +12,6 @@ class DisplayManager {
   /** @type {Vector} */
   cameraOffset = new Vector(0, 0);
 
-  /**
-   * @type {number} radius of a circle in the center of the screen in which the
-   * camera entity can move freely without the camera following it
-   * TODO possible tweak the size of this depending on what feels right
-   */
-  cameraDeadzone = 75;
-
   constructor(
     width = 1920,
     height = 1080,
@@ -92,30 +85,9 @@ class DisplayManager {
   drawGame(entities, particles, guiElements) {
     // reposition camera if there is a followed entity
     if (getCameraEntity() !== undefined) {
-      // if the camera entity is bigger than the deadzone the camera should
-      // always stick to it
-      if (
-        settings["Camera following strategy"].value || // "tight" following
-        this.cameraDeadzone < getCameraEntity().width ||
-        this.cameraDeadzone < getCameraEntity().height
-      ) {
-        this.cameraOffset = getCameraEntity()
-          .drawPos.mult(-1)
-          .add(new Vector(this.screenWidth / 2, this.screenHeight / 2));
-      } else {
-        const diff = getCameraEntity().drawPos.add(
-          getCameraOffset().sub(
-            new Vector(this.screenWidth / 2, this.screenHeight / 2)
-          )
-        );
-        const distToAdjust = diff.mag() - this.cameraDeadzone;
-        if (distToAdjust > 0) {
-          // outside the deadzone
-          setCameraOffset(
-            getCameraOffset().add(diff.norm2().mult(-distToAdjust))
-          );
-        }
-      }
+      this.cameraOffset = getCameraEntity()
+        .drawPos.mult(-1)
+        .add(new Vector(this.screenWidth / 2, this.screenHeight / 2));
     }
 
     // clear the display canvas with black rectangle
