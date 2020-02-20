@@ -12,12 +12,7 @@ export class Bomber extends Enemy {
    * @param {Vector} acc
    * @param {number} matryoshka
    */
-  constructor(
-    pos,
-    vel = new Vector(0, 0),
-    acc = new Vector(0, 0),
-    matryoshka = 0
-  ) {
+  constructor(pos, vel, acc, matryoshka) {
     super(pos, vel, acc, matryoshka);
     this.baseHealth = 15;
     this.initHealth();

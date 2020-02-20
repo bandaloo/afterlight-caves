@@ -21,12 +21,7 @@ export class Shooter extends Enemy {
    * @param {Vector} vel
    * @param {Vector} acc
    */
-  constructor(
-    pos,
-    vel = new Vector(0, 0),
-    acc = new Vector(0, 0),
-    matryoshka = 0
-  ) {
+  constructor(pos, vel, acc, matryoshka) {
     super(pos, vel, acc, matryoshka);
     this.baseHealth = 20;
     this.initHealth();

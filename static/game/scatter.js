@@ -37,9 +37,9 @@ export class Scatter extends Enemy {
    */
   constructor(
     pos,
-    vel = new Vector(0, 0),
-    acc = new Vector(0, 0),
-    matryoshka = 0,
+    vel,
+    acc,
+    matryoshka,
     level,
     powerUpTable = SCATTER_CHANCE_TABLE
   ) {
