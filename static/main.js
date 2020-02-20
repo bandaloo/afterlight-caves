@@ -160,6 +160,9 @@ export function resetDemo() {
   }
 }
 
+if (navigator.userAgent.indexOf("Mac") !== -1) 
+  document.getElementById("controller-text").textContent += " 🎮";
+
 let loaded = 0;
 
 // load all resources
