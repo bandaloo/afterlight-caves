@@ -81,9 +81,7 @@ export class Enemy extends Creature {
     );
 
     this.level = level;
-    this.powerUpTable = powerUpTable;
-
-    this.applyPowerUps();
+    this.applyPowerUps(powerUpTable);
   }
 
   initHealth() {
@@ -222,9 +220,14 @@ export class Enemy extends Creature {
     return out;
   }
 
-  applyPowerUps() {
+  /**
+   * apply powerups based on level
+   * @param {ChanceTable<typeof PowerUp>} powerUpTable
+   */
+  applyPowerUps(powerUpTable) {
+    if (powerUpTable === undefined) return;
     for (let i = 0; i < this.level; i++) {
-      this.powerUpTable.pick().apply(this);
+      powerUpTable.pick().apply(this);
     }
   }
 }

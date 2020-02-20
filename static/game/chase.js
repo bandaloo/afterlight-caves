@@ -6,6 +6,11 @@ import {
 import { Vector } from "../modules/vector.js";
 import { circle, ellipse, line, polygon } from "./draw.js";
 import { Enemy } from "./enemy.js";
+import { ChanceTable } from "../modules/chancetable.js";
+import { PowerUp } from "./powerup.js";
+
+// TODO could we be making some of the imports just used for typing use
+// import("./hero.js").Hero instead of an actual import? (like in enemy.js)
 
 export class Chase extends Enemy {
   followDistace = 500;
@@ -19,9 +24,11 @@ export class Chase extends Enemy {
    * @param {Vector} vel
    * @param {Vector} acc
    * @param {number} matryoshka
+   * @param {number} level
+   * @param {ChanceTable<typeof PowerUp>} powerUpTable
    */
-  constructor(pos, vel = new Vector(0, 0), acc = new Vector(0, 0), matryoshka) {
-    super(pos, vel, acc, matryoshka);
+  constructor(pos, vel, acc, matryoshka, level, powerUpTable) {
+    super(pos, vel, acc, matryoshka, level, powerUpTable);
     this.baseHealth = 20;
     this.initHealth();
     this.basePoints = 40;

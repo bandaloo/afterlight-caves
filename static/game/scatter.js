@@ -33,6 +33,7 @@ export class Scatter extends Enemy {
    * @param {Vector} vel
    * @param {Vector} acc
    * @param {number} matryoshka
+   * @param {number} level
    */
   constructor(
     pos,
