@@ -17,12 +17,6 @@ import { powerUpTypes } from "./powerups/poweruptypes.js";
 import { ChanceTable } from "../modules/chancetable.js";
 import { PowerUp } from "./powerup.js";
 
-/**
- * an enum for allowed shapes of enemies
- * @enum {number}
- */
-export const ShapeEnum = Object.freeze({ square: 1, circle: 2 });
-
 const DROP_CHANCE = 0.2;
 const BOMB_CHANCE = 0.3;
 const BASE_SIZE = 50;
