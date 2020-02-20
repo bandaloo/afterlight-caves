@@ -42,7 +42,6 @@ export class Chase extends Enemy {
     super.action();
     if (hasImportantEntity("hero")) {
       const hero = getImportantEntity("hero");
-      // TODO make vector to helper function in entity
       /** @type {Vector} */
       let dirVec = hero.pos.sub(this.pos);
       if (this.followTimer >= 0 || dirVec.magnitude() < this.followDistace) {
