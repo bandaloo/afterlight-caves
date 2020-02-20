@@ -20,6 +20,7 @@ chanceTable.addAll([
   { result: PowerUpTypes.Hot, chance: 1 },
   { result: PowerUpTypes.Icy, chance: 1 },
   { result: PowerUpTypes.Left, chance: 1 },
+  { result: PowerUpTypes.MachineGun, chance: 1 },
   { result: PowerUpTypes.QuickShot, chance: 1 },
   { result: PowerUpTypes.Right, chance: 1 },
   { result: PowerUpTypes.Vitality, chance: 1 },
