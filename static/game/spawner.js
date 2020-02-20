@@ -14,7 +14,7 @@ import { Bomber } from "./bomber.js";
 import { Vector } from "../modules/vector.js";
 import { ChanceTable } from "../modules/chancetable.js";
 import { Enemy } from "./enemy.js";
-import { powerUpTypes } from "./powerups/poweruptypes.js";
+import * as PowerUpTypes from "../game/powerups/poweruptypes.js";
 
 /**
  * a continuous function that 0 when x is below a certain point, 1 when x is
@@ -40,7 +40,7 @@ function sizeChance() {
 /**
  * spawns the enemies based on a chance. has a chance to spawn bigger enemies,
  * but they will all be scaled down if they can't fit. a bigger board will
- * yield more enemies
+ * yield more enemies.
  * @param {number[][]} board number grid indicating how to spawn enemies
  * @param {number} chance of an enemy spawning
  * @param {number} densityDistanceLo where enemy density starts ramping up
@@ -110,11 +110,41 @@ export function spawnEnemies(
 
 /**
  * spawn powerups into the world
- * @param {number[][]} board 
+ * @param {number[][]} board
  * @param {number} [powerupChance] not 0 to 1, but rather in the hundreds
  */
 export function spawnPowerups(board, powerupChance = 280) {
-  const {width: blockWidth, height: blockHeight} = getDimensions();
+  // TODO tweak some of these powerups to be rarer in the chance table
+  /** @type {ChanceTable<typeof import("../game/powerup.js").PowerUp>} */
+  const chanceTable = new ChanceTable();
+  chanceTable.addAll([
+    { result: PowerUpTypes.Amplify, chance: 1 },
+    { result: PowerUpTypes.BiggerBombs, chance: 1 },
+    { result: PowerUpTypes.Cone, chance: 1 },
+    { result: PowerUpTypes.DamageUp, chance: 1 },
+    { result: PowerUpTypes.Elastic, chance: 1 },
+    { result: PowerUpTypes.FlameThrower, chance: 1 },
+    { result: PowerUpTypes.GroupBomb, chance: 1 },
+    { result: PowerUpTypes.Hot, chance: 1 },
+    { result: PowerUpTypes.Icy, chance: 1 },
+    { result: PowerUpTypes.Jalapeno, chance: 1 },
+    { result: PowerUpTypes.Left, chance: 1 },
+    { result: PowerUpTypes.Nitroglycerin, chance: 1 },
+    { result: PowerUpTypes.Orb, chance: 1 },
+    { result: PowerUpTypes.Popsicle, chance: 1 },
+    { result: PowerUpTypes.QuickShot, chance: 1 },
+    { result: PowerUpTypes.Right, chance: 1 },
+    { result: PowerUpTypes.SlipperyBombs, chance: 1 },
+    { result: PowerUpTypes.Thermalite, chance: 1 },
+    { result: PowerUpTypes.UltraBomb, chance: 1 },
+    { result: PowerUpTypes.Vitality, chance: 1 },
+    { result: PowerUpTypes.Wall, chance: 1 },
+    { result: PowerUpTypes.Xplode, chance: 1 },
+    { result: PowerUpTypes.Yeet, chance: 1 },
+    { result: PowerUpTypes.Zoom, chance: 1 }
+  ]);
+
+  const { width: blockWidth, height: blockHeight } = getDimensions();
 
   // Get the segregated board
   const {
@@ -168,16 +198,8 @@ export function spawnPowerups(board, powerupChance = 280) {
         new Vector(blockWidth / 2, blockHeight / 2)
       );
 
-      const r = Math.random();
-      const magnitude = Math.floor(Math.random() * 5) + 1;
-      for (let j = 1; j <= powerUpTypes.length; ++j) {
-        if (r < j / powerUpTypes.length) {
-          const powerUp = new powerUpTypes[j - 1](magnitude, location);
-          addToWorld(powerUp);
-          break;
-        }
-      }
+      const randomMagnitude = randomInt(5) + 1;
+      addToWorld(new (chanceTable.pick())(randomMagnitude, location));
     }
   }
-
 }
