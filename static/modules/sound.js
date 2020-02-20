@@ -24,9 +24,10 @@ export function getSound(str) {
  * @param {string} str
  * @param {boolean} copy whether to play a copy of the sound
  * @param {boolean} music whether this sound is music (as opposed to sfx)
+ * @param {number} [volume] leave undefined to play at the specified volume when added
  * @return {HTMLAudioElement}
  */
-export function playSound(str, copy = true, music = false) {
+export function playSound(str, copy = true, music = false, volume) {
   if (!music && settings["Mute sound effects"].value) return getSound(str);
 
   // return if no more of the same sound can be played
@@ -37,7 +38,9 @@ export function playSound(str, copy = true, music = false) {
     const clonedSound = /** @type {HTMLAudioElement} */ (getSound(
       str
     ).cloneNode(true));
-    clonedSound.volume = soundMap.get(str).volume;
+    // when this node gets cloned, it loses its volume, so we have to set it here
+    clonedSound.volume =
+      volume !== undefined ? volume : soundMap.get(str).volume;
     clonedSound.play();
     return clonedSound;
   } else {
@@ -47,7 +50,7 @@ export function playSound(str, copy = true, music = false) {
     // https://developers.google.com/web/updates/2017/09/autoplay-policy-changes
     // We get around this by forcing DOM interaction before the game begins.
     const sound = getSound(str);
-    sound.volume = soundMap.get(str).volume;
+    sound.volume = volume !== undefined ? volume : soundMap.get(str).volume;
     sound.play().catch(() => {
       console.error(
         "Sound couldn't be played due to user not interacting with DOM yet." +
