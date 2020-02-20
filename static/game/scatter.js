@@ -10,7 +10,7 @@ import * as PowerUpTypes from "../game/powerups/poweruptypes.js";
 const SCATTER_CHANCE_TABLE = new ChanceTable();
 SCATTER_CHANCE_TABLE.addAll([
   { result: PowerUpTypes.Amplify, chance: 1 },
-  { result: PowerUpTypes.Cone, chance: 1 },
+  { result: PowerUpTypes.Cone, chance: 0.5 },
   { result: PowerUpTypes.DamageUp, chance: 1 },
   { result: PowerUpTypes.Elastic, chance: 1 },
   { result: PowerUpTypes.FlameThrower, chance: 1 },
@@ -48,6 +48,7 @@ export class Scatter extends Enemy {
     this.bulletLifetime = 300;
     this.fireDelay = 0;
     this.basePoints = 50;
+    this.level = 1;
   }
 
   destroy() {

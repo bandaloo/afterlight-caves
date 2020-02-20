@@ -14,6 +14,8 @@ import { EffectEnum, Particle } from "./particle.js";
 import { Pickup, PickupEnum } from "./pickup.js";
 import { splatter } from "./draw.js";
 import { powerUpTypes } from "./powerups/poweruptypes.js";
+import { ChanceTable } from "../modules/chancetable.js";
+import { PowerUp } from "./powerup.js";
 
 /**
  * an enum for allowed shapes of enemies
@@ -73,6 +75,8 @@ export class Enemy extends Creature {
       "Hero",
       /** @param {import("./hero.js").Hero} h */ h => this.touchHero(h)
     );
+
+    this.level = 0;
   }
 
   initHealth() {
@@ -209,5 +213,14 @@ export class Enemy extends Creature {
     }
 
     return out;
+  }
+
+  /**
+   * @param {ChanceTable<typeof PowerUp>} chanceTable
+   */
+  applyPowerUps(chanceTable, amount = this.level) {
+    for (let i = 0; i < amount; i++) {
+      chanceTable.pick().apply(this);
+    }
   }
 }
