@@ -10,6 +10,7 @@ import * as PowerUpTypes from "../game/powerups/poweruptypes.js";
 const chanceTable = new ChanceTable();
 chanceTable.addAll([
   { result: PowerUpTypes.Amplify, chance: 1 },
+  { result: PowerUpTypes.BiggerBombs, chance: 1 },
   { result: PowerUpTypes.Cone, chance: 0.5 },
   { result: PowerUpTypes.DamageUp, chance: 1 },
   { result: PowerUpTypes.Elastic, chance: 1 },
