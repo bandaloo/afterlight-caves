@@ -3,7 +3,7 @@ import { settings } from "../game/settings.js";
 /** the default amount for how many times the same sound can play at once */
 const MAX_SOUNDS = 1;
 
-/** @type {Map<string, {sound: HTMLAudioElement, counter: number, maxCounter: number}>} */
+/** @type {Map<string, {sound: HTMLAudioElement, counter: number, maxCounter: number, volume: number}>} */
 const soundMap = new Map();
 
 /**
@@ -37,6 +37,7 @@ export function playSound(str, copy = true, music = false) {
     const clonedSound = /** @type {HTMLAudioElement} */ (getSound(
       str
     ).cloneNode(true));
+    clonedSound.volume = soundMap.get(str).volume;
     clonedSound.play();
     return clonedSound;
   } else {
@@ -45,18 +46,18 @@ export function playSound(str, copy = true, music = false) {
     // second. This is the autoplay policy:
     // https://developers.google.com/web/updates/2017/09/autoplay-policy-changes
     // We get around this by forcing DOM interaction before the game begins.
-    getSound(str)
-      .play()
-      .catch(() => {
-        console.error(
-          "Sound couldn't be played due to user not interacting with DOM yet." +
-            " Trying again soon."
-        );
-        setTimeout(() => {
-          playSound(str, copy);
-        }, 1000);
-      });
-      return getSound(str);
+    const sound = getSound(str);
+    sound.volume = soundMap.get(str).volume;
+    sound.play().catch(() => {
+      console.error(
+        "Sound couldn't be played due to user not interacting with DOM yet." +
+          " Trying again soon."
+      );
+      setTimeout(() => {
+        playSound(str, copy);
+      }, 1000);
+    });
+    return sound;
   }
 }
 
@@ -98,16 +99,18 @@ export function ageSounds() {
  * adds a sound to the sound map asynchronously
  * @param {string} key
  * @param {string} filename
+ * @param {number} volume
  * @returns {Promise<HTMLAudioElement>} a promise returning the audio
  */
-export function addSound(key, filename) {
+export function addSound(key, filename, volume) {
   return new Promise(resolve => {
     const audio = new Audio(filename);
     audio.addEventListener("canplaythrough", () => {
       soundMap.set(key, {
-        sound: new Audio(filename),
+        sound: audio,
         counter: MAX_SOUNDS,
-        maxCounter: MAX_SOUNDS
+        maxCounter: MAX_SOUNDS,
+        volume: volume
       });
       resolve(audio);
     });

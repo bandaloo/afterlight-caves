@@ -163,7 +163,11 @@ let loaded = 0;
 
 // load all resources
 resources.forEach(resource => {
-  addSound(resource.name, resource.file).then(() => {
+  addSound(
+    resource.name,
+    resource.file,
+    resource.vol !== undefined ? resource.vol : 1.0
+  ).then(() => {
     loaded += 1 / resources.length;
   });
 });
