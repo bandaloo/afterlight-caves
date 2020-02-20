@@ -68,15 +68,26 @@ export function spawnEnemies(
   chanceTable.add(Bomber, 1);
 
   griderate(board, (board, i, j) => {
+    // can't spawn on top of a block, so return immediately if the case
     if (board[i][j] === 1) return;
+
     const position = cellToWorldPosition(new Vector(i, j));
     const distanceToHero = position.dist(getImportantEntity("hero").pos);
+
+    // roll whether to spawn an enemy
     const roll = Math.random();
+
+    // scale the chance based on distancee from the center
     const scaledChance =
       chance *
       riseFunction(distanceToHero, densityDistanceLo, densityDistanceHi);
+
+    // if chance has succeeded to spawn an enemy
     if (roll < scaledChance) {
+      // don't spawn an enemy that can't fit
       const matryoshka = Math.min(distBoard[i][j] - 1, sizeChance());
+
+      // scale the power level as distance from start increases
       const powerLevel = riseFunction(
         distanceToHero,
         powerDistanceLo,
@@ -84,6 +95,7 @@ export function spawnEnemies(
       );
       const scaledPowerLevel = randomInt(3) + powerLevel * powerScalar;
 
+      // pick a random enemy and add it to world
       const enemy = new (chanceTable.pick())(
         position,
         undefined,
@@ -92,7 +104,6 @@ export function spawnEnemies(
         scaledPowerLevel
       );
       addToWorld(enemy);
-      console.log("added an enemy to the world");
     }
   });
 }
