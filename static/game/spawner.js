@@ -19,9 +19,9 @@ import { Enemy } from "./enemy.js";
  * a continuous function that 0 when x is below a certain point, 1 when x is
  * above a certain point. when x is between these two points, the function
  * rises from 0 to 1 with a constant slope
- * @param {number} x
- * @param {number} lo
- * @param {number} hi
+ * @param {number} x number passed into the function
+ * @param {number} lo the lower bound (where y starts increasing from 0)
+ * @param {number} hi the upper bound (where y stops increasing at 1)
  */
 function riseFunction(x, lo, hi) {
   if (x < lo) return 0;
@@ -37,7 +37,6 @@ function sizeChance() {
 }
 
 /**
- *
  * @param {number[][]} board
  * @param {number} chance
  * @param {number} densityDistanceLo
