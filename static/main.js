@@ -127,10 +127,9 @@ export function resetDemo() {
   setCameraEntity(hero);
   addToWorld(hero);
 
-  //populateLevel(getTerrain(), 320);
   spawnEnemies(getTerrain(), 0.025, 1000, 4000);
 
-  const tilesPerAdditionalPowerupChance = 300;
+  const tilesPerAdditionalPowerupChance = 280;
 
   for (let i = 0; i < caveLocations.length; i++) {
     if (i == largestGroup) continue;
