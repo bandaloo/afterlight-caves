@@ -81,10 +81,6 @@ table tr > td:first-child {
   text-align: left;
 }
 
-table tr > td:last-child {
-  text-align: right;
-}
-
 table tr > td {
   text-align: center;
   padding: 0 1em;

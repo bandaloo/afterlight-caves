@@ -56,6 +56,19 @@ export const settings = {
       return;
     }
   },
+  "Camera following strategy": {
+    value: true,
+    getDisplayVal() {
+      return this.value ? "tight" : "loose";
+    },
+    onClick() {
+      this.value = !this.value;
+      saveSettings();
+    },
+    update() {
+      return;
+    }
+  },
   "Glow effect": {
     value: true,
     getDisplayVal() {
