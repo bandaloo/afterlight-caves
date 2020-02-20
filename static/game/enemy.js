@@ -228,13 +228,13 @@ export class Enemy extends Creature {
     if (this.level < 1) {
       hue = 0; // red
     } else if (this.level < 2) {
-      hue = 136; // green (kind of seafoam)
+      hue = 111; // green (lime)
     } else if (this.level < 3) {
       hue = 187; // blue (light)
     } else if (this.level < 4) {
       hue = 273; // purple (royal)
     } else {
-      hue = 43; // orange (light tangerine)
+      hue = 43; // orange (golden)
     }
 
     this.drawColor = hsl(hue, 100, 70);
