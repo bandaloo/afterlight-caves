@@ -6,6 +6,28 @@ import {
   getImportantEntity
 } from "../modules/gamemanager.js";
 import { randomInt } from "../modules/helpers.js";
+import * as PowerUpTypes from "../game/powerups/poweruptypes.js";
+import { ChanceTable } from "../modules/chancetable.js";
+
+/** @type {ChanceTable<typeof import("../game/powerup.js").PowerUp>} */
+const chanceTable = new ChanceTable();
+chanceTable.addAll([
+  { result: PowerUpTypes.Amplify, chance: 1 },
+  { result: PowerUpTypes.Cone, chance: 0.5 },
+  { result: PowerUpTypes.DamageUp, chance: 1 },
+  { result: PowerUpTypes.Elastic, chance: 1 },
+  { result: PowerUpTypes.FlameThrower, chance: 1 },
+  { result: PowerUpTypes.Hot, chance: 1 },
+  { result: PowerUpTypes.Icy, chance: 1 },
+  { result: PowerUpTypes.Left, chance: 1 },
+  { result: PowerUpTypes.QuickShot, chance: 1 },
+  { result: PowerUpTypes.Right, chance: 1 },
+  { result: PowerUpTypes.Vitality, chance: 1 },
+  { result: PowerUpTypes.Wall, chance: 1 },
+  { result: PowerUpTypes.Xplode, chance: 0.5 },
+  { result: PowerUpTypes.Yeet, chance: 1 },
+  { result: PowerUpTypes.Zoom, chance: 1 }
+]);
 
 export class Shooter extends Enemy {
   avoidDistance = 600;

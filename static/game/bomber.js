@@ -3,6 +3,36 @@ import { Vector } from "../modules/vector.js";
 import { circle } from "./draw.js";
 import { Orb } from "./powerups/orb.js";
 import { randomNormalVec, randomInt } from "../modules/helpers.js";
+import { ChanceTable } from "../modules/chancetable.js";
+import * as PowerUpTypes from "../game/powerups/poweruptypes.js";
+
+/** @type {ChanceTable<typeof import("../game/powerup.js").PowerUp>} */
+const chanceTable = new ChanceTable();
+chanceTable.addAll([
+  { result: PowerUpTypes.Amplify, chance: 1 },
+  { result: PowerUpTypes.Cone, chance: 0.5 },
+  { result: PowerUpTypes.DamageUp, chance: 1 },
+  { result: PowerUpTypes.Elastic, chance: 1 },
+  { result: PowerUpTypes.FlameThrower, chance: 1 },
+  { result: PowerUpTypes.GroupBomb, chance: 5 },
+  { result: PowerUpTypes.Hot, chance: 1 },
+  { result: PowerUpTypes.Icy, chance: 1 },
+  { result: PowerUpTypes.Jalapeno, chance: 10 },
+  { result: PowerUpTypes.Left, chance: 1 },
+  { result: PowerUpTypes.Nitroglycerin, chance: 1 },
+  { result: PowerUpTypes.Orb, chance: 1 },
+  { result: PowerUpTypes.Popsicle, chance: 10 },
+  { result: PowerUpTypes.QuickShot, chance: 1 },
+  { result: PowerUpTypes.Right, chance: 1 },
+  { result: PowerUpTypes.SlipperyBombs, chance: 5 },
+  { result: PowerUpTypes.Thermalite, chance: 5 },
+  { result: PowerUpTypes.UltraBomb, chance: 1 },
+  { result: PowerUpTypes.Vitality, chance: 1 },
+  { result: PowerUpTypes.Wall, chance: 1 },
+  { result: PowerUpTypes.Xplode, chance: 0.5 },
+  { result: PowerUpTypes.Yeet, chance: 1 },
+  { result: PowerUpTypes.Zoom, chance: 1 }
+]);
 
 export class Bomber extends Enemy {
   /**
@@ -11,9 +41,11 @@ export class Bomber extends Enemy {
    * @param {Vector} vel
    * @param {Vector} acc
    * @param {number} matryoshka
+   * @param {number} level
    */
-  constructor(pos, vel, acc, matryoshka) {
-    super(pos, vel, acc, matryoshka);
+  constructor(pos, vel, acc, matryoshka, level, powerUpTable) {
+    // TODO reconsider the crazy type import in the jsdoc above
+    super(pos, vel, acc, matryoshka, level, powerUpTable);
     this.baseHealth = 15;
     this.initHealth();
     new Orb(3 + randomInt(3)).apply(this);

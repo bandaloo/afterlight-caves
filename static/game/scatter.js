@@ -7,8 +7,9 @@ import { randomNormalVec } from "../modules/helpers.js";
 import { ChanceTable } from "../modules/chancetable.js";
 import * as PowerUpTypes from "../game/powerups/poweruptypes.js";
 
-const SCATTER_CHANCE_TABLE = new ChanceTable();
-SCATTER_CHANCE_TABLE.addAll([
+/** @type {ChanceTable<typeof import("../game/powerup.js").PowerUp>} */
+const chanceTable = new ChanceTable();
+chanceTable.addAll([
   { result: PowerUpTypes.Amplify, chance: 1 },
   { result: PowerUpTypes.Cone, chance: 0.5 },
   { result: PowerUpTypes.DamageUp, chance: 1 },

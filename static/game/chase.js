@@ -8,6 +8,15 @@ import { circle, ellipse, line, polygon } from "./draw.js";
 import { Enemy } from "./enemy.js";
 import { ChanceTable } from "../modules/chancetable.js";
 import { PowerUp } from "./powerup.js";
+import * as PowerUpTypes from "../game/powerups/poweruptypes.js";
+
+const chanceTable = new ChanceTable();
+chanceTable.addAll([
+  { result: PowerUpTypes.DamageUp, chance: 1 },
+  { result: PowerUpTypes.Hot, chance: 1 },
+  { result: PowerUpTypes.Vitality, chance: 1 },
+  { result: PowerUpTypes.Zoom, chance: 1 }
+]);
 
 // TODO could we be making some of the imports just used for typing use
 // import("./hero.js").Hero instead of an actual import? (like in enemy.js)
