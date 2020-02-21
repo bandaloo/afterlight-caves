@@ -28,6 +28,7 @@ import { DeathScreen } from "./game/deathscreen.js";
 import { resources } from "./game/resources.js";
 import { setGameDrawFunc, getCanvasWidth } from "./modules/displaymanager.js";
 import { TimeDisplay } from "./game/timedisplay.js";
+import { collide, Circle } from "./modules/collision.js";
 
 const blockWidth = 60;
 const blockHeight = 60;
@@ -138,7 +139,7 @@ export function resetDemo() {
     const powerup_num = Math.floor(Math.random() * additional_powerups) + 1;
 
     for (let p = 0; p < powerup_num; p++) {
-      /** @type {Vector} */
+      /** @type {number} */
       const randomIndex = Math.floor(Math.random() * caveLocations[i].length);
       const randomTile = caveLocations[i][randomIndex];
       caveLocations[i].splice(randomIndex, 1);

@@ -8,7 +8,7 @@ import {
   getGamepadInput,
   buttons
 } from "./buttons.js";
-import { isColliding } from "./collision.js";
+import { collide } from "./collision.js";
 import { Entity, FarEnum } from "./entity.js";
 import { inPlaceFilter } from "./helpers.js";
 import { Vector } from "./vector.js";
@@ -243,7 +243,13 @@ class GameManager {
           const collideEntities = map.get(collideTypes[j]);
           if (collideEntities !== undefined) {
             for (let k = 0; k < collideEntities.length; k++) {
-              if (isColliding(targetEntity, collideEntities[k])) {
+              if (
+                !collide(
+                  targetEntity.getCollisionShape(),
+                  collideEntities[k].getCollisionShape(),
+                  false
+                ).isZeroVec()
+              ) {
                 targetEntity.collideWithEntity(collideEntities[k]);
               }
             }
