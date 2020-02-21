@@ -36,7 +36,7 @@ export class ScoresMenu extends Menu {
   drawText(x, y, text) {
     const tabs = text.split("\t");
     super.drawText(x, y, tabs[0]);
-    if (tabs[1] !== undefined) super.drawText(x + 250, y, tabs[1]);
+    if (tabs[1] !== undefined) super.drawText(x + 420, y, tabs[1]);
   }
 
   action() {
@@ -53,8 +53,9 @@ export class ScoresMenu extends Menu {
             JSON.parse(obj.message)
               .scores.sort((a, b) => b.score - a.score)
               .map((val, i) => {
+                const index = ("" + (i + 1) + ")").padEnd(5, " ");
                 return {
-                  text: `${i + 1})  ${val.score}\t${val.username}`,
+                  text: `${index}${val.score}\t${val.username}`,
                   func: undefined
                 };
               })
