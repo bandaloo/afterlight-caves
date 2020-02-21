@@ -43,10 +43,6 @@ export function resetDemo() {
   destroyEverything();
   color = hsl(randomInt(360));
   setPause(false);
-  const input = /** @type {HTMLInputElement} */ (document.getElementById(
-    "name-input"
-  ));
-  input.value = "";
 
   let board = getGrid(
     blockColumns * 8,
@@ -197,7 +193,7 @@ const start = ev => {
   startForm.remove();
   // set timeout so that button disappears immediately
   setTimeout(() => {
-    playSound("captive-portal", false);
+    playSound("captive-portal", false, true);
     loopSound("captive-portal");
     resetDemo();
     startUp();
