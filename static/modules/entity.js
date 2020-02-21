@@ -97,7 +97,7 @@ export class Entity {
    * Determines what type of collision will be generated when getCollisionShape
    * is called and collisionShape is undefined.
    */
-  /** @type {"Box"|"Circle"|"undefined"} */
+  /** @type {"Box"|"Circle"} */
   collisionType;
 
   /**
@@ -132,16 +132,16 @@ export class Entity {
   }
 
   /**
-   * Set the collisionShape of the entity. Give no arguments to reset the shape
+   * Set the collision shape of the entity. Give no arguments to reset the shape
    * to be calculated each call of getCollisonShape
-   * @param {CollisionShape | undefined} collisionShape
+   * @param {CollisionShape} [collisionShape]
    * @returns {void}
    */
   setCollisionShape(collisionShape) {
     this.collisionShape = collisionShape;
   }
   /**
-   * Set the collisionShape of the entity when colliding with terrain. Give no
+   * Set the collision shape of the entity when colliding with terrain. Give no
    * arguments to reset the shape to be the same as collisionShape
    * @returns {void}
    */
@@ -150,7 +150,7 @@ export class Entity {
   }
 
   /**
-   * Returns the CollisionShape of the entity.
+   * Returns the collision shape of the entity.
    * If the entity has a collisionEntity property, that shape is updated to the
    * current position and is returned. Otherwise, a new CollisionShape is
    * calculated.
@@ -170,11 +170,11 @@ export class Entity {
         this.vel
       );
     }
-    return new CollisionShape("undefined", this.pos, this.vel);
+    return new CollisionShape(undefined, this.pos, this.vel);
   }
 
   /**
-   * Returns the terrainCollisionShape of the entity.
+   * Returns the terrain collision shape of the entity.
    * If the entity has a collisionEntity property, that shape is updated to the
    * current position and returned. Otherwise, the collisionShape is returned.
    * @returns {CollisionShape}
@@ -197,7 +197,7 @@ export class Entity {
         getCameraOffset().mult(-1)
       )
     );
-    return !collide(this.getCollisionShape(), screenBox).isZeroVec() || true;
+    return !collide(this.getCollisionShape(), screenBox).isZeroVec();
   }
 
   /**

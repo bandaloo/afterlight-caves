@@ -339,7 +339,11 @@ export function collide_BoxCircle(boxA, circleB, resolve) {
         boxA.height / 2 + circleB.radius
       );
     } else {
-      cVector = circleB.vel.add(boxA.vel.mult(-1));
+      if (circleB.vel.isZeroVec() && boxA.vel.isZeroVec()) {
+        cVector = new Vector(circleB.radius * 2 + boxA.width, 0);
+      } else {
+        cVector = circleB.vel.add(boxA.vel.mult(-1));
+      }
     }
 
     return cVector;
@@ -528,7 +532,7 @@ export class CollisionShape {
   /** @type {Vector} */
   vel;
 
-  /** @type {"Box"|"Circle"|"undefined"} */
+  /** @type {"Box"|"Circle"|"Not Defined"} */
   type;
 
   /** @type {number} */
@@ -541,12 +545,12 @@ export class CollisionShape {
 
   /**
    * Class used to store collision information
-   * @param {"Box"|"Circle"|"undefined"} type
+   * @param {"Box"|"Circle"|"Not Defined"} type
    * @param {Vector} pos
    * @param {Vector} vel
    */
   constructor(
-    type = "undefined",
+    type = "Not Defined",
     pos = new Vector(0, 0),
     vel = new Vector(0, 0),
     debug = false

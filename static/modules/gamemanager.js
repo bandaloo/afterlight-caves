@@ -71,8 +71,6 @@ class GameManager {
   /** @type {boolean} */
   gamePause = false;
 
-  displayCanvas = undefined;
-
   /**
    * map for entities that game programmer might want to access frequently, like player
    * @type {Map<string, Entity>}
@@ -94,13 +92,6 @@ class GameManager {
       ));
       pauseScreen.onBack();
       this.gamePause = false;
-    }
-  }
-
-  addDisplayToDiv(id) {
-    const displayDiv = document.getElementById(id);
-    if (displayDiv != undefined) {
-      displayDiv.appendChild(this.displayCanvas);
     }
   }
 
@@ -255,7 +246,8 @@ class GameManager {
               if (
                 !collide(
                   targetEntity.getCollisionShape(),
-                  collideEntities[k].getCollisionShape()
+                  collideEntities[k].getCollisionShape(),
+                  false
                 ).isZeroVec()
               ) {
                 targetEntity.collideWithEntity(collideEntities[k]);

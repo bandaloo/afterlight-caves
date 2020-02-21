@@ -37,10 +37,8 @@ export class Bullet extends Entity {
     this.color = color;
     this.damage = damage;
     this.knockback = 3;
-    this.reflectNum = 100;
-
-    const col = new Box(this.width, this.height, this.pos, this.vel);
-    this.setCollisionShape(col);
+    /**@type {"Box"|"Circle"}*/
+    this.collisionType = "Box";
 
     /**
      * @type {{ name: string, data: number, func: (function(Bullet, number): void) }[]}
@@ -67,7 +65,7 @@ export class Bullet extends Entity {
       entityType,
       /** @param {import ("./creature.js").Creature} c */ c => {
         // deal basic damage
-        c.takeDamage(this.damage);
+        c.takeDamage(this.damage, this.vel.norm2());
         // impart momentum
         const size = (c.width * c.height) / 300;
         c.vel = c.vel.add(this.vel.mult(this.knockback / size));
@@ -96,7 +94,6 @@ export class Bullet extends Entity {
 
   destroy() {
     // execute all on-destroy functions
-    if (this.good) console.log("--DEAD--");
     for (const od of this.onDestroy) {
       if (od["func"]) od["func"](this, od["data"]);
     }
@@ -131,9 +128,6 @@ export class Bullet extends Entity {
     // remove the bullet if it's not supposed to bounce
     if (!this.reflectsOffWalls) {
       this.deleteMe = true;
-    } else {
-      this.reflectNum--;
-      if (this.reflectNum <= 0) this.reflectsOffWalls = false;
     }
   }
 }
