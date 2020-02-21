@@ -189,12 +189,13 @@ export class Hero extends Creature {
 
   /**
    * @param {number} amt of damage to take
+   * @param {Vector} [dir] the direction the damage came from
    * @override
    */
-  takeDamage(amt) {
+  takeDamage(amt, dir) {
     if (this.invincibilityFrames <= 0) {
       playSound("hero-hurt");
-      super.takeDamage(amt);
+      super.takeDamage(amt, dir);
       this.invincibilityFrames = this.invincibilityFramesMax;
     }
   }

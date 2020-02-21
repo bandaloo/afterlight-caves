@@ -2,9 +2,10 @@ import { Vector } from "./vector.js";
 import { getCameraEntity } from "./gamemanager.js";
 import { Entity } from "./entity.js";
 import { GuiElement } from "./guielement.js";
+import { settings } from "../game/settings.js";
 
 const BLUR_SCALAR = 2;
-
+export const FILTER_STRING = "blur(3px) brightness(200%)";
 export const SPLATTER_SCALAR = 4;
 
 class DisplayManager {
@@ -31,6 +32,8 @@ class DisplayManager {
     this.displayHeight = displayHeight;
     this.displayCanvas.width = displayWidth;
     this.displayCanvas.height = displayHeight;
+    this.displayCanvas.id = "canvas";
+    this.displayCanvas.tabIndex = 0;
 
     // the untouched canvas for blurring before copying
     this.blurCanvas = document.createElement("canvas");
@@ -81,13 +84,10 @@ class DisplayManager {
    */
   drawGame(entities, particles, guiElements) {
     // reposition camera if there is a followed entity
-    const { width: screenWidth, height: screenHeight } = getScreenDimensions();
     if (getCameraEntity() !== undefined) {
-      setCameraOffset(
-        getCameraEntity()
-          .drawPos.mult(-1)
-          .add(new Vector(screenWidth / 2, screenHeight / 2))
-      );
+      this.cameraOffset = getCameraEntity()
+        .drawPos.mult(-1)
+        .add(new Vector(this.screenWidth / 2, this.screenHeight / 2));
     }
 
     // clear the display canvas with black rectangle
@@ -109,22 +109,24 @@ class DisplayManager {
       this.blurCanvas.height
     );
 
-    // copy the splatter canvas onto the drawing canvas
-    const targetCanvas = this.displayCanvas;
-    const targetContext = this.displayContext;
-    const splatterVec = getCameraOffset().mult(-1 / SPLATTER_SCALAR);
-    const displayRatio = this.canvas.width / targetCanvas.width;
-    targetContext.drawImage(
-      this.splatterCanvas,
-      splatterVec.x,
-      splatterVec.y,
-      (targetCanvas.width / SPLATTER_SCALAR) * displayRatio,
-      (targetCanvas.height / SPLATTER_SCALAR) * displayRatio,
-      0,
-      0,
-      targetCanvas.width,
-      targetCanvas.height
-    );
+    if (settings["Splatter effects"].value) {
+      // copy the splatter canvas onto the drawing canvas
+      const targetCanvas = this.displayCanvas;
+      const targetContext = this.displayContext;
+      const splatterVec = getCameraOffset().mult(-1 / SPLATTER_SCALAR);
+      const displayRatio = this.canvas.width / targetCanvas.width;
+      targetContext.drawImage(
+        this.splatterCanvas,
+        splatterVec.x,
+        splatterVec.y,
+        (targetCanvas.width / SPLATTER_SCALAR) * displayRatio,
+        (targetCanvas.height / SPLATTER_SCALAR) * displayRatio,
+        0,
+        0,
+        targetCanvas.width,
+        targetCanvas.height
+      );
+    }
 
     // save drawing context
     this.context.save();
@@ -156,7 +158,6 @@ class DisplayManager {
       this.canvas.height / BLUR_SCALAR
     );
 
-    // TODO move to DisplayManager
     // align camera, draw the gui, reset camera
     // this is after the draw canvas is copied to the blur canvas
     // move this to before if you want the gui blurred
@@ -228,6 +229,13 @@ export function getSplatterContext() {
 }
 
 /**
+ * returns the blur context
+ */
+export function getBlurContext() {
+  return displayManager.blurContext;
+}
+
+/**
  * returns the draw canvas width
  */
 export function getCanvasWidth() {
@@ -285,9 +293,11 @@ export function toggleFullscreen() {
     // enter fullscreen
     displayManager.displayCanvas.width = displayManager.screenWidth;
     displayManager.displayCanvas.height = displayManager.screenHeight;
+    settings["Fullscreen"].value = true;
     return displayManager.enterFullscreen();
   } else {
     // exit fullscreen
+    settings["Fullscreen"].value = false;
     return document.exitFullscreen();
   }
 }

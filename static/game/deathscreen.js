@@ -1,7 +1,11 @@
 import { Vector } from "../modules/vector.js";
 import { Menu } from "./menu.js";
 import { centeredText } from "./draw.js";
-import { toggleGuiElement, addToGui } from "../modules/gamemanager.js";
+import {
+  toggleGuiElement,
+  addToGui,
+  collectInput
+} from "../modules/gamemanager.js";
 import { getImportantEntity } from "../modules/gamemanager.js";
 import { toScoreString } from "./scoredisplay.js";
 import { resetDemo } from "../main.js";
@@ -12,6 +16,7 @@ import {
   toggleFullscreen
 } from "../modules/displaymanager.js";
 import { Hero } from "./hero.js";
+import {suppressGamepad} from "../modules/buttons.js";
 
 /**
  * The screen that appears when a player dies, including a nice fade-in and
@@ -24,8 +29,14 @@ export class DeathScreen extends Menu {
   opacity;
   /** @type {boolean} */
   submitted;
+  /** @type {boolean} */
+  enteringUsername;
   /** @type {string} */
   causeOfDeath;
+  /** @type {string} */
+  username;
+  /** @type {number} */
+  cursorBlinkCounter;
 
   constructor() {
     const screenDimensions = getScreenDimensions();
@@ -37,6 +48,9 @@ export class DeathScreen extends Menu {
     const scoresmenu = new ScoresMenu();
     scoresmenu.active = false;
     addToGui("scoresmenu", scoresmenu);
+    this.enteringUsername = false;
+    this.username = "";
+    this.cursorBlinkCounter = 0;
 
     this.setItems([
       { text: "Submit score", func: this.submitScore.bind(this) },
@@ -52,7 +66,7 @@ export class DeathScreen extends Menu {
     ]);
     this.score = 0;
     this.opacity = 0;
-    this.itemWidth = 500;
+    this.itemWidth = 700;
     this.submitted = false;
     this.causeOfDeath = "You have died";
   }
@@ -61,6 +75,18 @@ export class DeathScreen extends Menu {
    * @override
    */
   draw() {
+    const cursor =
+      this.enteringUsername && this.cursorBlinkCounter % 100 < 50 ? "_" : " ";
+    centeredText(
+      this.username + cursor,
+      this.pos.add(new Vector(this.width / 2, this.height / 2 - 300)),
+      "bold 75px anonymous",
+      undefined,
+      undefined,
+      "rgba(255, 255, 255, " + this.opacity + ")",
+      undefined,
+      8
+    );
     centeredText(
       this.causeOfDeath,
       this.pos.add(new Vector(this.width / 2, this.height / 2)),
@@ -101,16 +127,15 @@ export class DeathScreen extends Menu {
       if (this.items[0]) {
         this.items[0] = { text: "Submitted!", func: undefined };
       }
+    } else if (this.enteringUsername) {
+      if (this.items[0]) {
+        this.items[0] = { text: "Press enter to finish", func: undefined };
+      }
     } else {
       this.hero = getImportantEntity("hero");
       this.score = /** @type {Hero} */ (this.hero).score;
       if (this.active) this.opacity += 0.01;
-      // get score from input box
-      const input = /** @type {HTMLInputElement} */ (document.getElementById(
-        "name-input"
-      ));
-      const username = input.value;
-      if (username === undefined || username === "") {
+      if (this.username === undefined || this.username === "") {
         if (this.items[0]) {
           this.items[0] = {
             text: "Enter name",
@@ -126,6 +151,7 @@ export class DeathScreen extends Menu {
         }
       }
     }
+    this.cursorBlinkCounter++;
     super.action();
   }
 
@@ -136,29 +162,37 @@ export class DeathScreen extends Menu {
   onBack() {}
 
   /**
-   * focuses on the name input
+   * suppress all other controls to let the user enter a name
    */
   enterName() {
-    if (document.fullscreenElement !== null) {
-      toggleFullscreen().then(() => {
-        document.getElementById("name-input").focus();
-      });
-    } else {
-      document.getElementById("name-input").focus();
-    }
+    collectInput(false);
+    suppressGamepad(true);
+    this.enteringUsername = true;
+    /** @param {KeyboardEvent} ev */
+    const listener = ev => {
+      if (!ev.ctrlKey && !ev.altKey && !ev.metaKey) ev.preventDefault();
+      if (ev.key === "Enter") {
+        // break out
+        this.enteringUsername = false;
+        collectInput(true);
+        suppressGamepad(false);
+        document.removeEventListener("keydown", listener);
+      } else if (ev.key === "Backspace") {
+        this.username = this.username.substring(0, this.username.length - 1);
+      } else if (/^\w{1}$/.test(ev.key) && this.username.length < 32) {
+        this.username += ev.key;
+      }
+    };
+    document.addEventListener("keydown", listener);
   }
 
   /**
    * Submits the user's score to the leaderboard
    */
   submitScore() {
-    const input = /** @type {HTMLInputElement} */ (document.getElementById(
-      "name-input"
-    ));
-    const username = input.value;
     fetch("/score", {
       method: "POST",
-      body: JSON.stringify({ username: username, score: this.score }),
+      body: JSON.stringify({ username: this.username, score: this.score }),
       headers: new Headers({
         "Content-Type": "application/json"
       })

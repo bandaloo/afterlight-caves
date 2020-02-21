@@ -3,7 +3,7 @@ import { Vector } from "../modules/vector.js";
 import { polygon, circle, splatter } from "./draw.js";
 import { Particle, EffectEnum } from "./particle.js";
 import { addParticle, cellToWorldPosition } from "../modules/gamemanager.js";
-import { getCell, isColliding, calcCorners } from "../modules/collision.js";
+import { isColliding, calcCorners } from "../modules/collision.js";
 import { destroyBlock } from "./block.js";
 import { playSound } from "../modules/sound.js";
 

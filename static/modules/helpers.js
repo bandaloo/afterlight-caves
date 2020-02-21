@@ -135,3 +135,19 @@ export function randomPop(arr) {
   arr.splice(i, 1);
   return elem;
 }
+
+/**
+ * Gets the value of the cookie with the given name, or undefined if that cookie
+ * doesn't exist
+ * @param {string} name the name of the cookie
+ * @return {string | undefined}
+ */
+export function getCookie(name) {
+  const parts = document.cookie.split(";");
+  for (const part of parts) {
+    if (part.trim().indexOf(name + "=") === 0) {
+      return part.trim().substring((name + "=").length);
+    }
+  }
+  return undefined;
+}

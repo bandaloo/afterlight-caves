@@ -205,7 +205,7 @@ export class Creature extends Entity {
       name: "Basic Damage",
       data: 12,
       func: (bomb, num, creature) => {
-        creature.takeDamage(num);
+        creature.takeDamage(num, bomb.pos.add(creature.pos).norm2());
       }
     });
   }
@@ -353,9 +353,16 @@ export class Creature extends Entity {
    * Decreases the creature's current health by the given amount, killing it if
    * necessary
    * @param {number} amt the amount of damage dealt
+   * @param {Vector} [dir] the direction the damage came from
    */
-  takeDamage(amt) {
+  takeDamage(amt, dir = this.vel.norm2()) {
     const damageToTake = defenseFunc(amt, this.defense);
+    // convert overkill damage into velocity
+    if (damageToTake > this.currentHealth) {
+      this.vel = this.vel.add(
+        dir.norm2().mult((damageToTake - this.currentHealth) * 0.75)
+      );
+    }
     this.currentHealth -= damageToTake;
     if (this.currentHealth < 0.01) {
       this.deleteMe = true;

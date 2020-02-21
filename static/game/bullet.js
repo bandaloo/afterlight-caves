@@ -1,12 +1,11 @@
 import { getCell, Box } from "../modules/collision.js";
 import { Entity, FarEnum } from "../modules/entity.js";
-import { addParticle, inbounds, setBlock } from "../modules/gamemanager.js";
+import { addParticle, inbounds } from "../modules/gamemanager.js";
 import { Vector } from "../modules/vector.js";
 import { circle } from "./draw.js";
 import { blockField } from "./generator.js";
 import { EffectEnum, Particle } from "./particle.js";
 import { destroyBlock } from "./block.js";
-import { playSound } from "../modules/sound.js";
 
 export class Bullet extends Entity {
   /**
@@ -127,10 +126,7 @@ export class Bullet extends Entity {
       inbounds(cellVec.x, cellVec.y) &&
       blockField[cellVec.x][cellVec.y].durability !== Infinity
     ) {
-      if (setBlock(cellVec.x, cellVec.y, 0)) {
-        destroyBlock(cellVec, this.type === "PlayerBullet");
-        if (this.onScreen()) playSound("hit-breakable");
-      }
+      destroyBlock(cellVec, this.type === "PlayerBullet");
     }
     // remove the bullet if it's not supposed to bounce
     if (!this.reflectsOffWalls) {
