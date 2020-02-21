@@ -511,10 +511,14 @@ export function adjustEntity(entity) {
 
     entity.pos = entity.pos.sub(mv);
 
-    // bounce based on the move vector
+    // If an entity has reflectsOffWalls = true but wallReflectSpeed = 0 it
+    // should reflect with the same speed it hit the wall with. See the
+    // description of wallReflectSpeed in entity.js.
     if (entity.reflectsOffWalls) {
+      if (mv.x !== 0) entity.vel.x *= -1;
+      if (mv.y !== 0) entity.vel.y *= -1;
       if (hitTerrain.length > 0 && entity.wallReflectSpeed !== 0) {
-        entity.vel = entity.vel.norm2().mult(-entity.wallReflectSpeed);
+        entity.vel = entity.vel.norm2().mult(entity.wallReflectSpeed);
       }
     }
   }
