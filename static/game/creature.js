@@ -249,7 +249,7 @@ export class Creature extends Entity {
     size += this.rightBulletSize * Math.max(0, Math.cos(angle));
     size += this.leftBulletSize * Math.max(0, -Math.cos(angle));
     const b = new Bullet(
-      this.pos.add(dir.mult(this.width / 2)),
+      this.pos.add(dir.mult(Math.min(this.width, this.height) / 4)),
       dir.norm2().mult(this.bulletSpeed),
       new Vector(0, 0),
       this.type === "Hero",

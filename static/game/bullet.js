@@ -1,10 +1,9 @@
-import { getCell, Circle } from "../modules/collision.js";
+import { getCell, Box } from "../modules/collision.js";
 import { Entity, FarEnum } from "../modules/entity.js";
 import { addParticle, inbounds, setBlock } from "../modules/gamemanager.js";
 import { Vector } from "../modules/vector.js";
 import { circle } from "./draw.js";
 import { blockField } from "./generator.js";
-import { CHEAT_RADIUS } from "./hero.js";
 import { EffectEnum, Particle } from "./particle.js";
 import { destroyBlock } from "./block.js";
 import { playSound } from "../modules/sound.js";
@@ -41,12 +40,7 @@ export class Bullet extends Entity {
     this.knockback = 3;
     this.reflectNum = 100;
 
-    const col = new Circle(
-      Math.min(this.width, this.height) / 2,
-      this.pos,
-      this.vel,
-      this.good
-    );
+    const col = new Box(this.width, this.height, this.pos, this.vel);
     this.setCollisionShape(col);
 
     /**

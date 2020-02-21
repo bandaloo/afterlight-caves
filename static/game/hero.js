@@ -43,16 +43,14 @@ export class Hero extends Creature {
     this.bulletColor = "white";
     this.score = 0;
     this.setBombDamage(18);
-    this.bulletSpeed = 16;
-    this.bulletReflectsOffWalls = true;
 
     // Manually set the collision shape to allow for a smaller hitbox
     const collisionShape = new Circle(
       (DEFAULT_SIZE - CHEAT_RADIUS) / 2,
       this.pos
     );
-    // const terrainCollisionShape = new Circle(DEFAULT_SIZE / 2, this.pos);
-    const terrainCollisionShape = new Box(DEFAULT_SIZE, DEFAULT_SIZE, this.pos);
+    const terrainCollisionShape = new Circle(DEFAULT_SIZE / 2, this.pos);
+
     this.setCollisionShape(collisionShape);
     this.setTerrainCollisionShape(terrainCollisionShape);
 
@@ -113,7 +111,7 @@ export class Hero extends Creature {
       this.invincibilityFrames > 0
         ? `rgba(255, 255, 255, ${this.invincibilityFrames /
             this.invincibilityFramesMax})`
-        : "rgba(0, 0, 0, 0)",
+        : "rgba(0, 0, 0, 1)",
       4,
       "white"
     );
