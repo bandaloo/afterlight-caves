@@ -1,10 +1,9 @@
-import { getCell, isCollidingCheat } from "../modules/collision.js";
+import { getCell, Box } from "../modules/collision.js";
 import { Entity, FarEnum } from "../modules/entity.js";
 import { addParticle, inbounds } from "../modules/gamemanager.js";
 import { Vector } from "../modules/vector.js";
 import { circle } from "./draw.js";
 import { blockField } from "./generator.js";
-import { CHEAT_RADIUS } from "./hero.js";
 import { EffectEnum, Particle } from "./particle.js";
 import { destroyBlock } from "./block.js";
 
@@ -38,6 +37,9 @@ export class Bullet extends Entity {
     this.color = color;
     this.damage = damage;
     this.knockback = 3;
+    /**@type {"Box"|"Circle"}*/
+    this.collisionType = "Box";
+
     /**
      * @type {{ name: string, data: number, func: (function(Bullet, number): void) }[]}
      */
@@ -62,18 +64,16 @@ export class Bullet extends Entity {
     this.collideMap.set(
       entityType,
       /** @param {import ("./creature.js").Creature} c */ c => {
-        if (entityType === "Enemy" || isCollidingCheat(c, this, CHEAT_RADIUS)) {
-          // deal basic damage
-          c.takeDamage(this.damage, this.vel);
-          // impart momentum
-          const size = (c.width * c.height) / 300;
-          c.vel = c.vel.add(this.vel.mult(this.knockback / size));
-          // call onHitEnemy functions
-          for (const ohe of this.onHitEnemy) {
-            if (ohe.func) ohe.func(this, ohe.data, c);
-          }
-          this.deleteMe = true;
+        // deal basic damage
+        c.takeDamage(this.damage, this.vel.norm2());
+        // impart momentum
+        const size = (c.width * c.height) / 300;
+        c.vel = c.vel.add(this.vel.mult(this.knockback / size));
+        // call onHitEnemy functions
+        for (const ohe of this.onHitEnemy) {
+          if (ohe.func) ohe.func(this, ohe.data, c);
         }
+        this.deleteMe = true;
       }
     );
   }
@@ -115,10 +115,10 @@ export class Bullet extends Entity {
 
   /**
    * what to do when hitting a block
-   * @param {Entity} entity
+   * @param {Vector} pos
    */
-  collideWithBlock(entity) {
-    const cellVec = getCell(entity.pos);
+  collideWithBlock(pos) {
+    const cellVec = getCell(pos);
     if (
       inbounds(cellVec.x, cellVec.y) &&
       blockField[cellVec.x][cellVec.y].durability !== Infinity

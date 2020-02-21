@@ -37,13 +37,12 @@ export class TextDisplay extends Entity {
     this.green = green;
     this.blue = blue;
     this.strokeStyle = strokeStyle;
-    this.lineWidth = lineWidth,
-    this.font = font;
+    (this.lineWidth = lineWidth), (this.font = font);
     this.duration = duration;
     this.align = align;
-    this.baseline = 
-      /** @type {CanvasTextBaseline} */ ("alphabetic");
+    this.baseline = /** @type {CanvasTextBaseline} */ ("alphabetic");
     this.opacity = 1; // for fadeout
+    this.occludedByWalls = false;
   }
 
   /**
