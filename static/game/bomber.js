@@ -45,7 +45,6 @@ export class Bomber extends Enemy {
    * @param {number} level
    */
   constructor(pos, vel, acc, matryoshka, level, powerUpTable = chanceTable) {
-    // TODO reconsider the crazy type import in the jsdoc above
     super(pos, vel, acc, matryoshka, level, powerUpTable);
     this.baseHealth = 15;
     this.initHealth();
