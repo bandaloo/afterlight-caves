@@ -192,22 +192,10 @@ export function collide_BoxCircle(boxA, circleB, resolve) {
   const aLeft = boxA.pos.x - boxA.width / 2;
   const aBottom = boxA.pos.y + boxA.height / 2;
   const aTop = boxA.pos.y - boxA.height / 2;
-  const aTopLeft = {
-    point: new Vector(aLeft, aTop),
-    resolveDir: new Vector(-1, -1)
-  }; // Top Left
-  const aTopRight = {
-    point: new Vector(aRight, aTop),
-    resolveDir: new Vector(1, -1)
-  }; // Top Right
-  const aBottomLeft = {
-    point: new Vector(aLeft, aBottom),
-    resolveDir: new Vector(-1, 1)
-  }; // Bottom Left
-  const aBottomRight = {
-    point: new Vector(aRight, aBottom),
-    resolveDir: new Vector(1, 1)
-  }; // Bottom Right
+  const aTopLeft = new Vector(aLeft, aTop); // Top Left
+  const aTopRight = new Vector(aRight, aTop); // Top Right
+  const aBottomLeft = new Vector(aLeft, aBottom); // Bottom Left
+  const aBottomRight = new Vector(aRight, aBottom); // Bottom Right
   const aRightSide = [aTopRight, aBottomRight];
   const aLeftSide = [aBottomLeft, aTopRight];
   const aBottomSide = [aBottomRight, aBottomLeft];
@@ -309,42 +297,27 @@ export function collide_BoxCircle(boxA, circleB, resolve) {
   let collidingCorner = undefined;
   let collisionDistance = radius2;
   for (let corner of points) {
-    if (circleB.pos.dist2(corner.point) < collisionDistance) {
+    if (circleB.pos.dist2(corner) < collisionDistance) {
       collidingCorner = corner;
-      collisionDistance = circleB.pos.dist(corner.point);
+      collisionDistance = circleB.pos.dist(corner);
     }
   }
   // If there were collisions with the corners, check to see if they need
   // to be resolved.
   if (collidingCorner !== undefined) {
     const dist = new Vector(
-      circleB.pos.x - collidingCorner.point.x,
-      circleB.pos.y - collidingCorner.point.y
+      circleB.pos.x - collidingCorner.x,
+      circleB.pos.y - collidingCorner.y
     );
 
     // the collision vector should push the circle to be the distance away equal
     // to the circle's radius or higher.
     cVector = dist.norm2().mult(Math.min(dist.mag() - circleB.radius, 0));
 
-    if (!(cVector.x == 0 && cVector.y == 0)) {
-      // Uses the resolve direction of the corner to not collide "backwards"
-      if (Math.sign(collidingCorner.resolveDir.x) != Math.sign(cVector.x))
-        cVector.x = 0;
-      if (Math.sign(collidingCorner.resolveDir.y) != Math.sign(cVector.y))
-        cVector.y = 0;
-
-      // Only return the "easier" direction to resolve from. (prefers Y)
-      if (Math.abs(cVector.x) >= Math.abs(cVector.y) && cVector.x != 0) {
-        cVector.y = 0;
-      } else if (Math.abs(cVector.y) > Math.abs(cVector.x) && cVector.y != 0) {
-        cVector.x = 0;
-      }
-
-      // If this is the zero vector, then resolve the collision
-      if (cVector.isZeroVec()) {
-        if (!resolve) return new Vector(1, 1);
-        return cVector;
-      }
+    // If this is not the zero vector, then resolve the collision
+    if (!cVector.isZeroVec()) {
+      if (!resolve) return new Vector(1, 1);
+      return cVector;
     }
   }
 
@@ -536,15 +509,9 @@ export function adjustEntity(entity) {
 
     // bounce based on the move vector
     if (entity.reflectsOffWalls) {
-      if (mv.x !== 0) entity.vel.x *= -1;
-      if (mv.y !== 0) entity.vel.y *= -1;
       if (hitTerrain.length > 0 && entity.wallReflectSpeed !== 0) {
-        entity.vel = entity.vel.norm2().mult(entity.wallReflectSpeed);
+        entity.vel = entity.vel.norm2().mult(-entity.wallReflectSpeed);
       }
-    } else {
-      // if we're not supposed to bounce then just stop
-      if (mv.x !== 0) entity.vel.x = 0;
-      if (mv.y !== 0) entity.vel.y = 0;
     }
   }
 

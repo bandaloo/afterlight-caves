@@ -8,7 +8,7 @@ import { PowerUp, POWER_UP_POINTS_FACTOR } from "./powerup.js";
 import { playSound, getSound } from "../modules/sound.js";
 import { Circle, Box } from "../modules/collision.js";
 
-const DEFAULT_SIZE = 50;
+const DEFAULT_SIZE = 130;
 
 // circles have to overlap by this many units for hero to be hit
 export const CHEAT_RADIUS = 16;
