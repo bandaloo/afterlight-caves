@@ -1,6 +1,28 @@
 import { Enemy } from "./enemy.js";
 import { Vector } from "../modules/vector.js";
 import { polygon } from "./draw.js";
+import { ChanceTable } from "../modules/chancetable.js";
+import * as PowerUpTypes from "../game/powerups/poweruptypes.js";
+
+/** @type {ChanceTable<typeof import("../game/powerup.js").PowerUp>} */
+const chanceTable = new ChanceTable();
+chanceTable.addAll([
+  { result: PowerUpTypes.Amplify, chance: 1 },
+  { result: PowerUpTypes.Cone, chance: 10 },
+  { result: PowerUpTypes.DamageUp, chance: 1 },
+  { result: PowerUpTypes.Elastic, chance: 2 },
+  { result: PowerUpTypes.FlameThrower, chance: 1 },
+  { result: PowerUpTypes.Hot, chance: 1 },
+  { result: PowerUpTypes.Icy, chance: 1 },
+  { result: PowerUpTypes.Left, chance: 1 },
+  { result: PowerUpTypes.QuickShot, chance: 1 },
+  { result: PowerUpTypes.Right, chance: 1 },
+  { result: PowerUpTypes.Vitality, chance: 1 },
+  { result: PowerUpTypes.Wall, chance: 1 },
+  { result: PowerUpTypes.Xplode, chance: 2 },
+  { result: PowerUpTypes.Yeet, chance: 1 },
+  { result: PowerUpTypes.Zoom, chance: 1 }
+]);
 
 /**
  * alternately shoots bullets at 45 degrees and in cardinal directions. has no
@@ -13,14 +35,11 @@ export class Crosser extends Enemy {
    * @param {Vector} pos
    * @param {Vector} vel
    * @param {Vector} acc
+   * @param {number} matryoshka
+   * @param {number} level
    */
-  constructor(
-    pos,
-    vel = new Vector(0, 0),
-    acc = new Vector(0, 0),
-    matryoshka = 0
-  ) {
-    super(pos, vel, acc, matryoshka);
+  constructor(pos, vel, acc, matryoshka, level, powerUpTable = chanceTable) {
+    super(pos, vel, acc, matryoshka, level, powerUpTable);
     this.baseHealth = 20;
     this.initHealth();
     this.basePoints = 60;

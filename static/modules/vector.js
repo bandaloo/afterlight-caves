@@ -35,20 +35,6 @@ class Vector {
   }
 
   /**
-   * @returns {number}
-   */
-  magnitude2() {
-    return Math.pow(this.x, 2) + Math.pow(this.y, 2);
-  }
-
-  /**
-   * @returns {number}
-   */
-  magnitude() {
-    return Math.sqrt(this.magnitude2());
-  }
-
-  /**
    * @param {number} sx
    * @param {number} sy
    * @returns {Vector}
@@ -149,7 +135,7 @@ class Vector {
    */
   rotate(radians) {
     const angle = Math.atan2(this.y, this.x) + radians;
-    const mag = this.magnitude();
+    const mag = this.mag();
     return new Vector(Math.cos(angle), Math.sin(angle)).mult(mag);
   }
 
