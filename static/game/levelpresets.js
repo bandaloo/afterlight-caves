@@ -52,7 +52,7 @@ export const spawnSettings = {
 };
 
 /** @type {Object<string, DimensionSettings>} */
-export const dimensionSettings = {
+export const dimensionsSettings = {
   original: { width: 256, height: 144 }
 };
 
@@ -60,6 +60,14 @@ export const dimensionSettings = {
 export const constraintSettings = {
   original: {
     timeLimit: { minutes: 5, seconds: 0 }
+  }
+};
+
+export const groups = {
+  original: {
+    terrain: terrainSettings.original,
+    spawn: spawnSettings.original,
+    dimensions: dimensionsSettings.original
   }
 };
 
