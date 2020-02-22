@@ -4,14 +4,14 @@ import { Vector } from "../modules/vector.js";
 import { centeredRect, circle } from "./draw.js";
 import { Hero } from "./hero.js";
 import { EffectEnum, Particle } from "./particle.js";
-import {playSound} from "../modules/sound.js";
+import { playSound } from "../modules/sound.js";
 
 /**
  * @enum {number}
  */
 export const PickupEnum = Object.freeze({ bomb: 1, health: 2 });
 
-const POWERUP_LIFETIME = 500;
+const POWERUP_LIFETIME = 800;
 const POWERUP_DISAPPEARING = 50;
 const HEALTH_COLOR = "red";
 const BOMB_COLOR = "gray";
