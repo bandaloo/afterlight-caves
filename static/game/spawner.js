@@ -193,16 +193,19 @@ export function spawnPowerups(board, powerupChance = 280) {
     const powerup_num = Math.floor(Math.random() * additional_powerups) + 1;
 
     for (let p = 0; p < powerup_num; p++) {
-      const randomIndex = Math.floor(Math.random() * caveLocations[i].length);
-      const randomTile = caveLocations[i][randomIndex];
-      caveLocations[i].splice(randomIndex, 1);
+      if (caveLocations[i].length > 0) {
+        const randomIndex = randomInt(caveLocations[i].length);
+        console.log(caveLocations);
+        const randomTile = caveLocations[i][randomIndex];
+        caveLocations[i].splice(randomIndex, 1);
 
-      const location = randomTile.add(
-        new Vector(blockWidth / 2, blockHeight / 2)
-      );
+        const location = randomTile.add(
+          new Vector(blockWidth / 2, blockHeight / 2)
+        );
 
-      const randomMagnitude = randomInt(5) + 1;
-      addToWorld(new (chanceTable.pick())(randomMagnitude, location));
+        const randomMagnitude = randomInt(5) + 1;
+        addToWorld(new (chanceTable.pick())(randomMagnitude, location));
+      }
     }
   }
 }
