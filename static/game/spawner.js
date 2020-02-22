@@ -197,7 +197,6 @@ export function spawnPowerups(board, additionalChance = 280) {
     for (let p = 0; p < powerup_num; p++) {
       if (caveLocations[i].length > 0) {
         const randomIndex = randomInt(caveLocations[i].length);
-        console.log(caveLocations);
         const randomTile = caveLocations[i][randomIndex];
         caveLocations[i].splice(randomIndex, 1);
 
