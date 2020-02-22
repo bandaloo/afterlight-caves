@@ -1,4 +1,4 @@
-import { getCell, Box } from "../modules/collision.js";
+import { getCell, Box, getRayLength } from "../modules/collision.js";
 import { Entity, FarEnum } from "../modules/entity.js";
 import { addParticle, inbounds } from "../modules/gamemanager.js";
 import { Vector } from "../modules/vector.js";
@@ -6,6 +6,7 @@ import { circle } from "./draw.js";
 import { blockField } from "./generator.js";
 import { EffectEnum, Particle } from "./particle.js";
 import { destroyBlock } from "./block.js";
+import { line } from "./draw.js";
 
 export class Bullet extends Entity {
   /**
@@ -13,7 +14,8 @@ export class Bullet extends Entity {
    * @param {Vector} [pos]
    * @param {Vector} [vel]
    * @param {Vector} [acc]
-   * @param {boolean} [good] false by default
+   * @param {import("./creature.js").Creature} owner the creature that fired
+   * this bullet
    * @param {string} [color] default "white",
    * @param {number} [lifetime] how long this bullet survives, in game steps
    * @param {number} [damage] how much damage this bullet deals
@@ -22,13 +24,14 @@ export class Bullet extends Entity {
     pos = new Vector(0, 0),
     vel = new Vector(0, 0),
     acc = new Vector(0, 0),
-    good = false,
+    owner,
     color = "white",
     lifetime = 100,
     damage = 1
   ) {
     super(pos, vel, acc);
-    this.good = good;
+    this.good = (owner !== undefined && owner.type === "Hero");
+    this.owner = owner;
     this.lifetime = lifetime;
     this.drag = 0.003;
     this.width = 24;
@@ -58,7 +61,7 @@ export class Bullet extends Entity {
     this.onHitEnemy = new Array();
     this.damage = damage;
     this.farType = FarEnum.delete;
-    this.type = good ? "PlayerBullet" : "EnemyBullet";
+    this.type = this.good ? "PlayerBullet" : "EnemyBullet";
     // set function for when we hit enemies
     const entityType = this.good ? "Enemy" : "Hero";
     this.collideMap.set(
@@ -129,5 +132,68 @@ export class Bullet extends Entity {
     if (!this.reflectsOffWalls) {
       this.deleteMe = true;
     }
+  }
+}
+
+export class Beam extends Bullet {
+  /**
+   * Constructs a new beam. Beams don't have velocity or acceleration. Instead,
+   * they have a starting point (pos) and length
+   * @param {Vector} [pos] the position of the origin of the beam
+   * @param {Vector} [dir] the direction the beam is facing
+   * @param {Vector} [acc] ignored
+   * @param {import("./creature.js").Creature} owner the creature that fired
+   * this beam
+   * @param {string} [color] default "white",
+   * @param {number} [lifetime] how long this beam survives, in game steps
+   * @param {number} [damage] how much damage this beam deals
+   */
+  constructor(
+    pos = new Vector(0, 0),
+    dir = new Vector(0, 0),
+    acc = new Vector(0, 0),
+    owner,
+    color = "white",
+    lifetime = 100,
+    damage = 1
+  ) {
+    super(
+      pos,
+      new Vector(0, 0),
+      new Vector(0, 0),
+      owner,
+      color,
+      lifetime,
+      damage
+    );
+    console.log("new beam");
+    this.length = 0;
+    this.dir = dir.norm2();
+    this.lifetime = 100;
+  }
+
+  draw() {
+    line(
+      this.pos,
+      this.pos.add(this.dir.mult(this.length)),
+      this.color,
+      this.damage
+    );
+  }
+
+  destroy() {
+    // execute all on-destroy functions
+    for (const od of this.onDestroy) {
+      if (od["func"]) od["func"](this, od["data"]);
+    }
+  }
+
+  /**
+   * @override
+   * calculate length each step
+   */
+  action() {
+    this.length = getRayLength(this.pos, this.dir);
+    this.pos = this.owner.pos;
   }
 }

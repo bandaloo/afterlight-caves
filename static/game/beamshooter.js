@@ -6,6 +6,7 @@ import {
   getImportantEntity
 } from "../modules/gamemanager.js";
 import { randomInt } from "../modules/helpers.js";
+import { Beam } from "./bullet.js";
 
 export class BeamShooter extends Enemy {
   shootDistance = 800;
@@ -17,9 +18,9 @@ export class BeamShooter extends Enemy {
     super(pos, new Vector(0, 0), new Vector(0, 0), 0);
     this.baseHealth = 70;
     this.initHealth();
+    this.bulletType = Beam;
     this.fireDelay = 130;
-    this.bulletSpeed = 5;
-    this.bulletLifetime = 200;
+    this.bulletLifetime = 100;
     this.basePoints = 90;
     this.drag = 0.01;
     this.width = 150;
@@ -65,6 +66,7 @@ export class BeamShooter extends Enemy {
             .rotate((this.facing.cross(dirVec) < 0 ? -1 : 1) * 0.01)
             .norm2();
         }
+        console.log(this.bulletColor);
         this.shoot(this.facing);
       } else {
         // can't see the hero, spin slowly
@@ -79,7 +81,7 @@ export class BeamShooter extends Enemy {
       this.drawPos.add(
         this.facing
           .norm2()
-          .mult(this.width / 2 * 0.8)
+          .mult((this.width / 2) * 0.8)
           .rotate(0.2)
       ),
       this.drawColor,
@@ -90,7 +92,7 @@ export class BeamShooter extends Enemy {
       this.drawPos.add(
         this.facing
           .norm2()
-          .mult(this.width / 2 * 0.8)
+          .mult((this.width / 2) * 0.8)
           .rotate(-0.2)
       ),
       this.drawColor,
@@ -98,6 +100,6 @@ export class BeamShooter extends Enemy {
     );
     const bgColor = this.getBackgroundColor();
     circle(this.drawPos, this.width / 2, bgColor, 5, this.drawColor);
-    circle(this.drawPos, this.width / 2 * 0.8, bgColor, 5, this.drawColor);
+    circle(this.drawPos, (this.width / 2) * 0.8, bgColor, 5, this.drawColor);
   }
 }

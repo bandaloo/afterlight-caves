@@ -1,5 +1,11 @@
 import { Entity } from "./entity.js";
-import { getDimensions, getTerrain } from "./gamemanager.js";
+import {
+  getDimensions,
+  getTerrain,
+  cellToWorldPosition,
+  getBlockWidth,
+  getBlockHeight
+} from "./gamemanager.js";
 import { Vector } from "./vector.js";
 import { Bullet } from "../game/bullet.js";
 
@@ -622,4 +628,28 @@ export class Circle extends CollisionShape {
     this.width = radius * 2;
     this.height = radius * 2;
   }
+}
+
+/**
+ * Finds the length a ray can travel before hitting terrain
+ * @param {Vector} startPos the starting position of the ray
+ * @param {Vector} dir the direction the ray is facing
+ * @return {number}
+ */
+export function getRayLength(startPos, dir) {
+  // TODO optimize this
+  dir = dir.norm2();
+  let curPos = startPos;
+  let length = 0;
+  let cellVec = getCell(curPos);
+  // make big steps until we hit a block
+  let counter = 0;
+  do {
+    length += getBlockWidth();
+    curPos = startPos.add(dir.mult(length));
+    cellVec = getCell(curPos);
+    if (counter++ > 1000) break;
+  } while (!solidAt(cellVec.x, cellVec.y));
+  // TODO make precision steps
+  return length;
 }

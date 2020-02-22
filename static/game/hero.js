@@ -7,6 +7,7 @@ import { Particle, EffectEnum } from "./particle.js";
 import { PowerUp, POWER_UP_POINTS_FACTOR } from "./powerup.js";
 import { playSound, getSound } from "../modules/sound.js";
 import { Circle, Box } from "../modules/collision.js";
+import { Beam } from "./bullet.js";
 
 const DEFAULT_SIZE = 50;
 
@@ -38,6 +39,7 @@ export class Hero extends Creature {
     this.bulletSpeed = 8;
     this.bulletLifetime = 60;
     this.bulletDamage = 8;
+    this.bulletType = Beam;
     this.bombFuseTime = 300;
     this.bombHue = 126;
     this.bulletColor = "white";

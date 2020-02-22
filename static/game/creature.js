@@ -60,6 +60,9 @@ export class Creature extends Entity {
   /** @type {string} */
   bulletColor = "white";
 
+  /** @type {import("./bullet.js").Beam | Bullet} */
+  bulletType = Bullet;
+
   /** @type {number} the number of game steps to wait between each shot */
   fireDelay = 30;
 
@@ -248,11 +251,11 @@ export class Creature extends Entity {
     dmg += this.leftBulletDamage * Math.max(0, -Math.cos(angle));
     size += this.rightBulletSize * Math.max(0, Math.cos(angle));
     size += this.leftBulletSize * Math.max(0, -Math.cos(angle));
-    const b = new Bullet(
+    const b = new this.bulletType(
       this.pos.add(dir.mult(Math.min(this.width, this.height) / 4)),
       dir.norm2().mult(this.bulletSpeed),
       new Vector(0, 0),
-      this.type === "Hero",
+      this,
       this.bulletColor,
       this.bulletLifetime,
       dmg
@@ -270,6 +273,8 @@ export class Creature extends Entity {
    * Shoots in the given direction, returning true if bullet was actually shot
    * @param {Vector} dir the direction to shoot in
    * @param {Vector} [additionalVelocity]
+   * @param {number} [angle] the angle of the cone of bullets
+   * @param {number} [offset] set this to zero when calling manually
    * @returns {boolean}
    */
   shoot(dir, additionalVelocity = new Vector(0, 0), angle = 30, offset = 0) {
