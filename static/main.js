@@ -16,9 +16,8 @@ import { drawBoard } from "./game/draw.js";
 import { Vector } from "./modules/vector.js";
 import { shuffle, randomInt, hsl } from "./modules/helpers.js";
 import { Hero } from "./game/hero.js";
-import { initBlockField, segregateTerrain } from "./game/generator.js";
+import { initBlockField } from "./game/generator.js";
 import { spawnEnemies, spawnPowerups } from "./game/spawner.js";
-import { powerUpTypes } from "./game/powerups/poweruptypes.js";
 import { addSound, playSound, loopSound } from "./modules/sound.js";
 import { Healthbar } from "./game/healthbar.js";
 import { BombDisplay } from "./game/bombdisplay.js";
@@ -28,7 +27,6 @@ import { DeathScreen } from "./game/deathscreen.js";
 import { resources } from "./game/resources.js";
 import { setGameDrawFunc, getCanvasWidth } from "./modules/displaymanager.js";
 import { TimeDisplay } from "./game/timedisplay.js";
-import { collide, Circle } from "./modules/collision.js";
 
 const blockWidth = 60;
 const blockHeight = 60;

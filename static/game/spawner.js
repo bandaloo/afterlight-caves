@@ -108,6 +108,7 @@ export function spawnEnemies(
   });
 }
 
+// TODO this powerup spawning algorithm is specific to caves
 /**
  * spawn powerups into the world
  * @param {number[][]} board
