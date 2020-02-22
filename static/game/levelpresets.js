@@ -21,6 +21,12 @@ import { caveRules } from "./rules";
  *
  * @typedef GameModeSettings
  * @property {{minutes: number, seconds: number}} timeLimit
+ *
+ * @typedef SettingsGroup
+ * @property {TerrainSettings} terrain
+ * @property {SpawnSettings} spawn
+ * @property {DimensionSettings} dimensions
+ * @property {GameMode} gameMode
  */
 
 /** @type {Object<string, TerrainSettings>} */
@@ -56,3 +62,10 @@ export const constraintSettings = {
     timeLimit: { minutes: 5, seconds: 0 }
   }
 };
+
+/**
+ * generate terrain, spawn enemies, spawn powerups and set game mode based
+ * on a group of settings
+ * @param {SettingsGroup} group
+ */
+export function startLevelFromSettings(group) {}
