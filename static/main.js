@@ -28,6 +28,7 @@ import { resources } from "./game/resources.js";
 import { setGameDrawFunc, getCanvasWidth } from "./modules/displaymanager.js";
 import { TimeDisplay } from "./game/timedisplay.js";
 
+// TODO these names are confusing
 const blockWidth = 60;
 const blockHeight = 60;
 const worldWidth = 1920;
@@ -52,6 +53,7 @@ export function resetDemo() {
     20
   );
 
+  // TODO move this to after the GUI stuff
   setTerrain(board);
   initBlockField(board);
   // has to be called after setTerrain for the splatter canvas

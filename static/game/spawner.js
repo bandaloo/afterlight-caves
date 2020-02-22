@@ -55,7 +55,8 @@ export function spawnEnemies(
   densityDistanceHi = 5000,
   powerDistanceLo = 1000,
   powerDistanceHi = 6000,
-  powerScalar = 3
+  powerScalar = 3,
+  randomPowerAddend = 3
 ) {
   const { board: distBoard } = distanceBoard(board);
 
@@ -93,7 +94,8 @@ export function spawnEnemies(
         powerDistanceLo,
         powerDistanceHi
       );
-      const scaledPowerLevel = randomInt(3) + powerLevel * powerScalar;
+      const scaledPowerLevel =
+        randomInt(randomPowerAddend) + powerLevel * powerScalar;
 
       // pick a random enemy and add it to world
       const enemy = new (chanceTable.pick())(
@@ -112,9 +114,9 @@ export function spawnEnemies(
 /**
  * spawn powerups into the world
  * @param {number[][]} board
- * @param {number} [powerupChance] not 0 to 1, but rather in the hundreds
+ * @param {number} [additionalChance] not 0 to 1, but rather in the hundreds
  */
-export function spawnPowerups(board, powerupChance = 280) {
+export function spawnPowerups(board, additionalChance = 280) {
   // TODO tweak some of these powerups to be rarer in the chance table
   /** @type {ChanceTable<typeof import("../game/powerup.js").PowerUp>} */
   const chanceTable = new ChanceTable();
@@ -180,7 +182,7 @@ export function spawnPowerups(board, powerupChance = 280) {
   for (let i = 0; i < caveLocations.length; i++) {
     if (caveLocations[i].length == 0) caveLocations.splice(i, i);
   }
-  const tilesPerAdditionalPowerupChance = powerupChance;
+  const tilesPerAdditionalPowerupChance = additionalChance;
 
   for (let i = 0; i < caveLocations.length; i++) {
     if (i == largestGroup) continue;
