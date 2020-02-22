@@ -15,9 +15,11 @@ import { caveRules } from "./rules";
  * @property {number} powerScalar
  * @property {number} randomPowerAddend
  *
- * @typedef ConstraintSettings
+ * @typedef DimensionSettings
  * @property {number} width
  * @property {number} height
+ *
+ * @typedef GameModeSettings
  * @property {{minutes: number, seconds: number}} timeLimit
  */
 
@@ -43,11 +45,14 @@ export const spawnSettings = {
   }
 };
 
-/** @type {Object<string, ConstraintSettings>} */
+/** @type {Object<string, DimensionSettings>} */
+export const dimensionSettings = {
+  original: { width: 256, height: 144 }
+};
+
+/** @type {Object<string, GameModeSettings>} */
 export const constraintSettings = {
   original: {
-    width: 256,
-    height: 144,
     timeLimit: { minutes: 5, seconds: 0 }
   }
 };
