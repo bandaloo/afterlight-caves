@@ -53,12 +53,6 @@ export function resetDemo() {
     20
   );
 
-  // TODO move this to after the GUI stuff
-  setTerrain(board);
-  initBlockField(board);
-  // has to be called after setTerrain for the splatter canvas
-  setDimensions(blockWidth, blockHeight);
-
   setGameDrawFunc(() => {
     drawBoard(board, blockWidth, blockHeight, color);
   });
@@ -93,6 +87,11 @@ export function resetDemo() {
   setImportantEntity("hero", hero);
   setCameraEntity(hero);
   addToWorld(hero);
+
+  setTerrain(board);
+  initBlockField(board);
+  // has to be called after setTerrain for the splatter canvas
+  setDimensions(blockWidth, blockHeight);
 
   spawnEnemies(getTerrain(), 0.025, 1000, 4000);
   spawnPowerups(getTerrain());
