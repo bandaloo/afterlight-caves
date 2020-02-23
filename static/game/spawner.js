@@ -2,7 +2,7 @@ import {
   addToWorld,
   cellToWorldPosition,
   getImportantEntity,
-  getDimensions
+  getBlockDimensions
 } from "../modules/gamemanager.js";
 import { randomInt, griderate } from "../modules/helpers.js";
 import { Chase } from "./chase.js";
@@ -149,7 +149,7 @@ export function spawnPowerups(board, tilesPerChance = 280) {
     { result: PowerUpTypes.Zoom, chance: 1 }
   ]);
 
-  const { width: blockWidth, height: blockHeight } = getDimensions();
+  const { width: blockWidth, height: blockHeight } = getBlockDimensions();
 
   // Get the segregated board
   const {

@@ -2,7 +2,7 @@ import { caveRules, EdgesEnum } from "./rules.js";
 import { getGrid, getEmptySpaces } from "./life.js";
 import { shuffle, hsl, randomInt } from "../modules/helpers.js";
 import {
-  setDimensions,
+  setBlockDimensions,
   setImportantEntity,
   setCameraEntity,
   addToWorld,
@@ -161,7 +161,7 @@ export function startLevelFromSettings(group) {
   setTerrain(board);
   initBlockField(board);
   // has to be called after setting the terrain for the splatter canvas
-  setDimensions(group.dimensions.blockWidth, group.dimensions.blockHeight);
+  setBlockDimensions(group.dimensions.blockWidth, group.dimensions.blockHeight);
 
   // spawn the enemies custom to the settings group
   spawnEnemies(
