@@ -193,9 +193,13 @@ export class Menu extends GuiElement {
       buttons.back.status.isReleased = false;
       this.onBack();
     }
-    this.down = buttons.select.status.isDown;
-    if (buttons.select.status.isPressed) playSound("menu-select");
-    if (buttons.select.status.isReleased) {
+    this.down = buttons.select.status.isDown || buttons.altSelect.status.isDown;
+    if (buttons.select.status.isPressed || buttons.altSelect.status.isPressed)
+      playSound("menu-select");
+    if (
+      buttons.select.status.isReleased ||
+      buttons.altSelect.status.isReleased
+    ) {
       if (this.items[this.index] && this.items[this.index].func !== undefined)
         this.items[this.index].func();
     }
@@ -303,7 +307,7 @@ export class Menu extends GuiElement {
     );
     if (tabs[1] !== undefined) {
       centeredText(
-        tabs[1], 
+        tabs[1],
         new Vector(
           x + this.width / 2 - this.itemMargin + this.itemWidth / 2,
           y + this.itemHeight / 2

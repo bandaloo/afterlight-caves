@@ -21,7 +21,8 @@ const sendRes = (res, status, message) => {
 
 // static directory
 // requests that don't match any of the other endpoints will be served from here
-app.use(express.static(__dirname + "/static"));
+const staticDir = (process.argv[2] === "--compat") ? "/dist" : "/static";
+app.use(express.static(__dirname + staticDir));
 
 // use express built-in JSON parser
 app.use(express.json());
