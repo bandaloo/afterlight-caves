@@ -27,7 +27,6 @@ export class BeamShooter extends Enemy {
     this.height = 150;
     this.turnRandomDirection();
     // the direction this is facing
-    /** @type {Vector} */
     this.facing = this.vel.norm2();
   }
 
@@ -66,7 +65,6 @@ export class BeamShooter extends Enemy {
             .rotate((this.facing.cross(dirVec) < 0 ? -1 : 1) * 0.01)
             .norm2();
         }
-        console.log(this.bulletColor);
         this.shoot(this.facing);
       } else {
         // can't see the hero, spin slowly

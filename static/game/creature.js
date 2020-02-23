@@ -190,6 +190,9 @@ export class Creature extends Entity {
    */
   defense = 0;
 
+  /** @type {Vector} unit vector in the direction this creature is facing */
+  facing = new Vector(0, 0);
+
   /**
    * @param {Vector} [pos] initial position
    * @param {Vector} [vel] initial velocity

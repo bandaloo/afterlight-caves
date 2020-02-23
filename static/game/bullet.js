@@ -166,7 +166,6 @@ export class Beam extends Bullet {
       lifetime,
       damage
     );
-    console.log("new beam");
     this.length = 0;
     this.dir = dir.norm2();
     this.lifetime = 100;
@@ -193,6 +192,7 @@ export class Beam extends Bullet {
    * calculate length each step
    */
   action() {
+    this.dir = this.owner.facing;
     this.length = getRayLength(this.pos, this.dir);
     this.pos = this.owner.pos;
   }

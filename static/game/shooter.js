@@ -87,7 +87,8 @@ export class Shooter extends Enemy {
       }
 
       if (dirVec.mag() < this.shootDistance) {
-        this.shoot(dirVec, this.vel.mult(0.2));
+        this.facing = dirVec.norm2();
+        this.shoot(this.facing, this.vel.mult(0.2));
       }
     }
   }

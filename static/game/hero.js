@@ -18,7 +18,6 @@ export class Hero extends Creature {
   /** @type {number} */
   score;
   drag = 0.1; // movement deceleration
-  eyeDirection = new Vector(0, 1);
   invincibilityFrames = 0;
   invincibilityFramesMax = 100;
 
@@ -45,6 +44,7 @@ export class Hero extends Creature {
     this.bulletColor = "white";
     this.score = 0;
     this.setBombDamage(18);
+    this.facing = new Vector(0, 1);
 
     // Manually set the collision shape to allow for a smaller hitbox
     const collisionShape = new Circle(
@@ -120,7 +120,7 @@ export class Hero extends Creature {
 
     // draw eye
     circle(
-      this.drawPos.add(this.eyeDirection.mult(10)),
+      this.drawPos.add(this.facing.mult(10)),
       12,
       undefined,
       4,
@@ -154,9 +154,9 @@ export class Hero extends Creature {
     }
     if (!buttons.shoot.vec.isZeroVec()) {
       const normalizedShootVec = buttons.shoot.vec.norm2();
-      this.eyeDirection = normalizedShootVec;
+      this.facing = normalizedShootVec;
     } else if (this.vel.mag() > 0.001) {
-      this.eyeDirection = this.vel.norm();
+      this.facing = this.vel.norm();
     }
 
     if (buttons.primary.status.isPressed) {
