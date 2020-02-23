@@ -52,8 +52,9 @@ export function resetDemo() {
   // TODO replace with some sort of border vec
   const scoredisplay = new ScoreDisplay(new Vector(getCanvasWidth() - 5, 5));
   addToGui("scoredisplay", scoredisplay);
-  const timedisplay = new TimeDisplay(new Vector(0, 200 - 32));
-  addToGui("timedisplay", timedisplay);
+
+  // this adds the time display so it has to go before adding menus
+  startLevelFromSettings(settingsGroups.original);
 
   // add menus to the GUI last as they should draw over everything else
   const deathscreen = new DeathScreen();
@@ -62,8 +63,6 @@ export function resetDemo() {
   const pausescreen = new PauseScreen();
   pausescreen.active = false;
   addToGui("pausescreen", pausescreen);
-
-  startLevelFromSettings(settingsGroups.original);
 }
 
 let loaded = 0;

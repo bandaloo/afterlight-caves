@@ -6,7 +6,8 @@ import {
   setImportantEntity,
   setCameraEntity,
   addToWorld,
-  setTerrain
+  setTerrain,
+  addToGui
 } from "../modules/gamemanager.js";
 import { Hero } from "./hero.js";
 import { Vector } from "../modules/vector.js";
@@ -14,6 +15,7 @@ import { initBlockField } from "./generator.js";
 import { spawnEnemies, spawnPowerups } from "./spawner.js";
 import { setGameDrawFunc } from "../modules/displaymanager.js";
 import { drawBoard } from "./draw.js";
+import { TimeDisplay } from "./timedisplay.js";
 
 /**
  * @typedef TerrainSettings
@@ -106,6 +108,13 @@ export const settingsGroups = {
  * @param {SettingsGroup} group
  */
 export function startLevelFromSettings(group) {
+  const timedisplay = new TimeDisplay(
+    new Vector(0, 200 - 32),
+    100 *
+      (group.gameMode.timeLimit.minutes * 60 + group.gameMode.timeLimit.seconds)
+  );
+  addToGui("timedisplay", timedisplay);
+
   const board = getGrid(
     group.dimensions.roomWidth,
     group.dimensions.roomHeight,

@@ -12,11 +12,12 @@ import { DeathScreen } from "./deathscreen.js";
 export class TimeDisplay extends GuiElement {
   /**
    * @param {Vector} pos
+   * @param {number} time
    */
-  constructor(pos) {
+  constructor(pos, time) {
     super(pos);
     this.borderVec = new Vector(8, 8);
-    this.time = 100 * 60 * 5; // five minutes
+    this.time = time; // was 100 * 60 * 5
     this.animPulse = 1;
   }
 
