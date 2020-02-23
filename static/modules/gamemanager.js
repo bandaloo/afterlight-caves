@@ -404,7 +404,7 @@ export function getGameTime() {
  * @param {number} blockWidth
  * @param {number} blockHeight
  */
-export function setDimensions(blockWidth, blockHeight) {
+export function setBlockDimensions(blockWidth, blockHeight) {
   gameManager.blockWidth = blockWidth;
   gameManager.blockHeight = blockHeight;
   // set the splatter canvas to the correct width once this is done
