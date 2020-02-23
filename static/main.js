@@ -1,23 +1,10 @@
-import { getGrid, getEmptySpaces } from "./game/life.js";
-import { caveRules, EdgesEnum } from "./game/rules.js";
 import {
   startUp,
-  addToWorld,
   addToGui,
-  setTerrain,
-  setDimensions,
   destroyEverything,
-  setCameraEntity,
-  setImportantEntity,
-  getTerrain,
   setPause
 } from "./modules/gamemanager.js";
-import { drawBoard } from "./game/draw.js";
 import { Vector } from "./modules/vector.js";
-import { shuffle, randomInt, hsl } from "./modules/helpers.js";
-import { Hero } from "./game/hero.js";
-import { initBlockField } from "./game/generator.js";
-import { spawnEnemies, spawnPowerups } from "./game/spawner.js";
 import { addSound, playSound, loopSound } from "./modules/sound.js";
 import { Healthbar } from "./game/healthbar.js";
 import { BombDisplay } from "./game/bombdisplay.js";
@@ -25,20 +12,8 @@ import { PauseScreen } from "./game/pausescreen.js";
 import { ScoreDisplay } from "./game/scoredisplay.js";
 import { DeathScreen } from "./game/deathscreen.js";
 import { resources } from "./game/resources.js";
-import { setGameDrawFunc, getCanvasWidth } from "./modules/displaymanager.js";
-import { TimeDisplay } from "./game/timedisplay.js";
+import { getCanvasWidth } from "./modules/displaymanager.js";
 import { startLevelFromSettings, settingsGroups } from "./game/levelpresets.js";
-
-// TODO these names are confusing
-const blockWidth = 60;
-const blockHeight = 60;
-const worldWidth = 1920;
-const worldHeight = 1080;
-const blockColumns = worldWidth / blockWidth;
-const blockRows = worldHeight / blockHeight;
-
-/** @type {string} */
-let color;
 
 export function resetDemo() {
   destroyEverything();
