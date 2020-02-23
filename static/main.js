@@ -27,6 +27,7 @@ import { DeathScreen } from "./game/deathscreen.js";
 import { resources } from "./game/resources.js";
 import { setGameDrawFunc, getCanvasWidth } from "./modules/displaymanager.js";
 import { TimeDisplay } from "./game/timedisplay.js";
+import { startLevelFromSettings, settingsGroups } from "./game/levelpresets.js";
 
 // TODO these names are confusing
 const blockWidth = 60;
@@ -41,21 +42,7 @@ let color;
 
 export function resetDemo() {
   destroyEverything();
-  color = hsl(randomInt(360));
   setPause(false);
-
-  let board = getGrid(
-    blockColumns * 8,
-    blockRows * 8,
-    caveRules,
-    EdgesEnum.alive,
-    0.5,
-    20
-  );
-
-  setGameDrawFunc(() => {
-    drawBoard(board, blockWidth, blockHeight, color);
-  });
 
   // Add GUI elements
   const healthbar = new Healthbar(new Vector(16, 0));
@@ -76,26 +63,7 @@ export function resetDemo() {
   pausescreen.active = false;
   addToGui("pausescreen", pausescreen);
 
-  let emptySpaces = shuffle(getEmptySpaces(board, 10, blockWidth, blockHeight));
-
-  const hero = new Hero(
-    new Vector(0, 0).add(
-      new Vector(blockWidth / 2, blockHeight / 2).add(emptySpaces[11])
-    )
-  );
-
-  setImportantEntity("hero", hero);
-  setCameraEntity(hero);
-  addToWorld(hero);
-
-  // TODO move all this to levelpresets
-  setTerrain(board);
-  initBlockField(board);
-  // has to be called after setTerrain for the splatter canvas
-  setDimensions(blockWidth, blockHeight);
-
-  spawnEnemies(getTerrain(), 0.025, 1000, 4000);
-  spawnPowerups(getTerrain());
+  startLevelFromSettings(settingsGroups.original);
 }
 
 let loaded = 0;

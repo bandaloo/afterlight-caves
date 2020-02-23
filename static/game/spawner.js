@@ -114,9 +114,9 @@ export function spawnEnemies(
 /**
  * spawn powerups into the world
  * @param {number[][]} board
- * @param {number} [additionalChance] not 0 to 1, but rather in the hundreds
+ * @param {number} [tilesPerChance] not 0 to 1, but rather in the hundreds (lower is more)
  */
-export function spawnPowerups(board, additionalChance = 280) {
+export function spawnPowerups(board, tilesPerChance = 280) {
   // TODO tweak some of these powerups to be rarer in the chance table
   /** @type {ChanceTable<typeof import("../game/powerup.js").PowerUp>} */
   const chanceTable = new ChanceTable();
@@ -182,7 +182,7 @@ export function spawnPowerups(board, additionalChance = 280) {
   for (let i = 0; i < caveLocations.length; i++) {
     if (caveLocations[i].length == 0) caveLocations.splice(i, i);
   }
-  const tilesPerAdditionalPowerupChance = additionalChance;
+  const tilesPerAdditionalPowerUpChance = tilesPerChance;
 
   for (let i = 0; i < caveLocations.length; i++) {
     if (i == largestGroup) continue;
@@ -190,7 +190,7 @@ export function spawnPowerups(board, additionalChance = 280) {
     // Have a chance for an additional powerup for every 10 blocks.
     const additional_powerups = Math.floor(
       Math.max(1000 - caveLocations[i].length, 0) /
-        tilesPerAdditionalPowerupChance
+        tilesPerAdditionalPowerUpChance
     );
     const powerup_num = Math.floor(Math.random() * additional_powerups) + 1;
 

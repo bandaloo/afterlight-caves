@@ -1,4 +1,19 @@
-import { caveRules } from "./rules";
+import { caveRules, EdgesEnum } from "./rules.js";
+import { getGrid, getEmptySpaces } from "./life.js";
+import { shuffle, hsl, randomInt } from "../modules/helpers.js";
+import {
+  setDimensions,
+  setImportantEntity,
+  setCameraEntity,
+  addToWorld,
+  setTerrain
+} from "../modules/gamemanager.js";
+import { Hero } from "./hero.js";
+import { Vector } from "../modules/vector.js";
+import { initBlockField } from "./generator.js";
+import { spawnEnemies, spawnPowerups } from "./spawner.js";
+import { setGameDrawFunc } from "../modules/displaymanager.js";
+import { drawBoard } from "./draw.js";
 
 /**
  * @typedef TerrainSettings
@@ -14,10 +29,13 @@ import { caveRules } from "./rules";
  * @property {number} powerDistanceHi
  * @property {number} powerScalar
  * @property {number} randomPowerAddend
+ * @property {number} tilesPerChance
  *
  * @typedef DimensionSettings
- * @property {number} width
- * @property {number} height
+ * @property {number} roomWidth
+ * @property {number} roomHeight
+ * @property {number} blockWidth
+ * @property {number} blockHeight
  *
  * @typedef GameModeSettings
  * @property {{minutes: number, seconds: number}} timeLimit
@@ -26,8 +44,11 @@ import { caveRules } from "./rules";
  * @property {TerrainSettings} terrain
  * @property {SpawnSettings} spawn
  * @property {DimensionSettings} dimensions
- * @property {GameMode} gameMode
+ * @property {GameModeSettings} gameMode
  */
+
+const DEFAULT_BLOCK_WIDTH = 60;
+const DEFAULT_BLOCK_HEIGHT = 60;
 
 /** @type {Object<string, TerrainSettings>} */
 export const terrainSettings = {
@@ -47,27 +68,35 @@ export const spawnSettings = {
     powerDistanceLo: 1000,
     powerDistanceHi: 5000,
     powerScalar: 3,
-    randomPowerAddend: 3
+    randomPowerAddend: 3,
+    tilesPerChance: 280
   }
 };
 
 /** @type {Object<string, DimensionSettings>} */
 export const dimensionsSettings = {
-  original: { width: 256, height: 144 }
+  original: {
+    roomWidth: 256,
+    roomHeight: 144,
+    blockWidth: DEFAULT_BLOCK_WIDTH,
+    blockHeight: DEFAULT_BLOCK_HEIGHT
+  }
 };
 
 /** @type {Object<string, GameModeSettings>} */
-export const constraintSettings = {
+export const gameModeSettings = {
   original: {
     timeLimit: { minutes: 5, seconds: 0 }
   }
 };
 
-export const groups = {
+/** @type {Object<string, SettingsGroup>} */
+export const settingsGroups = {
   original: {
     terrain: terrainSettings.original,
     spawn: spawnSettings.original,
-    dimensions: dimensionsSettings.original
+    dimensions: dimensionsSettings.original,
+    gameMode: gameModeSettings.original
   }
 };
 
@@ -76,4 +105,67 @@ export const groups = {
  * on a group of settings
  * @param {SettingsGroup} group
  */
-export function startLevelFromSettings(group) {}
+export function startLevelFromSettings(group) {
+  const board = getGrid(
+    group.dimensions.roomWidth,
+    group.dimensions.roomHeight,
+    group.terrain.rules,
+    EdgesEnum.alive,
+    group.terrain.density,
+    group.terrain.generations
+  );
+
+  const color = hsl(randomInt(360));
+
+  setGameDrawFunc(() => {
+    drawBoard(
+      board,
+      group.dimensions.blockWidth,
+      group.dimensions.blockHeight,
+      color
+    );
+  });
+
+  let emptySpaces = shuffle(
+    getEmptySpaces(
+      board,
+      10,
+      group.dimensions.blockWidth,
+      group.dimensions.blockHeight
+    )
+  );
+
+  // TODO change the hero spawning
+  const hero = new Hero(
+    new Vector(0, 0).add(
+      new Vector(
+        group.dimensions.blockWidth / 2,
+        group.dimensions.blockHeight / 2
+      ).add(emptySpaces[0])
+    )
+  );
+
+  setImportantEntity("hero", hero);
+  setCameraEntity(hero);
+  addToWorld(hero);
+
+  setTerrain(board);
+  initBlockField(board);
+  // has to be called after setting the terrain for the splatter canvas
+  setDimensions(group.dimensions.blockWidth, group.dimensions.blockHeight);
+
+  // spawn the enemies custom to the settings group
+  spawnEnemies(
+    board,
+    group.spawn.chance,
+    group.spawn.densityDistanceLo,
+    group.spawn.densityDistanceHi,
+    group.spawn.powerDistanceLo,
+    group.spawn.powerDistanceHi,
+    group.spawn.powerScalar,
+    group.spawn.randomPowerAddend
+  );
+
+  // spawn the powerups custom to the settings group
+  spawnPowerups(board, group.spawn.tilesPerChance);
+}
