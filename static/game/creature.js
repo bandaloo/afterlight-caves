@@ -60,7 +60,7 @@ export class Creature extends Entity {
   /** @type {string} */
   bulletColor = "white";
 
-  /** @type {import("./bullet.js").Beam | Bullet} */
+  /** @type {typeof import("./bullet.js").Beam | typeof Bullet} */
   bulletType = Bullet;
 
   /** @type {number} the number of game steps to wait between each shot */

@@ -15,7 +15,7 @@ export class SettingsMenu extends Menu {
   constructor() {
     super(new Vector(0, 0), getCanvasWidth(), getCanvasHeight());
     this.itemWidth = 1200;
-    this.textAlign = "left";
+    this.textAlign = /** @type {CanvasTextAlign} */ ("left");
   }
 
   action() {
