@@ -17,7 +17,7 @@ export class TimeDisplay extends GuiElement {
   constructor(pos, time) {
     super(pos);
     this.borderVec = new Vector(8, 8);
-    this.time = time; // was 100 * 60 * 5
+    this.time = time;
     this.animPulse = 1;
   }
 
