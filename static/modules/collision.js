@@ -1,6 +1,6 @@
 import { Entity } from "./entity.js";
 import {
-  getDimensions,
+  getBlockDimensions,
   getTerrain,
   cellToWorldPosition,
   getBlockWidth,
@@ -8,13 +8,14 @@ import {
 } from "./gamemanager.js";
 import { Vector } from "./vector.js";
 import { Bullet } from "../game/bullet.js";
+import { getScreenDimensions } from "./displaymanager.js";
 
 /**
  * @param {Vector} pos
  * @returns {Vector}
  */
 export function getCell(pos) {
-  const { width: bWidth, height: bHeight } = getDimensions();
+  const { width: bWidth, height: bHeight } = getBlockDimensions();
   const i = Math.floor(pos.x / bWidth);
   const j = Math.floor(pos.y / bHeight);
   return new Vector(i, j);
@@ -61,7 +62,7 @@ export function calcCorners(shape) {
  * @param {CollisionShape} shape
  */
 export function collideWithWorld(shape) {
-  const { width: blockWidth, height: blockHeight } = getDimensions();
+  const { width: blockWidth, height: blockHeight } = getBlockDimensions();
 
   const { topLeft: topLeft, bottomRight: bottomRight } = calcCorners(shape);
 
@@ -641,15 +642,18 @@ export function getRayLength(startPos, dir) {
   dir = dir.norm2();
   let curPos = startPos;
   let length = 0;
-  let cellVec = getCell(curPos);
   // make big steps until we hit a block
-  let counter = 0;
+  const { width: dx, height: dy } = getBlockDimensions();
+  let cellVec = getCell(curPos);
   do {
-    length += getBlockWidth();
+    length += dx;
     curPos = startPos.add(dir.mult(length));
     cellVec = getCell(curPos);
-    if (counter++ > 1000) break;
   } while (!solidAt(cellVec.x, cellVec.y));
-  // TODO make precision steps
+  do {
+    length -= 2;
+    curPos = startPos.add(dir.mult(length));
+    cellVec = getCell(curPos);
+  } while (solidAt(cellVec.x, cellVec.y));
   return length;
 }

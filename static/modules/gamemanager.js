@@ -423,7 +423,7 @@ export function setDimensions(blockWidth, blockHeight) {
  * return an object with info about block dimensions
  * @returns {{width: number, height: number}}
  */
-export function getDimensions() {
+export function getBlockDimensions() {
   return { width: gameManager.blockWidth, height: gameManager.blockHeight };
 }
 
@@ -531,7 +531,7 @@ export function deleteImportantEntity(name) {
  * @returns {Vector}
  */
 export function cellToWorldPosition(vec) {
-  const { width: blockWidth, height: blockHeight } = getDimensions();
+  const { width: blockWidth, height: blockHeight } = getBlockDimensions();
   return new Vector(
     vec.x * blockWidth + blockWidth / 2,
     vec.y * blockHeight + blockHeight / 2
