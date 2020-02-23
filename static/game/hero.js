@@ -155,7 +155,7 @@ export class Hero extends Creature {
     if (!buttons.shoot.vec.isZeroVec()) {
       const normalizedShootVec = buttons.shoot.vec.norm2();
       this.facing = normalizedShootVec;
-    } else if (this.vel.mag() > 0.001) {
+    } else if (this.vel.mag() > 0.1) {
       this.facing = this.vel.norm();
     }
 

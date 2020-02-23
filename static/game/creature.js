@@ -296,16 +296,19 @@ export class Creature extends Entity {
         // calculate a new direction so bullets are spread evenly across a 30
         // degree cone
         let newDir = dir;
+        let radiansToAdd = 0;
         if (this.bulletsPerShot > 1) {
           let theta = Math.atan2(dir.y, dir.x);
           const r = dir.mag();
-          const degreesToAdd =
-            (i / (this.bulletsPerShot - 1)) * angle - angle / 2 + offset;
-          theta += degreesToAdd * (Math.PI / 180);
+          radiansToAdd =
+            ((i / (this.bulletsPerShot - 1)) * angle - angle / 2 + offset) *
+            (Math.PI / 180);
+          theta += radiansToAdd;
           newDir = new Vector(r * Math.cos(theta), r * Math.sin(theta));
         }
         const b = this.getBullet(newDir);
         b.vel = b.vel.add(additionalVelocity);
+        b.angle = radiansToAdd;
         addToWorld(b);
         this.fireCount = 0;
       }

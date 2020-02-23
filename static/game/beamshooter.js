@@ -19,12 +19,14 @@ export class BeamShooter extends Enemy {
     this.baseHealth = 70;
     this.initHealth();
     this.bulletType = Beam;
-    this.fireDelay = 130;
-    this.bulletLifetime = 100;
+    this.fireDelay = 250;
+    this.bulletLifetime = 120;
     this.basePoints = 90;
     this.drag = 0.01;
     this.width = 150;
     this.height = 150;
+    this.bulletColor = "red";
+
     this.turnRandomDirection();
     // the direction this is facing
     this.facing = this.vel.norm2();

@@ -1,14 +1,6 @@
 import { Entity } from "./entity.js";
-import {
-  getBlockDimensions,
-  getTerrain,
-  cellToWorldPosition,
-  getBlockWidth,
-  getBlockHeight
-} from "./gamemanager.js";
+import { getBlockDimensions, getTerrain } from "./gamemanager.js";
 import { Vector } from "./vector.js";
-import { Bullet } from "../game/bullet.js";
-import { getScreenDimensions } from "./displaymanager.js";
 
 /**
  * @param {Vector} pos
@@ -632,28 +624,59 @@ export class Circle extends CollisionShape {
 }
 
 /**
- * Finds the length a ray can travel before hitting terrain
+ * Draws a ray from the given point in the given direction until it hits
+ * terrain, then returns the coordinates of the point it hit
  * @param {Vector} startPos the starting position of the ray
  * @param {Vector} dir the direction the ray is facing
- * @return {number}
+ * @return {Vector}
  */
-export function getRayLength(startPos, dir) {
-  // TODO optimize this
+export function nextIntersection(startPos, dir) {
+  // TODO maybe this could be more optimized
+  if (dir.isZeroVec()) return startPos; // no direction
+  const cellVec = getCell(startPos);
+  if (solidAt(cellVec.x, cellVec.y)) return startPos; // starting in a block
   dir = dir.norm2();
-  let curPos = startPos;
-  let length = 0;
-  // make big steps until we hit a block
-  const { width: dx, height: dy } = getBlockDimensions();
-  let cellVec = getCell(curPos);
-  do {
-    length += dx;
-    curPos = startPos.add(dir.mult(length));
-    cellVec = getCell(curPos);
-  } while (!solidAt(cellVec.x, cellVec.y));
-  do {
-    length -= 2;
-    curPos = startPos.add(dir.mult(length));
-    cellVec = getCell(curPos);
-  } while (solidAt(cellVec.x, cellVec.y));
-  return length;
+  const { width: bw, height: bh } = getBlockDimensions();
+  const signVec = new Vector(Math.sign(dir.x), Math.sign(dir.y));
+
+  /** @param {number} x */
+  const f = x => (dir.y / dir.x) * (x - startPos.x) + startPos.y;
+  /** @param {number} y */
+  const g = y => (dir.x / dir.y) * (y - startPos.y) + startPos.x;
+
+  if (signVec.x > 0) cellVec.x++;
+  if (signVec.y > 0) cellVec.y++;
+  while (true) {
+    // go to the next block boundary
+    const nextPos = cellVec.mult(bw, bh);
+    const ny = dir.x === 0 ? nextPos.y : f(nextPos.x);
+    const nx = dir.y === 0 ? nextPos.x : g(nextPos.y);
+
+    if (
+      signVec.x === 0 ||
+      (signVec.y !== 0 && signVec.y * ny >= signVec.y * nextPos.y)
+    ) {
+      // the next intersection with the game grid is vertical
+      const xInter = dir.x === 0 ? startPos.x : g(nextPos.y);
+      const intersection = new Vector(xInter, nextPos.y + signVec.y);
+      const blockToCheck = getCell(intersection);
+      if (solidAt(blockToCheck.x, blockToCheck.y)) {
+        return intersection;
+      }
+      cellVec.y += signVec.y;
+    }
+    if (
+      signVec.y === 0 ||
+      (signVec.x !== 0 && signVec.x * nx >= signVec.x * nextPos.x)
+    ) {
+      // next intersection is horizontal
+      const yInter = dir.y === 0 ? startPos.y : f(nextPos.x);
+      const intersection = new Vector(nextPos.x + signVec.x, yInter);
+      const blockToCheck = getCell(intersection);
+      if (solidAt(blockToCheck.x, blockToCheck.y)) {
+        return intersection;
+      }
+      cellVec.x += signVec.x;
+    }
+  }
 }

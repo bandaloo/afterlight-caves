@@ -1,4 +1,4 @@
-import { getCell, Box, getRayLength } from "../modules/collision.js";
+import { getCell, Box, nextIntersection } from "../modules/collision.js";
 import { Entity, FarEnum } from "../modules/entity.js";
 import { addParticle, inbounds } from "../modules/gamemanager.js";
 import { Vector } from "../modules/vector.js";
@@ -30,7 +30,7 @@ export class Bullet extends Entity {
     damage = 1
   ) {
     super(pos, vel, acc);
-    this.good = (owner !== undefined && owner.type === "Hero");
+    this.good = owner !== undefined && owner.type === "Hero";
     this.owner = owner;
     this.lifetime = lifetime;
     this.drag = 0.003;
@@ -42,6 +42,7 @@ export class Bullet extends Entity {
     this.knockback = 3;
     /**@type {"Box"|"Circle"}*/
     this.collisionType = "Box";
+    this.angle = 0;
 
     /**
      * @type {{ name: string, data: number, func: (function(Bullet, number): void) }[]}
@@ -172,11 +173,20 @@ export class Beam extends Bullet {
   }
 
   draw() {
+    this.drawPos = this.owner.drawPos.add(
+      this.owner.facing.mult(Math.min(this.owner.width) / 4)
+    );
     line(
-      this.pos,
+      this.drawPos,
       this.pos.add(this.dir.mult(this.length)),
       this.color,
-      this.damage
+      this.width
+    );
+    line(
+      this.drawPos,
+      this.pos.add(this.dir.mult(this.length)),
+      "white",
+      Math.max(this.width - 16, 0)
     );
   }
 
@@ -189,11 +199,13 @@ export class Beam extends Bullet {
 
   /**
    * @override
-   * calculate length each step
+   * calculate length and set position each step
    */
   action() {
-    this.dir = this.owner.facing;
-    this.length = getRayLength(this.pos, this.dir);
-    this.pos = this.owner.pos;
+    this.dir = this.owner.facing.rotate(this.angle);
+    this.pos = this.owner.pos.add(
+      this.owner.facing.mult(Math.min(this.owner.width) / 4)
+    );
+    this.length = nextIntersection(this.pos, this.dir).sub(this.pos).mag();
   }
 }
