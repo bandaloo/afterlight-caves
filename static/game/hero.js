@@ -8,6 +8,7 @@ import { PowerUp, POWER_UP_POINTS_FACTOR } from "./powerup.js";
 import { playSound, getSound } from "../modules/sound.js";
 import { CollisionCircle } from "../modules/collision.js";
 import { Beam } from "./bullet.js";
+import { Item } from "./item.js";
 
 const DEFAULT_SIZE = 50;
 
@@ -38,7 +39,6 @@ export class Hero extends Creature {
     this.bulletSpeed = 8;
     this.bulletLifetime = 60;
     this.bulletDamage = 8;
-    this.bulletType = Beam;
     this.bombFuseTime = 300;
     this.bombHue = 126;
     this.bulletColor = "white";
@@ -51,7 +51,10 @@ export class Hero extends Creature {
       (DEFAULT_SIZE - CHEAT_RADIUS) / 2,
       this.pos
     );
-    const terrainCollisionShape = new CollisionCircle(DEFAULT_SIZE / 2, this.pos);
+    const terrainCollisionShape = new CollisionCircle(
+      DEFAULT_SIZE / 2,
+      this.pos
+    );
 
     this.setCollisionShape(collisionShape);
     this.setTerrainCollisionShape(terrainCollisionShape);
@@ -95,6 +98,12 @@ export class Hero extends Creature {
       entity.deleteMe = true;
     });
 
+    // collect items when you collide with them
+    this.collideMap.set("Item", /** @param {Item} i */ i => {
+      i.apply(this);
+      i.deleteMe = true;
+    });
+
     this.collideMap.set("Enemy", entity => {
       for (const ote of this.onTouchEnemy) {
         if (ote.func) ote.func(ote.data, /** @type{Creature} */ (entity));
@@ -119,13 +128,7 @@ export class Hero extends Creature {
     );
 
     // draw eye
-    circle(
-      this.drawPos.add(this.facing.mult(10)),
-      12,
-      undefined,
-      4,
-      "white"
-    );
+    circle(this.drawPos.add(this.facing.mult(10)), 12, undefined, 4, "white");
 
     // draw status effects
     super.draw();

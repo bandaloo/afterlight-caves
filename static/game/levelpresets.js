@@ -17,6 +17,7 @@ import { setGameDrawFunc } from "../modules/displaymanager.js";
 import { drawBoard } from "./draw.js";
 import { TimeDisplay } from "./timedisplay.js";
 import { BeamShooter } from "./beamshooter.js";
+import { PositronRifle } from "./items/positronrifle.js";
 
 /**
  * @typedef TerrainSettings
@@ -161,6 +162,9 @@ export function startLevelFromSettings(group) {
 
   const bs = new BeamShooter(hero.pos.add(new Vector(300, 0)));
   addToWorld(bs);
+
+  const pr = new PositronRifle(hero.pos.add(new Vector(100, 0)));
+  addToWorld(pr);
 
   setTerrain(board);
   initBlockField(board);
