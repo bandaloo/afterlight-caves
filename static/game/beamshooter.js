@@ -5,7 +5,7 @@ import {
   hasImportantEntity,
   getImportantEntity
 } from "../modules/gamemanager.js";
-import { randomInt } from "../modules/helpers.js";
+import { randomInt, clamp } from "../modules/helpers.js";
 import { Beam } from "./bullet.js";
 
 export class BeamShooter extends Enemy {
@@ -30,6 +30,7 @@ export class BeamShooter extends Enemy {
     this.turnRandomDirection();
     // the direction this is facing
     this.facing = this.vel.norm2();
+    this.faceSize = 0.2;
   }
 
   /**
@@ -55,6 +56,7 @@ export class BeamShooter extends Enemy {
 
   action() {
     super.action();
+    this.faceSize = Math.min(this.fireCount / this.fireDelay + 0.2, 1)
     if (hasImportantEntity("hero")) {
       const hero = getImportantEntity("hero");
       /** @type {Vector} */
@@ -81,7 +83,7 @@ export class BeamShooter extends Enemy {
       this.drawPos.add(
         this.facing
           .norm2()
-          .mult((this.width / 2) * 0.8)
+          .mult((this.width / 2) * this.faceSize)
           .rotate(0.2)
       ),
       this.drawColor,
@@ -92,7 +94,7 @@ export class BeamShooter extends Enemy {
       this.drawPos.add(
         this.facing
           .norm2()
-          .mult((this.width / 2) * 0.8)
+          .mult((this.width / 2) * this.faceSize)
           .rotate(-0.2)
       ),
       this.drawColor,
@@ -100,6 +102,6 @@ export class BeamShooter extends Enemy {
     );
     const bgColor = this.getBackgroundColor();
     circle(this.drawPos, this.width / 2, bgColor, 5, this.drawColor);
-    circle(this.drawPos, (this.width / 2) * 0.8, bgColor, 5, this.drawColor);
+    circle(this.drawPos, (this.width / 2) * this.faceSize, bgColor, 5, this.drawColor);
   }
 }
