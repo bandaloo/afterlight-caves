@@ -1,12 +1,8 @@
 import { PowerUp } from "../powerup.js";
 import { Vector } from "../../modules/vector.js";
 import { Creature } from "../creature.js";
-
-//const MOVEMENT_MULTIPLIER = 1.25;
-const DRAG_FACTOR = 0.3;
-const DRAG_ADDEND = 2;
-const MIN_DRAG = 0.008;
-//const MAX_MOVEMENT_MULTIPLIER = ;
+const MOVEMENT_FACTOR = 1 / 5;
+const MAX_MOVEMENT_MULTIPLIER = 4;
 
 export class Zoom extends PowerUp {
   /**
@@ -26,8 +22,7 @@ export class Zoom extends PowerUp {
   apply(creature) {
     if (!this.isAtMax(creature)) {
       super.apply(creature);
-      //creature.movementMultiplier *= this.magnitude * MOVEMENT_MULTIPLIER;
-      creature.drag /= (this.magnitude + DRAG_ADDEND) * DRAG_FACTOR;
+      creature.movementMultiplier += this.magnitude * MOVEMENT_FACTOR;
     } else {
       this.overflowAction(creature);
     }
@@ -41,13 +36,16 @@ export class Zoom extends PowerUp {
    */
   isAtMax(creature) {
     // check if bulletRubberiness is already too high
-    if (creature.drag <= MIN_DRAG) {
+    if (creature.movementMultiplier >= MAX_MOVEMENT_MULTIPLIER) {
       return true;
     }
 
     // see if we need to trim magnitude
     const availMag = Math.floor(
-      Math.abs(creature.drag / MIN_DRAG) / DRAG_FACTOR
+      Math.abs(
+        (MAX_MOVEMENT_MULTIPLIER - creature.movementMultiplier) /
+          MOVEMENT_FACTOR
+      )
     );
     if (availMag < 1) return true;
 

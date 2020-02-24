@@ -199,6 +199,8 @@ export class Creature extends Entity {
     this.bombOnDetonate = new Array();
     this.bombOnBlastCreature = new Array();
     this.onTouchEnemy = new Array();
+    this.maxSpeed = 24;
+    this.maxAccMag = 24;
 
     // bombs deal basic damage
     this.bombOnBlastCreature.push({
