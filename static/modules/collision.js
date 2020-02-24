@@ -1,5 +1,5 @@
 import { Entity } from "./entity.js";
-import { getDimensions, getTerrain } from "./gamemanager.js";
+import { getBlockDimensions, getTerrain } from "./gamemanager.js";
 import { Vector } from "./vector.js";
 import { Bullet } from "../game/bullet.js";
 
@@ -8,7 +8,7 @@ import { Bullet } from "../game/bullet.js";
  * @returns {Vector}
  */
 export function getCell(pos) {
-  const { width: bWidth, height: bHeight } = getDimensions();
+  const { width: bWidth, height: bHeight } = getBlockDimensions();
   const i = Math.floor(pos.x / bWidth);
   const j = Math.floor(pos.y / bHeight);
   return new Vector(i, j);
@@ -55,7 +55,7 @@ export function calcCorners(shape) {
  * @param {CollisionShape} shape
  */
 export function collideWithWorld(shape) {
-  const { width: blockWidth, height: blockHeight } = getDimensions();
+  const { width: blockWidth, height: blockHeight } = getBlockDimensions();
 
   const { topLeft: topLeft, bottomRight: bottomRight } = calcCorners(shape);
 

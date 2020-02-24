@@ -2,7 +2,7 @@ import {
   addToWorld,
   cellToWorldPosition,
   getImportantEntity,
-  getDimensions
+  getBlockDimensions
 } from "../modules/gamemanager.js";
 import { randomInt, griderate } from "../modules/helpers.js";
 import { Chase } from "./chase.js";
@@ -55,7 +55,8 @@ export function spawnEnemies(
   densityDistanceHi = 5000,
   powerDistanceLo = 1000,
   powerDistanceHi = 6000,
-  powerScalar = 3
+  powerScalar = 3,
+  randomPowerAddend = 3
 ) {
   const { board: distBoard } = distanceBoard(board);
 
@@ -93,7 +94,8 @@ export function spawnEnemies(
         powerDistanceLo,
         powerDistanceHi
       );
-      const scaledPowerLevel = randomInt(3) + powerLevel * powerScalar;
+      const scaledPowerLevel =
+        randomInt(randomPowerAddend) + powerLevel * powerScalar;
 
       // pick a random enemy and add it to world
       const enemy = new (chanceTable.pick())(
@@ -108,12 +110,13 @@ export function spawnEnemies(
   });
 }
 
+// TODO this powerup spawning algorithm is specific to caves
 /**
  * spawn powerups into the world
  * @param {number[][]} board
- * @param {number} [powerupChance] not 0 to 1, but rather in the hundreds
+ * @param {number} [tilesPerChance] not 0 to 1, but rather in the hundreds (lower is more)
  */
-export function spawnPowerups(board, powerupChance = 280) {
+export function spawnPowerups(board, tilesPerChance = 280) {
   // TODO tweak some of these powerups to be rarer in the chance table
   /** @type {ChanceTable<typeof import("../game/powerup.js").PowerUp>} */
   const chanceTable = new ChanceTable();
@@ -146,7 +149,7 @@ export function spawnPowerups(board, powerupChance = 280) {
     { result: PowerUpTypes.Zoom, chance: 1 }
   ]);
 
-  const { width: blockWidth, height: blockHeight } = getDimensions();
+  const { width: blockWidth, height: blockHeight } = getBlockDimensions();
 
   // Get the segregated board
   const {
@@ -179,7 +182,7 @@ export function spawnPowerups(board, powerupChance = 280) {
   for (let i = 0; i < caveLocations.length; i++) {
     if (caveLocations[i].length == 0) caveLocations.splice(i, i);
   }
-  const tilesPerAdditionalPowerupChance = powerupChance;
+  const tilesPerAdditionalPowerUpChance = tilesPerChance;
 
   for (let i = 0; i < caveLocations.length; i++) {
     if (i == largestGroup) continue;
@@ -187,21 +190,23 @@ export function spawnPowerups(board, powerupChance = 280) {
     // Have a chance for an additional powerup for every 10 blocks.
     const additional_powerups = Math.floor(
       Math.max(1000 - caveLocations[i].length, 0) /
-        tilesPerAdditionalPowerupChance
+        tilesPerAdditionalPowerUpChance
     );
     const powerup_num = Math.floor(Math.random() * additional_powerups) + 1;
 
     for (let p = 0; p < powerup_num; p++) {
-      const randomIndex = Math.floor(Math.random() * caveLocations[i].length);
-      const randomTile = caveLocations[i][randomIndex];
-      caveLocations[i].splice(randomIndex, 1);
+      if (caveLocations[i].length > 0) {
+        const randomIndex = randomInt(caveLocations[i].length);
+        const randomTile = caveLocations[i][randomIndex];
+        caveLocations[i].splice(randomIndex, 1);
 
-      const location = randomTile.add(
-        new Vector(blockWidth / 2, blockHeight / 2)
-      );
+        const location = randomTile.add(
+          new Vector(blockWidth / 2, blockHeight / 2)
+        );
 
-      const randomMagnitude = randomInt(5) + 1;
-      addToWorld(new (chanceTable.pick())(randomMagnitude, location));
+        const randomMagnitude = randomInt(5) + 1;
+        addToWorld(new (chanceTable.pick())(randomMagnitude, location));
+      }
     }
   }
 }

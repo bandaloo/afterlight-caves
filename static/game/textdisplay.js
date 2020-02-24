@@ -22,7 +22,7 @@ export class TextDisplay extends Entity {
     text,
     pos,
     duration = Infinity,
-    font = "bold 100px arial",
+    font = "bold 100px anonymous",
     red = 255,
     green = 255,
     blue = 255,
