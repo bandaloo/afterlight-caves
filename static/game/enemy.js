@@ -68,6 +68,7 @@ export class Enemy extends Creature {
       /** @param {import("./hero.js").Hero} h */ h => this.touchHero(h)
     );
 
+    this.powerUpTable = powerUpTable;
     this.applyPowerUps(powerUpTable);
   }
 
@@ -133,11 +134,12 @@ export class Enemy extends Creature {
         addToWorld(childEnemy);
         randDir += (2 * Math.PI) / spawnNum;
       }
-      if (this.matryoshka > 1) {
+      if (this.matryoshka > 1 && this.powerUpTable !== undefined) {
         // drop a level 1 power up as a reward
-        const powerUp = new powerUpTypes[
-          Math.floor(Math.random() * powerUpTypes.length)
-        ](Math.min(5, this.matryoshka - 1), this.pos);
+        const powerUp = new (this.powerUpTable.pick())(
+          Math.min(5, this.matryoshka - 1),
+          this.pos
+        );
         addToWorld(powerUp);
       }
     }
