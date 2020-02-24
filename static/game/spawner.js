@@ -11,6 +11,7 @@ import { distanceBoard, segregateTerrain } from "./generator.js";
 import { Scatter } from "./scatter.js";
 import { Shooter } from "./shooter.js";
 import { Bomber } from "./bomber.js";
+import { BeamShooter } from "./beamshooter.js";
 import { Vector } from "../modules/vector.js";
 import { ChanceTable } from "../modules/chancetable.js";
 import { Enemy } from "./enemy.js";
@@ -65,6 +66,7 @@ export function spawnEnemies(
   chanceTable.add(Chase, 2);
   chanceTable.add(Scatter, 2);
   chanceTable.add(Shooter, 2);
+  chanceTable.add(BeamShooter, 1);
   chanceTable.add(Crosser, 2);
   chanceTable.add(Bomber, 1);
 

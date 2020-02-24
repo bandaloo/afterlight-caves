@@ -160,12 +160,6 @@ export function startLevelFromSettings(group) {
   setCameraEntity(hero);
   addToWorld(hero);
 
-  const bs = new BeamShooter(hero.pos.add(new Vector(300, 0)));
-  addToWorld(bs);
-
-  const pr = new PositronRifle(hero.pos.add(new Vector(100, 0)));
-  addToWorld(pr);
-
   setTerrain(board);
   initBlockField(board);
   // has to be called after setting the terrain for the splatter canvas

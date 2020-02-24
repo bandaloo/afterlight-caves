@@ -1,35 +1,61 @@
 import { Enemy } from "./enemy.js";
 import { Vector } from "../modules/vector.js";
-import { line, circle, polygon } from "./draw.js";
+import { line, circle } from "./draw.js";
 import {
   hasImportantEntity,
   getImportantEntity
 } from "../modules/gamemanager.js";
-import { randomInt, clamp } from "../modules/helpers.js";
+import { randomInt } from "../modules/helpers.js";
 import { Beam } from "./bullet.js";
+import { ChanceTable } from "../modules/chancetable.js";
+import * as PowerUpTypes from "../game/powerups/poweruptypes.js";
+
+/** @type {ChanceTable<typeof import("../game/powerup.js").PowerUp>} */
+const chanceTable = new ChanceTable();
+chanceTable.addAll([
+  { result: PowerUpTypes.Amplify, chance: 1 },
+  { result: PowerUpTypes.Cone, chance: 0.2 },
+  { result: PowerUpTypes.DamageUp, chance: 1 },
+  { result: PowerUpTypes.FlameThrower, chance: 1 },
+  { result: PowerUpTypes.Hot, chance: 1 },
+  { result: PowerUpTypes.Icy, chance: 1 },
+  { result: PowerUpTypes.Left, chance: 1 },
+  { result: PowerUpTypes.MachineGun, chance: 1 },
+  { result: PowerUpTypes.Right, chance: 1 },
+  { result: PowerUpTypes.Vitality, chance: 1 },
+  { result: PowerUpTypes.Wall, chance: 1 },
+  { result: PowerUpTypes.Xplode, chance: 0.1 },
+  { result: PowerUpTypes.Zoom, chance: 1 }
+]);
+
 
 export class BeamShooter extends Enemy {
   shootDistance = 800;
 
   /**
    * @param {Vector} pos
+   * @param {undefined} vel ignored
+   * @param {undefined} acc ignored
+   * @param {number} matryoshka
+   * @param {number} level
+   * @param {ChanceTable} powerUpTable
    */
-  constructor(pos) {
-    super(pos, new Vector(0, 0), new Vector(0, 0), 0);
-    this.baseHealth = 70;
+  constructor(pos, vel, acc, matryoshka, level, powerUpTable = chanceTable) {
+    super(pos, new Vector(0, 0), new Vector(0, 0), matryoshka, level, powerUpTable);
+    this.baseHealth = 40;
     this.initHealth();
     this.bulletType = Beam;
     this.fireDelay = 250;
     this.bulletLifetime = 120;
     this.basePoints = 90;
-    this.drag = 0.01;
-    this.width = 150;
-    this.height = 150;
+    this.maxSpeed = 1;
     this.bulletColor = "red";
+    this.drag = 0.007;
+    this.reflectsOffWalls = false;
 
     this.turnRandomDirection();
     // the direction this is facing
-    this.facing = this.vel.norm2();
+    this.facing = this.acc.norm2();
     this.faceSize = 0.2;
   }
 
@@ -40,23 +66,31 @@ export class BeamShooter extends Enemy {
     const d = randomInt(4);
     switch (d) {
       case 0:
-        this.vel = new Vector(0, -1);
+        this.acc = new Vector(0, -1);
         break;
       case 1:
-        this.vel = new Vector(1, 0);
+        this.acc = new Vector(1, 0);
         break;
       case 2:
-        this.vel = new Vector(0, 1);
+        this.acc = new Vector(0, 1);
         break;
       case 3:
-        this.vel = new Vector(-1, 0);
+        this.acc = new Vector(-1, 0);
         break;
     }
   }
 
+  /**
+   * @param {Vector} pos
+   * @override
+   */
+  collideWithBlock(pos) {
+    this.acc = this.acc.mult(-1);
+  }
+
   action() {
     super.action();
-    this.faceSize = Math.min(this.fireCount / this.fireDelay + 0.2, 1)
+    this.faceSize = Math.min(this.fireCount / this.fireDelay + 0.2, 1);
     if (hasImportantEntity("hero")) {
       const hero = getImportantEntity("hero");
       /** @type {Vector} */
@@ -75,6 +109,7 @@ export class BeamShooter extends Enemy {
         this.facing = this.facing.rotate(0.002).norm2();
       }
     }
+    if (Math.random() < 0.005) this.turnRandomDirection();
   }
 
   drawBody() {
@@ -102,6 +137,12 @@ export class BeamShooter extends Enemy {
     );
     const bgColor = this.getBackgroundColor();
     circle(this.drawPos, this.width / 2, bgColor, 5, this.drawColor);
-    circle(this.drawPos, (this.width / 2) * this.faceSize, bgColor, 5, this.drawColor);
+    circle(
+      this.drawPos,
+      (this.width / 2) * this.faceSize,
+      bgColor,
+      5,
+      this.drawColor
+    );
   }
 }
