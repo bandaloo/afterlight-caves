@@ -70,21 +70,25 @@ export class Bullet extends Entity {
     this.type = this.good ? "PlayerBullet" : "EnemyBullet";
     // set function for when we hit enemies
     const entityType = this.good ? "Enemy" : "Hero";
-    this.collideMap.set(
-      entityType,
-      /** @param {import ("./creature.js").Creature} c */ c => {
-        // deal basic damage
-        c.takeDamage(this.damage, this.vel.norm2());
-        // impart momentum
-        const size = (c.width * c.height) / 300;
-        c.vel = c.vel.add(this.vel.mult(this.knockback / size));
-        // call onHitEnemy functions
-        for (const ohe of this.onHitEnemy) {
-          if (ohe.func) ohe.func(this, ohe.data, c);
-        }
-        this.deleteMe = true;
-      }
-    );
+    this.collideMap.set(entityType, this.touchEnemy.bind(this));
+  }
+
+  /**
+   * called when this bullet touches an enemy (for enemy bullets this is called
+   * when it touches the hero)
+   * @param {import("./creature.js").Creature} creature
+   */
+  touchEnemy(creature) {
+    // deal basic damage
+    creature.takeDamage(this.damage, this.vel.norm2());
+    // impart momentum
+    const size = (creature.width * creature.height) / 300;
+    creature.vel = creature.vel.add(this.vel.mult(this.knockback / size));
+    // call onHitEnemy functions
+    for (const ohe of this.onHitEnemy) {
+      if (ohe.func) ohe.func(this, ohe.data, creature);
+    }
+    this.deleteMe = true;
   }
 
   action() {}
@@ -176,6 +180,9 @@ export class Beam extends Bullet {
     this.dir = dir.norm2();
     this.lifetime = 100;
     this.occludedByWalls = false;
+    // beams deal damage 4 times per second
+    this.maxCounter = 25;
+    this.counter = this.maxCounter - 1;
   }
 
   /**
@@ -210,10 +217,45 @@ export class Beam extends Bullet {
     );
   }
 
+  /**
+   * called when this beam touches an enemy (for enemy beams this is called
+   * when it touches the hero)
+   * @param {import("./creature.js").Creature} creature
+   */
+  touchEnemy(creature) {
+    // rate limit dealing damage to creatures
+    if (this.counter === this.maxCounter) {
+      // deal basic damage
+      creature.takeDamage(this.damage, this.dir);
+      // impart momentum
+      const size = (creature.width * creature.height) / 300;
+      creature.vel = creature.vel.add(this.dir.mult(this.knockback / size));
+      // call onHitEnemy functions
+      for (const ohe of this.onHitEnemy) {
+        if (ohe.func) ohe.func(this, ohe.data, creature);
+      }
+    }
+  }
+
   destroy() {
     // execute all on-destroy functions
     for (const od of this.onDestroy) {
       if (od["func"]) od["func"](this, od["data"]);
+    }
+  }
+
+  /**
+   * what to do when hitting a block
+   * @override
+   * @param {Vector} pos
+   */
+  collideWithBlock(pos) {
+    const cellVec = getCell(pos);
+    if (
+      inbounds(cellVec.x, cellVec.y) &&
+      blockField[cellVec.x][cellVec.y].durability !== Infinity
+    ) {
+      destroyBlock(cellVec, this.type === "PlayerBullet");
     }
   }
 
@@ -227,8 +269,12 @@ export class Beam extends Bullet {
     this.pos = this.owner.pos.add(
       this.owner.facing.mult(Math.min(this.owner.width) / 4)
     );
-    this.length = nextIntersection(this.pos, this.dir)
-      .sub(this.pos)
-      .mag();
+    const intersect = nextIntersection(this.pos, this.dir);
+    // rate limit block collisions
+    if (this.counter === this.maxCounter)
+      this.collideWithBlock(intersect);
+    this.length = intersect.sub(this.pos).mag();
+
+    if (this.counter++ > this.maxCounter) this.counter = 0;
   }
 }
