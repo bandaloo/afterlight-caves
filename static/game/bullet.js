@@ -1,4 +1,9 @@
-import { getCell, Box, nextIntersection } from "../modules/collision.js";
+import {
+  getCell,
+  CollisionBox,
+  nextIntersection,
+  CollisionBeam
+} from "../modules/collision.js";
 import { Entity, FarEnum } from "../modules/entity.js";
 import { addParticle, inbounds } from "../modules/gamemanager.js";
 import { Vector } from "../modules/vector.js";
@@ -170,8 +175,23 @@ export class Beam extends Bullet {
     this.length = 0;
     this.dir = dir.norm2();
     this.lifetime = 100;
+    this.occludedByWalls = false;
   }
 
+  /**
+   * @override
+   */
+  getCollisionShape() {
+    return new CollisionBeam(
+      this.pos,
+      this.pos.add(this.dir.mult(this.length)),
+      this.width
+    );
+  }
+
+  /**
+   * @override
+   */
   draw() {
     this.drawPos = this.owner.drawPos.add(
       this.owner.facing.mult(Math.min(this.owner.width) / 4)
@@ -202,10 +222,13 @@ export class Beam extends Bullet {
    * calculate length and set position each step
    */
   action() {
+    if (this.owner.deleteMe) this.deleteMe = true;
     this.dir = this.owner.facing.rotate(this.angle);
     this.pos = this.owner.pos.add(
       this.owner.facing.mult(Math.min(this.owner.width) / 4)
     );
-    this.length = nextIntersection(this.pos, this.dir).sub(this.pos).mag();
+    this.length = nextIntersection(this.pos, this.dir)
+      .sub(this.pos)
+      .mag();
   }
 }

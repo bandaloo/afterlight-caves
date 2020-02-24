@@ -114,39 +114,155 @@ export function isColliding(shapeA, shapeB) {
  * @returns {Vector}
  */
 export function collide(shapeA, shapeB, resolve = true) {
-  if (shapeA instanceof Box && shapeB instanceof Box) {
+  if (shapeA instanceof CollisionBox && shapeB instanceof CollisionBox) {
     return collide_BoxBox(
       /* @type {Box} */ (shapeA),
       /* @type {Box} */ (shapeB),
       resolve
     );
-  } else if (shapeA instanceof Circle && shapeB instanceof Box) {
+  } else if (
+    shapeA instanceof CollisionCircle &&
+    shapeB instanceof CollisionBox
+  ) {
     return collide_BoxCircle(
       /* @type {Box} */ (shapeB),
       /* @type {Circle} */ (shapeA),
       resolve
     );
-  } else if (shapeA instanceof Box && shapeB instanceof Circle) {
+  } else if (
+    shapeA instanceof CollisionBox &&
+    shapeB instanceof CollisionCircle
+  ) {
     return collide_BoxCircle(
       /* @type {Box} */ (shapeA),
       /* @type {Circle} */ (shapeB),
       resolve
     );
-  } else if (shapeA instanceof Circle && shapeB instanceof Circle) {
+  } else if (
+    shapeA instanceof CollisionCircle &&
+    shapeB instanceof CollisionCircle
+  ) {
     return collide_CircleCircle(
       /* @type {Circle} */ (shapeA),
       /* @type {Circle} */ (shapeB),
       resolve
     );
+  } else if (
+    shapeA instanceof CollisionCircle &&
+    shapeB instanceof CollisionBeam
+  ) {
+    return collide_CircleBeam(shapeA, shapeB, resolve);
+  } else if (
+    shapeA instanceof CollisionBeam &&
+    shapeB instanceof CollisionCircle
+  ) {
+    return collide_CircleBeam(shapeB, shapeA, resolve);
+  } else if (
+    shapeA instanceof CollisionBox &&
+    shapeB instanceof CollisionBeam
+  ) {
+    return collide_BoxBeam(shapeA, shapeB, resolve);
+  } else if (
+    shapeA instanceof CollisionBeam &&
+    shapeB instanceof CollisionBox
+  ) {
+    return collide_BoxBeam(shapeB, shapeA, resolve);
   } else {
     return new Vector(0, 0);
   }
 }
 
 /**
+ * Determines if a circle is colliding with a beam
+ * @param {CollisionCircle} circle
+ * @param {CollisionBeam} beam
+ * @param {boolean} resolve ignored. TODO implement
+ * @return {Vector}
+ */
+export function collide_CircleBeam(circle, beam, resolve) {
+  const dist = circle.pos.distToSeg(beam.p1, beam.p2);
+
+  let cVector = new Vector(0, 0);
+  if (dist < circle.radius + beam.thickness / 2) {
+    return new Vector(1, 1);
+  }
+  return cVector;
+}
+
+/**
+ * Determines if a box is colliding with a beam
+ * TODO this ignores beam thickness
+ * @param {CollisionBox} box
+ * @param {CollisionBeam} beam
+ * @param {boolean} resolve ignored. TODO implement
+ * @return {Vector}
+ */
+export function collide_BoxBeam(box, beam, resolve) {
+  const topLeft = new Vector(
+    box.pos.x - box.width / 2,
+    box.pos.y - box.height / 2
+  );
+  const topRight = new Vector(
+    box.pos.x + box.width / 2,
+    box.pos.y - box.height / 2
+  );
+  const bottomRight = new Vector(
+    box.pos.x + box.width / 2,
+    box.pos.y + box.height / 2
+  );
+  const bottomLeft = new Vector(
+    box.pos.x - box.width / 2,
+    box.pos.y + box.height / 2
+  );
+
+  const containsP1 =
+    beam.p1.x <= topRight.x &&
+    beam.p1.x >= topLeft.x &&
+    beam.p1.y >= topRight.y &&
+    beam.p1.y <= bottomRight.y;
+  const containsP2 =
+    beam.p2.x <= topRight.x &&
+    beam.p2.x >= topLeft.x &&
+    beam.p2.y >= topRight.y &&
+    beam.p2.y <= bottomRight.y;
+
+  if (
+    lineIntersectsLine(beam.p1, beam.p2, topLeft, topRight) ||
+    lineIntersectsLine(beam.p1, beam.p2, topRight, bottomRight) ||
+    lineIntersectsLine(beam.p1, beam.p2, bottomRight, bottomLeft) ||
+    lineIntersectsLine(beam.p1, beam.p2, bottomLeft, topLeft) ||
+    containsP1 ||
+    containsP2
+  ) {
+    return new Vector(1, 1);
+  }
+  return new Vector(0, 0);
+}
+
+/**
+ * Helper to determine whether two lines intersect. No, I don't know how this
+ * works
+ * Source: https://stackoverflow.com/questions/5514366/how-to-know-if-a-line-intersects-a-rectangle
+ * @param {Vector} l1p1 line 1 point 1
+ * @param {Vector} l1p2 line 1 point 2
+ * @param {Vector} l2p1 line 2 point 1
+ * @param {Vector} l2p2 line 2 point 2
+ * @return {boolean}
+ */
+function lineIntersectsLine(l1p1, l1p2, l2p1, l2p2) {
+  let q = l2p2.sub(l2p1).cross(l1p1.sub(l2p1));
+  const d = l1p2.sub(l1p1).cross(l2p2.sub(l2p1));
+  if (d === 0) return false;
+  const r = q / d;
+  q = l1p2.sub(l1p1).cross(l1p1.sub(l2p1));
+  const s = q / d;
+  return !(r < 0 || r > 1 || s < 0 || s > 1);
+}
+
+/**
  * Determines if two Circles are colliding
- * @param {Circle} circleA
- * @param {Circle} circleB
+ * @param {CollisionCircle} circleA
+ * @param {CollisionCircle} circleB
  * @param {boolean} resolve
  * @returns {Vector}
  */
@@ -170,8 +286,8 @@ export function collide_CircleCircle(circleA, circleB, resolve) {
 
 /**
  * Determines if a box and a circle are colliding
- * @param {Box} boxA
- * @param {Circle} circleB
+ * @param {CollisionBox} boxA
+ * @param {CollisionCircle} circleB
  * @param {boolean} resolve
  * @returns {Vector}
  */
@@ -353,8 +469,8 @@ export function collide_BoxCircle(boxA, circleB, resolve) {
 
 /**
  * Calculates the collision vector for two boxes
- * @param {Box} boxA
- * @param {Box} boxB
+ * @param {CollisionBox} boxA
+ * @param {CollisionBox} boxB
  * @param {boolean} resolve
  * @returns {Vector}
  */
@@ -458,7 +574,7 @@ export function adjustEntity(entity) {
   /** @type {Vector[]} */
   const collisionVectors = [];
 
-  /** @type {Box[]} */
+  /** @type {CollisionBox[]} */
   const hitTerrain = [];
 
   // Iterate through each colliding entity, and get a vector that defines how
@@ -535,7 +651,7 @@ export class CollisionShape {
   /** @type {Vector} */
   vel;
 
-  /** @type {"Box"|"Circle"|"Not Defined"} */
+  /** @type {"Box"|"Circle"|"Beam"|"Not Defined"} */
   type;
 
   /** @type {number} */
@@ -548,7 +664,7 @@ export class CollisionShape {
 
   /**
    * Class used to store collision information
-   * @param {"Box"|"Circle"|"Not Defined"} type
+   * @param {"Box"|"Circle"|"Beam"|"Not Defined"} type
    * @param {Vector} pos
    * @param {Vector} vel
    */
@@ -565,7 +681,7 @@ export class CollisionShape {
   }
 }
 
-export class Box extends CollisionShape {
+export class CollisionBox extends CollisionShape {
   /**
    * Class used for axis-aligned box collision
    * @param {number} width
@@ -580,7 +696,7 @@ export class Box extends CollisionShape {
   }
 }
 
-export class TerrainBox extends Box {
+export class TerrainBox extends CollisionBox {
   /** @type {boolean} */
   collidesLeft = true;
 
@@ -605,7 +721,7 @@ export class TerrainBox extends Box {
   }
 }
 
-export class Circle extends CollisionShape {
+export class CollisionCircle extends CollisionShape {
   /** @type {number} */
   radius;
 
@@ -620,6 +736,29 @@ export class Circle extends CollisionShape {
     this.radius = radius;
     this.width = radius * 2;
     this.height = radius * 2;
+  }
+}
+
+export class CollisionBeam extends CollisionShape {
+  /** @type {Vector} end of the beam */
+  p2;
+  /** @type {number} */
+  thickness;
+
+  /**
+   * A collision beam is a line with thickness, or a rectangle with a rotation
+   * @param {Vector} p1 origin of the beam
+   * @param {Vector} p2 end point of the beam
+   * @param {number} [thickness] 1 by default
+   */
+  constructor(p1, p2, thickness = 1) {
+    super("Beam", p1, new Vector(0, 0), false);
+    this.p2 = p2;
+    this.thickness = thickness;
+  }
+
+  get p1() {
+    return this.pos;
   }
 }
 

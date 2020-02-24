@@ -6,7 +6,7 @@ import { addParticle, toggleGuiElement } from "../modules/gamemanager.js";
 import { Particle, EffectEnum } from "./particle.js";
 import { PowerUp, POWER_UP_POINTS_FACTOR } from "./powerup.js";
 import { playSound, getSound } from "../modules/sound.js";
-import { Circle, Box } from "../modules/collision.js";
+import { CollisionCircle } from "../modules/collision.js";
 import { Beam } from "./bullet.js";
 
 const DEFAULT_SIZE = 50;
@@ -47,11 +47,11 @@ export class Hero extends Creature {
     this.facing = new Vector(0, 1);
 
     // Manually set the collision shape to allow for a smaller hitbox
-    const collisionShape = new Circle(
+    const collisionShape = new CollisionCircle(
       (DEFAULT_SIZE - CHEAT_RADIUS) / 2,
       this.pos
     );
-    const terrainCollisionShape = new Circle(DEFAULT_SIZE / 2, this.pos);
+    const terrainCollisionShape = new CollisionCircle(DEFAULT_SIZE / 2, this.pos);
 
     this.setCollisionShape(collisionShape);
     this.setTerrainCollisionShape(terrainCollisionShape);
