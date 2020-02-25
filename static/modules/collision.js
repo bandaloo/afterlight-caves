@@ -174,6 +174,7 @@ export function collide(shapeA, shapeB, resolve = true) {
 
 /**
  * Determines if a circle is colliding with a beam
+ * This is mostly accurate, but it's more like a pill than a rectangle
  * @param {CollisionCircle} circle
  * @param {CollisionBeam} beam
  * @param {boolean} resolve ignored. TODO implement
@@ -190,14 +191,32 @@ export function collide_CircleBeam(circle, beam, resolve) {
 }
 
 /**
- * Determines if a box is colliding with a beam
- * TODO this ignores beam thickness
+ * Determines if a box is colliding with a beam. Accounts for beam thickness by
+ * simulating two lines, one on each edge of the beam. This is mostly accurate,
+ * but misses the (usually tiny) area in the center of the beam
  * @param {CollisionBox} box
  * @param {CollisionBeam} beam
  * @param {boolean} resolve ignored. TODO implement
  * @return {Vector}
  */
 export function collide_BoxBeam(box, beam, resolve) {
+  const perp = beam.p2.sub(beam.p1).perpendicular();
+  const l1p1 = beam.p1.add(perp.mult(beam.thickness / 2));
+  const l1p2 = beam.p2.add(perp.mult(beam.thickness / 2));
+  if (rectangleIntersectsLine(box, l1p1, l1p2)) return new Vector(1, 1);
+  const l2p1 = beam.p1.add(perp.mult(-beam.thickness / 2));
+  const l2p2 = beam.p2.add(perp.mult(-beam.thickness / 2));
+  if (rectangleIntersectsLine(box, l2p1, l2p2)) return new Vector(1, 1);
+  return new Vector(0, 0);
+}
+
+/**
+ * helper that determines whether a rectangle intersects a line
+ * @param {CollisionBox} box
+ * @param {Vector} p1
+ * @param {Vector} p2
+ */
+function rectangleIntersectsLine(box, p1, p2) {
   const topLeft = new Vector(
     box.pos.x - box.width / 2,
     box.pos.y - box.height / 2
@@ -215,28 +234,22 @@ export function collide_BoxBeam(box, beam, resolve) {
     box.pos.y + box.height / 2
   );
 
-  const containsP1 =
-    beam.p1.x <= topRight.x &&
-    beam.p1.x >= topLeft.x &&
-    beam.p1.y >= topRight.y &&
-    beam.p1.y <= bottomRight.y;
-  const containsP2 =
-    beam.p2.x <= topRight.x &&
-    beam.p2.x >= topLeft.x &&
-    beam.p2.y >= topRight.y &&
-    beam.p2.y <= bottomRight.y;
-
-  if (
-    lineIntersectsLine(beam.p1, beam.p2, topLeft, topRight) ||
-    lineIntersectsLine(beam.p1, beam.p2, topRight, bottomRight) ||
-    lineIntersectsLine(beam.p1, beam.p2, bottomRight, bottomLeft) ||
-    lineIntersectsLine(beam.p1, beam.p2, bottomLeft, topLeft) ||
-    containsP1 ||
-    containsP2
-  ) {
-    return new Vector(1, 1);
-  }
-  return new Vector(0, 0);
+  return (
+    lineIntersectsLine(p1, p2, topLeft, topRight) ||
+    lineIntersectsLine(p1, p2, topRight, bottomRight) ||
+    lineIntersectsLine(p1, p2, bottomRight, bottomLeft) ||
+    lineIntersectsLine(p1, p2, bottomLeft, topLeft) ||
+    // contains p1
+    (p1.x <= topRight.x &&
+      p1.x >= topLeft.x &&
+      p1.y >= topRight.y &&
+      p1.y <= bottomRight.y) ||
+    // contains p2
+    (p2.x <= topRight.x &&
+      p2.x >= topLeft.x &&
+      p2.y >= topRight.y &&
+      p2.y <= bottomRight.y)
+  );
 }
 
 /**
