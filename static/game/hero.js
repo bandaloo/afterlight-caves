@@ -10,6 +10,7 @@ import { CollisionCircle } from "../modules/collision.js";
 import { Beam } from "./bullet.js";
 import { Item } from "./item.js";
 import { Hot } from "./powerups/hot.js";
+import { FlameThrower } from "./powerups/flamethrower.js";
 
 const DEFAULT_SIZE = 50;
 
@@ -61,6 +62,8 @@ export class Hero extends Creature {
 
     // TODO remove this
     new Hot(3).apply(this);
+    new FlameThrower(3).apply(this);
+    console.log(this.powerUps);
 
     // collect powerups when you collide with them
     this.collideMap.set("PowerUp", (/** @type {PowerUp} */ entity) => {

@@ -217,7 +217,11 @@ export class Entity {
   /**
    * draws the entity
    */
-  draw() {}
+  draw() {
+    for (const extraFunc of this.extraDrawFuncs) {
+      extraFunc(this);
+    }
+  }
 
   /**
    * steps the entity using position, velocity, acceleration and drag

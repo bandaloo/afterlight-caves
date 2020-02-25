@@ -93,6 +93,7 @@ export class Bullet extends Entity {
   action() {}
 
   draw() {
+    super.draw();
     // the min here is so you don't get an error for drawing circle with width
     // too big
     circle(
@@ -202,6 +203,7 @@ export class Beam extends Bullet {
    * @override
    */
   draw() {
+    // TODO add glow for a beam
     this.drawPos = this.owner.drawPos.add(
       this.owner.facing.mult(Math.min(this.owner.width) / 4)
     );
@@ -271,8 +273,8 @@ export class Beam extends Bullet {
   }
 
   /**
-   * @override
    * calculate length and set position each step
+   * @override
    */
   action() {
     if (this.owner.deleteMe) this.deleteMe = true;
