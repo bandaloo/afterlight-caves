@@ -97,22 +97,22 @@ export class Entity {
   /**
    * Determines what type of collision will be generated when getCollisionShape
    * is called and collisionShape is undefined.
+   * @type {"Box"|"Circle"|"Beam"}
    */
-  /** @type {"Box"|"Circle"|"Beam"} */
   collisionType;
 
   /**
    * Allows for the collision shape of an entity to be overriden for terrain
    * collision. By default, it is just collisionShape.
+   * @type {CollisionShape}
    */
-  /** @type {CollisionShape} */
   terrainCollisionShape;
 
   /**
    * Allows for the collision shape of an entity to be overriden. By default, is
    * calculated every time getCollisionShape is called.
+   * @type {CollisionShape}
    */
-  /** @type {CollisionShape} */
   collisionShape;
 
   /**
