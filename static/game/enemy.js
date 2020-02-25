@@ -236,7 +236,7 @@ export class Enemy extends Creature {
     } else {
       hue = 43; // orange (golden)
     }
-    return hue
+    return hue;
   }
 
   /**

@@ -179,7 +179,7 @@ export class Beam extends Bullet {
     );
     this.length = 0;
     // basically the faster your bullets are the more often your beam hits
-    this.cooldown = Math.floor(1 / vel.mag() * 200);
+    this.cooldown = Math.floor((1 / vel.mag()) * 200);
     this.dir = vel.norm2();
     this.lifetime = 100;
     this.occludedByWalls = false;
@@ -189,9 +189,7 @@ export class Beam extends Bullet {
     this.creaturesHit = {};
   }
 
-  /**
-   * @override
-   */
+  /** @override */
   getCollisionShape() {
     return new CollisionBeam(
       this.pos,

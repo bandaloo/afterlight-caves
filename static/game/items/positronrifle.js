@@ -10,7 +10,7 @@ import { centeredRect } from "../draw.js";
  */
 export class PositronRifle extends Item {
   /**
-   * @param {Vector} pos 
+   * @param {Vector} pos
    */
   constructor(pos = new Vector(0, 0)) {
     super(pos, "Positron Rifle", "Fire a devastating beam", 500);
@@ -18,7 +18,7 @@ export class PositronRifle extends Item {
 
   /**
    * applies this item to the hero
-   * @param {Hero} hero 
+   * @param {Hero} hero
    * @override
    */
   apply(hero) {

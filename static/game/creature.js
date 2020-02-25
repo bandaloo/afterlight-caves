@@ -156,7 +156,7 @@ export class Creature extends Entity {
   /** @type {StatusEffect[]} */
   statusEffects = new Array();
 
-  /** @type {number} number of bullets per shot, spread into a 30 degree cone */
+  /** @type {number} number of bullets per shot, spread into a cone */
   bulletsPerShot = 1;
 
   /** @type {number} scalar that determines how much knockback bullets apply */
@@ -191,7 +191,7 @@ export class Creature extends Entity {
   defense = 0;
 
   /** @type {Vector} unit vector in the direction this creature is facing */
-  facing = new Vector(0, 0);
+  facing = new Vector(0, 1);
 
   /**
    * @param {Vector} [pos] initial position
@@ -298,8 +298,7 @@ export class Creature extends Entity {
     // shoot a bullet
     if (this.fireCount >= this.fireDelay) {
       for (let i = 0; i < this.bulletsPerShot; ++i) {
-        // calculate a new direction so bullets are spread evenly across a 30
-        // degree cone
+        // calculate a new direction so bullets are spread evenly across a cone
         let newDir = dir;
         let radiansToAdd = 0;
         if (this.bulletsPerShot > 1) {

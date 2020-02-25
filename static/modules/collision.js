@@ -778,9 +778,9 @@ export function nextIntersection(startPos, dir) {
   const { width: bw, height: bh } = getBlockDimensions();
   const signVec = new Vector(Math.sign(dir.x), Math.sign(dir.y));
 
-  /** @param {number} x */
+  /** @param {number} x gets the y value of the line at a particular x */
   const f = x => (dir.y / dir.x) * (x - startPos.x) + startPos.y;
-  /** @param {number} y */
+  /** @param {number} y gets the x value of the line at a particular y */
   const g = y => (dir.x / dir.y) * (y - startPos.y) + startPos.x;
 
   if (signVec.x > 0) cellVec.x++;

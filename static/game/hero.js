@@ -44,7 +44,6 @@ export class Hero extends Creature {
     this.bulletColor = "white";
     this.score = 0;
     this.setBombDamage(18);
-    this.facing = new Vector(0, 1);
 
     // Manually set the collision shape to allow for a smaller hitbox
     const collisionShape = new CollisionCircle(
@@ -99,10 +98,13 @@ export class Hero extends Creature {
     });
 
     // collect items when you collide with them
-    this.collideMap.set("Item", /** @param {Item} i */ i => {
-      i.apply(this);
-      i.deleteMe = true;
-    });
+    this.collideMap.set(
+      "Item",
+      /** @param {Item} i */ i => {
+        i.apply(this);
+        i.deleteMe = true;
+      }
+    );
 
     this.collideMap.set("Enemy", entity => {
       for (const ote of this.onTouchEnemy) {

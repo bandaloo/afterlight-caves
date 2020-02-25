@@ -71,7 +71,7 @@ export class BeamShooter extends Enemy {
 
   /** turn to face a random direction */
   turnRandomDirection() {
-    const angle = Math.PI / 2 * randomInt(4);
+    const angle = (Math.PI / 2) * randomInt(4);
     this.acc = new Vector(Math.cos(angle), Math.sin(angle));
   }
 
@@ -97,7 +97,7 @@ export class BeamShooter extends Enemy {
         if (Math.abs(radians) > ON_TARGET_ANGLE) {
           // turn to face hero
           this.facing = this.facing
-            .rotate((Math.sign(this.facing.cross(dirVec))) * TURN_SPEED)
+            .rotate(Math.sign(this.facing.cross(dirVec)) * TURN_SPEED)
             .norm2();
         }
         this.shoot(this.facing);
