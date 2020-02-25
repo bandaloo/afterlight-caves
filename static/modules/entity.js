@@ -38,6 +38,9 @@ export class Entity {
   /** @type {number} */
   depth = 0;
 
+  /** @type {Vector} */
+  pos;
+
   /** @type {boolean} whether or not this bounces off of walls */
   reflectsOffWalls = false;
 

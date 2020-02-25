@@ -55,7 +55,6 @@ export class Snake extends Enemy {
     this.initHealth();
     this.basePoints = 10;
     this.parentBody = parentBody;
-    this.movementMultiplier = 0.5;
 
     // We don't want the snakes to get bigger, only to increase length, so we
     // factor out the MATRYOSHKA_SIZE constant.
@@ -127,9 +126,12 @@ export class Snake extends Enemy {
     } else {
       //Body
       /** @type {Vector} */
-      const desiredPos = this.parentBody.pos
-        .sub(this.parentBody.facing.mult(this.parentBody.width / 2))
-        .sub(this.parentBody.facing.mult(this.width / 2));
+      const desiredPos = this.parentBody.pos.sub(
+        this.parentBody.pos
+          .sub(this.pos)
+          .norm2()
+          .mult(this.parentBody.width)
+      );
       this.vel = desiredPos.sub(this.pos);
 
       this.facing = this.vel.norm2();
