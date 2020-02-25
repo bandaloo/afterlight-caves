@@ -2,6 +2,7 @@ import { PowerUp } from "../powerup.js";
 import { Vector } from "../../modules/vector.js";
 import { Creature } from "../creature.js";
 import { Burning } from "../statuseffects/burning.js";
+import { circle } from "../draw.js";
 
 const BURNING_LENGTH_FACTOR = 1;
 const BURNING_CHANCE_FACTOR = 0.03;
@@ -32,9 +33,8 @@ export class Hot extends PowerUp {
     if (!this.isAtMax(creature)) {
       // don't apply the glow effect twice
       if (!creature.powerUps.has("Hot")) {
-        creature.extraGlowEffects.push({
-          color: "#f5934225",
-          radius: (creature.width / 2) * 1.2
+        creature.extraDrawFuncs.push(entity => {
+          circle(entity.drawPos, (entity.width / 2) * 1.2, "#f5934225");
         });
       }
 

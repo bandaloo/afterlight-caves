@@ -116,6 +116,12 @@ export class Entity {
   collisionShape;
 
   /**
+   * Allows additional drawing functions to be added later
+   * @type {Array<(arg0: Entity) => void>}
+   */
+  extraDrawFuncs = new Array();
+
+  /**
    * constructs an entity with all the relevant vectors
    * @param {Vector} pos
    * @param {Vector} vel
