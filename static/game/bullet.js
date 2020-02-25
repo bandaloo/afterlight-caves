@@ -1,6 +1,5 @@
 import {
   getCell,
-  CollisionBox,
   nextIntersection,
   CollisionBeam
 } from "../modules/collision.js";
@@ -12,7 +11,6 @@ import { blockField } from "./generator.js";
 import { EffectEnum, Particle } from "./particle.js";
 import { destroyBlock } from "./block.js";
 import { line } from "./draw.js";
-import { Creature } from "./creature.js";
 
 export class Bullet extends Entity {
   /**
