@@ -78,8 +78,7 @@ export class Bomb extends Entity {
       this.width = radius * 2;
       this.height = radius * 2;
       // create some particles
-      //const numParticles = Math.floor(Math.random() * 20) + 6;
-      const numParticles = 5;
+      const numParticles = 1;
       for (let i = 0; i < numParticles; ++i) {
         let particleHue = (this.hue - 30 + Math.random() * 30) % 360;
         let color = `hsl(${particleHue}, 100%, 50%)`;
