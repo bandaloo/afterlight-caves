@@ -2,7 +2,8 @@ import { PowerUp } from "../powerup.js";
 import { Vector } from "../../modules/vector.js";
 import { Creature } from "../creature.js";
 import { Burning } from "../statuseffects/burning.js";
-import { circle } from "../draw.js";
+import { circle, polygon } from "../draw.js";
+import { getGameTime } from "../../modules/gamemanager.js";
 
 const BURNING_LENGTH_FACTOR = 1;
 const BURNING_CHANCE_FACTOR = 0.03;
@@ -33,8 +34,29 @@ export class Hot extends PowerUp {
     if (!this.isAtMax(creature)) {
       // don't apply the glow effect twice
       if (!creature.powerUps.has("Hot")) {
+        const colors = ["#f5934233", "#fff64733"];
         creature.extraDrawFuncs.push(entity => {
-          circle(entity.drawPos, (entity.width / 2) * 1.2, "#f5934225");
+          for (let i = 0; i < 2; i++) {
+            const size = 1 / (1 + i);
+            polygon(
+              entity.drawPos,
+              8,
+              entity.width * 1.5 * size,
+              entity.height * 1.5 * size,
+              0,
+              undefined,
+              colors[i],
+              10,
+              n => {
+                // graphs an upside down egg on polar coordinates
+                const t = n + Math.PI;
+                const egg = 0.5 * Math.sin(t) ** 2 + 0.5 * Math.sin(t) + 1;
+                const wiggle =
+                  1 + 0.2 * Math.cos((getGameTime() / 1000) * n * 3 + i);
+                return egg * wiggle;
+              }
+            );
+          }
         });
       }
 
