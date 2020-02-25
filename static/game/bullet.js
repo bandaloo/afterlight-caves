@@ -183,8 +183,8 @@ export class Beam extends Bullet {
     this.dir = vel.norm2();
     this.lifetime = 100;
     this.occludedByWalls = false;
-    // beams break blocks 4 times per second
-    this.maxBlockBreakCounter = 25;
+    // rate limit breaking blocks
+    this.maxBlockBreakCounter = 5;
     this.blockBreakCounter = this.maxBlockBreakCounter - 1;
     this.creaturesHit = {};
   }
