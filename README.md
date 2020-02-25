@@ -52,11 +52,15 @@ the `dist` directory. You can tell the server to serve files from the `dist`
 directory instead of `static` by doing this:
 
 ```
-node index.js --compat
+$ node index.js --compat
 ```
 
 The `start-compat` npm script builds and serves from the `dist` directory
-automatically.
+automatically:
+
+```
+$ npm run start-compat
+```
 
 ## Testing
 
