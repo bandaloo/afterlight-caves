@@ -203,7 +203,8 @@ export class Beam extends Bullet {
    * @override
    */
   draw() {
-    // TODO add glow for a beam
+    // TODO add visual effects for beam
+    // (must be treated different than standard entity)
     this.drawPos = this.owner.drawPos.add(
       this.owner.facing.mult(Math.min(this.owner.width) / 4)
     );
