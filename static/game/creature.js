@@ -210,7 +210,7 @@ export class Creature extends Entity {
     this.bombOnBlastCreature = new Array();
     this.onTouchEnemy = new Array();
     // unique identifier for this creature, so it can be indexed in objects
-    this.id = ""; // TODO better way to do this? why not keep direct refence
+    this.id = ""; // TODO better way to do this? why not keep direct reference
     for (let i = 0; i < 6; ++i) {
       this.id += Math.floor(Math.random() * 16).toString(16);
     }
@@ -319,7 +319,6 @@ export class Creature extends Entity {
           newDir = new Vector(r * Math.cos(theta), r * Math.sin(theta));
         }
         const b = this.getBullet(newDir);
-        // clone the visual effect array and apply it to the bullet
         b.extraDrawFuncs = this.bulletVisualEffects;
         b.vel = b.vel.add(additionalVelocity);
         b.angle = radiansToAdd;

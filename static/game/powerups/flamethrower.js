@@ -29,7 +29,6 @@ export class FlameThrower extends PowerUp {
         creature.bulletVisualEffects.push(entity => {
           circle(entity.drawPos, (entity.width / 2) * 1.2, "#f5934299");
         });
-        //console.log(creature.bulletVisualEffects);
       }
       super.apply(creature);
       /**
