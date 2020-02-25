@@ -35,9 +35,12 @@ export class Hot extends PowerUp {
     if (!this.isAtMax(creature)) {
       // don't apply the glow effect twice
       if (!creature.powerUps.has("Hot")) {
+        // colors for inner and outer flame
         const colors = ["#f5934233", "#fff64733"];
         creature.extraDrawFuncs.push(entity => {
+          // loop for inner and outer flame
           for (let i = 0; i < 2; i++) {
+            // used for inner flame and outer flame
             const size = 1 / (1 + i);
             const tilt = clamp(-creature.vel.x / 10, -Math.PI / 4, Math.PI / 4);
             polygon(
@@ -50,10 +53,11 @@ export class Hot extends PowerUp {
               colors[i],
               10,
               n => {
-                // graphs an upside down egg on polar coordinates
                 n -= tilt;
                 const t = n + Math.PI;
+                // graphs an egg in polar coordinates
                 const egg = 0.5 * Math.sin(t) ** 2 + 0.5 * Math.sin(t) + 1;
+                // `i` is added here to make inner flame not mirror outer flame
                 const wiggle =
                   1 + 0.2 * Math.cos((getGameTime() / 1000) * n * 3 + i);
                 return egg * wiggle;
