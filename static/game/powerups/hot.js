@@ -4,6 +4,7 @@ import { Creature } from "../creature.js";
 import { Burning } from "../statuseffects/burning.js";
 import { circle, polygon } from "../draw.js";
 import { getGameTime } from "../../modules/gamemanager.js";
+import { clamp } from "../../modules/helpers.js";
 
 const BURNING_LENGTH_FACTOR = 1;
 const BURNING_CHANCE_FACTOR = 0.03;
@@ -38,17 +39,19 @@ export class Hot extends PowerUp {
         creature.extraDrawFuncs.push(entity => {
           for (let i = 0; i < 2; i++) {
             const size = 1 / (1 + i);
+            const tilt = clamp(-creature.vel.x / 10, -Math.PI / 4, Math.PI / 4);
             polygon(
               entity.drawPos,
               8,
               entity.width * 1.5 * size,
               entity.height * 1.5 * size,
-              0,
+              tilt,
               undefined,
               colors[i],
               10,
               n => {
                 // graphs an upside down egg on polar coordinates
+                n -= tilt;
                 const t = n + Math.PI;
                 const egg = 0.5 * Math.sin(t) ** 2 + 0.5 * Math.sin(t) + 1;
                 const wiggle =
