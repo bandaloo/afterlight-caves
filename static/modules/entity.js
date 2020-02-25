@@ -2,9 +2,10 @@ import { Vector } from "./vector.js";
 import {
   adjustEntity,
   CollisionShape,
-  Box,
-  Circle,
-  collide
+  CollisionBox,
+  CollisionCircle,
+  collide,
+  CollisionBeam
 } from "./collision.js";
 import { getScreenDimensions, getCameraOffset } from "./displaymanager.js";
 
@@ -97,7 +98,7 @@ export class Entity {
    * Determines what type of collision will be generated when getCollisionShape
    * is called and collisionShape is undefined.
    */
-  /** @type {"Box"|"Circle"} */
+  /** @type {"Box"|"Circle"|"Beam"} */
   collisionType;
 
   /**
@@ -162,12 +163,19 @@ export class Entity {
       this.collisionShape.vel = this.vel;
       return this.collisionShape;
     } else if (this.collisionType == "Box") {
-      return new Box(this.width, this.height, this.pos, this.vel);
+      return new CollisionBox(this.width, this.height, this.pos, this.vel);
     } else if (this.collisionType == "Circle") {
-      return new Circle(
+      return new CollisionCircle(
         Math.min(this.width, this.height) / 2,
         this.pos,
         this.vel
+      );
+    } else if (this.collisionType === "Beam") {
+      // this is a bad implementation and should be overridden
+      return new CollisionBeam(
+        this.pos,
+        this.pos.add(this.vel.norm2().mult(Math.min(this.width, this.height))),
+        Math.max(this.width, this.height)
       );
     }
     return new CollisionShape(undefined, this.pos, this.vel);
@@ -190,7 +198,7 @@ export class Entity {
 
   onScreen() {
     const { width: screenWidth, height: screenHeight } = getScreenDimensions();
-    const screenBox = new Box(
+    const screenBox = new CollisionBox(
       screenWidth,
       screenHeight,
       new Vector(screenWidth / 2, screenHeight / 2).add(

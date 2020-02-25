@@ -3,7 +3,7 @@ import { Vector } from "../../modules/vector.js";
 import { Creature } from "../creature.js";
 
 const MAX_SPLIT_BULLETS = 10;
-const FIRE_DELAY_ADDEND = 15;
+const FIRE_DELAY_ADDEND = 10;
 
 export class Cone extends PowerUp {
   /**

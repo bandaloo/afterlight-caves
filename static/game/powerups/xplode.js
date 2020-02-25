@@ -54,6 +54,7 @@ export class Xplode extends PowerUp {
           const newVel = new Vector(Math.cos(theta), Math.sin(theta)).norm2();
           const child = creature.getBullet(newVel);
           child.vel = child.vel.norm2().mult(creature.bulletSpeed * 0.75);
+          child.angle = theta;
           child.pos = b.pos;
           /**
            * @type {{ name: string

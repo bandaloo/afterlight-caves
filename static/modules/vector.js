@@ -150,6 +150,30 @@ class Vector {
   getAngle() {
     return Math.atan2(this.y, this.x);
   }
+
+  /**
+   * gets the clockwise angle between this vector and another
+   * @param {Vector} other
+   */
+  angleBetween(other) {
+    return Math.atan2(other.y, other.x) - Math.atan2(this.y, this.x);
+  }
+
+  /**
+   * returns a 2d vector cross product analog
+   * @param {Vector} other
+   */
+  cross(other) {
+    return this.x * other.y - this.y * other.x;
+  }
+
+  /** gets a unit vector perpendicular to this one */
+  perpendicular() {
+    if (this.x !== 0)
+      return new Vector(-this.y / this.x, 1).norm2();
+    else
+      return new Vector(1, -this.x / this.y).norm2();
+  }
 }
 
 export { Vector };

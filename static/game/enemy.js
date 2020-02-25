@@ -68,6 +68,7 @@ export class Enemy extends Creature {
       /** @param {import("./hero.js").Hero} h */ h => this.touchHero(h)
     );
 
+    this.powerUpTable = powerUpTable;
     this.applyPowerUps(powerUpTable);
   }
 
@@ -133,11 +134,12 @@ export class Enemy extends Creature {
         addToWorld(childEnemy);
         randDir += (2 * Math.PI) / spawnNum;
       }
-      if (this.matryoshka > 1) {
+      if (this.matryoshka > 1 && this.powerUpTable !== undefined) {
         // drop a level 1 power up as a reward
-        const powerUp = new powerUpTypes[
-          Math.floor(Math.random() * powerUpTypes.length)
-        ](Math.min(5, this.matryoshka - 1), this.pos);
+        const powerUp = new (this.powerUpTable.pick())(
+          Math.min(5, this.matryoshka - 1),
+          this.pos
+        );
         addToWorld(powerUp);
       }
     }
@@ -218,9 +220,10 @@ export class Enemy extends Creature {
   }
 
   /**
-   * choose a hue based on the power level, and set all appropriate colors
+   * get a hue value depending on this creature's level
+   * @return {number}
    */
-  applyPowerColor() {
+  getPowerHue() {
     let hue;
     if (this.level < 1) {
       hue = 0; // red
@@ -233,7 +236,14 @@ export class Enemy extends Creature {
     } else {
       hue = 43; // orange (golden)
     }
+    return hue;
+  }
 
+  /**
+   * choose a hue based on the power level, and set all appropriate colors
+   */
+  applyPowerColor() {
+    const hue = this.getPowerHue();
     this.drawColor = hsl(hue, 100, 70);
     this.splatterColor = `hsla(${hue}, 40%, 40%, 0.8)`;
     this.originalDrawColor = this.drawColor;

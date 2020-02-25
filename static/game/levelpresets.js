@@ -16,6 +16,8 @@ import { spawnEnemies, spawnPowerups } from "./spawner.js";
 import { setGameDrawFunc } from "../modules/displaymanager.js";
 import { drawBoard } from "./draw.js";
 import { TimeDisplay } from "./timedisplay.js";
+import { BeamShooter } from "./beamshooter.js";
+import { PositronRifle } from "./items/positronrifle.js";
 
 /**
  * @typedef TerrainSettings

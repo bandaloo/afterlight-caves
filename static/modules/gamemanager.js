@@ -77,9 +77,7 @@ class GameManager {
    */
   importantEntities = new Map();
 
-  constructor() {
-    collectInput(true);
-  }
+  constructor() {}
 
   togglePause() {
     if (!this.gamePause) {
@@ -346,6 +344,7 @@ const gameManager = new GameManager();
 
 export function startUp() {
   addDisplayToDiv("gamediv");
+  collectInput(true);
   gameManager.update();
 }
 

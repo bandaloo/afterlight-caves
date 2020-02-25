@@ -6,7 +6,9 @@ import { addParticle, toggleGuiElement } from "../modules/gamemanager.js";
 import { Particle, EffectEnum } from "./particle.js";
 import { PowerUp, POWER_UP_POINTS_FACTOR } from "./powerup.js";
 import { playSound, getSound } from "../modules/sound.js";
-import { Circle, Box } from "../modules/collision.js";
+import { CollisionCircle } from "../modules/collision.js";
+import { Beam } from "./bullet.js";
+import { Item } from "./item.js";
 
 const DEFAULT_SIZE = 50;
 
@@ -17,7 +19,6 @@ export class Hero extends Creature {
   /** @type {number} */
   score;
   drag = 0.1; // movement deceleration
-  eyeDirection = new Vector(0, 1);
   invincibilityFrames = 0;
   invincibilityFramesMax = 100;
 
@@ -45,11 +46,14 @@ export class Hero extends Creature {
     this.setBombDamage(18);
 
     // Manually set the collision shape to allow for a smaller hitbox
-    const collisionShape = new Circle(
+    const collisionShape = new CollisionCircle(
       (DEFAULT_SIZE - CHEAT_RADIUS) / 2,
       this.pos
     );
-    const terrainCollisionShape = new Circle(DEFAULT_SIZE / 2, this.pos);
+    const terrainCollisionShape = new CollisionCircle(
+      DEFAULT_SIZE / 2,
+      this.pos
+    );
 
     this.setCollisionShape(collisionShape);
     this.setTerrainCollisionShape(terrainCollisionShape);
@@ -93,6 +97,15 @@ export class Hero extends Creature {
       entity.deleteMe = true;
     });
 
+    // collect items when you collide with them
+    this.collideMap.set(
+      "Item",
+      /** @param {Item} i */ i => {
+        i.apply(this);
+        i.deleteMe = true;
+      }
+    );
+
     this.collideMap.set("Enemy", entity => {
       for (const ote of this.onTouchEnemy) {
         if (ote.func) ote.func(ote.data, /** @type{Creature} */ (entity));
@@ -117,13 +130,7 @@ export class Hero extends Creature {
     );
 
     // draw eye
-    circle(
-      this.drawPos.add(this.eyeDirection.mult(10)),
-      12,
-      undefined,
-      4,
-      "white"
-    );
+    circle(this.drawPos.add(this.facing.mult(10)), 12, undefined, 4, "white");
 
     // draw status effects
     super.draw();
@@ -152,9 +159,9 @@ export class Hero extends Creature {
     }
     if (!buttons.shoot.vec.isZeroVec()) {
       const normalizedShootVec = buttons.shoot.vec.norm2();
-      this.eyeDirection = normalizedShootVec;
-    } else if (this.vel.mag() > 0.001) {
-      this.eyeDirection = this.vel.norm();
+      this.facing = normalizedShootVec;
+    } else if (this.vel.mag() > 0.1) {
+      this.facing = this.vel.norm();
     }
 
     if (buttons.primary.status.isPressed) {

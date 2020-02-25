@@ -70,7 +70,7 @@ export class Shooter extends Enemy {
         this.strafeScalar *= -1;
       }
       /** @type {Vector} */
-      let dirVec = hero.pos.sub(this.pos);
+      const dirVec = hero.pos.sub(this.pos);
       const strafeVec = dirVec.norm2().rotate(Math.PI / 2);
       // TODO do we need avoid timer
       if (this.avoidTimer >= 0 || dirVec.mag() < this.avoidDistance) {
@@ -87,7 +87,8 @@ export class Shooter extends Enemy {
       }
 
       if (dirVec.mag() < this.shootDistance) {
-        this.shoot(dirVec, this.vel.mult(0.2));
+        this.facing = dirVec.norm2();
+        this.shoot(this.facing, this.vel.mult(0.2));
       }
     }
   }
