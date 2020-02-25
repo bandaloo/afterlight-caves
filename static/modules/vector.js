@@ -166,6 +166,14 @@ class Vector {
   cross(other) {
     return this.x * other.y - this.y * other.x;
   }
+
+  /** gets a unit vector perpendicular to this one */
+  perpendicular() {
+    if (this.x !== 0)
+      return new Vector(-this.y / this.x, 1).norm2();
+    else
+      return new Vector(1, -this.x / this.y).norm2();
+  }
 }
 
 export { Vector };
