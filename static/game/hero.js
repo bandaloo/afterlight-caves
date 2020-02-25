@@ -9,6 +9,7 @@ import { playSound, getSound } from "../modules/sound.js";
 import { CollisionCircle } from "../modules/collision.js";
 import { Beam } from "./bullet.js";
 import { Item } from "./item.js";
+import { Hot } from "./powerups/hot.js";
 
 const DEFAULT_SIZE = 50;
 
@@ -57,6 +58,9 @@ export class Hero extends Creature {
 
     this.setCollisionShape(collisionShape);
     this.setTerrainCollisionShape(terrainCollisionShape);
+
+    // TODO remove this
+    new Hot(3).apply(this);
 
     // collect powerups when you collide with them
     this.collideMap.set("PowerUp", (/** @type {PowerUp} */ entity) => {

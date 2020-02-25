@@ -13,7 +13,7 @@ export class Hot extends PowerUp {
    * @param {Vector} [pos]
    */
   constructor(magnitude = 1, pos) {
-    super(magnitude, pos, "Hot", "You light enemies on fire");
+    super(magnitude, pos, "Hot", "Contact lights enemies on fire");
     /**
      * @type {{ name: string
      *        , data: number
@@ -30,6 +30,14 @@ export class Hot extends PowerUp {
    */
   apply(creature) {
     if (!this.isAtMax(creature)) {
+      // don't apply the glow effect twice
+      if (!creature.powerUps.has("Hot")) {
+        creature.extraGlowEffects.push({
+          color: "#f5934225",
+          radius: (creature.width / 2) * 1.2
+        });
+      }
+
       super.apply(creature);
 
       // if the creature already has a Hot powerup, just increase its data value

@@ -5,6 +5,7 @@ import { Vector } from "../modules/vector.js";
 import { Bomb } from "./bomb.js";
 import { Bullet } from "./bullet.js";
 import { StatusEffect } from "./statuseffect.js";
+import { circle } from "./draw.js";
 
 /**
  * Reduces damage according to defense
@@ -162,6 +163,9 @@ export class Creature extends Entity {
   /** @type {number} scalar that determines how much knockback bullets apply */
   bulletKnockback = 3;
 
+  /** @type {Array<{color: string | CanvasGradient | CanvasPattern, radius: number}>} */
+  extraGlowEffects = new Array();
+
   /**
    * An array of objects, where each object has a name, which is the name of
    * the source of the function, a data, which is some number the function
@@ -241,6 +245,10 @@ export class Creature extends Entity {
   draw() {
     for (const se of this.statusEffects) {
       if (se) se.draw(this);
+    }
+
+    for (const glow of this.extraGlowEffects) {
+      circle(this.drawPos, glow.radius, glow.color);
     }
   }
 
