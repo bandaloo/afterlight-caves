@@ -210,6 +210,8 @@ export class Creature extends Entity {
     for (let i = 0; i < 6; ++i) {
       this.id += Math.floor(Math.random() * 16).toString(16);
     }
+    this.maxSpeed = 24;
+    this.maxAccMag = 24;
 
     // bombs deal basic damage
     this.bombOnBlastCreature.push({
