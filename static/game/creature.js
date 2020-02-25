@@ -205,6 +205,11 @@ export class Creature extends Entity {
     this.bombOnDetonate = new Array();
     this.bombOnBlastCreature = new Array();
     this.onTouchEnemy = new Array();
+    // unique identifier for this creature, so it can be indexed in objects
+    this.id = "";
+    for (let i = 0; i < 6; ++i) {
+      this.id += Math.floor(Math.random() * 16).toString(16);
+    }
 
     // bombs deal basic damage
     this.bombOnBlastCreature.push({

@@ -45,6 +45,7 @@ export class BeamShooter extends Enemy {
     this.baseHealth = 40;
     this.initHealth();
     this.bulletType = Beam;
+    this.bulletSpeed = 5;
     this.fireDelay = 250;
     this.bulletLifetime = 120;
     this.basePoints = 90;

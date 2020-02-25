@@ -12,6 +12,7 @@ import { blockField } from "./generator.js";
 import { EffectEnum, Particle } from "./particle.js";
 import { destroyBlock } from "./block.js";
 import { line } from "./draw.js";
+import { Creature } from "./creature.js";
 
 export class Bullet extends Entity {
   /**
@@ -150,7 +151,7 @@ export class Beam extends Bullet {
    * Constructs a new beam. Beams don't have velocity or acceleration. Instead,
    * they have a starting point (pos) and length
    * @param {Vector} [pos] the position of the origin of the beam
-   * @param {Vector} [dir] the direction the beam is facing
+   * @param {Vector} [vel] the direction the beam is facing
    * @param {Vector} [acc] ignored
    * @param {import("./creature.js").Creature} owner the creature that fired
    * this beam
@@ -160,7 +161,7 @@ export class Beam extends Bullet {
    */
   constructor(
     pos = new Vector(0, 0),
-    dir = new Vector(0, 0),
+    vel = new Vector(0, 0),
     acc = new Vector(0, 0),
     owner,
     color = "white",
@@ -177,12 +178,15 @@ export class Beam extends Bullet {
       damage
     );
     this.length = 0;
-    this.dir = dir.norm2();
+    // basically the faster your bullets are the more often your beam hits
+    this.cooldown = Math.floor(1 / vel.mag() * 200);
+    this.dir = vel.norm2();
     this.lifetime = 100;
     this.occludedByWalls = false;
-    // beams deal damage 4 times per second
-    this.maxCounter = 25;
-    this.counter = this.maxCounter - 1;
+    // beams break blocks 4 times per second
+    this.maxBlockBreakCounter = 25;
+    this.blockBreakCounter = this.maxBlockBreakCounter - 1;
+    this.creaturesHit = {};
   }
 
   /**
@@ -223,8 +227,10 @@ export class Beam extends Bullet {
    * @param {import("./creature.js").Creature} creature
    */
   touchEnemy(creature) {
-    // rate limit dealing damage to creatures
-    if (this.counter === this.maxCounter) {
+    // if we haven't hit the creature yet, hit it and set the cooldown
+    if (this.creaturesHit[creature.id] === undefined) {
+      console.log("hitting new creature");
+      this.creaturesHit[creature.id] = { c: creature, cooldown: this.cooldown };
       // deal basic damage
       creature.takeDamage(this.damage, this.dir);
       // impart momentum
@@ -234,9 +240,17 @@ export class Beam extends Bullet {
       for (const ohe of this.onHitEnemy) {
         if (ohe.func) ohe.func(this, ohe.data, creature);
       }
+    } else {
+      // decrease cooldown if we've already hit the creature
+      if (this.creaturesHit[creature.id].cooldown === 0) {
+        this.creaturesHit[creature.id] = undefined;
+      } else {
+        this.creaturesHit[creature.id].cooldown--;
+      }
     }
   }
 
+  /** @override */
   destroy() {
     // execute all on-destroy functions
     for (const od of this.onDestroy) {
@@ -271,10 +285,11 @@ export class Beam extends Bullet {
     );
     const intersect = nextIntersection(this.pos, this.dir);
     // rate limit block collisions
-    if (this.counter === this.maxCounter)
+    if (this.blockBreakCounter === this.maxBlockBreakCounter)
       this.collideWithBlock(intersect);
     this.length = intersect.sub(this.pos).mag();
 
-    if (this.counter++ > this.maxCounter) this.counter = 0;
+    if (this.blockBreakCounter++ > this.maxBlockBreakCounter)
+      this.blockBreakCounter = 0;
   }
 }
