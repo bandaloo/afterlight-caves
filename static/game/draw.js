@@ -157,9 +157,9 @@ export function ellipse(
  * @param {number} radius
  * @param {string|CanvasGradient|CanvasPattern} [fillStyle] leave undefined for
  * no fill
+ * @param {number} [lineWidth] leave undefined for no border
  * @param {string|CanvasGradient|CanvasPattern} [strokeStyle] leave undefined
  * for no border
- * @param {number} [lineWidth] leave undefined for no border
  */
 export function circle(centerVec, radius, fillStyle, lineWidth, strokeStyle) {
   ellipse(centerVec, radius, radius, fillStyle, lineWidth, strokeStyle);

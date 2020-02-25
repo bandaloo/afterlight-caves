@@ -14,11 +14,11 @@ import { Pickup, PickupEnum } from "./pickup.js";
 import { splatter } from "./draw.js";
 import { powerUpTypes } from "./powerups/poweruptypes.js";
 
+export const MATRYOSHKA_SIZE = 50;
 const DROP_CHANCE = 0.2;
 const BOMB_CHANCE = 0.3;
 const BASE_SIZE = 50;
 const MATRYOSHKA_HEALTH = 10;
-const MATRYOSHKA_SIZE = 50;
 const MATRYOSHKA_SCORE_SCALAR = 20;
 const POWERUP_SCORE_SCALAR = 10;
 
