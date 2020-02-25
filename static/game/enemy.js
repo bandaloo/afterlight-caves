@@ -220,9 +220,10 @@ export class Enemy extends Creature {
   }
 
   /**
-   * choose a hue based on the power level, and set all appropriate colors
+   * get a hue value depending on this creature's level
+   * @return {number}
    */
-  applyPowerColor() {
+  getPowerHue() {
     let hue;
     if (this.level < 1) {
       hue = 0; // red
@@ -235,7 +236,14 @@ export class Enemy extends Creature {
     } else {
       hue = 43; // orange (golden)
     }
+    return hue
+  }
 
+  /**
+   * choose a hue based on the power level, and set all appropriate colors
+   */
+  applyPowerColor() {
+    const hue = this.getPowerHue();
     this.drawColor = hsl(hue, 100, 70);
     this.splatterColor = `hsla(${hue}, 40%, 40%, 0.8)`;
     this.originalDrawColor = this.drawColor;

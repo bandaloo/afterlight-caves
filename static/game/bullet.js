@@ -201,6 +201,8 @@ export class Beam extends Bullet {
   }
 
   /**
+   * Draw a beam with a white core and bullet color glow. The white section is
+   * thicker the more damage this deals
    * @override
    */
   draw() {
@@ -217,7 +219,7 @@ export class Beam extends Bullet {
       this.drawPos,
       this.pos.add(this.dir.mult(this.length)),
       "white",
-      Math.max(this.width - 16, 0)
+      Math.min(this.damage * 0.75, this.width - 4)
     );
   }
 
@@ -229,7 +231,6 @@ export class Beam extends Bullet {
   touchEnemy(creature) {
     // if we haven't hit the creature yet, hit it and set the cooldown
     if (this.creaturesHit[creature.id] === undefined) {
-      console.log("hitting new creature");
       this.creaturesHit[creature.id] = { c: creature, cooldown: this.cooldown };
       // deal basic damage
       creature.takeDamage(this.damage, this.dir);

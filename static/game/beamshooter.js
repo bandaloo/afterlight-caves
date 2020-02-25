@@ -28,7 +28,16 @@ chanceTable.addAll([
   { result: PowerUpTypes.Zoom, chance: 1 }
 ]);
 
+const TURN_SPEED = 0.01;
+const TURN_CHANCE = 0.005;
+const ON_TARGET_ANGLE = 0.05;
+const IDLE_TURN_SPEED = 0.002;
 
+/**
+ * This type of enemy moves around randomly, rotating slowly while waiting for
+ * the hero to draw near. Once the hero gets close it rotates to face it, then
+ * fires a beam
+ */
 export class BeamShooter extends Enemy {
   shootDistance = 800;
 
@@ -41,7 +50,7 @@ export class BeamShooter extends Enemy {
    * @param {ChanceTable} powerUpTable
    */
   constructor(pos, vel, acc, matryoshka, level, powerUpTable = chanceTable) {
-    super(pos, new Vector(0, 0), new Vector(0, 0), matryoshka, level, powerUpTable);
+    super(pos, vel, acc, matryoshka, level, powerUpTable);
     this.baseHealth = 40;
     this.initHealth();
     this.bulletType = Beam;
@@ -50,7 +59,7 @@ export class BeamShooter extends Enemy {
     this.bulletLifetime = 120;
     this.basePoints = 90;
     this.maxSpeed = 1;
-    this.bulletColor = "red";
+    this.bulletColor = `hsl(${this.getPowerHue()}, 100%, 20%)`;
     this.drag = 0.007;
     this.reflectsOffWalls = false;
 
@@ -60,25 +69,10 @@ export class BeamShooter extends Enemy {
     this.faceSize = 0.2;
   }
 
-  /**
-   * turn to face a random direction
-   */
+  /** turn to face a random direction */
   turnRandomDirection() {
-    const d = randomInt(4);
-    switch (d) {
-      case 0:
-        this.acc = new Vector(0, -1);
-        break;
-      case 1:
-        this.acc = new Vector(1, 0);
-        break;
-      case 2:
-        this.acc = new Vector(0, 1);
-        break;
-      case 3:
-        this.acc = new Vector(-1, 0);
-        break;
-    }
+    const angle = Math.PI / 2 * randomInt(4);
+    this.acc = new Vector(Math.cos(angle), Math.sin(angle));
   }
 
   /**
@@ -92,25 +86,27 @@ export class BeamShooter extends Enemy {
   action() {
     super.action();
     this.faceSize = Math.min(this.fireCount / this.fireDelay + 0.2, 1);
+
+    // TODO this AI could be much better
     if (hasImportantEntity("hero")) {
       const hero = getImportantEntity("hero");
       /** @type {Vector} */
       let dirVec = hero.pos.sub(this.pos);
       if (dirVec.mag() < this.shootDistance) {
         const radians = this.facing.angleBetween(dirVec.norm2());
-        if (Math.abs(radians) > 0.05) {
+        if (Math.abs(radians) > ON_TARGET_ANGLE) {
           // turn to face hero
           this.facing = this.facing
-            .rotate((this.facing.cross(dirVec) < 0 ? -1 : 1) * 0.01)
+            .rotate((Math.sign(this.facing.cross(dirVec))) * TURN_SPEED)
             .norm2();
         }
         this.shoot(this.facing);
       } else {
         // can't see the hero, spin slowly
-        this.facing = this.facing.rotate(0.002).norm2();
+        this.facing = this.facing.rotate(IDLE_TURN_SPEED).norm2();
       }
     }
-    if (Math.random() < 0.005) this.turnRandomDirection();
+    if (Math.random() < TURN_CHANCE) this.turnRandomDirection();
   }
 
   drawBody() {
