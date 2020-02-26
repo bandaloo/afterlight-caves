@@ -1,5 +1,4 @@
-import { Cone } from "../game/powerups/cone.js";
-import { getImportantEntity, addToWorld } from "../modules/gamemanager.js";
+import { addToWorld } from "../modules/gamemanager.js";
 import { Vector } from "../modules/vector.js";
 import { circle, polygon, line } from "./draw.js";
 import { Enemy, MATRYOSHKA_SIZE } from "./enemy.js";
