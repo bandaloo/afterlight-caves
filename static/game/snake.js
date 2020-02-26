@@ -165,17 +165,21 @@ export class Snake extends Enemy {
     const bgColor = this.getBackgroundColor();
     if (this.childBody !== undefined) {
       line(this.pos, this.childBody.pos, this.drawColor, 2);
-    } else {
+    } else if (this.parentBody !== undefined) {
       line(
         this.pos,
-        this.pos.sub(this.facing.norm2().mult(this.width / 2)),
+        this.pos.sub(
+          this.parentBody.pos
+            .sub(this.pos)
+            .norm2()
+            .mult(this.width / 2)
+        ),
         this.drawColor,
         2
       );
     }
     if (this.parentBody === undefined) {
       const sides = 5;
-      //   circle(this.drawPos, this.width / 2, bgColor, 2, this.drawColor);
       polygon(
         this.drawPos,
         sides,
