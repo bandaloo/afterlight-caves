@@ -16,7 +16,7 @@ static content. With Node.js installed, do this:
 
 ```
 $ git clone https://github.com/bandaloo/afterlight-caves
-$ cd proc-cave-game
+$ cd afterlight-caves
 $ npm install
 $ npm start
 ```
