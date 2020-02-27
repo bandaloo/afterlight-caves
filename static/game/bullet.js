@@ -1,6 +1,5 @@
 import {
   getCell,
-  CollisionBox,
   nextIntersection,
   CollisionBeam
 } from "../modules/collision.js";
@@ -12,7 +11,6 @@ import { blockField } from "./generator.js";
 import { EffectEnum, Particle } from "./particle.js";
 import { destroyBlock } from "./block.js";
 import { line } from "./draw.js";
-import { Creature } from "./creature.js";
 
 export class Bullet extends Entity {
   /**
@@ -95,6 +93,7 @@ export class Bullet extends Entity {
   action() {}
 
   draw() {
+    super.draw();
     // the min here is so you don't get an error for drawing circle with width
     // too big
     circle(
@@ -204,6 +203,8 @@ export class Beam extends Bullet {
    * @override
    */
   draw() {
+    // TODO add visual effects for beam
+    // (must be treated different than standard entity)
     this.drawPos = this.owner.drawPos.add(
       this.owner.facing.mult(Math.min(this.owner.width) / 4)
     );
@@ -273,8 +274,8 @@ export class Beam extends Bullet {
   }
 
   /**
-   * @override
    * calculate length and set position each step
+   * @override
    */
   action() {
     if (this.owner.deleteMe) this.deleteMe = true;

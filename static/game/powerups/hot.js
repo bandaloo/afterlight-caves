@@ -2,6 +2,9 @@ import { PowerUp } from "../powerup.js";
 import { Vector } from "../../modules/vector.js";
 import { Creature } from "../creature.js";
 import { Burning } from "../statuseffects/burning.js";
+import { circle, polygon } from "../draw.js";
+import { getGameTime } from "../../modules/gamemanager.js";
+import { clamp } from "../../modules/helpers.js";
 
 const BURNING_LENGTH_FACTOR = 1;
 const BURNING_CHANCE_FACTOR = 0.03;
@@ -13,7 +16,7 @@ export class Hot extends PowerUp {
    * @param {Vector} [pos]
    */
   constructor(magnitude = 1, pos) {
-    super(magnitude, pos, "Hot", "You light enemies on fire");
+    super(magnitude, pos, "Hot", "Contact lights enemies on fire");
     /**
      * @type {{ name: string
      *        , data: number
@@ -30,6 +33,47 @@ export class Hot extends PowerUp {
    */
   apply(creature) {
     if (!this.isAtMax(creature)) {
+      // don't apply the glow effect twice
+      if (!creature.powerUps.has("Hot")) {
+        creature.extraDrawFuncs.push(entity => {
+          const bright = Math.min(
+            0.7,
+            (30 + creature.powerUps.get("Hot") * 2) / 100
+          );
+          // colors for inner and outer flame
+          const colors = [
+            `rgba(245, 147, 66, ${bright})`,
+            `rgba(255, 246, 71, ${bright})`
+          ];
+          // loop for inner and outer flame
+          for (let i = 0; i < 2; i++) {
+            // used for inner flame and outer flame
+            const size = 1 / (1 + i);
+            const tilt = clamp(-creature.vel.x / 10, -Math.PI / 4, Math.PI / 4);
+            polygon(
+              entity.drawPos,
+              8,
+              entity.width * 1.5 * size,
+              entity.height * 1.5 * size,
+              tilt,
+              undefined,
+              colors[i],
+              10,
+              n => {
+                n -= tilt;
+                const t = n + Math.PI;
+                // graphs an egg in polar coordinates
+                const egg = 0.5 * Math.sin(t) ** 2 + 0.5 * Math.sin(t) + 1;
+                // `i` is added here to make inner flame not mirror outer flame
+                const wiggle =
+                  1 + 0.2 * Math.cos((getGameTime() / 1000) * n * 3 + i);
+                return egg * wiggle;
+              }
+            );
+          }
+        });
+      }
+
       super.apply(creature);
 
       // if the creature already has a Hot powerup, just increase its data value
