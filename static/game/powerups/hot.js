@@ -35,9 +35,16 @@ export class Hot extends PowerUp {
     if (!this.isAtMax(creature)) {
       // don't apply the glow effect twice
       if (!creature.powerUps.has("Hot")) {
-        // colors for inner and outer flame
-        const colors = ["#f5934233", "#fff64733"];
         creature.extraDrawFuncs.push(entity => {
+          const bright = Math.min(
+            0.7,
+            (30 + creature.powerUps.get("Hot") * 2) / 100
+          );
+          // colors for inner and outer flame
+          const colors = [
+            `rgba(245, 147, 66, ${bright})`,
+            `rgba(255, 246, 71, ${bright})`
+          ];
           // loop for inner and outer flame
           for (let i = 0; i < 2; i++) {
             // used for inner flame and outer flame
