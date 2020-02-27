@@ -3,11 +3,7 @@ import { Vector } from "../modules/vector.js";
 import { circle } from "./draw.js";
 import { buttons } from "../modules/buttons.js";
 import { addParticle, toggleGuiElement } from "../modules/gamemanager.js";
-import {
-  Particle,
-  EffectEnum,
-  rainbowParticle as rainbowParticleExplosion
-} from "./particle.js";
+import { Particle, EffectEnum, rainbowParticle } from "./particle.js";
 import { PowerUp, POWER_UP_POINTS_FACTOR } from "./powerup.js";
 import { playSound, getSound } from "../modules/sound.js";
 import { CollisionCircle } from "../modules/collision.js";
@@ -65,7 +61,7 @@ export class Hero extends Creature {
     // collect powerups when you collide with them
     this.collideMap.set("PowerUp", (/** @type {PowerUp} */ entity) => {
       entity.apply(this);
-      rainbowParticleExplosion(entity.pos);
+      rainbowParticle(entity.pos);
       this.addPoints(entity.magnitude * POWER_UP_POINTS_FACTOR);
       // play sound
       let magSound;
@@ -100,8 +96,8 @@ export class Hero extends Creature {
       /** @param {Item} i */ i => {
         i.apply(this);
         i.deleteMe = true;
-        console.log("collided with item???");
-        rainbowParticleExplosion(i.pos);
+        // slightly lighter color explosion with more particles
+        rainbowParticle(i.pos, 50, 50, 100);
       }
     );
 
