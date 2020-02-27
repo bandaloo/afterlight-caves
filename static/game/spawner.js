@@ -15,6 +15,7 @@ import { BeamShooter } from "./beamshooter.js";
 import { Vector } from "../modules/vector.js";
 import { ChanceTable } from "../modules/chancetable.js";
 import { Enemy } from "./enemy.js";
+import { Snake } from "./snake.js";
 import * as PowerUpTypes from "../game/powerups/poweruptypes.js";
 
 /**
@@ -69,6 +70,7 @@ export function spawnEnemies(
   chanceTable.add(BeamShooter, 1);
   chanceTable.add(Crosser, 2);
   chanceTable.add(Bomber, 1);
+  chanceTable.add(Snake, 1);
 
   griderate(board, (board, i, j) => {
     // can't spawn on top of a block, so return immediately if the case

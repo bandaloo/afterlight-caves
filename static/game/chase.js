@@ -15,6 +15,7 @@ chanceTable.addAll([
   { result: PowerUpTypes.DamageUp, chance: 1 },
   { result: PowerUpTypes.Hot, chance: 1 },
   { result: PowerUpTypes.Vitality, chance: 1 },
+  { result: PowerUpTypes.Wall, chance: 1 },
   { result: PowerUpTypes.Zoom, chance: 1 }
 ]);
 

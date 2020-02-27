@@ -157,9 +157,9 @@ export function ellipse(
  * @param {number} radius
  * @param {string|CanvasGradient|CanvasPattern} [fillStyle] leave undefined for
  * no fill
+ * @param {number} [lineWidth] leave undefined for no border
  * @param {string|CanvasGradient|CanvasPattern} [strokeStyle] leave undefined
  * for no border
- * @param {number} [lineWidth] leave undefined for no border
  */
 export function circle(centerVec, radius, fillStyle, lineWidth, strokeStyle) {
   ellipse(centerVec, radius, radius, fillStyle, lineWidth, strokeStyle);
@@ -386,6 +386,34 @@ export function line(pos1, pos2, strokeStyle, lineWidth) {
   context.strokeStyle = strokeStyle;
   context.lineWidth = lineWidth;
   context.stroke();
+  context.restore();
+}
+
+/**
+ * Draws a cubic bezier curve based on 4 points
+ * @param {Vector} pos1
+ * @param {Vector} pos2
+ * @param {Vector} pos3
+ * @param {Vector} pos4
+ * @param {string|CanvasGradient|CanvasPattern} strokeStyle
+ * @param {number} lineWidth
+ */
+export function bezierCurve(pos1, pos2, pos3, pos4, strokeStyle, lineWidth) {
+  const context = getDrawContext();
+  context.save();
+
+  pos1 = pos1.add(getCameraOffset());
+  pos2 = pos2.add(getCameraOffset());
+  pos3 = pos3.add(getCameraOffset());
+  pos4 = pos4.add(getCameraOffset());
+
+  context.beginPath();
+  context.moveTo(pos1.x, pos1.y);
+  context.bezierCurveTo(pos2.x, pos2.y, pos3.x, pos3.y, pos4.x, pos4.y);
+  context.strokeStyle = strokeStyle;
+  context.lineWidth = lineWidth;
+  context.stroke();
+
   context.restore();
 }
 
