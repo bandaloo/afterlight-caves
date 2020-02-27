@@ -3,6 +3,7 @@ import { Vector } from "../../modules/vector.js";
 import { Creature } from "../creature.js";
 import { Bullet } from "../bullet.js";
 import { Burning } from "../statuseffects/burning.js";
+import { circle } from "../draw.js";
 
 const BURNING_LENGTH_FACTOR = 1;
 const BURNING_CHANCE_FACTOR = 0.05;
@@ -24,6 +25,18 @@ export class FlameThrower extends PowerUp {
    */
   apply(creature) {
     if (!this.isAtMax(creature)) {
+      if (!creature.powerUps.has("Flamethrower")) {
+        creature.bulletVisualEffects.push(entity => {
+          circle(
+            entity.drawPos,
+            (entity.width / 2) *
+              (1.8 + creature.powerUps.get("Flamethrower") / 20),
+            undefined,
+            creature.powerUps.get("Flamethrower"),
+            "#f5934299"
+          );
+        });
+      }
       super.apply(creature);
       /**
        * @param {Bullet} b the bullet this spawned

@@ -7,7 +7,6 @@ import { Particle, EffectEnum } from "./particle.js";
 import { PowerUp, POWER_UP_POINTS_FACTOR } from "./powerup.js";
 import { playSound, getSound } from "../modules/sound.js";
 import { CollisionCircle } from "../modules/collision.js";
-import { Beam } from "./bullet.js";
 import { Item } from "./item.js";
 
 const DEFAULT_SIZE = 50;
