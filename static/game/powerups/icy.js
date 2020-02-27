@@ -31,11 +31,12 @@ export class Icy extends PowerUp {
           polygon(
             entity.drawPos,
             4,
-            entity.width * 1.5,
-            entity.height * 1.5,
+            entity.width * 1.8,
+            entity.height * 1.8,
             getGameTime() / 100,
             undefined,
-            "#6af7e999"
+            "#6af7e999",
+            creature.powerUps.get("Icy")
           );
         });
       }
