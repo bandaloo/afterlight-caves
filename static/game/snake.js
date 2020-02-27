@@ -156,7 +156,7 @@ export class Snake extends Enemy {
       let bodyCursor = this;
       while (bodyCursor !== undefined) {
         powerup.apply(bodyCursor);
-        bodyCursor = bodyCursor.parentBody;
+        bodyCursor = bodyCursor.childBody;
       }
     }
   }
