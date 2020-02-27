@@ -6,7 +6,11 @@
  */
 /** @type {Resource[]} */
 export const resources = [
-  { name: "captive-portal", file: "../sounds/afterlight-caves.mp3", vol: 0.5 },
+  {
+    name: "afterlight-caves",
+    file: "../sounds/afterlight-caves.mp3",
+    vol: 0.5
+  },
 
   { name: "hit-breakable", file: "../sounds/hit-breakable.wav", vol: 0.7 },
   { name: "enemy-hurt", file: "../sounds/enemy-hurt.wav", vol: 1.0 },
