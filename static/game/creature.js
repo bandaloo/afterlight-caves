@@ -281,6 +281,7 @@ export class Creature extends Entity {
     b.onDestroy = this.bulletOnDestroy;
     b.onHitEnemy = this.bulletOnHitEnemy;
     b.width = size;
+    b.height = size;
     b.knockback = this.bulletKnockback;
     return b;
   }
