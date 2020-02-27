@@ -72,4 +72,4 @@ The easiest way to run the tests is to launch a local server and open
 
 ## Music credits
 
-  - ["Captive Portal" by Me As](https://files.freemusicarchive.org/storage-freemusicarchive-org/music/no_curator/Captive_Portal/Toy_Sounds_Vol_1/Captive_Portal_-_02_-_Me_As.mp3)
+  - ["Afterlight-Caves" by Matthew Puentes](https://mattpuentes.com)
