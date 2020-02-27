@@ -1,8 +1,8 @@
 import { PowerUp } from "../powerup.js";
 import { Vector } from "../../modules/vector.js";
 import { Creature } from "../creature.js";
-const MOVEMENT_FACTOR = 1 / 5;
-const MAX_MOVEMENT_MULTIPLIER = 4;
+const MOVEMENT_FACTOR = 1 / 10;
+const MAX_MOVEMENT_MULTIPLIER = 2;
 
 export class Zoom extends PowerUp {
   /**

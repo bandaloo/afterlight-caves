@@ -19,7 +19,7 @@ chanceTable.addAll([
   { result: PowerUpTypes.Right, chance: 1 },
   { result: PowerUpTypes.Vitality, chance: 1 },
   { result: PowerUpTypes.Wall, chance: 1 },
-  { result: PowerUpTypes.Xplode, chance: 2 },
+  { result: PowerUpTypes.Xplode, chance: 0.5 },
   { result: PowerUpTypes.Yeet, chance: 1 },
   { result: PowerUpTypes.Zoom, chance: 1 }
 ]);
@@ -45,7 +45,7 @@ export class Crosser extends Enemy {
     this.basePoints = 60;
 
     // stuff for shooting
-    this.fireDelay = 90;
+    this.fireDelay = 120;
     this.bulletSpeed = 3;
     this.bulletLifetime = 300;
     this.wiggleCount = 0;

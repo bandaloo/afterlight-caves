@@ -12,7 +12,6 @@ import { CHEAT_RADIUS, Hero } from "./hero.js";
 import { EffectEnum, Particle } from "./particle.js";
 import { Pickup, PickupEnum } from "./pickup.js";
 import { splatter } from "./draw.js";
-import { powerUpTypes } from "./powerups/poweruptypes.js";
 
 export const MATRYOSHKA_SIZE = 50;
 const DROP_CHANCE = 0.2;

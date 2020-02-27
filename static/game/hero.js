@@ -38,11 +38,11 @@ export class Hero extends Creature {
     this.bulletSpeed = 8;
     this.bulletLifetime = 60;
     this.bulletDamage = 8;
-    this.bombFuseTime = 300;
+    this.bombFuseTime = 240;
     this.bombHue = 126;
     this.bulletColor = "white";
     this.score = 0;
-    this.setBombDamage(18);
+    this.setBombDamage(22);
 
     // Manually set the collision shape to allow for a smaller hitbox
     const collisionShape = new CollisionCircle(

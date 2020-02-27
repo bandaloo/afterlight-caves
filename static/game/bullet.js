@@ -234,18 +234,11 @@ export class Beam extends Bullet {
       // deal basic damage
       creature.takeDamage(this.damage, this.dir);
       // impart momentum
-      const size = (creature.width * creature.height) / 300;
-      creature.vel = creature.vel.add(this.dir.mult(this.knockback / size));
+      const size = (creature.width * creature.height) / 1000;
+      creature.acc = creature.acc.add(this.dir.mult(this.knockback / size));
       // call onHitEnemy functions
       for (const ohe of this.onHitEnemy) {
         if (ohe.func) ohe.func(this, ohe.data, creature);
-      }
-    } else {
-      // decrease cooldown if we've already hit the creature
-      if (this.creaturesHit[creature.id].cooldown === 0) {
-        this.creaturesHit[creature.id] = undefined;
-      } else {
-        this.creaturesHit[creature.id].cooldown--;
       }
     }
   }
@@ -254,7 +247,7 @@ export class Beam extends Bullet {
   destroy() {
     // execute all on-destroy functions
     for (const od of this.onDestroy) {
-      if (od["func"]) od["func"](this, od["data"]);
+      if (od.func) od.func(this, od.data);
     }
   }
 
@@ -289,7 +282,17 @@ export class Beam extends Bullet {
       this.collideWithBlock(intersect);
     this.length = intersect.sub(this.pos).mag();
 
+    // tick down cooldowns
     if (this.blockBreakCounter++ > this.maxBlockBreakCounter)
       this.blockBreakCounter = 0;
+    for (const key in this.creaturesHit) {
+      if (this.creaturesHit[key]) {
+        if (this.creaturesHit[key].cooldown === 0)
+          this.creaturesHit[key] = undefined;
+        else
+          this.creaturesHit[key].cooldown--;
+      }
+    }
+
   }
 }
