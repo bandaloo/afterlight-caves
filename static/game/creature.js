@@ -327,10 +327,8 @@ export class Creature extends Entity {
    * Places a bomb into the world
    * @param {Vector} pos the position to place the bomb, by default the
    * creature's position
-   * @param {boolean} [isGood] true if the bomb was planted by the player,
-   * false otherwise
    */
-  placeBomb(pos = this.pos, isGood = false) {
+  placeBomb(pos = this.pos) {
     if (this.currentBombs > 0) {
       const b = this.getBomb(pos);
       addToWorld(b);
@@ -348,7 +346,7 @@ export class Creature extends Entity {
   getBomb(pos) {
     const b = new Bomb(
       pos,
-      this.type === "Hero",
+      this,
       this.bombHue,
       this.bombFuseTime
     );
