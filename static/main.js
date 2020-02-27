@@ -77,8 +77,8 @@ const start = ev => {
   startForm.remove();
   // set timeout so that button disappears immediately
   setTimeout(() => {
-    playSound("captive-portal", false, true);
-    loopSound("captive-portal");
+    playSound("afterlight-caves", false, true);
+    loopSound("afterlight-caves");
     resetDemo();
     startUp();
   }, 1);
