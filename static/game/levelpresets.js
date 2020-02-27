@@ -16,6 +16,7 @@ import { spawnEnemies, spawnPowerups } from "./spawner.js";
 import { setGameDrawFunc } from "../modules/displaymanager.js";
 import { drawBoard } from "./draw.js";
 import { TimeDisplay } from "./timedisplay.js";
+import { PositronRifle } from "./items/positronrifle.js";
 
 /**
  * @typedef TerrainSettings
@@ -153,6 +154,26 @@ export function startLevelFromSettings(group) {
       ).add(emptySpaces[0])
     )
   );
+
+  // failsafe to prevent infinite attempted spawns
+  let giveUpCount = 0;
+  const giveUpMax = 50;
+  for (let i = 0; i < 100; i++) {
+    const emptySpace = emptySpaces
+      .pop()
+      .add(
+        new Vector(
+          group.dimensions.blockWidth / 2,
+          group.dimensions.blockHeight / 2
+        )
+      );
+
+    if (giveUpCount > giveUpMax || emptySpace.dist(hero.pos) > 2000) {
+      addToWorld(new PositronRifle(emptySpace));
+    } else {
+      giveUpCount++;
+    }
+  }
 
   setImportantEntity("hero", hero);
   setCameraEntity(hero);

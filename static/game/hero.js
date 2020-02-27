@@ -20,6 +20,7 @@ export class Hero extends Creature {
   drag = 0.1; // movement deceleration
   invincibilityFrames = 0;
   invincibilityFramesMax = 100;
+  positronParts = 0;
 
   /**
    * @param startingPos {Vector} the starting position of this Hero

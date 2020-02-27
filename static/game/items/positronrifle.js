@@ -22,9 +22,13 @@ export class PositronRifle extends Item {
    * @override
    */
   apply(hero) {
-    hero.bulletType = Beam;
-    hero.fireDelay += 100;
-    hero.bulletLifetime = Math.max(50, hero.bulletLifetime - 200);
+    hero.positronParts++;
+    // if you have all parts give the hero the beam
+    if (hero.positronParts === 3) {
+      hero.bulletType = Beam;
+      hero.fireDelay += 100;
+      hero.bulletLifetime = Math.max(50, hero.bulletLifetime - 200);
+    }
   }
 
   /**
