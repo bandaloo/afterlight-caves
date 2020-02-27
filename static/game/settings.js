@@ -36,10 +36,10 @@ export const settings = {
       saveSettings();
     },
     update() {
-      pauseSound("captive-portal");
+      pauseSound("afterlight-caves");
       if (!this.value) {
-        loopSound("captive-portal");
-        getSound("captive-portal").play();
+        loopSound("afterlight-caves");
+        getSound("afterlight-caves").play();
       }
     }
   },
