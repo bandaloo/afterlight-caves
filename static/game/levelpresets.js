@@ -158,7 +158,9 @@ export function startLevelFromSettings(group) {
   // failsafe to prevent infinite attempted spawns
   let giveUpCount = 0;
   const giveUpMax = 50;
-  for (let i = 0; i < 100; i++) {
+  let partsSpawned = 0;
+  // try to spawn
+  while (partsSpawned < 3) {
     const emptySpace = emptySpaces
       .pop()
       .add(
@@ -170,6 +172,8 @@ export function startLevelFromSettings(group) {
 
     if (giveUpCount > giveUpMax || emptySpace.dist(hero.pos) > 2000) {
       addToWorld(new PositronRifle(emptySpace));
+      console.log("spawned part");
+      partsSpawned++;
     } else {
       giveUpCount++;
     }
