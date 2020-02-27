@@ -27,7 +27,14 @@ export class FlameThrower extends PowerUp {
     if (!this.isAtMax(creature)) {
       if (!creature.powerUps.has("Flamethrower")) {
         creature.bulletVisualEffects.push(entity => {
-          circle(entity.drawPos, (entity.width / 2) * 1.2, "#f5934299");
+          circle(
+            entity.drawPos,
+            (entity.width / 2) *
+              (1.8 + creature.powerUps.get("Flamethrower") / 20),
+            undefined,
+            creature.powerUps.get("Flamethrower"),
+            "#f5934299"
+          );
         });
       }
       super.apply(creature);
