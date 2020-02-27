@@ -97,7 +97,8 @@ export class Hero extends Creature {
         i.apply(this);
         i.deleteMe = true;
         // slightly lighter color explosion with more particles
-        rainbowParticle(i.pos, 50, 50, 100);
+        rainbowParticle(i.pos, 50, 30, 50);
+        playSound("item-get");
       }
     );
 
@@ -148,6 +149,7 @@ export class Hero extends Creature {
       this.invincibilityFrames--;
     }
     this.acc = buttons.move.vec.mult(this.movementMultiplier);
+
     // prevents velocity from getting too small and normalization messing up
     if (this.shoot(buttons.shoot.vec, this.vel.mult(0.5))) {
       playSound("shoot");
