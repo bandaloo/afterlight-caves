@@ -73,9 +73,21 @@ export class Particle extends Entity {
  * create rainbow particle explosion used for pickups
  * @param {Vector} pos
  */
-export function rainbowParticle(pos) {
-  for (let i = 0; i < 30; i++) {
-    let randColor = "hsl(" + Math.floor(Math.random() * 360) + ", 100%, 50%)";
+export function rainbowParticle(
+  pos,
+  amount = 30,
+  saturation = 100,
+  value = 50
+) {
+  for (let i = 0; i < amount; i++) {
+    let randColor =
+      "hsl(" +
+      Math.floor(Math.random() * 360) +
+      ", " +
+      saturation +
+      "%, " +
+      value +
+      "%)";
     const spark = new Particle(pos, randColor, EffectEnum.spark);
     spark.lineWidth = 15;
     spark.multiplier = 8;
