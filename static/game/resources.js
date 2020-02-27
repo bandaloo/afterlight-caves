@@ -26,6 +26,7 @@ export const resources = [
   { name: "bomb-explode", file: "../sounds/bomb-explode.wav", vol: 0.7 },
   { name: "health-pickup", file: "../sounds/health-pickup.wav", vol: 0.7 },
   { name: "bomb-pickup", file: "../sounds/bomb-pickup.wav", vol: 0.7 },
+  { name: "item-get", file: "../sounds/item-get.wav", vol: 0.7 },
 
   // power up names
   { name: "amplify", file: "../sounds/powerups/amplify.wav" },

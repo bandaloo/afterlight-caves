@@ -3,7 +3,7 @@ import { Vector } from "../modules/vector.js";
 import { circle } from "./draw.js";
 import { buttons } from "../modules/buttons.js";
 import { addParticle, toggleGuiElement } from "../modules/gamemanager.js";
-import { Particle, EffectEnum } from "./particle.js";
+import { Particle, EffectEnum, rainbowParticle } from "./particle.js";
 import { PowerUp, POWER_UP_POINTS_FACTOR } from "./powerup.js";
 import { playSound, getSound } from "../modules/sound.js";
 import { CollisionCircle } from "../modules/collision.js";
@@ -20,6 +20,7 @@ export class Hero extends Creature {
   drag = 0.1; // movement deceleration
   invincibilityFrames = 0;
   invincibilityFramesMax = 100;
+  positronParts = 0;
 
   /**
    * @param startingPos {Vector} the starting position of this Hero
@@ -60,14 +61,7 @@ export class Hero extends Creature {
     // collect powerups when you collide with them
     this.collideMap.set("PowerUp", (/** @type {PowerUp} */ entity) => {
       entity.apply(this);
-      for (let i = 0; i < 30; i++) {
-        let randColor =
-          "hsl(" + Math.floor(Math.random() * 360) + ", 100%, 50%)";
-        const spark = new Particle(this.pos, randColor, EffectEnum.spark);
-        spark.lineWidth = 15;
-        spark.multiplier = 8;
-        addParticle(spark);
-      }
+      rainbowParticle(entity.pos);
       this.addPoints(entity.magnitude * POWER_UP_POINTS_FACTOR);
       // play sound
       let magSound;
@@ -102,6 +96,9 @@ export class Hero extends Creature {
       /** @param {Item} i */ i => {
         i.apply(this);
         i.deleteMe = true;
+        // slightly lighter color explosion with more particles
+        rainbowParticle(i.pos, 50, 30, 50);
+        playSound("item-get");
       }
     );
 
@@ -152,6 +149,7 @@ export class Hero extends Creature {
       this.invincibilityFrames--;
     }
     this.acc = buttons.move.vec.mult(this.movementMultiplier);
+
     // prevents velocity from getting too small and normalization messing up
     if (this.shoot(buttons.shoot.vec, this.vel.mult(0.5))) {
       playSound("shoot");
