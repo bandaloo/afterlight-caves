@@ -31,7 +31,6 @@ export class PositronRifle extends Item {
         speed: 0.01 + Math.random() * 0.03
       };
     }
-    console.log(this.type);
   }
 
   /**

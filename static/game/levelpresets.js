@@ -172,7 +172,6 @@ export function startLevelFromSettings(group) {
 
     if (giveUpCount > giveUpMax || emptySpace.dist(hero.pos) > 2000) {
       addToWorld(new PositronRifle(emptySpace));
-      console.log("spawned part");
       partsSpawned++;
     } else {
       giveUpCount++;
