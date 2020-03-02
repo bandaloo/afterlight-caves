@@ -514,7 +514,7 @@ export function drawBoard(board, blockWidth = 60, blockHeight = 60, hue) {
   // draw light gray squares on top
   for (let i = topLeftCell.x; i < bottomRightCell.x; i++) {
     for (let j = topLeftCell.y; j < bottomRightCell.y; j++) {
-      context.fillStyle = `hsl(${hue}, 50%, 3%)`;
+      context.fillStyle = hsl(hue, 50, 5);
       if (board[i][j] >= 1) {
         context.fillRect(
           i * blockWidth - overDraw + cameraOffset.x,
