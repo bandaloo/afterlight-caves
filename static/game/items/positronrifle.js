@@ -48,15 +48,19 @@ export class PositronRifle extends Item {
     }
   }
 
+  action() {
+    // rotate shines
+    for (const s of this.shines) {
+      s.angle += s.speed;
+      if (s.angle > 2 * Math.PI) s.angle -= 2 * Math.PI;
+    }
+  }
+
   /**
    * @override
    */
   draw() {
     // TODO figure out better way to do this
-    for (const s of this.shines) {
-      s.angle += s.speed;
-      if (s.angle > 2 * Math.PI) s.angle -= 2 * Math.PI;
-    }
     const color = `hsl(${Math.floor(getGameTime() / 10) % 360}, 70%, 70%)`;
     drawShines(this.drawPos, this.shines, color);
     polygon(
