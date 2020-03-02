@@ -96,6 +96,17 @@ table tr > td {
   src: url("anonymous-pro-b.ttf");
 }
 
+div#title-holder {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+}
+
+img#logo {
+  max-height: 3em;
+  margin-right: 1em;
+}
+
 p#announcement {
   color: black;
   position: absolute;
