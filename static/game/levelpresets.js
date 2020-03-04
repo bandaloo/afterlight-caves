@@ -125,14 +125,14 @@ export function startLevelFromSettings(group) {
     group.terrain.generations
   );
 
-  const color = hsl(randomInt(360));
+  const hue = randomInt(360);
 
   setGameDrawFunc(() => {
     drawBoard(
       board,
       group.dimensions.blockWidth,
       group.dimensions.blockHeight,
-      color
+      hue
     );
   });
 
