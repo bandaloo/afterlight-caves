@@ -28,6 +28,7 @@ export function getSound(str) {
  * @return {HTMLAudioElement}
  */
 export function playSound(str, copy = true, music = false, volume) {
+  if (music && settings["Mute music"]) return;
   if (!music && settings["Mute sound effects"].value) return getSound(str);
 
   // return if no more of the same sound can be played
