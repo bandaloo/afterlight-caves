@@ -2,7 +2,7 @@ import { pauseSound, loopSound, getSound } from "../modules/sound.js";
 import {
   getBlurContext,
   FILTER_STRING,
-  toggleFullscreen
+  toggleFullscreen,
 } from "../modules/displaymanager.js";
 import { getCookie } from "../modules/helpers.js";
 
@@ -23,10 +23,10 @@ export const settings = {
       ) {
         toggleFullscreen();
       }
-    }
+    },
   },
   "Mute music": {
-    value: true,
+    value: false,
     getDisplayVal() {
       return this.value ? "on" : "off";
     },
@@ -41,7 +41,7 @@ export const settings = {
         loopSound("afterlight-caves");
         getSound("afterlight-caves").play();
       }
-    }
+    },
   },
   "Mute sound effects": {
     value: false,
@@ -54,7 +54,7 @@ export const settings = {
     },
     update() {
       return;
-    }
+    },
   },
   "Glow effect": {
     value: true,
@@ -69,7 +69,7 @@ export const settings = {
     update() {
       if (this.value) getBlurContext().filter = FILTER_STRING;
       else getBlurContext().filter = "none";
-    }
+    },
   },
   "Splatter effects": {
     value: true,
@@ -82,8 +82,8 @@ export const settings = {
     },
     update() {
       return;
-    }
-  }
+    },
+  },
 };
 
 /**
