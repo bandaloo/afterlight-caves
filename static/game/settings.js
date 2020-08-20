@@ -26,7 +26,7 @@ export const settings = {
     }
   },
   "Mute music": {
-    value: true,
+    value: false,
     getDisplayVal() {
       return this.value ? "on" : "off";
     },

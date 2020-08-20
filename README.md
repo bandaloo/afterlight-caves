@@ -72,4 +72,4 @@ The easiest way to run the tests is to launch a local server and open
 
 ## Music credits
 
-  - ["Afterlight-Caves" by Matthew Puentes](https://mattpuentes.com)
+  - "cavedive" by Mason Granof
