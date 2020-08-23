@@ -1,6 +1,6 @@
 {
   "name": "afterlight-caves",
-  "version": "0.10.9",
+  "version": "0.10.10",
   "description": "a game where you shoot procedurally generated enemies in procedurally generated caves",
   "main": "main.js",
   "directories": {
