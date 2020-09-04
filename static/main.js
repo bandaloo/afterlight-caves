@@ -15,6 +15,8 @@ import { resources } from "./game/resources.js";
 import { getCanvasWidth } from "./modules/displaymanager.js";
 import { startLevelFromSettings, settingsGroups } from "./game/levelpresets.js";
 
+export const GAME_URL = ""; // URL to post scores to, like "https://example.com"
+
 export function resetDemo() {
   destroyEverything();
   setPause(false);
