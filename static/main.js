@@ -15,7 +15,13 @@ import { resources } from "./game/resources.js";
 import { getCanvasWidth } from "./modules/displaymanager.js";
 import { startLevelFromSettings, settingsGroups } from "./game/levelpresets.js";
 
-export const GAME_URL = ""; // URL to post scores to, like "https://example.com"
+/**
+ * URL to post scores to, like "https://example.com"
+ * The build-prod.sh script relies on the exact name 'GAME_URL', so if you
+ * change it here make sure to also change it there.
+ * @type {string}
+ */
+export const GAME_URL = "";
 
 export function resetDemo() {
   destroyEverything();
