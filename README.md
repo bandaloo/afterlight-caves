@@ -55,6 +55,11 @@ directory instead of `static` by doing this:
 $ node index.js --compat
 ```
 
+If you want to run the score server on a different domain from the static site
+content, just set the `SCORE_SERVER_SCHEME` and `SCORE_SERVER_DOMAIN` variables
+in `build-prod.sh`, and score requests will be made to the custom score server
+URL in the production version.
+
 The `start-compat` npm script builds and serves from the `dist` directory
 automatically:
 

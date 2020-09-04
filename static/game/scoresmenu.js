@@ -7,6 +7,7 @@ import {
   getCanvasHeight,
   getScreenDimensions
 } from "../modules/displaymanager.js";
+import { GAME_URL } from "../main.js";
 
 export class ScoresMenu extends Menu {
   /**
@@ -42,7 +43,7 @@ export class ScoresMenu extends Menu {
   action() {
     if (this.scoresStatus === undefined) {
       this.scoresStatus = 0;
-      fetch("/scores", { method: "GET" })
+      fetch(GAME_URL + "/scores", { method: "GET" })
         .then(response => response.json())
         .then((/** @type {{ status: number, message: string }} */ obj) => {
           this.scoresStatus = obj.status;
