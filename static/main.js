@@ -1,19 +1,20 @@
 import {
-  startUp,
   addToGui,
   destroyEverything,
-  setPause
+  setPause,
+  startUp
 } from "./modules/gamemanager.js";
 import { Vector } from "./modules/vector.js";
-import { addSound, playSound, loopSound } from "./modules/sound.js";
-import { Healthbar } from "./game/healthbar.js";
+import { addSound, loopSound, playSound } from "./modules/sound.js";
+import { HealthBar } from "./game/healthbar.js";
 import { BombDisplay } from "./game/bombdisplay.js";
 import { PauseScreen } from "./game/pausescreen.js";
 import { ScoreDisplay } from "./game/scoredisplay.js";
 import { DeathScreen } from "./game/deathscreen.js";
 import { resources } from "./game/resources.js";
-import { getCanvasWidth } from "./modules/displaymanager.js";
-import { startLevelFromSettings, settingsGroups } from "./game/levelpresets.js";
+import { getCanvasHeight, getCanvasWidth } from "./modules/displaymanager.js";
+import { settingsGroups, startLevelFromSettings } from "./game/levelpresets.js";
+import { ItemDisplay } from "./game/itemdisplay.js";
 
 /**
  * URL to post scores to, like "https://example.com"
@@ -28,24 +29,29 @@ export function resetDemo() {
   setPause(false);
 
   // Add GUI elements
-  const healthbar = new Healthbar(new Vector(16, 0));
-  addToGui("healthbar", healthbar);
-  const bombdisplay = new BombDisplay(new Vector(0, 100));
-  addToGui("bombdisplay", bombdisplay);
+  const healthBar = new HealthBar(new Vector(16, 0));
+  addToGui("healthBar", healthBar);
+  const bombDisplay = new BombDisplay(new Vector(0, 100));
+  addToGui("bombDisplay", bombDisplay);
   // TODO replace with some sort of border vec
-  const scoredisplay = new ScoreDisplay(new Vector(getCanvasWidth() - 5, 5));
-  addToGui("scoredisplay", scoredisplay);
+  const scoreDisplay = new ScoreDisplay(new Vector(getCanvasWidth() - 5, 5));
+  addToGui("scoreDisplay", scoreDisplay);
+  const itemDisplay = new ItemDisplay(new Vector(
+    getCanvasWidth() - 5,
+    getCanvasHeight() - 15
+  ));
+  addToGui("itemDisplay", itemDisplay);
 
   // this adds the time display so it has to go before adding menus
   startLevelFromSettings(settingsGroups.original);
 
   // add menus to the GUI last as they should draw over everything else
-  const deathscreen = new DeathScreen();
-  deathscreen.active = false;
-  addToGui("deathscreen", deathscreen);
-  const pausescreen = new PauseScreen();
-  pausescreen.active = false;
-  addToGui("pausescreen", pausescreen);
+  const deathScreen = new DeathScreen();
+  deathScreen.active = false;
+  addToGui("deathScreen", deathScreen);
+  const pauseScreen = new PauseScreen();
+  pauseScreen.active = false;
+  addToGui("pauseScreen", pauseScreen);
 }
 
 let loaded = 0;
