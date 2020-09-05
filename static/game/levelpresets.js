@@ -1,13 +1,13 @@
 import { caveRules, EdgesEnum } from "./rules.js";
-import { getGrid, getEmptySpaces } from "./life.js";
-import { shuffle, hsl, randomInt } from "../modules/helpers.js";
+import { getEmptySpaces, getGrid } from "./life.js";
+import { randomInt, shuffle } from "../modules/helpers.js";
 import {
-  setBlockDimensions,
-  setImportantEntity,
-  setCameraEntity,
+  addToGui,
   addToWorld,
-  setTerrain,
-  addToGui
+  setBlockDimensions,
+  setCameraEntity,
+  setImportantEntity,
+  setTerrain
 } from "../modules/gamemanager.js";
 import { Hero } from "./hero.js";
 import { Vector } from "../modules/vector.js";
@@ -16,7 +16,7 @@ import { spawnEnemies, spawnPowerups } from "./spawner.js";
 import { setGameDrawFunc } from "../modules/displaymanager.js";
 import { drawBoard } from "./draw.js";
 import { TimeDisplay } from "./timedisplay.js";
-import { PositronRifle } from "./items/positronrifle.js";
+import { PositronRifle } from "./items/itemtypes.js";
 
 /**
  * @typedef TerrainSettings
@@ -109,12 +109,12 @@ export const settingsGroups = {
  * @param {SettingsGroup} group
  */
 export function startLevelFromSettings(group) {
-  const timedisplay = new TimeDisplay(
+  const timeDisplay = new TimeDisplay(
     new Vector(0, 200 - 32),
     100 *
       (group.gameMode.timeLimit.minutes * 60 + group.gameMode.timeLimit.seconds)
   );
-  addToGui("timedisplay", timedisplay);
+  addToGui("timeDisplay", timeDisplay);
 
   const board = getGrid(
     group.dimensions.roomWidth,
