@@ -16,6 +16,7 @@ if [ -n "$SCORE_SERVER_SCHEME" ] && [ -n "$SCORE_SERVER_DOMAIN" ]
 then
 	sed -i --posix 's/var GAME_URL = ".*";/var GAME_URL = "'$SCORE_SERVER_SCHEME':\/\/'$SCORE_SERVER_DOMAIN'";/g' dist/bundle.js
 fi
+sed -i --posix 's/\.\./\./g' dist/bundle.js
 cp -r static/sounds dist/
 cp -r static/images dist/
 rm -r build
