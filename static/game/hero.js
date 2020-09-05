@@ -3,9 +3,9 @@ import { Vector } from "../modules/vector.js";
 import { circle } from "./draw.js";
 import { buttons } from "../modules/buttons.js";
 import { addParticle, toggleGuiElement } from "../modules/gamemanager.js";
-import { Particle, EffectEnum, rainbowParticle } from "./particle.js";
-import { PowerUp, POWER_UP_POINTS_FACTOR } from "./powerup.js";
-import { playSound, getSound } from "../modules/sound.js";
+import { EffectEnum, Particle, rainbowParticle } from "./particle.js";
+import { POWER_UP_POINTS_FACTOR, PowerUp } from "./powerup.js";
+import { getSound, playSound } from "../modules/sound.js";
 import { CollisionCircle } from "../modules/collision.js";
 import { Item } from "./item.js";
 
@@ -20,7 +20,12 @@ export class Hero extends Creature {
   drag = 0.1; // movement deceleration
   invincibilityFrames = 0;
   invincibilityFramesMax = 100;
-  positronParts = 0;
+  /**
+   * keeps track of the number of parts of each item type the hero has
+   * Infinity = the complete item
+   * @type {Map<string, number>}
+   */
+  itemParts;
 
   /**
    * @param startingPos {Vector} the starting position of this Hero
@@ -44,6 +49,7 @@ export class Hero extends Creature {
     this.bulletColor = "white";
     this.score = 0;
     this.setBombDamage(22);
+    this.itemParts = new Map();
 
     // Manually set the collision shape to allow for a smaller hitbox
     const collisionShape = new CollisionCircle(
@@ -188,7 +194,7 @@ export class Hero extends Creature {
       addParticle(p);
     }
     super.destroy();
-    toggleGuiElement("deathscreen");
+    toggleGuiElement("deathScreen");
   }
 
   /**
