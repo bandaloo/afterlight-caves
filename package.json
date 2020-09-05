@@ -29,10 +29,6 @@
     "start-compat": "npm run build && node index.js --compat",
     "clean": "rm -rf build/ dist/"
   },
-  "prettier": {
-    "arrowParens": "avoid",
-    "trailingComma": "none"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/bandaloo/afterlight-caves.git"
