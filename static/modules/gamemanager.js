@@ -1,4 +1,4 @@
-import { GuiElement } from "../modules/guielement.js";
+import { GuiElement } from "./guielement.js";
 import {
   ageButtons,
   controlKeydownListener,
@@ -82,11 +82,11 @@ class GameManager {
   togglePause() {
     if (!this.gamePause) {
       playSound("menu-select");
-      gameManager.guiElements.get("pausescreen").active = true;
+      gameManager.guiElements.get("pauseScreen").active = true;
       this.gamePause = true;
     } else {
       const pauseScreen = /** @type { PauseScreen } */ (this.guiElements.get(
-        "pausescreen"
+        "pauseScreen"
       ));
       pauseScreen.onBack();
       this.gamePause = false;
@@ -196,7 +196,7 @@ class GameManager {
    * @param {Entity[]} entityList
    */
   destroyEntities(entityList) {
-    // destroy all entites that want to be deleted
+    // destroy all entities that want to be deleted
     inPlaceFilter(
       entityList,
       entity => entity.lifetime > 0 && !entity.deleteMe,
@@ -309,7 +309,7 @@ class GameManager {
     }
     this.totalTime += deltaTime;
 
-    // Game time doesn't incrememnt when the game is paused.
+    // Game time doesn't increment when the game is paused.
     if (!this.gamePause) this.gameTime += deltaTime;
 
     // uncomment this for debugging

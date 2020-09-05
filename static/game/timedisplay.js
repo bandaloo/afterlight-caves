@@ -24,7 +24,7 @@ export class TimeDisplay extends GuiElement {
   action() {
     // prevent the timer from ticking down while the player is dead
     const deathScreen = /** @type {DeathScreen} */ (getGuiElement(
-      "deathscreen"
+      "deathScreen"
     ));
     if (!getPause() && !deathScreen.active) {
       if (this.time > 0) {

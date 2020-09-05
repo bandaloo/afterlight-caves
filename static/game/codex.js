@@ -59,6 +59,6 @@ export class Codex extends Menu {
    */
   onBack() {
     super.onBack();
-    toggleGuiElement("pausescreen");
+    toggleGuiElement("pauseScreen");
   }
 }

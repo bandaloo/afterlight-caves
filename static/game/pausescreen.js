@@ -32,13 +32,13 @@ export class PauseScreen extends Menu {
     const stats = new Stats();
     stats.active = false;
     addToGui("stats", stats);
-    const settingsmenu = new SettingsMenu();
-    settingsmenu.active = false;
-    addToGui("settingsmenu", settingsmenu);
+    const settingsMenu = new SettingsMenu();
+    settingsMenu.active = false;
+    addToGui("settingsMenu", settingsMenu);
     this.controlsmenu = new ControlsMenu();
     this.controlsmenu.active = false;
-    addToGui("controlsmenu", this.controlsmenu);
-    this.childMenus = [codex, stats, settingsmenu, this.controlsmenu];
+    addToGui("controlsMenu", this.controlsmenu);
+    this.childMenus = [codex, stats, settingsMenu, this.controlsmenu];
     restoreSettings();
     restoreControls();
 
@@ -62,14 +62,14 @@ export class PauseScreen extends Menu {
         text: "Settings",
         func: () => {
           this.active = false;
-          toggleGuiElement("settingsmenu");
+          toggleGuiElement("settingsMenu");
         }
       },
       {
         text: "Controls",
         func: () => {
           this.active = false;
-          toggleGuiElement("controlsmenu");
+          toggleGuiElement("controlsMenu");
         }
       },
       {
