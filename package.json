@@ -1,6 +1,6 @@
 {
   "name": "afterlight-caves",
-  "version": "0.10.11",
+  "version": "0.10.12",
   "description": "a game where you shoot procedurally generated enemies in procedurally generated caves",
   "main": "main.js",
   "directories": {
@@ -28,10 +28,6 @@
     "build": "./build-prod.sh",
     "start-compat": "npm run build && node index.js --compat",
     "clean": "rm -rf build/ dist/"
-  },
-  "prettier": {
-    "arrowParens": "avoid",
-    "trailingComma": "none"
   },
   "repository": {
     "type": "git",

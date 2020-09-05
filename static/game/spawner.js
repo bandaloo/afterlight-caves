@@ -49,6 +49,8 @@ function sizeChance() {
  * @param {number} densityDistanceHi where enemy density stops ramping up
  * @param {number} powerDistanceLo where enemy power level starts ramping up
  * @param {number} powerDistanceHi where enemy power level stops ramping up
+ * @param {number} powerScalar
+ * @param {number} randomPowerAddend
  */
 export function spawnEnemies(
   board,
@@ -82,7 +84,7 @@ export function spawnEnemies(
     // roll whether to spawn an enemy
     const roll = Math.random();
 
-    // scale the chance based on distancee from the center
+    // scale the chance based on distance from the center
     const scaledChance =
       chance *
       riseFunction(distanceToHero, densityDistanceLo, densityDistanceHi);
@@ -184,21 +186,20 @@ export function spawnPowerups(board, tilesPerChance = 280) {
   // If empty numbers exist (They shouldn't, but do) delete them.
   // TODO: figure out why we need this
   for (let i = 0; i < caveLocations.length; i++) {
-    if (caveLocations[i].length == 0) caveLocations.splice(i, i);
+    if (caveLocations[i].length === 0) caveLocations.splice(i, i);
   }
-  const tilesPerAdditionalPowerUpChance = tilesPerChance;
 
   for (let i = 0; i < caveLocations.length; i++) {
-    if (i == largestGroup) continue;
+    if (i === largestGroup) continue;
 
     // Have a chance for an additional powerup for every 10 blocks.
     const additional_powerups = Math.floor(
       Math.max(1000 - caveLocations[i].length, 0) /
-        tilesPerAdditionalPowerUpChance
+        tilesPerChance
     );
-    const powerup_num = Math.floor(Math.random() * additional_powerups) + 1;
+    const powerupNum = Math.floor(Math.random() * additional_powerups) + 1;
 
-    for (let p = 0; p < powerup_num; p++) {
+    for (let p = 0; p < powerupNum; p++) {
       if (caveLocations[i].length > 0) {
         const randomIndex = randomInt(caveLocations[i].length);
         const randomTile = caveLocations[i][randomIndex];

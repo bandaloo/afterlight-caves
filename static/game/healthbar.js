@@ -4,7 +4,7 @@ import { Vector } from "../modules/vector.js";
 import { Creature } from "./creature.js";
 import { centeredText, rect } from "./draw.js";
 
-export class Healthbar extends GuiElement {
+export class HealthBar extends GuiElement {
   /** @type {number} */
   sizeScalar;
   /** @type {Vector} */
@@ -37,8 +37,8 @@ export class Healthbar extends GuiElement {
 
   action() {
     this.hero = /** @type {Creature} */ (getImportantEntity("hero"));
-    this.health = /** @type {Creature} */ (this.hero).getCurrentHealth();
-    this.maxHealth = /** @type {Creature} */ (this.hero).maxHealth;
+    this.health = (/** @type {Creature} */ this.hero).getCurrentHealth();
+    this.maxHealth = (/** @type {Creature} */ this.hero).maxHealth;
     this.maxHealthWidth = this.maxHealth * this.sizeScalar;
     this.healthWidth = Math.max(this.health * this.sizeScalar, 0);
   }

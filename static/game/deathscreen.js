@@ -46,9 +46,9 @@ export class DeathScreen extends Menu {
       screenDimensions.width * 0.6,
       screenDimensions.height
     );
-    const scoresmenu = new ScoresMenu();
-    scoresmenu.active = false;
-    addToGui("scoresmenu", scoresmenu);
+    const scoresMenu = new ScoresMenu();
+    scoresMenu.active = false;
+    addToGui("scoresMenu", scoresMenu);
     this.enteringUsername = false;
     this.username = "";
     this.cursorBlinkCounter = 0;
@@ -59,8 +59,8 @@ export class DeathScreen extends Menu {
         text: "View scores",
         func: () => {
           this.active = false;
-          scoresmenu.scoresStatus = undefined;
-          toggleGuiElement("scoresmenu");
+          scoresMenu.scoresStatus = undefined;
+          toggleGuiElement("scoresMenu");
         }
       },
       { text: "Restart", func: resetDemo }
@@ -134,7 +134,7 @@ export class DeathScreen extends Menu {
       }
     } else {
       this.hero = getImportantEntity("hero");
-      this.score = /** @type {Hero} */ (this.hero).score;
+      this.score = (/** @type {Hero} */ this.hero).score;
       if (this.active) this.opacity += 0.01;
       if (this.username === undefined || this.username === "") {
         if (this.items[0]) {

@@ -6,9 +6,9 @@ import {
   saveControls
 } from "../modules/buttons.js";
 import { getScreenDimensions } from "../modules/displaymanager.js";
-import { toggleGuiElement, addToGui } from "../modules/gamemanager.js";
+import { addToGui, toggleGuiElement } from "../modules/gamemanager.js";
 import { Vector } from "../modules/vector.js";
-import { centeredText, rect } from "./draw.js";
+import { rect } from "./draw.js";
 import { Menu } from "./menu.js";
 import { DirectionalControlMenu } from "./directionalcontrolmenu.js";
 
@@ -23,7 +23,7 @@ export class ControlsMenu extends Menu {
     for (const dir of buttons.getDirectionals()) {
       const dcm = new DirectionalControlMenu(dir);
       dcm.active = false;
-      addToGui(dir.name + "controlmenu", dcm);
+      addToGui(dir.name + "controlMenu", dcm);
       this.childMenus.push(dcm);
     }
   }
@@ -35,7 +35,7 @@ export class ControlsMenu extends Menu {
         text: directional.name,
         func: () => {
           this.active = false;
-          toggleGuiElement(directional.name + "controlmenu");
+          toggleGuiElement(directional.name + "controlMenu");
         }
       });
     }
@@ -84,6 +84,6 @@ export class ControlsMenu extends Menu {
   onBack() {
     saveControls();
     super.onBack();
-    toggleGuiElement("pausescreen");
+    toggleGuiElement("pauseScreen");
   }
 }
