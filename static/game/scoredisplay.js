@@ -14,6 +14,10 @@ export const toScoreString = num => {
   return str;
 };
 
+const SCORE_OFFSET = 50;
+const NUMBER_VISIBLE = 8;
+const FADE_START = 5;
+
 /**
  * A class that handles displaying the score, and can show it increasing with
  * nice animations
@@ -23,6 +27,8 @@ export class ScoreDisplay extends GuiElement {
   visibleScore;
   /** @type {number} */
   score;
+  /** @type {number[]} */
+  scoresToAdd;
 
   /**
    * @type {number} number of game steps to display scoreToAdd before adding it
@@ -37,6 +43,7 @@ export class ScoreDisplay extends GuiElement {
     super(pos);
     this.visibleScore = 0;
     this.score = 0;
+    this.scoresToAdd = [];
   }
 
   /**
@@ -53,15 +60,21 @@ export class ScoreDisplay extends GuiElement {
       undefined,
       "white"
     );
-    // draw points being added
-    if (this.score != this.visibleScore) {
+
+    for (let i = 0; i < this.scoresToAdd.length; i++) {
+      // draw points being added
       centeredText(
-        "+" + Math.floor(this.score - this.visibleScore),
-        this.pos.add(new Vector(0, 100)),
+        "+" + Math.floor(this.scoresToAdd[i]),
+        this.pos.add(new Vector(0, i == 0 ? 100 : 50 + SCORE_OFFSET * (i + 1))),
         "bold 60px anonymous",
         "right",
         undefined,
-        "white"
+        "rgb(255, 255, 255," +
+          Math.min(
+            1 - (i + 1 - FADE_START) / (NUMBER_VISIBLE - FADE_START),
+            1
+          ) +
+          ")"
       );
     }
   }
@@ -70,10 +83,10 @@ export class ScoreDisplay extends GuiElement {
    * function to get how much to take off the score counter for animation
    */
   scoreChunk() {
-    const invisibleScore =
-      /** @type {Hero} */ (getImportantEntity("hero")).score -
-      this.visibleScore;
-    return Math.min(Math.floor(0.1 * invisibleScore) + 5, invisibleScore);
+    return Math.min(
+      Math.floor(0.1 * (this.score - this.visibleScore)) + 5,
+      this.score - this.visibleScore
+    );
   }
 
   /**
@@ -83,11 +96,26 @@ export class ScoreDisplay extends GuiElement {
     const hero = getImportantEntity("hero");
     const heroScore = /** @type {Hero} */ (hero).score;
     if (heroScore != this.score) {
+      this.scoresToAdd.push(heroScore - this.score);
       this.score = heroScore;
-      this.staticCounter = 60;
+      if (this.scoresToAdd.length == 1) this.staticCounter = 60;
     }
     if (this.staticCounter <= 0 && this.score !== this.visibleScore) {
-      this.visibleScore += this.scoreChunk();
+      let scoreChunk = this.scoreChunk();
+      this.visibleScore += scoreChunk;
+
+      //Iterate over existing scores and subtract them as needed
+      while (scoreChunk > 0) {
+        if (this.scoresToAdd.length > 0) {
+          if (this.scoresToAdd[0] > scoreChunk) {
+            this.scoresToAdd[0] -= scoreChunk;
+            scoreChunk = 0;
+          } else {
+            scoreChunk -= this.scoresToAdd[0];
+            this.scoresToAdd.shift();
+          }
+        }
+      }
     }
     if (this.staticCounter > 0) this.staticCounter--;
   }

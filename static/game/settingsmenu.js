@@ -15,7 +15,7 @@ export class SettingsMenu extends Menu {
   constructor() {
     super(new Vector(0, 0), getCanvasWidth(), getCanvasHeight());
     this.itemWidth = 1200;
-    this.textAlign = /** @type {CanvasTextAlign} */ "left";
+    this.textAlign = /** @type {CanvasTextAlign} */ ("left");
   }
 
   action() {
@@ -43,31 +43,6 @@ export class SettingsMenu extends Menu {
       "rgba(0,0,0,.9)"
     );
     super.draw();
-  }
-
-  /**
-   * @override because canvas doesn't draw tabs. This is a dumb hack to draw the
-   * second tabular item right-aligned
-   * @param {number} x
-   * @param {number} y
-   * @param {string} text
-   */
-  drawText(x, y, text) {
-    const tabs = text.split("\t");
-    super.drawText(x, y, tabs[0]);
-    if (tabs[1] !== undefined) {
-      centeredText(
-        tabs[1], 
-        new Vector(
-          x + this.width / 2 - this.itemMargin + this.itemWidth / 2,
-          y + this.itemHeight / 2
-        ),
-        this.textStyle,
-        "right",
-        "middle",
-        this.textFillStyle
-      );
-    }
   }
 
   /**

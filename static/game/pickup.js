@@ -1,17 +1,17 @@
 import { Entity } from "../modules/entity.js";
 import { addParticle, getTotalTime } from "../modules/gamemanager.js";
 import { Vector } from "../modules/vector.js";
-import { centeredRect, circle } from "./draw.js";
+import { centeredRect, circle, polygon } from "./draw.js";
 import { Hero } from "./hero.js";
 import { EffectEnum, Particle } from "./particle.js";
-import {playSound} from "../modules/sound.js";
+import { playSound } from "../modules/sound.js";
 
 /**
  * @enum {number}
  */
 export const PickupEnum = Object.freeze({ bomb: 1, health: 2 });
 
-const POWERUP_LIFETIME = 500;
+const POWERUP_LIFETIME = 800;
 const POWERUP_DISAPPEARING = 50;
 const HEALTH_COLOR = "red";
 const BOMB_COLOR = "gray";
@@ -39,6 +39,7 @@ export class Pickup extends Entity {
 
     const lineWidth = (5 + 2 * Math.sin(getTotalTime() / 100)) * sizeScalar;
 
+    /*
     centeredRect(
       this.drawPos,
       this.width * sizeScalar,
@@ -47,24 +48,36 @@ export class Pickup extends Entity {
       this.color,
       5
     );
+    */
 
     // draw inner element
     if (this.pickupType === PickupEnum.health) {
       centeredRect(
         this.drawPos,
-        (this.width / 2) * sizeScalar,
-        (this.height / 2) * sizeScalar,
-        "black",
+        this.width * sizeScalar,
+        (this.height / 3) * sizeScalar,
+        this.color,
+        this.color,
+        lineWidth
+      );
+      centeredRect(
+        this.drawPos,
+        (this.width / 3) * sizeScalar,
+        this.height * sizeScalar,
+        this.color,
         this.color,
         lineWidth
       );
     } else {
-      circle(
+      polygon(
         this.drawPos,
-        (this.width / 4) * sizeScalar,
-        "black",
-        lineWidth,
-        this.color
+        6,
+        this.width * sizeScalar,
+        this.height * sizeScalar,
+        0,
+        this.color,
+        this.color,
+        lineWidth
       );
     }
   }
@@ -80,7 +93,7 @@ export class Pickup extends Entity {
       /** @type {Hero} */ (entity).addBombs(1);
     } else if (this.pickupType === PickupEnum.health) {
       playSound("health-pickup");
-      /** @type {Hero} */ (entity).gainHealth(5);
+      /** @type {Hero} */ (entity).gainHealth(10);
     }
 
     for (let i = 0; i < 15; i++) {

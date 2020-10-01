@@ -6,6 +6,21 @@ import {
 import { Vector } from "../modules/vector.js";
 import { circle, ellipse, line, polygon } from "./draw.js";
 import { Enemy } from "./enemy.js";
+import { ChanceTable } from "../modules/chancetable.js";
+import { PowerUp } from "./powerup.js";
+import * as PowerUpTypes from "../game/powerups/poweruptypes.js";
+
+const chanceTable = new ChanceTable();
+chanceTable.addAll([
+  { result: PowerUpTypes.DamageUp, chance: 1 },
+  { result: PowerUpTypes.Hot, chance: 1 },
+  { result: PowerUpTypes.Vitality, chance: 1 },
+  { result: PowerUpTypes.Wall, chance: 1 },
+  { result: PowerUpTypes.Zoom, chance: 1 }
+]);
+
+// TODO could we be making some of the imports just used for typing use
+// import("./hero.js").Hero instead of an actual import? (like in enemy.js)
 
 export class Chase extends Enemy {
   followDistace = 500;
@@ -19,9 +34,11 @@ export class Chase extends Enemy {
    * @param {Vector} vel
    * @param {Vector} acc
    * @param {number} matryoshka
+   * @param {number} level
+   * @param {ChanceTable<typeof PowerUp>} powerUpTable
    */
-  constructor(pos, vel = new Vector(0, 0), acc = new Vector(0, 0), matryoshka) {
-    super(pos, vel, acc, matryoshka);
+  constructor(pos, vel, acc, matryoshka, level, powerUpTable) {
+    super(pos, vel, acc, matryoshka, level, powerUpTable);
     this.baseHealth = 20;
     this.initHealth();
     this.basePoints = 40;
@@ -31,22 +48,13 @@ export class Chase extends Enemy {
     });
   }
 
-  /**
-   * @override
-   * @param {import("./hero.js").Hero} hero
-   */
-  touchHero(hero) {
-    super.touchHero(hero);
-  }
-
   action() {
     super.action();
     if (hasImportantEntity("hero")) {
       const hero = getImportantEntity("hero");
-      // TODO make vector to helper function in entity
       /** @type {Vector} */
       let dirVec = hero.pos.sub(this.pos);
-      if (this.followTimer >= 0 || dirVec.magnitude() < this.followDistace) {
+      if (this.followTimer >= 0 || dirVec.mag() < this.followDistace) {
         this.followTimer--;
         this.following = true;
         this.acc = dirVec

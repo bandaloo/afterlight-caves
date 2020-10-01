@@ -8,7 +8,7 @@ import {
   getGamepadInput,
   buttons
 } from "./buttons.js";
-import { isColliding } from "./collision.js";
+import { collide } from "./collision.js";
 import { Entity, FarEnum } from "./entity.js";
 import { inPlaceFilter } from "./helpers.js";
 import { Vector } from "./vector.js";
@@ -77,9 +77,7 @@ class GameManager {
    */
   importantEntities = new Map();
 
-  constructor() {
-    collectInput(true);
-  }
+  constructor() {}
 
   togglePause() {
     if (!this.gamePause) {
@@ -243,7 +241,13 @@ class GameManager {
           const collideEntities = map.get(collideTypes[j]);
           if (collideEntities !== undefined) {
             for (let k = 0; k < collideEntities.length; k++) {
-              if (isColliding(targetEntity, collideEntities[k])) {
+              if (
+                !collide(
+                  targetEntity.getCollisionShape(),
+                  collideEntities[k].getCollisionShape(),
+                  false
+                ).isZeroVec()
+              ) {
                 targetEntity.collideWithEntity(collideEntities[k]);
               }
             }
@@ -340,6 +344,7 @@ const gameManager = new GameManager();
 
 export function startUp() {
   addDisplayToDiv("gamediv");
+  collectInput(true);
   gameManager.update();
 }
 
@@ -399,7 +404,7 @@ export function getGameTime() {
  * @param {number} blockWidth
  * @param {number} blockHeight
  */
-export function setDimensions(blockWidth, blockHeight) {
+export function setBlockDimensions(blockWidth, blockHeight) {
   gameManager.blockWidth = blockWidth;
   gameManager.blockHeight = blockHeight;
   // set the splatter canvas to the correct width once this is done
@@ -418,7 +423,7 @@ export function setDimensions(blockWidth, blockHeight) {
  * return an object with info about block dimensions
  * @returns {{width: number, height: number}}
  */
-export function getDimensions() {
+export function getBlockDimensions() {
   return { width: gameManager.blockWidth, height: gameManager.blockHeight };
 }
 
@@ -526,7 +531,7 @@ export function deleteImportantEntity(name) {
  * @returns {Vector}
  */
 export function cellToWorldPosition(vec) {
-  const { width: blockWidth, height: blockHeight } = getDimensions();
+  const { width: blockWidth, height: blockHeight } = getBlockDimensions();
   return new Vector(
     vec.x * blockWidth + blockWidth / 2,
     vec.y * blockHeight + blockHeight / 2

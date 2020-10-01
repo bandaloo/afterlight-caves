@@ -5,7 +5,7 @@ import { Vector } from "../modules/vector.js";
 import { Bomb } from "./bomb.js";
 import { Bullet } from "./bullet.js";
 import { StatusEffect } from "./statuseffect.js";
-import { Hero } from "./hero.js";
+import { circle } from "./draw.js";
 
 /**
  * Reduces damage according to defense
@@ -60,6 +60,9 @@ export class Creature extends Entity {
 
   /** @type {string} */
   bulletColor = "white";
+
+  /** @type {typeof import("./bullet.js").Beam | typeof Bullet} */
+  bulletType = Bullet;
 
   /** @type {number} the number of game steps to wait between each shot */
   fireDelay = 30;
@@ -154,11 +157,14 @@ export class Creature extends Entity {
   /** @type {StatusEffect[]} */
   statusEffects = new Array();
 
-  /** @type {number} number of bullets per shot, spread into a 30 degree cone */
+  /** @type {number} number of bullets per shot, spread into a cone */
   bulletsPerShot = 1;
 
   /** @type {number} scalar that determines how much knockback bullets apply */
   bulletKnockback = 3;
+
+  /** @type {Array<(arg0: Entity) => void>} */
+  bulletVisualEffects = new Array();
 
   /**
    * An array of objects, where each object has a name, which is the name of
@@ -188,6 +194,9 @@ export class Creature extends Entity {
    */
   defense = 0;
 
+  /** @type {Vector} unit vector in the direction this creature is facing */
+  facing = new Vector(0, 1);
+
   /**
    * @param {Vector} [pos] initial position
    * @param {Vector} [vel] initial velocity
@@ -200,6 +209,13 @@ export class Creature extends Entity {
     this.bombOnDetonate = new Array();
     this.bombOnBlastCreature = new Array();
     this.onTouchEnemy = new Array();
+    // unique identifier for this creature, so it can be indexed in objects
+    this.id = ""; // TODO better way to do this? why not keep direct reference
+    for (let i = 0; i < 6; ++i) {
+      this.id += Math.floor(Math.random() * 16).toString(16);
+    }
+    this.maxSpeed = 24;
+    this.maxAccMag = 24;
 
     // bombs deal basic damage
     this.bombOnBlastCreature.push({
@@ -227,6 +243,8 @@ export class Creature extends Entity {
    * methods to draw status effects each step
    */
   draw() {
+    super.draw();
+
     for (const se of this.statusEffects) {
       if (se) se.draw(this);
     }
@@ -249,11 +267,11 @@ export class Creature extends Entity {
     dmg += this.leftBulletDamage * Math.max(0, -Math.cos(angle));
     size += this.rightBulletSize * Math.max(0, Math.cos(angle));
     size += this.leftBulletSize * Math.max(0, -Math.cos(angle));
-    const b = new Bullet(
-      this.pos.add(dir.mult(this.width / 2)),
+    const b = new this.bulletType(
+      this.pos.add(dir.mult(Math.min(this.width, this.height) / 4)),
       dir.norm2().mult(this.bulletSpeed),
       new Vector(0, 0),
-      this.type === "Hero",
+      this,
       this.bulletColor,
       this.bulletLifetime,
       dmg
@@ -263,6 +281,7 @@ export class Creature extends Entity {
     b.onDestroy = this.bulletOnDestroy;
     b.onHitEnemy = this.bulletOnHitEnemy;
     b.width = size;
+    b.height = size;
     b.knockback = this.bulletKnockback;
     return b;
   }
@@ -271,6 +290,8 @@ export class Creature extends Entity {
    * Shoots in the given direction, returning true if bullet was actually shot
    * @param {Vector} dir the direction to shoot in
    * @param {Vector} [additionalVelocity]
+   * @param {number} [angle] the angle of the cone of bullets
+   * @param {number} [offset] set this to zero when calling manually
    * @returns {boolean}
    */
   shoot(dir, additionalVelocity = new Vector(0, 0), angle = 30, offset = 0) {
@@ -286,19 +307,22 @@ export class Creature extends Entity {
     // shoot a bullet
     if (this.fireCount >= this.fireDelay) {
       for (let i = 0; i < this.bulletsPerShot; ++i) {
-        // calculate a new direction so bullets are spread evenly across a 30
-        // degree cone
+        // calculate a new direction so bullets are spread evenly across a cone
         let newDir = dir;
+        let radiansToAdd = 0;
         if (this.bulletsPerShot > 1) {
           let theta = Math.atan2(dir.y, dir.x);
           const r = dir.mag();
-          const degreesToAdd =
-            (i / (this.bulletsPerShot - 1)) * angle - angle / 2 + offset;
-          theta += degreesToAdd * (Math.PI / 180);
+          radiansToAdd =
+            ((i / (this.bulletsPerShot - 1)) * angle - angle / 2 + offset) *
+            (Math.PI / 180);
+          theta += radiansToAdd;
           newDir = new Vector(r * Math.cos(theta), r * Math.sin(theta));
         }
         const b = this.getBullet(newDir);
+        b.extraDrawFuncs = this.bulletVisualEffects;
         b.vel = b.vel.add(additionalVelocity);
+        b.angle = radiansToAdd;
         addToWorld(b);
         this.fireCount = 0;
       }
@@ -311,10 +335,8 @@ export class Creature extends Entity {
    * Places a bomb into the world
    * @param {Vector} pos the position to place the bomb, by default the
    * creature's position
-   * @param {boolean} [isGood] true if the bomb was planted by the player,
-   * false otherwise
    */
-  placeBomb(pos = this.pos, isGood = false) {
+  placeBomb(pos = this.pos) {
     if (this.currentBombs > 0) {
       const b = this.getBomb(pos);
       addToWorld(b);
@@ -332,7 +354,7 @@ export class Creature extends Entity {
   getBomb(pos) {
     const b = new Bomb(
       pos,
-      this.type === "Hero",
+      this,
       this.bombHue,
       this.bombFuseTime
     );

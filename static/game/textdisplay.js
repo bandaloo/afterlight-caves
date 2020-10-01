@@ -22,7 +22,7 @@ export class TextDisplay extends Entity {
     text,
     pos,
     duration = Infinity,
-    font = "bold 100px arial",
+    font = "bold 100px anonymous",
     red = 255,
     green = 255,
     blue = 255,
@@ -37,13 +37,12 @@ export class TextDisplay extends Entity {
     this.green = green;
     this.blue = blue;
     this.strokeStyle = strokeStyle;
-    this.lineWidth = lineWidth,
-    this.font = font;
+    (this.lineWidth = lineWidth), (this.font = font);
     this.duration = duration;
     this.align = align;
-    this.baseline = 
-      /** @type {CanvasTextBaseline} */ ("alphabetic");
+    this.baseline = /** @type {CanvasTextBaseline} */ ("alphabetic");
     this.opacity = 1; // for fadeout
+    this.occludedByWalls = false;
   }
 
   /**

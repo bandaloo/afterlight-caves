@@ -1,4 +1,3 @@
-import { isCollidingCheat } from "../modules/collision.js";
 import { FarEnum } from "../modules/entity.js";
 import {
   addParticle,
@@ -13,19 +12,14 @@ import { CHEAT_RADIUS, Hero } from "./hero.js";
 import { EffectEnum, Particle } from "./particle.js";
 import { Pickup, PickupEnum } from "./pickup.js";
 import { splatter } from "./draw.js";
-import { powerUpTypes } from "./powerups/poweruptypes.js";
 
-/**
- * an enum for allowed shapes of enemies
- * @enum {number}
- */
-export const ShapeEnum = Object.freeze({ square: 1, circle: 2 });
-
+export const MATRYOSHKA_SIZE = 50;
 const DROP_CHANCE = 0.2;
 const BOMB_CHANCE = 0.3;
 const BASE_SIZE = 50;
 const MATRYOSHKA_HEALTH = 10;
-const MATRYOSHKA_SIZE = 50;
+const MATRYOSHKA_SCORE_SCALAR = 20;
+const POWERUP_SCORE_SCALAR = 10;
 
 export class Enemy extends Creature {
   baseHealth = 10;
@@ -38,18 +32,23 @@ export class Enemy extends Creature {
    * @param {Vector} vel
    * @param {Vector} acc
    * @param {number} matryoshka
+   * @param {number} level
+   * @param {import("../modules/chancetable.js").ChanceTable<typeof import("./powerup.js").PowerUp>} powerUpTable
    */
   constructor(
     pos,
     vel = new Vector(0, 0),
     acc = new Vector(0, 0),
-    matryoshka = 0
+    matryoshka = 0,
+    level = 0,
+    powerUpTable = undefined
   ) {
     super(pos, vel, acc);
     const size = BASE_SIZE + MATRYOSHKA_SIZE * matryoshka;
     this.type = "Enemy";
     /** if the enemy is big and will split up */
     this.matryoshka = matryoshka;
+    this.level = level;
     this.width = size;
     this.height = size;
     this.reflectsOffWalls = true;
@@ -61,18 +60,15 @@ export class Enemy extends Creature {
     this.touchDamage = 10;
     this.farType = FarEnum.deactivate;
     this.basePoints = 50;
-
-    // TODO get rid of this
-    const randomHue = randomInt(360);
-    this.drawColor = hsl(randomHue, 100, 70);
-    this.splatterColor = `hsla(${randomHue}, 40%, 40%, 0.8)`;
-    this.originalDrawColor = this.drawColor;
-    this.bulletColor = this.drawColor;
+    this.applyPowerColor();
 
     this.collideMap.set(
       "Hero",
       /** @param {import("./hero.js").Hero} h */ h => this.touchHero(h)
     );
+
+    this.powerUpTable = powerUpTable;
+    this.applyPowerUps(powerUpTable);
   }
 
   initHealth() {
@@ -84,21 +80,19 @@ export class Enemy extends Creature {
    * @param {import("./hero.js").Hero} hero
    */
   touchHero(hero) {
-    if (isCollidingCheat(hero, this, CHEAT_RADIUS)) {
-      // impart momentum
-      if (hero.invincibilityFrames <= 0) {
-        const sizeDiff =
-          (0.5 * this.width * this.height) / (hero.width * hero.height);
-        hero.vel = hero.vel.add(this.vel.mult(sizeDiff));
-      }
-
-      // execute onTouchEnemy functions
-      for (const ote of this.onTouchEnemy) {
-        if (ote.func) ote.func(ote.data, /** @type{Creature} */ (hero));
-      }
-      // deal basic touch damage
-      hero.takeDamage(this.touchDamage, this.vel.norm2());
+    // impart momentum
+    if (hero.invincibilityFrames <= 0) {
+      const sizeDiff =
+        (0.5 * this.width * this.height) / (hero.width * hero.height);
+      hero.vel = hero.vel.add(this.vel.mult(sizeDiff));
     }
+
+    // execute onTouchEnemy functions
+    for (const ote of this.onTouchEnemy) {
+      if (ote.func) ote.func(ote.data, /** @type{Creature} */ (hero));
+    }
+    // deal basic touch damage
+    hero.takeDamage(this.touchDamage, this.vel.norm2());
   }
 
   destroy() {
@@ -139,11 +133,12 @@ export class Enemy extends Creature {
         addToWorld(childEnemy);
         randDir += (2 * Math.PI) / spawnNum;
       }
-      if (this.matryoshka > 1) {
+      if (this.matryoshka > 1 && this.powerUpTable !== undefined) {
         // drop a level 1 power up as a reward
-        const powerUp = new powerUpTypes[
-          Math.floor(Math.random() * powerUpTypes.length)
-        ](Math.min(5, this.matryoshka - 1), this.pos);
+        const powerUp = new (this.powerUpTable.pick())(
+          Math.min(5, this.matryoshka - 1),
+          this.pos
+        );
         addToWorld(powerUp);
       }
     }
@@ -202,13 +197,55 @@ export class Enemy extends Creature {
    */
   getPointValue() {
     let out = this.basePoints;
-    out += 75 * this.matryoshka;
+    out += MATRYOSHKA_SCORE_SCALAR * this.matryoshka;
 
-    // add 10 points for each magnitude of each power up
+    // add points for each magnitude of each power up
     for (const key in this.powerUps) {
-      out += this.powerUps.get(key) * 10;
+      out += this.powerUps.get(key) * POWERUP_SCORE_SCALAR;
     }
 
     return out;
+  }
+
+  /**
+   * apply powerups based on level
+   * @param {import("../modules/chancetable.js").ChanceTable<typeof import("./powerup.js").PowerUp>} powerUpTable
+   */
+  applyPowerUps(powerUpTable) {
+    if (powerUpTable === undefined) return;
+    for (let i = 0; i < this.level; i++) {
+      new (powerUpTable.pick())(randomInt(5) + 1).apply(this);
+    }
+  }
+
+  /**
+   * get a hue value depending on this creature's level
+   * @return {number}
+   */
+  getPowerHue() {
+    let hue;
+    if (this.level < 1) {
+      hue = 0; // red
+    } else if (this.level < 2) {
+      hue = 111; // green (lime)
+    } else if (this.level < 3) {
+      hue = 187; // blue (light)
+    } else if (this.level < 4) {
+      hue = 273; // purple (royal)
+    } else {
+      hue = 43; // orange (golden)
+    }
+    return hue;
+  }
+
+  /**
+   * choose a hue based on the power level, and set all appropriate colors
+   */
+  applyPowerColor() {
+    const hue = this.getPowerHue();
+    this.drawColor = hsl(hue, 100, 70);
+    this.splatterColor = `hsla(${hue}, 40%, 40%, 0.8)`;
+    this.originalDrawColor = this.drawColor;
+    this.bulletColor = this.drawColor;
   }
 }

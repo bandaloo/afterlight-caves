@@ -133,6 +133,15 @@ export class PowerUp extends Entity {
     }
   }
 
+  action() {
+    // rotate shines
+    for (const s of this.shines) {
+      s.angle += s.speed;
+      if (s.angle > 2 * Math.PI) s.angle -= 2 * Math.PI;
+    }
+  }
+
+
   /**
    * draws the powerup as a circle with a letter in the middle
    * @override
@@ -141,10 +150,6 @@ export class PowerUp extends Entity {
     // shines
     const drawColor = `rgb(${this.colors[0]}, ${this.colors[1]}, ${this.colors[2]})`;
     drawShines(this.drawPos, this.shines, drawColor);
-    for (const s of this.shines) {
-      s.angle += s.speed;
-      if (s.angle > 2 * Math.PI) s.angle -= 2 * Math.PI;
-    }
     // circle
     circle(this.drawPos, 32, "black", 4, drawColor);
     // text

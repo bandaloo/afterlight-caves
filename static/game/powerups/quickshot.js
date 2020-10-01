@@ -2,7 +2,7 @@ import { PowerUp } from "../powerup.js";
 import { Vector } from "../../modules/vector.js";
 import { Creature } from "../creature.js";
 
-const MAX_BULLET_SPEED = 50;
+const MAX_BULLET_SPEED = 24;
 const BULLET_SPEED_FACTOR = 1;
 
 export class QuickShot extends PowerUp {

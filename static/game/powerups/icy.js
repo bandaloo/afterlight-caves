@@ -3,6 +3,8 @@ import { Vector } from "../../modules/vector.js";
 import { Creature } from "../creature.js";
 import { Bullet } from "../bullet.js";
 import { Frozen } from "../statuseffects/frozen.js";
+import { circle, centeredRect, polygon } from "../draw.js";
+import { getGameTime } from "../../modules/gamemanager.js";
 
 const FROZEN_LENGTH_FACTOR = 1;
 const CHANCE_TO_FREEZE_CONST = 9;
@@ -24,6 +26,20 @@ export class Icy extends PowerUp {
    */
   apply(creature) {
     if (!this.isAtMax(creature)) {
+      if (!creature.powerUps.has("Icy")) {
+        creature.bulletVisualEffects.push(entity => {
+          polygon(
+            entity.drawPos,
+            4,
+            entity.width * 1.8,
+            entity.height * 1.8,
+            getGameTime() / 100,
+            undefined,
+            "#6af7e999",
+            creature.powerUps.get("Icy")
+          );
+        });
+      }
       super.apply(creature);
       /**
        * @param {Bullet} b the bullet this spawned

@@ -1,20 +1,32 @@
+/**
+ * @typedef Resource
+ * @property {string} name
+ * @property {string} file
+ * @property {number} [vol]
+ */
+/** @type {Resource[]} */
 export const resources = [
-  { name: "captive-portal", file: "../sounds/captive-portal.mp3" }, // TODO remove
+  {
+    name: "afterlight-caves",
+    file: "../sounds/afterlight-caves.mp3",
+    vol: 0.5
+  },
 
-  { name: "hit-breakable", file: "../sounds/hit-breakable.wav" },
-  { name: "enemy-hurt", file: "../sounds/enemy-hurt.wav" },
-  { name: "enemy-dead", file: "../sounds/enemy-dead.wav" },
-  { name: "hero-hurt", file: "../sounds/hero-hurt.wav" },
-  { name: "power-up", file: "../sounds/power-up.wav" },
-  { name: "shoot", file: "../sounds/shoot.wav" },
-  { name: "death", file: "../sounds/death.wav" },
-  { name: "gem", file: "../sounds/gem.wav" },
-  { name: "menu-nav", file: "../sounds/menu-nav.wav" },
-  { name: "menu-back", file: "../sounds/menu-back.wav" },
-  { name: "menu-select", file: "../sounds/menu-select.wav" },
-  { name: "bomb-explode", file: "../sounds/bomb-explode.wav" },
-  { name: "health-pickup", file: "../sounds/health-pickup.wav" },
-  { name: "bomb-pickup", file: "../sounds/bomb-pickup.wav" },
+  { name: "hit-breakable", file: "../sounds/hit-breakable.wav", vol: 0.7 },
+  { name: "enemy-hurt", file: "../sounds/enemy-hurt.wav", vol: 1.0 },
+  { name: "enemy-dead", file: "../sounds/enemy-dead.wav", vol: 1.0 },
+  { name: "hero-hurt", file: "../sounds/hero-hurt.wav", vol: 0.7 },
+  { name: "power-up", file: "../sounds/power-up.wav", vol: 0.7 },
+  { name: "shoot", file: "../sounds/shoot.wav", vol: 0.7 },
+  { name: "death", file: "../sounds/death.wav", vol: 0.7 },
+  { name: "gem", file: "../sounds/gem.wav", vol: 0.7 },
+  { name: "menu-nav", file: "../sounds/menu-nav.wav", vol: 0.7 },
+  { name: "menu-back", file: "../sounds/menu-back.wav", vol: 0.7 },
+  { name: "menu-select", file: "../sounds/menu-select.wav", vol: 0.7 },
+  { name: "bomb-explode", file: "../sounds/bomb-explode.wav", vol: 0.7 },
+  { name: "health-pickup", file: "../sounds/health-pickup.wav", vol: 0.7 },
+  { name: "bomb-pickup", file: "../sounds/bomb-pickup.wav", vol: 0.7 },
+  { name: "item-get", file: "../sounds/item-get.wav", vol: 0.7 },
 
   // power up names
   { name: "amplify", file: "../sounds/powerups/amplify.wav" },
@@ -51,4 +63,3 @@ export const resources = [
   { name: "four", file: "../sounds/powerups/four.wav" },
   { name: "five", file: "../sounds/powerups/five.wav" }
 ];
-

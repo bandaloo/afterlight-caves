@@ -1,6 +1,6 @@
 import { getCell } from "../modules/collision.js";
 import { getTotalTime, SPLATTER_SCALAR } from "../modules/gamemanager.js";
-import { clamp, randomNormalVec } from "../modules/helpers.js";
+import { clamp, hsl, randomNormalVec } from "../modules/helpers.js";
 import { Vector } from "../modules/vector.js";
 import { blockField } from "./generator.js";
 import {
@@ -157,9 +157,9 @@ export function ellipse(
  * @param {number} radius
  * @param {string|CanvasGradient|CanvasPattern} [fillStyle] leave undefined for
  * no fill
+ * @param {number} [lineWidth] leave undefined for no border
  * @param {string|CanvasGradient|CanvasPattern} [strokeStyle] leave undefined
  * for no border
- * @param {number} [lineWidth] leave undefined for no border
  */
 export function circle(centerVec, radius, fillStyle, lineWidth, strokeStyle) {
   ellipse(centerVec, radius, radius, fillStyle, lineWidth, strokeStyle);
@@ -390,13 +390,41 @@ export function line(pos1, pos2, strokeStyle, lineWidth) {
 }
 
 /**
+ * Draws a cubic bezier curve based on 4 points
+ * @param {Vector} pos1
+ * @param {Vector} pos2
+ * @param {Vector} pos3
+ * @param {Vector} pos4
+ * @param {string|CanvasGradient|CanvasPattern} strokeStyle
+ * @param {number} lineWidth
+ */
+export function bezierCurve(pos1, pos2, pos3, pos4, strokeStyle, lineWidth) {
+  const context = getDrawContext();
+  context.save();
+
+  pos1 = pos1.add(getCameraOffset());
+  pos2 = pos2.add(getCameraOffset());
+  pos3 = pos3.add(getCameraOffset());
+  pos4 = pos4.add(getCameraOffset());
+
+  context.beginPath();
+  context.moveTo(pos1.x, pos1.y);
+  context.bezierCurveTo(pos2.x, pos2.y, pos3.x, pos3.y, pos4.x, pos4.y);
+  context.strokeStyle = strokeStyle;
+  context.lineWidth = lineWidth;
+  context.stroke();
+
+  context.restore();
+}
+
+/**
  * draws the board
  * @param {number[][]} board
  * @param {number} blockWidth
  * @param {number} blockHeight
- * @param {string} color
+ * @param {number} hue
  */
-export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
+export function drawBoard(board, blockWidth = 60, blockHeight = 60, hue) {
   // TODO get rid of the need to pass in block width and height
   let context = getDrawContext();
   context.save();
@@ -417,9 +445,6 @@ export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
       height
     );
   };
-
-  // clear the canvas
-  // context.fillRect(0, 0, getCanvasWidth(), getCanvasHeight());
 
   // get the cells to draw based on position
   const cameraOffset = getCameraOffset();
@@ -455,7 +480,7 @@ export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
       blockWidth * boardWidth + worldBorderWidth,
       blockHeight * boardHeight + worldBorderWidth,
       undefined,
-      color,
+      hsl(hue, 100, 50),
       worldBorderWidth
     );
   }
@@ -463,11 +488,11 @@ export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
   /**
    * draw underneath square of tile
    * @param {number} thickness extra width of underneath tile
-   * @param {string|CanvasGradient|CanvasPattern} style
+   * @param {number} hue
    * @param {Vector} cameraOffset
    */
-  const drawBorder = (thickness, style, cameraOffset) => {
-    context.fillStyle = style;
+  const drawBorder = (thickness, hue, cameraOffset) => {
+    context.fillStyle = hsl(hue);
     for (let i = topLeftCell.x; i < bottomRightCell.x; i++) {
       for (let j = topLeftCell.y; j < bottomRightCell.y; j++) {
         if (board[i][j] >= 1) {
@@ -484,12 +509,12 @@ export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
   };
 
   // draw squares underneath to create outline
-  drawBorder(worldBorderWidth, color, cameraOffset);
+  drawBorder(worldBorderWidth, hue, cameraOffset);
 
-  // draw black squares on top
+  // draw light gray squares on top
   for (let i = topLeftCell.x; i < bottomRightCell.x; i++) {
     for (let j = topLeftCell.y; j < bottomRightCell.y; j++) {
-      context.fillStyle = "black";
+      context.fillStyle = hsl(hue, 50, 5);
       if (board[i][j] >= 1) {
         context.fillRect(
           i * blockWidth - overDraw + cameraOffset.x,
@@ -504,7 +529,7 @@ export function drawBoard(board, blockWidth = 60, blockHeight = 60, color) {
   // loop again through for the destructable blocks to avoid context switching
   for (let i = topLeftCell.x; i < bottomRightCell.x; i++) {
     for (let j = topLeftCell.y; j < bottomRightCell.y; j++) {
-      context.fillStyle = "rgba(255, 255, 255, 0.1)";
+      context.fillStyle = "#333333";
       if (board[i][j] >= 1) {
         if (blockField[i][j].durability !== Infinity) {
           context.fillRect(

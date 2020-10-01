@@ -1,5 +1,12 @@
 import { Vector } from "./vector.js";
-import { adjustEntity, isColliding } from "./collision.js";
+import {
+  adjustEntity,
+  CollisionShape,
+  CollisionBox,
+  CollisionCircle,
+  collide,
+  CollisionBeam
+} from "./collision.js";
 import { getScreenDimensions, getCameraOffset } from "./displaymanager.js";
 
 /**
@@ -31,6 +38,9 @@ export class Entity {
   /** @type {number} */
   depth = 0;
 
+  /** @type {Vector} */
+  pos;
+
   /** @type {boolean} whether or not this bounces off of walls */
   reflectsOffWalls = false;
 
@@ -47,19 +57,6 @@ export class Entity {
 
   /** @type {number} maximum magnitude acceleration can have */
   maxAccMag = Infinity;
-
-  // TODO these are only useful for collision tests; is there a better way?
-  /** @type {boolean} */
-  collidesLeft = true;
-
-  /** @type {boolean} */
-  collidesRight = true;
-
-  /** @type {boolean} */
-  collidesTop = true;
-
-  /** @type {boolean} */
-  collidesBottom = true;
 
   /**
    * amount of game steps to live before entity is destroyed
@@ -101,6 +98,33 @@ export class Entity {
   pausable = true;
 
   /**
+   * Determines what type of collision will be generated when getCollisionShape
+   * is called and collisionShape is undefined.
+   * @type {"Box"|"Circle"|"Beam"}
+   */
+  collisionType;
+
+  /**
+   * Allows for the collision shape of an entity to be overriden for terrain
+   * collision. By default, it is just collisionShape.
+   * @type {CollisionShape}
+   */
+  terrainCollisionShape;
+
+  /**
+   * Allows for the collision shape of an entity to be overriden. By default, is
+   * calculated every time getCollisionShape is called.
+   * @type {CollisionShape}
+   */
+  collisionShape;
+
+  /**
+   * Allows additional drawing functions to be added later
+   * @type {Array<(arg0: Entity) => void>}
+   */
+  extraDrawFuncs = new Array();
+
+  /**
    * constructs an entity with all the relevant vectors
    * @param {Vector} pos
    * @param {Vector} vel
@@ -114,24 +138,93 @@ export class Entity {
     this.vel = vel;
     /** @type {Vector} */
     this.acc = acc;
+    this.collisionType = "Circle";
+  }
+
+  /**
+   * Set the collision shape of the entity. Give no arguments to reset the shape
+   * to be calculated each call of getCollisonShape
+   * @param {CollisionShape} [collisionShape]
+   * @returns {void}
+   */
+  setCollisionShape(collisionShape) {
+    this.collisionShape = collisionShape;
+  }
+  /**
+   * Set the collision shape of the entity when colliding with terrain. Give no
+   * arguments to reset the shape to be the same as collisionShape
+   * @returns {void}
+   */
+  setTerrainCollisionShape(terrainCollisionShape) {
+    this.terrainCollisionShape = terrainCollisionShape;
+  }
+
+  /**
+   * Returns the collision shape of the entity.
+   * If the entity has a collisionEntity property, that shape is updated to the
+   * current position and is returned. Otherwise, a new CollisionShape is
+   * calculated.
+   * @returns {CollisionShape}
+   */
+  getCollisionShape() {
+    if (this.collisionShape !== undefined) {
+      this.collisionShape.pos = this.pos;
+      this.collisionShape.vel = this.vel;
+      return this.collisionShape;
+    } else if (this.collisionType == "Box") {
+      return new CollisionBox(this.width, this.height, this.pos, this.vel);
+    } else if (this.collisionType == "Circle") {
+      return new CollisionCircle(
+        Math.min(this.width, this.height) / 2,
+        this.pos,
+        this.vel
+      );
+    } else if (this.collisionType === "Beam") {
+      // this is a bad implementation and should be overridden
+      return new CollisionBeam(
+        this.pos,
+        this.pos.add(this.vel.norm2().mult(Math.min(this.width, this.height))),
+        Math.max(this.width, this.height)
+      );
+    }
+    return new CollisionShape(undefined, this.pos, this.vel);
+  }
+
+  /**
+   * Returns the terrain collision shape of the entity.
+   * If the entity has a collisionEntity property, that shape is updated to the
+   * current position and returned. Otherwise, the collisionShape is returned.
+   * @returns {CollisionShape}
+   */
+  getTerrainCollisionShape() {
+    if (this.terrainCollisionShape !== undefined) {
+      this.terrainCollisionShape.pos = this.pos;
+      this.terrainCollisionShape.vel = this.vel;
+      return this.terrainCollisionShape;
+    }
+    return this.getCollisionShape();
   }
 
   onScreen() {
     const { width: screenWidth, height: screenHeight } = getScreenDimensions();
-    const screenEntity = new Entity(
+    const screenBox = new CollisionBox(
+      screenWidth,
+      screenHeight,
       new Vector(screenWidth / 2, screenHeight / 2).add(
         getCameraOffset().mult(-1)
       )
     );
-    screenEntity.width = screenWidth;
-    screenEntity.height = screenHeight;
-    return isColliding(this, screenEntity);
+    return !collide(this.getCollisionShape(), screenBox).isZeroVec();
   }
 
   /**
    * draws the entity
    */
-  draw() {}
+  draw() {
+    for (const extraFunc of this.extraDrawFuncs) {
+      extraFunc(this);
+    }
+  }
 
   /**
    * steps the entity using position, velocity, acceleration and drag
@@ -171,7 +264,7 @@ export class Entity {
   }
 
   /**
-   * @param {Entity} entity
+   * @param {Vector} pos
    */
-  collideWithBlock(entity) {}
+  collideWithBlock(pos) {}
 }

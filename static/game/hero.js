@@ -1,11 +1,13 @@
+import { Creature } from "./creature.js";
 import { Vector } from "../modules/vector.js";
 import { circle } from "./draw.js";
 import { buttons } from "../modules/buttons.js";
 import { addParticle, toggleGuiElement } from "../modules/gamemanager.js";
-import { Particle, EffectEnum } from "./particle.js";
+import { Particle, EffectEnum, rainbowParticle } from "./particle.js";
 import { PowerUp, POWER_UP_POINTS_FACTOR } from "./powerup.js";
-import { Creature } from "./creature.js";
 import { playSound, getSound } from "../modules/sound.js";
+import { CollisionCircle } from "../modules/collision.js";
+import { Item } from "./item.js";
 
 const DEFAULT_SIZE = 50;
 
@@ -16,9 +18,9 @@ export class Hero extends Creature {
   /** @type {number} */
   score;
   drag = 0.1; // movement deceleration
-  eyeDirection = new Vector(0, 1);
   invincibilityFrames = 0;
   invincibilityFramesMax = 100;
+  positronParts = 0;
 
   /**
    * @param startingPos {Vector} the starting position of this Hero
@@ -37,23 +39,29 @@ export class Hero extends Creature {
     this.bulletSpeed = 8;
     this.bulletLifetime = 60;
     this.bulletDamage = 8;
-    this.bombFuseTime = 300;
+    this.bombFuseTime = 240;
     this.bombHue = 126;
     this.bulletColor = "white";
     this.score = 0;
-    this.setBombDamage(18);
+    this.setBombDamage(22);
+
+    // Manually set the collision shape to allow for a smaller hitbox
+    const collisionShape = new CollisionCircle(
+      (DEFAULT_SIZE - CHEAT_RADIUS) / 2,
+      this.pos
+    );
+    const terrainCollisionShape = new CollisionCircle(
+      DEFAULT_SIZE / 2,
+      this.pos
+    );
+
+    this.setCollisionShape(collisionShape);
+    this.setTerrainCollisionShape(terrainCollisionShape);
 
     // collect powerups when you collide with them
     this.collideMap.set("PowerUp", (/** @type {PowerUp} */ entity) => {
       entity.apply(this);
-      for (let i = 0; i < 30; i++) {
-        let randColor =
-          "hsl(" + Math.floor(Math.random() * 360) + ", 100%, 50%)";
-        const spark = new Particle(this.pos, randColor, EffectEnum.spark);
-        spark.lineWidth = 15;
-        spark.multiplier = 8;
-        addParticle(spark);
-      }
+      rainbowParticle(entity.pos);
       this.addPoints(entity.magnitude * POWER_UP_POINTS_FACTOR);
       // play sound
       let magSound;
@@ -82,6 +90,18 @@ export class Hero extends Creature {
       entity.deleteMe = true;
     });
 
+    // collect items when you collide with them
+    this.collideMap.set(
+      "Item",
+      /** @param {Item} i */ i => {
+        i.apply(this);
+        i.deleteMe = true;
+        // slightly lighter color explosion with more particles
+        rainbowParticle(i.pos, 50, 30, 50);
+        playSound("item-get");
+      }
+    );
+
     this.collideMap.set("Enemy", entity => {
       for (const ote of this.onTouchEnemy) {
         if (ote.func) ote.func(ote.data, /** @type{Creature} */ (entity));
@@ -100,19 +120,13 @@ export class Hero extends Creature {
       this.invincibilityFrames > 0
         ? `rgba(255, 255, 255, ${this.invincibilityFrames /
             this.invincibilityFramesMax})`
-        : "rgba(0, 0, 0, 0)",
+        : "rgba(0, 0, 0, 1)",
       4,
       "white"
     );
 
     // draw eye
-    circle(
-      this.drawPos.add(this.eyeDirection.mult(10)),
-      12,
-      undefined,
-      4,
-      "white"
-    );
+    circle(this.drawPos.add(this.facing.mult(10)), 12, undefined, 4, "white");
 
     // draw status effects
     super.draw();
@@ -135,15 +149,16 @@ export class Hero extends Creature {
       this.invincibilityFrames--;
     }
     this.acc = buttons.move.vec.mult(this.movementMultiplier);
+
     // prevents velocity from getting too small and normalization messing up
     if (this.shoot(buttons.shoot.vec, this.vel.mult(0.5))) {
       playSound("shoot");
     }
     if (!buttons.shoot.vec.isZeroVec()) {
       const normalizedShootVec = buttons.shoot.vec.norm2();
-      this.eyeDirection = normalizedShootVec;
-    } else if (this.vel.magnitude() > 0.001) {
-      this.eyeDirection = this.vel.norm();
+      this.facing = normalizedShootVec;
+    } else if (this.vel.mag() > 0.1) {
+      this.facing = this.vel.norm();
     }
 
     if (buttons.primary.status.isPressed) {

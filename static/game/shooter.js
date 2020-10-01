@@ -6,6 +6,29 @@ import {
   getImportantEntity
 } from "../modules/gamemanager.js";
 import { randomInt } from "../modules/helpers.js";
+import * as PowerUpTypes from "../game/powerups/poweruptypes.js";
+import { ChanceTable } from "../modules/chancetable.js";
+
+/** @type {ChanceTable<typeof import("../game/powerup.js").PowerUp>} */
+const chanceTable = new ChanceTable();
+chanceTable.addAll([
+  { result: PowerUpTypes.Amplify, chance: 1 },
+  { result: PowerUpTypes.Cone, chance: 0.5 },
+  { result: PowerUpTypes.DamageUp, chance: 1 },
+  { result: PowerUpTypes.Elastic, chance: 1 },
+  { result: PowerUpTypes.FlameThrower, chance: 1 },
+  { result: PowerUpTypes.Hot, chance: 1 },
+  { result: PowerUpTypes.Icy, chance: 1 },
+  { result: PowerUpTypes.Left, chance: 1 },
+  { result: PowerUpTypes.MachineGun, chance: 1 },
+  { result: PowerUpTypes.QuickShot, chance: 1 },
+  { result: PowerUpTypes.Right, chance: 1 },
+  { result: PowerUpTypes.Vitality, chance: 1 },
+  { result: PowerUpTypes.Wall, chance: 1 },
+  { result: PowerUpTypes.Xplode, chance: 0.5 },
+  { result: PowerUpTypes.Yeet, chance: 1 },
+  { result: PowerUpTypes.Zoom, chance: 1 }
+]);
 
 export class Shooter extends Enemy {
   avoidDistance = 600;
@@ -20,14 +43,11 @@ export class Shooter extends Enemy {
    * @param {Vector} pos
    * @param {Vector} vel
    * @param {Vector} acc
+   * @param {number} matryoshka
+   * @param {number} level
    */
-  constructor(
-    pos,
-    vel = new Vector(0, 0),
-    acc = new Vector(0, 0),
-    matryoshka = 0
-  ) {
-    super(pos, vel, acc, matryoshka);
+  constructor(pos, vel, acc, matryoshka, level, powerUpTable = chanceTable) {
+    super(pos, vel, acc, matryoshka, level, powerUpTable);
     this.baseHealth = 20;
     this.initHealth();
     this.fireDelay = 90;
@@ -39,27 +59,26 @@ export class Shooter extends Enemy {
       this.avoidTimer = this.avoidTimerMax;
     });
     // scalar to switch strafing directions (-1 or 1)
-    this.strafeScalar = randomInt(2);
+    this.strafeScalar = 1 - 2 * randomInt(2);
   }
 
   action() {
     super.action();
-    // TODO make this AI better
     if (hasImportantEntity("hero")) {
       const hero = getImportantEntity("hero");
       if (Math.random() < 0.01) {
         this.strafeScalar *= -1;
       }
       /** @type {Vector} */
-      let dirVec = hero.pos.sub(this.pos);
+      const dirVec = hero.pos.sub(this.pos);
       const strafeVec = dirVec.norm2().rotate(Math.PI / 2);
       // TODO do we need avoid timer
-      if (this.avoidTimer >= 0 || dirVec.magnitude() < this.avoidDistance) {
+      if (this.avoidTimer >= 0 || dirVec.mag() < this.avoidDistance) {
         this.avoidTimer--;
         this.avoiding = true;
         this.acc = dirVec
           .norm2()
-          .mult(0.15 * (this.chaseDistance > dirVec.magnitude() ? -1.5 : 1))
+          .mult(0.15 * (this.chaseDistance > dirVec.mag() ? -1.5 : 1))
           .mult(this.movementMultiplier)
           .add(strafeVec.mult(0.05 * this.strafeScalar));
       } else {
@@ -67,8 +86,9 @@ export class Shooter extends Enemy {
         this.acc = new Vector(0, 0);
       }
 
-      if (dirVec.magnitude() < this.shootDistance) {
-        this.shoot(dirVec, this.vel.mult(0.2));
+      if (dirVec.mag() < this.shootDistance) {
+        this.facing = dirVec.norm2();
+        this.shoot(this.facing, this.vel.mult(0.2));
       }
     }
   }

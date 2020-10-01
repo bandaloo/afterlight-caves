@@ -36,10 +36,10 @@ export const settings = {
       saveSettings();
     },
     update() {
-      pauseSound("captive-portal");
+      pauseSound("afterlight-caves");
       if (!this.value) {
-        loopSound("captive-portal");
-        getSound("captive-portal").play();
+        loopSound("afterlight-caves");
+        getSound("afterlight-caves").play();
       }
     }
   },
@@ -47,19 +47,6 @@ export const settings = {
     value: false,
     getDisplayVal() {
       return this.value ? "on" : "off";
-    },
-    onClick() {
-      this.value = !this.value;
-      saveSettings();
-    },
-    update() {
-      return;
-    }
-  },
-  "Camera following strategy": {
-    value: true,
-    getDisplayVal() {
-      return this.value ? "tight" : "loose";
     },
     onClick() {
       this.value = !this.value;

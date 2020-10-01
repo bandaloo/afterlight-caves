@@ -21,6 +21,7 @@ export const getUsingKeyboard = () => {
  * @param {boolean} [arg] true if omitted
  */
 export const suppressGamepad = (arg = true) => {
+  if (noisy) console.log("suppress gamepad: " + arg);
   ignoreGampad = arg;
 };
 
@@ -213,6 +214,7 @@ export const buttons = {
   primary: new Button("Bomb", " ", 4),
   secondary: new Button("Secondary", "e", 5),
   select: new Button("Select", " ", 0),
+  altSelect: new Button("Alternate select", "Enter", 0),
   back: new Button("Back", "Tab", 1),
   fullscreen: new Button("Fullscreen", "f", 3),
   pause: new Button("Pause", "p", 9),
@@ -229,6 +231,7 @@ export const buttons = {
       this.primary,
       this.secondary,
       this.select,
+      this.altSelect,
       this.back,
       this.fullscreen,
       this.pause,
@@ -377,7 +380,11 @@ export function getGamepadInput() {
   if (ignoreGampad) return;
 
   for (const gamepad of navigator.getGamepads()) {
-    if (!gamepad || !gamepad.connected) {
+    if (
+      !gamepad ||
+      !gamepad.connected ||
+      gamepad.axes.length < buttons.getDirectionals().length * 2
+    ) {
       continue;
     }
 

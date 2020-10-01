@@ -1,6 +1,6 @@
 {
   "name": "afterlight-caves",
-  "version": "0.6.3",
+  "version": "0.10.11",
   "description": "a game where you shoot procedurally generated enemies in procedurally generated caves",
   "main": "main.js",
   "directories": {
@@ -11,7 +11,7 @@
     "express": "^4.17.1"
   },
   "devDependencies": {
-    "@babel/cli": "^7.0.0",
+    "@babel/cli": "^7.11.6",
     "@babel/core": "^7.8.4",
     "@babel/plugin-proposal-class-properties": "^7.8.3",
     "@babel/preset-env": "^7.8.4",
@@ -30,7 +30,12 @@
     "browserify-compat": "browserify -vd build/main.js -o dist/bundle.js",
     "build-electron": "npm run build && echo 'p, table, div#credits-container, h1, span#version { display: none; }' >> dist/style.css",
     "build": "./build-prod.sh",
-    "start-compat": "npm run build && node index.js --compat"
+    "start-compat": "npm run build && node index.js --compat",
+    "clean": "rm -rf build/ dist/"
+  },
+  "prettier": {
+    "arrowParens": "avoid",
+    "trailingComma": "none"
   },
   "repository": {
     "type": "git",

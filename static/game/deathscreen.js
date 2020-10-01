@@ -16,7 +16,8 @@ import {
   toggleFullscreen
 } from "../modules/displaymanager.js";
 import { Hero } from "./hero.js";
-import {suppressGamepad} from "../modules/buttons.js";
+import { suppressGamepad } from "../modules/buttons.js";
+import { GAME_URL } from "../main.js";
 
 /**
  * The screen that appears when a player dies, including a nice fade-in and
@@ -170,6 +171,7 @@ export class DeathScreen extends Menu {
     this.enteringUsername = true;
     /** @param {KeyboardEvent} ev */
     const listener = ev => {
+      if (!ev.ctrlKey && !ev.altKey && !ev.metaKey) ev.preventDefault();
       if (ev.key === "Enter") {
         // break out
         this.enteringUsername = false;
@@ -189,7 +191,7 @@ export class DeathScreen extends Menu {
    * Submits the user's score to the leaderboard
    */
   submitScore() {
-    fetch("/score", {
+    fetch(GAME_URL + "/score", {
       method: "POST",
       body: JSON.stringify({ username: this.username, score: this.score }),
       headers: new Headers({

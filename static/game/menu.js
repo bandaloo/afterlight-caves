@@ -193,9 +193,13 @@ export class Menu extends GuiElement {
       buttons.back.status.isReleased = false;
       this.onBack();
     }
-    this.down = buttons.select.status.isDown;
-    if (buttons.select.status.isPressed) playSound("menu-select");
-    if (buttons.select.status.isReleased) {
+    this.down = buttons.select.status.isDown || buttons.altSelect.status.isDown;
+    if (buttons.select.status.isPressed || buttons.altSelect.status.isPressed)
+      playSound("menu-select");
+    if (
+      buttons.select.status.isReleased ||
+      buttons.altSelect.status.isReleased
+    ) {
       if (this.items[this.index] && this.items[this.index].func !== undefined)
         this.items[this.index].func();
     }
@@ -271,11 +275,14 @@ export class Menu extends GuiElement {
 
   /**
    * draws text at the right location
+   * because canvas doesn't draw tabs. This is a dumb hack to draw the
+   * second tabular item right-aligned
    * @param {number} x
    * @param {number} y
    * @param {string} text
    */
   drawText(x, y, text) {
+    const tabs = text.split("\t");
     let textOffset = 0;
     switch (this.textAlign) {
       case "left":
@@ -286,7 +293,7 @@ export class Menu extends GuiElement {
         break;
     }
     centeredText(
-      text,
+      tabs[0],
       new Vector(
         x + this.width / 2 + this.itemMargin + textOffset,
         y + this.itemHeight / 2
@@ -298,6 +305,19 @@ export class Menu extends GuiElement {
       undefined,
       undefined
     );
+    if (tabs[1] !== undefined) {
+      centeredText(
+        tabs[1],
+        new Vector(
+          x + this.width / 2 - this.itemMargin + this.itemWidth / 2,
+          y + this.itemHeight / 2
+        ),
+        this.textStyle,
+        "right",
+        "middle",
+        this.textFillStyle
+      );
+    }
   }
 
   /**

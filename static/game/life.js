@@ -169,5 +169,3 @@ export function getEmptySpaces(board, num, xScalar = 1, yScalar = xScalar) {
   }
   return emptySpaces;
 }
-
-// TODO have some sort of iterator for the board
