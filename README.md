@@ -7,7 +7,9 @@ Created by
 
 This is a cool game where you shoot procedurally generated enemies in
 procedurally generated caves. Try it online at
-[afterlightcaves.com](https://afterlightcaves.com).
+[afterlightcaves.com](https://afterlightcaves.com) or download a desktop
+application from the [releases
+page](https://github.com/bandaloo/afterlight-caves/releases).
 
 ## Try it out
 
@@ -22,7 +24,6 @@ $ npm start
 ```
 
 Then point your favorite browser to `http://localhost:4000` to try it out.
-
 ## Development
 
 We use no front-end dependencies, everything in the `static` directory can be
@@ -65,6 +66,25 @@ automatically:
 
 ```
 $ npm run start-compat
+```
+
+## Desktop version
+
+If you just want to run the game on your desktop as a standalone application,
+download a build for your operating system on the [releases
+page](https://github.com/bandaloo/afterlight-caves/releases).
+
+To build a desktop version yourself, use this script:
+
+```
+$ npm run build-desktop
+```
+
+To run the desktop application without building an executable, do this:
+
+```
+$ npm run build-electron
+$ npm run start-electron
 ```
 
 ## Testing
