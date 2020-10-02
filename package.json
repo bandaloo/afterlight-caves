@@ -32,7 +32,7 @@
     "build-electron": "./build-electron.sh",
     "build": "./build-prod.sh",
     "start-compat": "npm run build && node index.js --compat",
-    "clean": "rm -rf build/ dist/",
+    "clean": "rm -rf build/ dist/ release-builds/",
     "build-desktop": "./build-electron.sh && electron-packager . afterlight-caves --overwrite --platform=all --arch=x64 --icon=static/images/logo --prune=true --out=release-builds --ignore=static"
   },
   "prettier": {
