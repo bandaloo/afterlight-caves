@@ -22,5 +22,5 @@ SCORE_SERVER_DOMAIN=afterlightcaves.com
 #cp -r static/sounds dist/
 #cp -r static/images dist/
 #rm -r build
-echo "p, table, div#credits-container, div#title-holder, span#version { display: none; }" >> dist/style.css
-echo "div#gamediv-holder { height: 100%; }" >> dist/style.css
+cp electron-files/index.html dist
+cp electron-files/style.css dist
