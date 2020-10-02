@@ -2,9 +2,11 @@ const { app, BrowserWindow, Menu } = require('electron');
 const path = require('path');
 const serve = require('electron-serve');
 
-const loadURL = serve({directory: 'dist'});
-
 let mainWindow;
+
+const menuTemplate = require('./electron-files/menuTemplate')
+
+const loadURL = serve({directory: 'dist'});
 
 (async () => {
   await app.whenReady();
@@ -20,11 +22,9 @@ let mainWindow;
     },
     icon: path.join('dist', 'images', 'favicon-250.png')
   });
-  mainWindow.setMenu(null);
+  const menu = Menu.buildFromTemplate(menuTemplate);
+  mainWindow.setMenu(menu);
 
   await loadURL(mainWindow);
-
-  // The above is equivalent to this:
-  await mainWindow.loadURL('app://-');
-  // The `-` is just the required hostname
 })();
+
