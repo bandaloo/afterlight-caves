@@ -28,7 +28,7 @@
     "start-electron": "electron electron.js",
     "compile-compat": "babel static --out-dir build",
     "browserify-compat": "browserify -vd build/main.js -o dist/bundle.js",
-    "build-electron": "npm run build && echo 'p, table, div#credits-container, h1, span#version { display: none; }' >> dist/style.css",
+    "build-electron": "./build-electron.sh",
     "build": "./build-prod.sh",
     "start-compat": "npm run build && node index.js --compat",
     "clean": "rm -rf build/ dist/"
