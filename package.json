@@ -36,10 +36,6 @@
     "clean": "rm -rf build/ dist/ release-builds/",
     "build-desktop": "./build-electron.sh && electron-packager . afterlight-caves --overwrite --platform=all --arch=x64 --icon=static/images/logo --prune=true --out=release-builds --ignore=static"
   },
-  "prettier": {
-    "arrowParens": "avoid",
-    "trailingComma": "none"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/bandaloo/afterlight-caves.git"

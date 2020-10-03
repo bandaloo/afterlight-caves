@@ -97,6 +97,6 @@ export class ScoresMenu extends Menu {
    */
   onBack() {
     super.onBack();
-    toggleGuiElement("deathscreen");
+    toggleGuiElement("deathScreen");
   }
 }

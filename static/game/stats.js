@@ -67,6 +67,6 @@ export class Stats extends Menu {
    */
   onBack() {
     super.onBack();
-    toggleGuiElement("pausescreen");
+    toggleGuiElement("pauseScreen");
   }
 }

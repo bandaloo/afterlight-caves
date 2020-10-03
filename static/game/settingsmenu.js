@@ -1,15 +1,13 @@
 import { Menu } from "./menu.js";
 import {
-  getCanvasWidth,
   getCanvasHeight,
-  getScreenDimensions,
+  getCanvasWidth,
+  getScreenDimensions
 } from "../modules/displaymanager.js";
-import {
-  toggleGuiElement
-} from "../modules/gamemanager.js";
+import { toggleGuiElement } from "../modules/gamemanager.js";
 import { Vector } from "../modules/vector.js";
-import { rect, centeredText } from "./draw.js";
-import { settings, saveSettings } from "./settings.js";
+import { rect } from "./draw.js";
+import { saveSettings, settings } from "./settings.js";
 
 export class SettingsMenu extends Menu {
   constructor() {
@@ -22,7 +20,7 @@ export class SettingsMenu extends Menu {
     const items = [];
 
     for (const key in settings) {
-      items.push({ 
+      items.push({
         text: key + "\t" + settings[key].getDisplayVal.apply(settings[key]),
         func: settings[key].onClick.bind(settings[key])
       });
@@ -51,6 +49,6 @@ export class SettingsMenu extends Menu {
   onBack() {
     saveSettings();
     super.onBack();
-    toggleGuiElement("pausescreen");
+    toggleGuiElement("pauseScreen");
   }
 }
