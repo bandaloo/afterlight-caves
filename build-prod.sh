@@ -2,8 +2,8 @@
 
 # Uncomment these if you want to run the score server on a different domain from
 # the main content.
-SCORE_SERVER_SCHEME=https
-SCORE_SERVER_DOMAIN=afterlightcaves.com
+#SCORE_SERVER_SCHEME=https
+#SCORE_SERVER_DOMAIN=example.com
 
 npm run compile-compat && npm run browserify-compat
 cp static/index.html dist/
