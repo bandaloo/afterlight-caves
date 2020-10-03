@@ -8,7 +8,6 @@
   },
   "dependencies": {
     "express": "^4.17.1",
-    "electron": "^8.0.1",
     "electron-serve": "^0.4.1"
   },
   "devDependencies": {
@@ -16,11 +15,13 @@
     "@babel/core": "^7.8.4",
     "@babel/plugin-proposal-class-properties": "^7.8.3",
     "@babel/preset-env": "^7.8.4",
+    "@exponent/electron-cookies": "^2.0.0",
     "@types/chai": "^4.2.3",
     "@types/mocha": "^5.2.7",
     "babel-runtime": "^6.26.0",
     "browserify": "^16.5.0",
     "core-js": "^3.6.4",
+    "electron": "^8.0.1",
     "electron-packager": "^15.1.0"
   },
   "scripts": {

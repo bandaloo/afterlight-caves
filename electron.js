@@ -1,12 +1,12 @@
-const { app, BrowserWindow, Menu } = require('electron');
-const path = require('path');
-const serve = require('electron-serve');
+const { app, BrowserWindow, Menu } = require("electron");
+const path = require("path");
+const serve = require("electron-serve");
 
 let mainWindow;
 
-const menuTemplate = require('./electron-files/menuTemplate')
+const menuTemplate = require("./electron-files/menuTemplate")
 
-const loadURL = serve({directory: 'dist'});
+const loadURL = serve({directory: "dist"});
 
 (async () => {
   await app.whenReady();
@@ -20,7 +20,7 @@ const loadURL = serve({directory: 'dist'});
     webPreferences: {
       nodeIntegration: true
     },
-    icon: path.join('dist', 'images', 'favicon-250.png')
+    icon: path.join("dist", "images", "favicon-250.png")
   });
   const menu = Menu.buildFromTemplate(menuTemplate);
   mainWindow.setMenu(menu);

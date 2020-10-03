@@ -9,3 +9,4 @@ SCORE_SERVER_DOMAIN=afterlightcaves.com
 
 cp electron-files/index.html dist
 cp electron-files/style.css dist
+cp electron-files/enable-cookies.js dist
