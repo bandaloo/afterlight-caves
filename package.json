@@ -35,7 +35,7 @@
     "browserify-compat": "browserify -vd build/main.js -o dist/bundle.js",
     "build": "node build-prod.js",
     "build-electron": "node build-electron.js",
-    "build-desktop": "./build-electron.sh && electron-packager . afterlight-caves --overwrite --platform=all --arch=x64 --icon=static/images/logo --prune=true --out=release-builds --ignore=static",
+    "package-desktop": "node build-electron.js && electron-packager . afterlight-caves --overwrite --platform=all --arch=x64 --icon=static/images/logo --prune=true --out=release-builds --ignore=static",
     "clean": "node clean.js"
   },
   "repository": {
