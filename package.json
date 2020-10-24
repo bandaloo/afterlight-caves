@@ -35,7 +35,7 @@
     "build-electron": "./build-electron.sh",
     "build": "node build-prod.js",
     "start-compat": "npm run build && node index.js --compat",
-    "clean": "rm -rf build/ dist/ release-builds/",
+    "clean": "node clean.js",
     "build-desktop": "./build-electron.sh && electron-packager . afterlight-caves --overwrite --platform=all --arch=x64 --icon=static/images/logo --prune=true --out=release-builds --ignore=static"
   },
   "repository": {
