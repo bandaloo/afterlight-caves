@@ -29,14 +29,14 @@
   "scripts": {
     "test": "echo \"to do this, launch a local server and run tests.html in your browser\" && exit 0",
     "start": "node index.js",
+    "start-compat": "npm run build && node index.js --compat",
     "start-electron": "electron electron.js",
     "compile-compat": "babel static --out-dir build",
     "browserify-compat": "browserify -vd build/main.js -o dist/bundle.js",
-    "build-electron": "./build-electron.sh",
     "build": "node build-prod.js",
-    "start-compat": "npm run build && node index.js --compat",
-    "clean": "node clean.js",
-    "build-desktop": "./build-electron.sh && electron-packager . afterlight-caves --overwrite --platform=all --arch=x64 --icon=static/images/logo --prune=true --out=release-builds --ignore=static"
+    "build-electron": "node build-electron.js",
+    "build-desktop": "./build-electron.sh && electron-packager . afterlight-caves --overwrite --platform=all --arch=x64 --icon=static/images/logo --prune=true --out=release-builds --ignore=static",
+    "clean": "node clean.js"
   },
   "repository": {
     "type": "git",
