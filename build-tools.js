@@ -2,6 +2,7 @@ const npmRun = require("npm-run");
 const fs = require("fs").promises;
 const fse = require("fs-extra");
 const path = require("path");
+const packager = require("electron-packager");
 
 /**
  * wraps npmRun.run() in a function that has no options and returns a promise to
@@ -86,6 +87,37 @@ const buildElectron = (scoreServerScheme = undefined, scoreServerDomain = undefi
 };
 
 /**
+ * builds a desktop version of the game, and packages it as an executable
+ * for various platforms
+ * @param{string} scoreServerScheme scheme for custom score server, e.g. "https"
+ * @param{string} scoreServerDomain domain for custom score server, e.g. "example.com"
+ * @return{Promise<void>}
+ */
+const packageDesktop = (scoreServerScheme = undefined, scoreServerDomain = undefined) => {
+  return new Promise((resolve) => {
+    buildElectron(scoreServerScheme, scoreServerDomain)
+      .then(() => packager({
+        dir: ".",
+        name: "afterlight-caves",
+        out: "release-builds",
+        overwrite: true,
+        platform: "all",
+        arch: "x64",
+        icon: path.join("static", "images", "logo"),
+        prune: true
+      }))
+      .then((appPaths) => {
+        console.log(`Electron app bundles created at:\n${appPaths.join("\n")}`);
+        resolve();
+      })
+      .catch((reason) => {
+        console.error("Error encountered in buildElectron:");
+        console.error(reason);
+      });
+  });
+};
+
+/**
  * removes a list of directories
  * @param{string[]} toRemove directories to remove
  */
@@ -102,5 +134,6 @@ const cleanDirs = (toRemove) => {
 module.exports = {
   buildProd,
   buildElectron,
-  cleanDirs
+  cleanDirs,
+  packageDesktop
 };
