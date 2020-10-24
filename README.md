@@ -24,6 +24,7 @@ $ npm start
 ```
 
 Then point your favorite browser to `http://localhost:4000` to try it out.
+
 ## Development
 
 We use no front-end dependencies, everything in the `static` directory can be
@@ -58,7 +59,7 @@ $ node index.js --compat
 
 If you want to run the score server on a different domain from the static site
 content, just set the `SCORE_SERVER_SCHEME` and `SCORE_SERVER_DOMAIN` variables
-in `build-prod.sh`, and score requests will be made to the custom score server
+in `build-prod.js`, and score requests will be made to the custom score server
 URL in the production version.
 
 The `start-compat` npm script builds and serves from the `dist` directory
@@ -78,7 +79,7 @@ To build a desktop version yourself, the following script will make a build for
 all support operating systems in the `release-builds` directory:
 
 ```
-$ npm run build-desktop
+$ npm run package-desktop
 ```
 
 To run the desktop application without building an executable, do this:
