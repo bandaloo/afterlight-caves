@@ -22,7 +22,9 @@
     "browserify": "^16.5.0",
     "core-js": "^3.6.4",
     "electron": "^8.0.1",
-    "electron-packager": "^15.1.0"
+    "electron-packager": "^15.1.0",
+    "fs-extra": "^9.0.1",
+    "npm": "^6.14.8"
   },
   "scripts": {
     "test": "echo \"to do this, launch a local server and run tests.html in your browser\" && exit 0",
@@ -31,7 +33,7 @@
     "compile-compat": "babel static --out-dir build",
     "browserify-compat": "browserify -vd build/main.js -o dist/bundle.js",
     "build-electron": "./build-electron.sh",
-    "build": "./build-prod.sh",
+    "build": "node build-prod.js",
     "start-compat": "npm run build && node index.js --compat",
     "clean": "rm -rf build/ dist/ release-builds/",
     "build-desktop": "./build-electron.sh && electron-packager . afterlight-caves --overwrite --platform=all --arch=x64 --icon=static/images/logo --prune=true --out=release-builds --ignore=static"
