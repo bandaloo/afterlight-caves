@@ -27,6 +27,6 @@ const OPTIONS = {
 /** @type{string} set these values to use a custom score server */
 const SCORE_SERVER_SCHEME = "https";
 /** @type{string} set these values to use a custom score server */
-const SCORE_SERVER_DOMAIN = "example.com";
+const SCORE_SERVER_DOMAIN = "afterlightcaves.com";
 
 buildTools.packageRpm(OPTIONS, SCORE_SERVER_SCHEME, SCORE_SERVER_DOMAIN).then();
