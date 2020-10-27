@@ -3,6 +3,7 @@ const fs = require("fs").promises;
 const fse = require("fs-extra");
 const path = require("path");
 const packager = require("electron-packager");
+const installerRedHat = require("electron-installer-redhat");
 
 /**
  * wraps npmRun.run() in a function that has no options and returns a promise to
@@ -118,6 +119,26 @@ const packageDesktop = (scoreServerScheme = undefined, scoreServerDomain = undef
 };
 
 /**
+ * builds a desktop version of the game, and packages it as an RPM file
+ * @param{any} options options for electron-installer-redhat
+ * @param{string} scoreServerScheme scheme for custom score server, e.g. "https"
+ * @param{string} scoreServerDomain domain for custom score server, e.g. "example.com"
+ * @return{Promise<void>}
+ */
+const packageRpm = (options, scoreServerScheme = undefined, scoreServerDomain = undefined) => {
+  console.log("Building RPM...");
+  return new Promise((resolve) => {
+    buildElectron(scoreServerScheme, scoreServerDomain)
+      .then(() => installerRedHat(options))
+      .then(() => resolve())
+      .catch((reason) => {
+        console.error("Error encountered in packageRpm");
+        console.error(reason);
+      });
+  });
+};
+
+/**
  * removes a list of directories
  * @param{string[]} toRemove directories to remove
  */
@@ -135,5 +156,6 @@ module.exports = {
   buildProd,
   buildElectron,
   cleanDirs,
-  packageDesktop
+  packageDesktop,
+  packageRpm
 };

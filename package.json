@@ -22,6 +22,7 @@
     "browserify": "^16.5.0",
     "core-js": "^3.6.4",
     "electron": "^8.0.1",
+    "electron-installer-redhat": "^3.2.0",
     "electron-packager": "^15.1.0",
     "fs-extra": "^9.0.1",
     "npm-run": "^5.0.1"
@@ -35,7 +36,8 @@
     "browserify-compat": "browserify -vd build/main.js -o dist/bundle.js",
     "build": "node build-prod.js",
     "build-electron": "node build-electron.js",
-    "package-desktop": "node package-desktop.js",
+    "package-desktop": "npm run build-electron && node package-desktop.js",
+    "package-rpm": "node build-rpm.js",
     "clean": "node clean.js"
   },
   "repository": {

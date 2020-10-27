@@ -82,7 +82,14 @@ all support operating systems in the `release-builds` directory:
 $ npm run package-desktop
 ```
 
-To run the desktop application without building an executable, do this:
+You can also package an RPM file for RedHat-compatible systems like Fedora,
+CentOS, and OpenSUSE:
+
+```
+$ npm run package-rpm
+```
+
+To run the desktop application _without_ building an executable, do this:
 
 ```
 $ npm run build-electron
