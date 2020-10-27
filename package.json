@@ -36,7 +36,7 @@
     "browserify-compat": "browserify -vd build/main.js -o dist/bundle.js",
     "build": "node build-prod.js",
     "build-electron": "node build-electron.js",
-    "package-desktop": "npm run build-electron && node package-desktop.js",
+    "package-desktop": "node build-desktop.js",
     "package-rpm": "node build-rpm.js",
     "clean": "node clean.js"
   },
