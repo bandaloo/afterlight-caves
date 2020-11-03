@@ -7,7 +7,9 @@ Created by
 
 This is a cool game where you shoot procedurally generated enemies in
 procedurally generated caves. Try it online at
-[afterlightcaves.com](https://afterlightcaves.com).
+[afterlightcaves.com](https://afterlightcaves.com) or download a desktop
+application from the [releases
+page](https://github.com/bandaloo/afterlight-caves/releases).
 
 ## Try it out
 
@@ -34,13 +36,13 @@ nothing but JavaScript. We use the HTML canvas API for graphics and various
 other standard web APIs for input and sound.
 
 We also use the [Prettier](https://prettier.io/) code formatter to simplify
-things.
+code style decisions.
 
 ## Build a production version
 
 The JavaScript syntax we use is only supported by very recent browsers. To
-build a version that is compatible with more older and more obscure browsers,
-use the build script:
+build a version that is compatible with older and more obscure browsers, use
+the build script:
 
 ```
 $ npm run build
@@ -57,7 +59,7 @@ $ node index.js --compat
 
 If you want to run the score server on a different domain from the static site
 content, just set the `SCORE_SERVER_SCHEME` and `SCORE_SERVER_DOMAIN` variables
-in `build-prod.sh`, and score requests will be made to the custom score server
+in `build-prod.js`, and score requests will be made to the custom score server
 URL in the production version.
 
 The `start-compat` npm script builds and serves from the `dist` directory
@@ -67,10 +69,37 @@ automatically:
 $ npm run start-compat
 ```
 
+## Desktop version
+
+If you just want to run the game on your desktop as a standalone application,
+download a build for your operating system on the [releases
+page](https://github.com/bandaloo/afterlight-caves/releases).
+
+To build a desktop version yourself, the following script will make a build for
+all support operating systems in the `release-builds` directory:
+
+```
+$ npm run package-desktop
+```
+
+You can also package an RPM file for RedHat-compatible systems like Fedora,
+CentOS, and OpenSUSE:
+
+```
+$ npm run package-rpm
+```
+
+To run the desktop application _without_ building an executable, do this:
+
+```
+$ npm run build-electron
+$ npm run start-electron
+```
+
 ## Testing
 
-We use Mocha and Chai in the browser to test with ES6 modules. This was set up
-with the help of [this article](https://medium.com/dailyjs/running-mocha-tests-as-native-es6-modules-in-a-browser-882373f2ecb0).
+We use Mocha and Chai in the browser to run tests with ES6 modules. This was
+set up with the help of [this article](https://medium.com/dailyjs/running-mocha-tests-as-native-es6-modules-in-a-browser-882373f2ecb0).
 
 The easiest way to run the tests is to launch a local server and open
 `tests.html` in your browser.

@@ -1,0 +1,57 @@
+canvas:fullscreen {
+  cursor: none;
+}
+
+html {
+  margin: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+body {
+  width: 100%;
+  height: 100%;
+  background-color: #2f3236;
+  font-family: sans-serif;
+  color: #dddddd;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+}
+
+div#gamediv-holder {
+  min-width: 960px;
+  min-height: 540px;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+div#loading-bar {
+  height: 40px;
+  width: 400px;
+  border: 4px solid white;
+  margin: 0 auto;
+}
+
+div#loading-bar-fill {
+  height: 100%;
+  background-color: blue;
+}
+
+button#start {
+  font-size: 2em;
+  padding: 0.75em 1.25em;
+  font-weight: bold;
+}
+
+@font-face {
+  font-family: Anonymous;
+  src: url("anonymous-pro-b.ttf");
+}
