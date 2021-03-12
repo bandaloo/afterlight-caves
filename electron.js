@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Menu } = require("electron");
+const { app, BrowserWindow, Menu, nativeImage } = require("electron");
 const path = require("path");
 const serve = require("electron-serve");
 
@@ -20,7 +20,9 @@ const loadURL = serve({directory: "dist"});
     webPreferences: {
       nodeIntegration: true
     },
-    icon: path.join("dist", "images", "favicon-250.png")
+    icon: nativeImage.createFromPath(
+      path.join("dist", "images", "favicon-250.png")
+    )
   });
   const menu = Menu.buildFromTemplate(menuTemplate);
   mainWindow.setMenu(menu);
