@@ -1,6 +1,10 @@
 const express = require("express");
 const fs = require("fs");
+const path = require("path");
 const app = express();
+
+/** @type{string} directory to store the scores.json file in, e.g. "/data" */
+const SCORE_DIR = process.env.SCORE_DIR || ".";
 
 /**
  * @param {express.Response} res
@@ -40,7 +44,7 @@ const port = process.env.NODE_PORT || 4000;
  * }
  */
 app.get("/scores", (req, res) => {
-  fs.readFile("./scores.json", (err, data) => {
+  fs.readFile(path.join(SCORE_DIR, "scores.json"), (err, data) => {
     if (err && err.code !== "ENOENT") {
       console.error(err);
       sendRes(res, 500, "Couldn't read scores file");
@@ -82,7 +86,7 @@ app.post("/score", (req, res) => {
     sendRes(res, 400, "Missing score field");
     return;
   } else {
-    fs.readFile("./scores.json", (err, data) => {
+    fs.readFile(path.join(SCORE_DIR, "scores.json"), (err, data) => {
       // ignore 'no such file' errors, we'll create a new one
       if (err && err.code !== "ENOENT") {
         sendRes(res, 500, "Failed to read scores file");
@@ -105,7 +109,7 @@ app.post("/score", (req, res) => {
           score: body.score
         });
         fs.writeFile(
-          "./scores.json",
+          path.join(SCORE_DIR, "scores.json"),
           JSON.stringify(currentScores),
           { encoding: "utf8", mode: 0o664 },
           () => {
